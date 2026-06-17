@@ -1,0 +1,181 @@
+import React, { createContext, useContext, useState } from 'react';
+
+export type Lang = 'vi' | 'en';
+
+interface LanguageContextType {
+  lang: Lang;
+  setLang: (lang: Lang) => void;
+  t: (key: string) => string;
+}
+
+const translations: Record<string, Record<Lang, string>> = {
+  // Navigation
+  'nav.home': { vi: 'Trang chủ', en: 'Home' },
+  'nav.relics': { vi: 'Di tích', en: 'Relics' },
+  'nav.intangible': { vi: 'Di sản phi vật thể', en: 'Intangible Heritage' },
+  'nav.map': { vi: 'Bản đồ', en: 'Map' },
+  'nav.statistics': { vi: 'Thống kê', en: 'Statistics' },
+  'nav.about': { vi: 'Giới thiệu', en: 'About' },
+  'nav.contact': { vi: 'Liên hệ', en: 'Contact' },
+  'nav.login': { vi: 'Đăng nhập', en: 'Login' },
+  // Site title
+  'site.title': { vi: 'Bản đồ số Di sản Văn hóa Vân Đình', en: 'Van Dinh Digital Heritage Map' },
+  'site.subtitle': { vi: 'Hệ thống quản lý và bảo tồn di sản văn hóa xã Vân Đình, huyện Ứng Hòa, Hà Nội', en: 'Heritage Management and Preservation System for Van Dinh Commune, Ung Hoa District, Hanoi' },
+  // Hero
+  'hero.search.placeholder': { vi: 'Tìm kiếm di tích, di sản...', en: 'Search relics, heritage...' },
+  'hero.search.btn': { vi: 'Tìm kiếm', en: 'Search' },
+  // Stats
+  'stats.total': { vi: 'Tổng số di tích', en: 'Total Relics' },
+  'stats.national': { vi: 'Di tích Quốc gia', en: 'National Relics' },
+  'stats.city': { vi: 'Di tích Thành phố', en: 'City Relics' },
+  'stats.unranked': { vi: 'Chưa xếp hạng', en: 'Unranked' },
+  'stats.intangible': { vi: 'Di sản phi vật thể', en: 'Intangible Heritage' },
+  // Map
+  'map.title': { vi: 'Bản đồ di sản', en: 'Heritage Map' },
+  'map.filter.classification': { vi: 'Tìm theo xếp hạng', en: 'Filter by Classification' },
+  'map.filter.type': { vi: 'Tìm theo loại hình', en: 'Filter by Type' },
+  'map.national': { vi: 'Di tích Quốc gia', en: 'National Relic' },
+  'map.city': { vi: 'Di tích Thành phố', en: 'City Relic' },
+  'map.unranked': { vi: 'Chưa xếp hạng', en: 'Unranked' },
+  'map.type.dinh': { vi: 'Đình', en: 'Communal House (Đình)' },
+  'map.type.chua': { vi: 'Chùa', en: 'Pagoda (Chùa)' },
+  'map.type.den': { vi: 'Đền', en: 'Temple (Đền)' },
+  'map.type.mieu': { vi: 'Miếu', en: 'Shrine (Miếu)' },
+  'map.type.phu': { vi: 'Phủ', en: 'Palace (Phủ)' },
+  'map.type.quan': { vi: 'Quán', en: 'Taoist Temple (Quán)' },
+  'map.type.nhacu': { vi: 'Nhà cổ', en: 'Ancient House' },
+  'map.type.nhatho': { vi: 'Nhà thờ họ', en: 'Clan House' },
+  'map.type.lang': { vi: 'Lăng Mộ', en: 'Mausoleum' },
+  'map.viewdetail': { vi: 'Xem chi tiết', en: 'View Details' },
+  'map.share': { vi: 'Chia sẻ', en: 'Share' },
+  'map.qr': { vi: 'Mã QR', en: 'QR Code' },
+  'map.directions': { vi: 'Chỉ đường', en: 'Get Directions' },
+  'map.coordinates': { vi: 'Tọa độ', en: 'Coordinates' },
+  'map.address': { vi: 'Địa chỉ', en: 'Address' },
+  'map.resetfilter': { vi: 'Đặt lại bộ lọc', en: 'Reset Filters' },
+  // Featured
+  'featured.title': { vi: 'Di tích nổi bật', en: 'Featured Heritage Sites' },
+  'featured.subtitle': { vi: 'Khám phá các di tích lịch sử - văn hóa tiêu biểu của Vân Đình', en: 'Explore the outstanding historical and cultural relics of Van Dinh' },
+  'featured.viewprofile': { vi: 'Xem hồ sơ', en: 'View Profile' },
+  'featured.viewall': { vi: 'Xem tất cả di tích', en: 'View All Heritage Sites' },
+  // Intangible
+  'intangible.title': { vi: 'Di sản văn hóa phi vật thể', en: 'Intangible Cultural Heritage' },
+  'intangible.subtitle': { vi: 'Bảo tồn và phát huy các giá trị văn hóa phi vật thể của cộng đồng', en: 'Preserving and promoting intangible cultural values of the community' },
+  'intangible.video': { vi: 'Xem video', en: 'Watch Video' },
+  'intangible.detail': { vi: 'Chi tiết', en: 'Details' },
+  'intangible.festival': { vi: 'Lễ hội truyền thống', en: 'Traditional Festival' },
+  'intangible.performance': { vi: 'Nghệ thuật biểu diễn', en: 'Folk Performance' },
+  'intangible.craft': { vi: 'Nghề thủ công', en: 'Traditional Craft' },
+  'intangible.ritual': { vi: 'Phong tục tập quán', en: 'Customs & Rituals' },
+  'intangible.story': { vi: 'Truyền thuyết lịch sử', en: 'Historical Story' },
+  // Detail page
+  'detail.gallery': { vi: 'Thư viện ảnh', en: 'Photo Gallery' },
+  'detail.panorama': { vi: 'Xem 360°', en: '360° View' },
+  'detail.info': { vi: 'Thông tin chung', en: 'General Information' },
+  'detail.code': { vi: 'Mã di tích', en: 'Heritage Code' },
+  'detail.type': { vi: 'Loại hình', en: 'Heritage Type' },
+  'detail.classification': { vi: 'Xếp hạng', en: 'Classification' },
+  'detail.history': { vi: 'Lịch sử & Kiến trúc', en: 'History & Architecture' },
+  'detail.documents': { vi: 'Tài liệu đính kèm', en: 'Attached Documents' },
+  'detail.download': { vi: 'Tải xuống', en: 'Download' },
+  'detail.share_qr': { vi: 'Chia sẻ QR Code', en: 'Share QR Code' },
+  'detail.route': { vi: 'Chỉ đường đến đây', en: 'Get Directions' },
+  'detail.related': { vi: 'Hình ảnh liên quan', en: 'Related Images' },
+  'detail.back': { vi: 'Quay lại', en: 'Back' },
+  'detail.location': { vi: 'Vị trí trên bản đồ', en: 'Location on Map' },
+  // Login
+  'login.title': { vi: 'Đăng nhập hệ thống', en: 'System Login' },
+  'login.subtitle': { vi: 'Bản đồ số Di sản Văn hóa Vân Đình', en: 'Van Dinh Digital Heritage Map' },
+  'login.username': { vi: 'Tên đăng nhập', en: 'Username' },
+  'login.password': { vi: 'Mật khẩu', en: 'Password' },
+  'login.remember': { vi: 'Ghi nhớ đăng nhập', en: 'Remember me' },
+  'login.btn': { vi: 'Đăng nhập', en: 'Login' },
+  'login.forgot': { vi: 'Quên mật khẩu?', en: 'Forgot password?' },
+  'login.back_home': { vi: 'Về trang chủ', en: 'Back to Home' },
+  // Admin
+  'admin.dashboard': { vi: 'Tổng quan', en: 'Dashboard' },
+  'admin.heritage_mgmt': { vi: 'Quản lý di tích', en: 'Heritage Management' },
+  'admin.intangible_mgmt': { vi: 'Di sản phi vật thể', en: 'Intangible Heritage' },
+  'admin.map_mgmt': { vi: 'Quản lý bản đồ', en: 'Map Management' },
+  'admin.media': { vi: 'Thư viện ảnh', en: 'Media Library' },
+  'admin.statistics': { vi: 'Thống kê', en: 'Statistics' },
+  'admin.users': { vi: 'Tài khoản người dùng', en: 'User Accounts' },
+  'admin.settings': { vi: 'Cài đặt', en: 'Settings' },
+  'admin.recent_updates': { vi: 'Cập nhật gần đây', en: 'Recent Updates' },
+  'admin.welcome': { vi: 'Xin chào, Quản trị viên', en: 'Welcome, Administrator' },
+  // Heritage management table
+  'hm.id': { vi: 'Mã di tích', en: 'Heritage ID' },
+  'hm.name': { vi: 'Tên di tích', en: 'Heritage Name' },
+  'hm.classification': { vi: 'Xếp hạng', en: 'Classification' },
+  'hm.type': { vi: 'Loại hình', en: 'Type' },
+  'hm.status': { vi: 'Trạng thái', en: 'Status' },
+  'hm.updated': { vi: 'Cập nhật', en: 'Last Updated' },
+  'hm.actions': { vi: 'Thao tác', en: 'Actions' },
+  'hm.add': { vi: 'Thêm di tích', en: 'Add Heritage' },
+  'hm.edit': { vi: 'Chỉnh sửa', en: 'Edit' },
+  'hm.delete': { vi: 'Xóa', en: 'Delete' },
+  'hm.view': { vi: 'Xem', en: 'View' },
+  'hm.search': { vi: 'Tìm kiếm di tích...', en: 'Search heritage...' },
+  'hm.status_active': { vi: 'Đang hoạt động', en: 'Active' },
+  'hm.status_maintenance': { vi: 'Đang trùng tu', en: 'Under Renovation' },
+  'hm.status_closed': { vi: 'Tạm đóng cửa', en: 'Temporarily Closed' },
+  // Statistics
+  'stats_page.title': { vi: 'Thống kê di sản', en: 'Heritage Statistics' },
+  'stats_page.by_classification': { vi: 'Theo xếp hạng', en: 'By Classification' },
+  'stats_page.by_type': { vi: 'Theo loại hình', en: 'By Type' },
+  'stats_page.updates': { vi: 'Cập nhật theo tháng', en: 'Monthly Updates' },
+  // Footer
+  'footer.authority': { vi: 'Ban Quản lý Di sản Văn hóa xã Vân Đình', en: 'Van Dinh Cultural Heritage Management Board' },
+  'footer.address': { vi: 'Xã Vân Đình, Huyện Ứng Hòa, Thành phố Hà Nội', en: 'Van Dinh Commune, Ung Hoa District, Hanoi City' },
+  'footer.phone': { vi: 'Điện thoại: (024) 1234 5678', en: 'Phone: (024) 1234 5678' },
+  'footer.email': { vi: 'Email: disanvandinh@hanoi.gov.vn', en: 'Email: disanvandinh@hanoi.gov.vn' },
+  'footer.copyright': { vi: '© 2024 Bản đồ số Di sản Văn hóa Vân Đình. Bảo lưu mọi quyền.', en: '© 2024 Van Dinh Digital Heritage Map. All rights reserved.' },
+  'footer.quick_links': { vi: 'Liên kết nhanh', en: 'Quick Links' },
+  'footer.contact_info': { vi: 'Thông tin liên hệ', en: 'Contact Information' },
+  'footer.related': { vi: 'Liên kết liên quan', en: 'Related Links' },
+  'footer.ministry': { vi: 'Bộ Văn hóa, Thể thao và Du lịch', en: 'Ministry of Culture, Sports and Tourism' },
+  'footer.hanoi_culture': { vi: 'Sở Văn hóa Hà Nội', en: 'Hanoi Department of Culture' },
+  // Common
+  'common.loading': { vi: 'Đang tải...', en: 'Loading...' },
+  'common.error': { vi: 'Có lỗi xảy ra', en: 'An error occurred' },
+  'common.nodata': { vi: 'Không có dữ liệu', en: 'No data available' },
+  'common.viewmore': { vi: 'Xem thêm', en: 'View More' },
+  'common.close': { vi: 'Đóng', en: 'Close' },
+  'common.save': { vi: 'Lưu', en: 'Save' },
+  'common.cancel': { vi: 'Hủy', en: 'Cancel' },
+  'common.confirm': { vi: 'Xác nhận', en: 'Confirm' },
+  'common.search': { vi: 'Tìm kiếm', en: 'Search' },
+  'common.filter': { vi: 'Bộ lọc', en: 'Filter' },
+  'common.all': { vi: 'Tất cả', en: 'All' },
+  'common.logout': { vi: 'Đăng xuất', en: 'Logout' },
+  'common.notification': { vi: 'Thông báo', en: 'Notifications' },
+  'common.profile': { vi: 'Hồ sơ', en: 'Profile' },
+  'common.description': { vi: 'Mô tả', en: 'Description' },
+  'common.address': { vi: 'Địa chỉ', en: 'Address' },
+  'common.latitude': { vi: 'Vĩ độ', en: 'Latitude' },
+  'common.longitude': { vi: 'Kinh độ', en: 'Longitude' },
+  'common.upload_image': { vi: 'Tải ảnh lên', en: 'Upload Image' },
+  'common.upload_doc': { vi: 'Tải tài liệu lên', en: 'Upload Document' },
+  'common.gen_qr': { vi: 'Tạo mã QR', en: 'Generate QR Code' },
+  'common.select_map': { vi: 'Chọn vị trí trên bản đồ', en: 'Select Location on Map' },
+};
+
+const LanguageContext = createContext<LanguageContextType>({
+  lang: 'vi',
+  setLang: () => {},
+  t: (key) => key,
+});
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLang] = useState<Lang>('vi');
+  const t = (key: string) => translations[key]?.[lang] ?? key;
+  return (
+    <LanguageContext.Provider value={{ lang, setLang, t }}>
+      {children}
+    </LanguageContext.Provider>
+  );
+}
+
+export function useLanguage() {
+  return useContext(LanguageContext);
+}
