@@ -83,7 +83,7 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Admin\\.nuget\\packages\\": {}
+    "C:\\Users\\CodexSandboxOffline\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
@@ -91,7 +91,7 @@
       "projectUniqueName": "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj",
       "projectName": "VanDinh.API",
       "projectPath": "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj",
-      "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+      "packagesPath": "C:\\Users\\CodexSandboxOffline\\.nuget\\packages\\",
       "outputPath": "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
