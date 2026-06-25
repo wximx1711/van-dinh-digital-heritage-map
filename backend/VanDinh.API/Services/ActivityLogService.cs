@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using VanDinh.API.Models;
 using VanDinh.API.Repositories;
+using VanDinh.API.Services;
 
 namespace VanDinh.API.Services;
 
@@ -16,14 +17,17 @@ public sealed class ActivityLogService(IAppRepository repository) : IActivityLog
         var idText = user.FindFirstValue(ClaimTypes.NameIdentifier);
         var username = user.Identity?.Name ?? "system";
         _ = long.TryParse(idText, out var userId);
-        repository.AddLog(new ActivityLog
+
+        var log = new ActivityLog
         {
             UserId = userId == 0 ? 1 : userId,
-            Username = username,
             Action = action,
             EntityName = entityName,
             EntityId = entityId,
-            Description = description
-        });
+            Description = description,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        repository.AddLog(log);
     }
 }

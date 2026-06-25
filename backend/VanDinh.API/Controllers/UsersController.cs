@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VanDinh.API.DTOs;
+using VanDinh.API.Responses;
 using VanDinh.API.Services;
 
 namespace VanDinh.API.Controllers;
@@ -11,42 +12,83 @@ namespace VanDinh.API.Controllers;
 public sealed class UsersController(IUserService service, IActivityLogService logs) : ControllerBase
 {
     [HttpGet]
-    public ActionResult<IReadOnlyList<UserDto>> GetAll() => service.GetAll().ToList();
+    public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null, [FromQuery] string? role = null)
+    {
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        var allUsers = service.GetAll().AsEnumerable();
+
+        if (!string.IsNullOrWhiteSpace(name))
+        {
+            allUsers = allUsers.Where(u => (u.Username + " " + (u.FullName ?? "")).Contains(name, StringComparison.OrdinalIgnoreCase));
+        }
+        if (!string.IsNullOrWhiteSpace(role))
+        {
+            allUsers = allUsers.Where(u => u.RoleName.Equals(role, StringComparison.OrdinalIgnoreCase));
+        }
+
+        var userList = allUsers.ToList();
+        var totalRecords = userList.Count;
+        var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+        var data = userList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        var result = new PagedResult<UserDto>(data, page, pageSize, totalRecords, totalPages);
+        return ApiResponse.Success(result);
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult<UserDto> Create(UserCreateRequest request)
+    public IActionResult Create(UserCreateRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+            return ApiResponse.Error("Validation failed.", errors);
+        }
+
         var user = service.Create(request);
         logs.Log(User, "CREATE", "Users", user.UserId, user.Username);
-        return CreatedAtAction(nameof(GetAll), user);
+        return ApiResponse.Success(user, "User created successfully.", StatusCodes.Status201Created);
     }
 
     [HttpPut("{id:long}")]
     [ValidateAntiForgeryToken]
-    public ActionResult<UserDto> Update(long id, UserUpdateRequest request)
+    public IActionResult Update(long id, UserUpdateRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+            return ApiResponse.Error("Validation failed.", errors);
+        }
+
         var user = service.Update(id, request);
-        if (user is null) return NotFound();
+        if (user is null) return ApiResponse.NotFound("User not found.");
         logs.Log(User, "UPDATE", "Users", id, user.Username);
-        return user;
+        return ApiResponse.Success(user, "User updated successfully.");
     }
 
     [HttpPost("{id:long}/reset-password")]
     [ValidateAntiForgeryToken]
     public IActionResult ResetPassword(long id, ResetPasswordRequest request)
     {
-        if (!service.ResetPassword(id, request.NewPassword)) return NotFound();
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+            return ApiResponse.Error("Validation failed.", errors);
+        }
+
+        if (!service.ResetPassword(id, request.NewPassword)) return ApiResponse.NotFound("User not found.");
         logs.Log(User, "RESET_PASSWORD", "Users", id);
-        return NoContent();
+        return ApiResponse.Success(null, "Password reset successfully.");
     }
 
     [HttpDelete("{id:long}")]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(long id)
     {
-        if (!service.Delete(id)) return NotFound();
+        if (!service.Delete(id)) return ApiResponse.NotFound("User not found.");
         logs.Log(User, "DELETE", "Users", id);
-        return NoContent();
+        return ApiResponse.Success(null, "User deleted successfully.");
     }
 }

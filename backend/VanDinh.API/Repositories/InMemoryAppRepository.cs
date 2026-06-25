@@ -32,6 +32,7 @@ public sealed class InMemoryAppRepository : IAppRepository
     public IReadOnlyList<Heritage> Heritages => _heritages.Where(x => !x.IsDeleted).ToList();
     public IReadOnlyList<IntangibleHeritage> IntangibleHeritages => _intangible.Where(x => !x.IsDeleted).ToList();
     public IReadOnlyList<ActivityLog> ActivityLogs => _logs.OrderByDescending(x => x.CreatedAt).ToList();
+    public IReadOnlyList<MonthlyUpdate> MonthlyUpdates => [];
     public AboutPage AboutPage { get; set; } = new();
     public SystemSetting SystemSetting { get; set; } = new();
 
@@ -171,6 +172,10 @@ public sealed class InMemoryAppRepository : IAppRepository
             _logs.Add(log);
             return log;
         }
+    }
+
+    public void SaveChanges() { }
+}
     }
 
     private void Seed()

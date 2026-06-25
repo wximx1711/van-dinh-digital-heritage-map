@@ -1,8 +1,22 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using VanDinh.API.Data;
+using VanDinh.API.Middleware;
 using VanDinh.API.Repositories;
 using VanDinh.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? "Server=localhost;Database=VanDinhDigitalMap;Trusted_Connection=True;Encrypt=False;TrustServerCertificate=True";
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString, sql =>
+    {
+        sql.EnableRetryOnFailure(5, TimeSpan.FromSeconds(30), null);
+        sql.CommandTimeout(60);
+    }));
 
 builder.Services.AddCors(options =>
 {
@@ -24,7 +38,42 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
 });
-builder.Services.AddOpenApi();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Van Dinh Digital Heritage Map API",
+        Version = "v1",
+        Description = "Production-ready ASP.NET Core API for Van Dinh Digital Heritage Map system",
+        Contact = new OpenApiContact { Name = "Van Dinh Commune" }
+    });
+
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, "VanDinh.API.xml");
+    if (File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+    }
+
+    options.AddSecurityDefinition("CookieAuth", new OpenApiSecurityScheme
+    {
+        Description = "Authentication via cookie-based session. Use /api/auth/login to authenticate.",
+        Name = "Cookie",
+        Type = SecuritySchemeType.ApiKey,
+        In = ParameterKind.Cookie,
+        Scheme = ".VanDinh.Auth"
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme { Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "CookieAuth" } },
+            Array.Empty<string>()
+        }
+    });
+});
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -56,29 +105,43 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-builder.Services.AddSingleton<IAppRepository, InMemoryAppRepository>();
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IHeritageService, HeritageService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAppRepository, EfAppRepository>();
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
+    await DbInitializer.InitializeAsync(db, hasher);
+}
+
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "Van Dinh API v1");
+        options.DocumentTitle = "Van Dinh Digital Heritage Map API";
+        options.RoutePrefix = "swagger";
+    });
 }
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors("Frontend");
 app.UseSession();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
-app.MapGet("/api/health", () => Results.Ok(new { status = "ok", application = "Van Dinh Digital Heritage Map" }));
+app.MapGet("/api/health", () => Results.Ok(new { status = "ok", application = "Van Dinh Digital Heritage Map", timestamp = DateTime.UtcNow }));
 
 app.Run();

@@ -3,55 +3,103 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VanDinh.API.DTOs;
 using VanDinh.API.Repositories;
+using VanDinh.API.Responses;
 using VanDinh.API.Services;
 
 namespace VanDinh.API.Controllers;
 
+/// <summary>
+/// Manages tangible heritage sites including CRUD operations, search, and filtering.
+/// Heritage sites represent physical cultural heritage locations with maps, images, and descriptions.
+/// </summary>
 [ApiController]
 [Route("api/heritage")]
 public sealed class HeritageController(IHeritageService service, IAppRepository repository, IActivityLogService logs) : ControllerBase
 {
+    /// <summary>
+    /// Search and filter heritage sites with pagination.
+    /// </summary>
+    /// <returns>Paginated list of matching heritage sites</returns>
     [HttpGet]
-    public ActionResult<IReadOnlyList<HeritageDto>> Search([FromQuery] string? q, [FromQuery] string? type, [FromQuery] string? classification, [FromQuery] string? status) =>
-        service.Search(q, type, classification, status).ToList();
-
-    [HttpGet("{id}")]
-    public ActionResult<HeritageDto> Get(string id)
+    public async Task<IActionResult> Search([FromQuery] string? q, [FromQuery] string? type, [FromQuery] string? classification, [FromQuery] string? status, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
-        var item = service.Get(id);
-        return item is null ? NotFound() : item;
+        page = Math.Max(1, page);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        var allResults = service.Search(q, type, classification, status).ToList();
+        var totalRecords = allResults.Count;
+        var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
+        var data = allResults.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        var result = new { data, page, pageSize, totalRecords, totalPages };
+        return ApiResponse.Success(result);
     }
 
+    /// <summary>
+    /// Get details of a specific heritage site by public ID.
+    /// </summary>
+    /// <param name="id">The public ID of the heritage site (e.g., h001).</param>
+    /// <returns>Full heritage site details</returns>
+    [HttpGet("{id}")]
+    public IActionResult Get(string id)
+    {
+        var item = service.Get(id);
+        return item is null ? ApiResponse.NotFound("Heritage item not found.") : ApiResponse.Success(item);
+    }
+
+    /// <summary>
+    /// Create a new heritage site.
+    /// </summary>
+    /// <returns>Created heritage site details</returns>
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult<HeritageDto> Create(HeritageRequest request)
+    public IActionResult Create(HeritageRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+            return ApiResponse.Error("Validation failed.", errors);
+        }
+
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var item = service.Create(request, userId);
         logs.Log(User, "CREATE", "Heritage", repository.FindHeritage(item.Id)?.HeritageId, item.Code);
-        return CreatedAtAction(nameof(Get), new { id = item.Id }, item);
+        return ApiResponse.Success(item, "Heritage created successfully.", StatusCodes.Status201Created);
     }
 
+    /// <summary>
+    /// Update an existing heritage site.
+    /// </summary>
+    /// <returns>Updated heritage site details</returns>
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPut("{id}")]
     [ValidateAntiForgeryToken]
-    public ActionResult<HeritageDto> Update(string id, HeritageRequest request)
+    public IActionResult Update(string id, HeritageRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+            return ApiResponse.Error("Validation failed.", errors);
+        }
+
         var item = service.Update(id, request);
-        if (item is null) return NotFound();
+        if (item is null) return ApiResponse.NotFound("Heritage item not found.");
         logs.Log(User, "UPDATE", "Heritage", repository.FindHeritage(id)?.HeritageId, item.Code);
-        return item;
+        return ApiResponse.Success(item, "Heritage updated successfully.");
     }
 
+    /// <summary>
+    /// Soft delete a heritage site (marks as deleted).
+    /// </summary>
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpDelete("{id}")]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(string id)
     {
         var entityId = repository.FindHeritage(id)?.HeritageId;
-        if (!service.Delete(id)) return NotFound();
+        if (!service.Delete(id)) return ApiResponse.NotFound("Heritage item not found.");
         logs.Log(User, "DELETE", "Heritage", entityId, id);
-        return NoContent();
+        return ApiResponse.Success(null, "Heritage deleted successfully.");
     }
 }

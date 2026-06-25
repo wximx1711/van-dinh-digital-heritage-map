@@ -10,6 +10,7 @@ public interface IAppRepository
     IReadOnlyList<Heritage> Heritages { get; }
     IReadOnlyList<IntangibleHeritage> IntangibleHeritages { get; }
     IReadOnlyList<ActivityLog> ActivityLogs { get; }
+    IReadOnlyList<MonthlyUpdate> MonthlyUpdates { get; }
     AboutPage AboutPage { get; set; }
     SystemSetting SystemSetting { get; set; }
 
@@ -45,4 +46,5 @@ public interface IAppRepository
     void DeleteIntangible(string publicId);
 
     ActivityLog AddLog(ActivityLog log);
+    void SaveChanges();
 }

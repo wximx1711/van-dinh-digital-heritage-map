@@ -141,12 +141,14 @@ public sealed class ActivityLog
 {
     public long LogId { get; set; }
     public long UserId { get; set; }
-    public string? Username { get; set; }
-    public string? Action { get; set; }
-    public string? EntityName { get; set; }
+    [Required, MaxLength(50)]
+    public string Action { get; set; } = "";
+    [Required, MaxLength(100)]
+    public string EntityName { get; set; } = "";
     public long? EntityId { get; set; }
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public User? User { get; set; }
 }
 
 public sealed class SystemSetting
@@ -162,4 +164,16 @@ public sealed class SystemSetting
     public string? TiktokUrl { get; set; }
     public long? UpdatedBy { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+}
+
+public sealed class MonthlyUpdate
+{
+    public int UpdateId { get; set; }
+    [Required, MaxLength(20)]
+    public string MonthLabel { get; set; } = "";
+    [Required, MaxLength(50)]
+    public string DisplayVi { get; set; } = "";
+    [Required, MaxLength(50)]
+    public string DisplayEn { get; set; } = "";
+    public int UpdateCount { get; set; }
 }

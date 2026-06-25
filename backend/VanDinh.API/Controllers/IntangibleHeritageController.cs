@@ -3,22 +3,33 @@ using Microsoft.AspNetCore.Mvc;
 using VanDinh.API.DTOs;
 using VanDinh.API.Models;
 using VanDinh.API.Repositories;
+using VanDinh.API.Responses;
 using VanDinh.API.Services;
 
 namespace VanDinh.API.Controllers;
 
+/// <summary>
+/// Manages intangible cultural heritage items such as festivals, performances, and crafts.
+/// Intangible heritage items represent non-physical cultural assets of the community.
+/// </summary>
 [ApiController]
 [Route("api/intangible-heritage")]
 public sealed class IntangibleHeritageController(IAppRepository repository, IActivityLogService logs) : ControllerBase
 {
     [HttpGet]
-    public ActionResult<IReadOnlyList<IntangibleHeritageDto>> GetAll() => repository.IntangibleHeritages.Select(x => x.ToDto()).ToList();
+    public IActionResult GetAll() => ApiResponse.Success(repository.IntangibleHeritages.Select(x => x.ToDto()).ToList());
 
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult<IntangibleHeritageDto> Create(IntangibleHeritageRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+            return ApiResponse.Error("Validation failed.", errors);
+        }
+
         var item = repository.AddIntangible(new IntangibleHeritage
         {
             NameVi = request.NameVi,
@@ -30,7 +41,7 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
             VideoUrl = request.VideoUrl
         });
         logs.Log(User, "CREATE", "IntangibleHeritage", item.IntangibleId, item.PublicId);
-        return item.ToDto();
+        return ApiResponse.Success(item.ToDto(), "Intangible heritage created successfully.", StatusCodes.Status201Created);
     }
 
     [Authorize(Roles = "ADMIN,MANAGER")]
@@ -38,8 +49,14 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     [ValidateAntiForgeryToken]
     public ActionResult<IntangibleHeritageDto> Update(string id, IntangibleHeritageRequest request)
     {
+        if (!ModelState.IsValid)
+        {
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
+            return ApiResponse.Error("Validation failed.", errors);
+        }
+
         var item = repository.FindIntangible(id);
-        if (item is null) return NotFound();
+        if (item is null) return ApiResponse.NotFound("Intangible heritage not found.");
         item.NameVi = request.NameVi;
         item.NameEn = request.NameEn;
         item.Category = request.Category;
@@ -49,7 +66,7 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
         item.VideoUrl = request.VideoUrl;
         repository.UpdateIntangible(item);
         logs.Log(User, "UPDATE", "IntangibleHeritage", item.IntangibleId, item.PublicId);
-        return item.ToDto();
+        return ApiResponse.Success(item.ToDto(), "Intangible heritage updated successfully.");
     }
 
     [Authorize(Roles = "ADMIN,MANAGER")]
@@ -58,9 +75,9 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     public IActionResult Delete(string id)
     {
         var item = repository.FindIntangible(id);
-        if (item is null) return NotFound();
+        if (item is null) return ApiResponse.NotFound("Intangible heritage not found.");
         repository.DeleteIntangible(id);
         logs.Log(User, "DELETE", "IntangibleHeritage", item.IntangibleId, item.PublicId);
-        return NoContent();
+        return ApiResponse.Success(null, "Intangible heritage deleted successfully.");
     }
 }
