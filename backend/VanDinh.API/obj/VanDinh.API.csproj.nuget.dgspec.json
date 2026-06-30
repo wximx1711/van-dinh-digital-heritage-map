@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj": {}
+    "E:\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj": {}
   },
   "projects": {
-    "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj": {
+    "E:\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj",
+        "projectUniqueName": "E:\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj",
         "projectName": "VanDinh.API",
-        "projectPath": "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj",
-        "packagesPath": "C:\\Users\\CodexSandboxOffline\\.nuget\\packages\\",
-        "outputPath": "D:\\VanDinh\\ProjectVDS\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\obj\\",
+        "projectPath": "E:\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\VanDinh.API.csproj",
+        "packagesPath": "C:\\Users\\ASUS VivoBook\\.nuget\\packages\\",
+        "outputPath": "E:\\van-dinh-digital-heritage-map\\backend\\VanDinh.API\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\ASUS VivoBook\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -49,6 +49,24 @@
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[10.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[10.0.*, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.*, )"
+            },
+            "QRCoder": {
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
             }
           },
           "imports": [
