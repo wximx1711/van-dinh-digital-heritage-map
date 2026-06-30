@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { heritageSites, typeLabels, classificationLabels, statusLabels } from './data';
+import { classificationColors, statusColors } from '../constants';
 import {
   ArrowLeft, MapPin, Calendar, Download, Share2, QrCode, Navigation,
   ChevronLeft, ChevronRight, Eye, FileText, Image, Info, Clock, User,
@@ -12,10 +13,6 @@ interface HeritageDetailProps {
   onNavigate: (page: string, id?: string) => void;
 }
 
-const statusColors: Record<string, string> = {
-  active: '#27AE60', maintenance: '#F39C12', closed: '#E74C3C',
-};
-
 export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   const { lang, t } = useLanguage();
   const site = heritageSites.find(s => s.id === siteId) || heritageSites[0];
@@ -23,10 +20,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   const [showQr, setShowQr] = useState(false);
   const [activeTab, setActiveTab] = useState<'info' | 'history' | 'docs' | 'gallery'>('info');
   const [show360, setShow360] = useState(false);
-
-  const classificationColor: Record<string, string> = {
-    national: '#E74C3C', city: '#1A5276', unranked: '#7F8C8D',
-  };
 
   const relatedSites = heritageSites.filter(s => s.id !== site.id && s.type === site.type).slice(0, 3);
 
@@ -199,8 +192,8 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                             {item.label === t('detail.classification') ? (
                               <span style={{
                                 padding: '2px 8px', borderRadius: 4, fontSize: 12,
-                                background: `${classificationColor[site.classification]}15`,
-                                color: classificationColor[site.classification], fontWeight: 700,
+                                background: `${classificationColors[site.classification]}15`,
+                                color: classificationColors[site.classification], fontWeight: 700,
                               }}>{item.value}</span>
                             ) : item.label === (lang === 'vi' ? 'Trạng thái' : 'Status') ? (
                               <span style={{ color: statusColors[site.status] }}>{item.value}</span>
@@ -316,14 +309,14 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             <div style={{
               background: 'white', borderRadius: 12, overflow: 'hidden',
               boxShadow: '0 2px 12px rgba(15,61,94,0.08)',
-              borderTop: `4px solid ${classificationColor[site.classification]}`,
+              borderTop: `4px solid ${classificationColors[site.classification]}`,
             }}>
               <div style={{ padding: '20px' }}>
                 <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
                   <span style={{
                     padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 700,
-                    background: `${classificationColor[site.classification]}15`,
-                    color: classificationColor[site.classification],
+                    background: `${classificationColors[site.classification]}15`,
+                    color: classificationColors[site.classification],
                   }}>
                     {classificationLabels[site.classification][lang]}
                   </span>

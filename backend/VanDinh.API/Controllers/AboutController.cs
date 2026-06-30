@@ -41,25 +41,4 @@ public sealed class AboutController(IAppRepository repository, IActivityLogServi
         logs.Log(User, "UPDATE", "AboutPage", about.AboutId);
         return ApiResponse.Success(about.ToDto(), "About page updated successfully.");
     }
-
-        var about = repository.AboutPage;
-        about.Title = request.Title;
-        about.Content = request.Content;
-        about.BannerImage = request.BannerImage;
-        about.UpdatedAt = DateTime.UtcNow;
-
-        if (about.AboutId == 0)
-        {
-            repository.AboutPage = about;
-            _context.AboutPages.Add(about);
-        }
-        else
-        {
-            _context.AboutPages.Update(about);
-        }
-        _context.SaveChanges();
-
-        logs.Log(User, "UPDATE", "AboutPage", about.AboutId);
-        return ApiResponse.Success(about.ToDto(), "About page updated successfully.");
-    }
 }

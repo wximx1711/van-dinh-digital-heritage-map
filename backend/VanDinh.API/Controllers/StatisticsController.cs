@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using VanDinh.API.DTOs;
 using VanDinh.API.Repositories;
 using VanDinh.API.Responses;
+using VanDinh.API.Services;
 
 namespace VanDinh.API.Controllers;
 
@@ -17,9 +18,9 @@ public sealed class StatisticsController(IAppRepository repository) : Controller
     {
         var heritages = repository.Heritages;
         var categories = repository.Categories.ToDictionary(x => x.CategoryId, x => x.Code);
-        var docCount = repository.Heritage.SelectMany(h => h.Documents).Count();
-        var videoCount = repository.Heritage.SelectMany(h => h.Videos).Count();
-        var imageCount = repository.Heritage.SelectMany(h => h.Images).Count();
+        var docCount = repository.Heritages.SelectMany(h => h.Documents).Count();
+        var videoCount = repository.Heritages.SelectMany(h => h.Videos).Count();
+        var imageCount = repository.Heritages.SelectMany(h => h.Images).Count();
         var monthlyUpdates = repository.MonthlyUpdates.Select(x => x.ToDto()).ToList();
 
         var result = new

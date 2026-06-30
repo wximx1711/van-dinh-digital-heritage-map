@@ -20,10 +20,7 @@ public sealed class ExceptionHandlingMiddleware
             var traceId = context.TraceIdentifier;
             var errors = new List<string> { ex.Message };
 
-            if (ex is not HttpException)
-            {
-                errors.Add(ex.StackTrace ?? "No stack trace available");
-            }
+            errors.Add(ex.StackTrace ?? "No stack trace available");
 
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;

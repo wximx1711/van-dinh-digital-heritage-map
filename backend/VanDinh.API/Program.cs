@@ -61,7 +61,7 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Authentication via cookie-based session. Use /api/auth/login to authenticate.",
         Name = "Cookie",
         Type = SecuritySchemeType.ApiKey,
-        In = ParameterKind.Cookie,
+        In = ParameterLocation.Cookie,
         Scheme = ".VanDinh.Auth"
     });
 

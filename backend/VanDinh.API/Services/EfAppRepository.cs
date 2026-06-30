@@ -52,6 +52,7 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
             }
             return _aboutPage = fromDb;
         }
+        set => _aboutPage = value;
     }
 
     SystemSetting? _systemSetting;
@@ -72,6 +73,7 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
             }
             return _systemSetting = fromDb;
         }
+        set => _systemSetting = value;
     }
 
     public Role? FindRole(string roleName) => _context.Roles

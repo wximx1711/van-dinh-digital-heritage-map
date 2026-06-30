@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from './LanguageContext';
 import { heritageSites, typeLabels, classificationLabels, HeritageSite, HeritageType, Classification } from './data';
+import { classificationColors } from '../constants';
 import {
   X, MapPin, Share2, QrCode, Navigation, Eye, RotateCcw, Search,
   ZoomIn, ZoomOut, Filter, ChevronDown, ChevronUp
@@ -9,12 +10,6 @@ import {
 interface MapPageProps {
   onNavigate: (page: string, id?: string) => void;
 }
-
-const classificationColors: Record<Classification, string> = {
-  national: '#E74C3C',
-  city: '#1A5276',
-  unranked: '#7F8C8D',
-};
 
 const typeEmoji: Record<HeritageType, string> = {
   dinh: '🏛️', chua: '🛕', den: '⛩️', mieu: '🏚️',

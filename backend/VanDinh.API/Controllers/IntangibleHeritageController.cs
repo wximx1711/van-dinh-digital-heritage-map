@@ -22,7 +22,7 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult<IntangibleHeritageDto> Create(IntangibleHeritageRequest request)
+    public IActionResult Create(IntangibleHeritageRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -47,7 +47,7 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPut("{id}")]
     [ValidateAntiForgeryToken]
-    public ActionResult<IntangibleHeritageDto> Update(string id, IntangibleHeritageRequest request)
+    public IActionResult Update(string id, IntangibleHeritageRequest request)
     {
         if (!ModelState.IsValid)
         {

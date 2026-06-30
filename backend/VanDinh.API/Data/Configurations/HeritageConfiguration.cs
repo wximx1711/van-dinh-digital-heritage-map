@@ -37,7 +37,7 @@ public sealed class HeritageConfiguration : IEntityTypeConfiguration<Heritage>
         builder.Property(x => x.CreatedAt).HasColumnType("datetime2").HasDefaultValueSql("SYSUTCDATETIME()");
         builder.Property(x => x.UpdatedAt).HasColumnType("datetime2");
 
-        builder.HasOne(x => x.Category)
+        builder.HasOne<HeritageCategory>()
             .WithMany()
             .HasForeignKey(x => x.CategoryId)
             .OnDelete(DeleteBehavior.Restrict);

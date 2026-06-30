@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { heritageSites, intangibleHeritage, classificationLabels, typeLabels } from './data';
+import { classificationColors, classificationBackgrounds, intangibleCategoryIcons } from '../constants';
 import {
   Search, Building2, Star, Award, LayoutGrid, BookOpen,
   Play, ArrowRight, ChevronRight, Eye, MapPin, Calendar
@@ -9,10 +10,6 @@ import {
 interface HomePageProps {
   onNavigate: (page: string, id?: string) => void;
 }
-
-const intangibleCategoryIcons: Record<string, string> = {
-  festival: '🎭', performance: '🎶', craft: '🧵', ritual: '🙏', story: '📜',
-};
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const { lang, t } = useLanguage();
@@ -30,16 +27,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
     { label: t('stats.intangible'), value: intangibleHeritage.length, icon: <BookOpen size={22} />, color: '#D4A017' },
   ];
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) onNavigate('relics');
-  };
-
-  const classificationColor: Record<string, string> = {
-    national: '#E74C3C', city: '#1A5276', unranked: '#7F8C8D',
-  };
-  const classificationBg: Record<string, string> = {
-    national: '#FDEDEC', city: '#EBF5FB', unranked: '#F2F3F4',
-  };
+const handleSearch = () => {
+     if (searchQuery.trim()) onNavigate('relics');
+   };
 
   return (
     <div style={{ background: 'white' }}>
@@ -321,12 +311,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1)'; }}
                   />
-                  <div style={{
-                    position: 'absolute', top: 10, left: 10,
-                    padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
-                    background: classificationBg[site.classification],
-                    color: classificationColor[site.classification],
-                  }}>
+<div style={{
+                     position: 'absolute', top: 10, left: 10,
+                     padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700,
+                     background: classificationBackgrounds[site.classification],
+                     color: classificationColors[site.classification],
+                   }}>
                     {classificationLabels[site.classification][lang]}
                   </div>
                 </div>

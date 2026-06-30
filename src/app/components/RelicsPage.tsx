@@ -1,21 +1,12 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { heritageSites, classificationLabels, typeLabels, Classification, HeritageType } from './data';
+import { classificationColors, classificationBackgrounds, statusColors } from '../constants';
 import { Search, Filter, MapPin, Calendar, Eye, RotateCcw, Grid2x2, List } from 'lucide-react';
 
 interface RelicsPageProps {
-  onNavigate: (page: string, id?: string) => void;
+   onNavigate: (page: string, id?: string) => void;
 }
-
-const classificationColor: Record<Classification, string> = {
-  national: '#E74C3C', city: '#1A5276', unranked: '#7F8C8D',
-};
-const classificationBg: Record<Classification, string> = {
-  national: '#FDEDEC', city: '#EBF5FB', unranked: '#F2F3F4',
-};
-const statusColors: Record<string, string> = {
-  active: '#27AE60', maintenance: '#F39C12', closed: '#E74C3C',
-};
 
 export function RelicsPage({ onNavigate }: RelicsPageProps) {
   const { lang, t } = useLanguage();
@@ -126,7 +117,7 @@ export function RelicsPage({ onNavigate }: RelicsPageProps) {
               >
                 <div style={{ position: 'relative', height: 180, background: '#dce8f0' }}>
                   <img src={site.image} alt={lang === 'vi' ? site.nameVi : site.nameEn} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  <div style={{ position: 'absolute', top: 10, left: 10, padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: classificationBg[site.classification], color: classificationColor[site.classification] }}>
+                  <div style={{ position: 'absolute', top: 10, left: 10, padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: classificationBackgrounds[site.classification], color: classificationColors[site.classification] }}>
                     {classificationLabels[site.classification][lang]}
                   </div>
                   <div style={{ position: 'absolute', top: 10, right: 10, width: 8, height: 8, borderRadius: '50%', background: statusColors[site.status], border: '2px solid white' }} />
@@ -173,7 +164,7 @@ export function RelicsPage({ onNavigate }: RelicsPageProps) {
                 <div style={{ flex: 1, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 16 }}>
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                      <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: classificationBg[site.classification], color: classificationColor[site.classification] }}>
+                      <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: classificationBackgrounds[site.classification], color: classificationColors[site.classification] }}>
                         {classificationLabels[site.classification][lang]}
                       </span>
                       <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 600, background: '#EBF5FB', color: '#0F3D5E' }}>

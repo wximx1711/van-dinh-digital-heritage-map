@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VanDinh.API.DTOs;
+using VanDinh.API.Models;
 using VanDinh.API.Repositories;
 using VanDinh.API.Responses;
 using VanDinh.API.Services;
@@ -17,7 +18,7 @@ public sealed class HeritageCategoriesController(IAppRepository repository, IAct
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult<HeritageCategoryDto> Create(HeritageCategoryRequest request)
+    public IActionResult Create(HeritageCategoryRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -33,7 +34,7 @@ public sealed class HeritageCategoriesController(IAppRepository repository, IAct
     [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPut("{id:int}")]
     [ValidateAntiForgeryToken]
-    public ActionResult<HeritageCategoryDto> Update(int id, HeritageCategoryRequest request)
+    public IActionResult Update(int id, HeritageCategoryRequest request)
     {
         if (!ModelState.IsValid)
         {

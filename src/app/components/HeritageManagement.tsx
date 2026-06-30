@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { heritageSites, classificationLabels, typeLabels, statusLabels, HeritageSite, Classification, HeritageType, HeritageStatus } from './data';
+import { classificationColors, statusColors } from '../constants';
 import {
   Plus, Search, Filter, Eye, Pencil, Trash2, X, Upload, QrCode,
   ChevronLeft, ChevronRight, MapPin, Check, AlertTriangle
@@ -11,13 +12,6 @@ interface HeritageManagementProps {
 }
 
 type FormMode = 'add' | 'edit' | null;
-
-const classificationColor: Record<Classification, string> = {
-  national: '#E74C3C', city: '#1A5276', unranked: '#7F8C8D',
-};
-const statusColors: Record<HeritageStatus, string> = {
-  active: '#27AE60', maintenance: '#F39C12', closed: '#E74C3C',
-};
 
 export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const { lang, t } = useLanguage();
@@ -202,11 +196,11 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                   </div>
                 </td>
                 <td style={{ padding: '12px 14px' }}>
-                  <span style={{
-                    padding: '3px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700,
-                    background: `${classificationColor[site.classification]}15`,
-                    color: classificationColor[site.classification],
-                  }}>
+<span style={{
+                     padding: '3px 8px', borderRadius: 8, fontSize: 10, fontWeight: 700,
+                     background: `${classificationColors[site.classification]}15`,
+                     color: classificationColors[site.classification],
+                   }}>
                     {classificationLabels[site.classification][lang]}
                   </span>
                 </td>

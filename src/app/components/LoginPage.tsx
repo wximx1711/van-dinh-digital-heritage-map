@@ -2,6 +2,22 @@ import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { Eye, EyeOff, LogIn, ArrowLeft, Landmark, Globe } from 'lucide-react';
 
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
+interface CsrfTokenResponse {
+  token: string;
+  headerName: string;
+}
+
+interface LoginResponse {
+  userId?: number;
+  UserId?: number;
+}
+
 interface LoginPageProps {
   onNavigate: (page: string) => void;
   onLoginSuccess: () => void;
@@ -16,21 +32,59 @@ export function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = async () => {
-    if (!username.trim() || !password.trim()) {
-      setError(lang === 'vi' ? 'Vui lòng nhập đầy đủ thông tin' : 'Please fill in all fields');
-      return;
-    }
-    setError('');
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setLoading(false);
-    if (username === 'admin' && password === 'admin123') {
-      onLoginSuccess();
-    } else {
-      setError(lang === 'vi' ? 'Tên đăng nhập hoặc mật khẩu không đúng' : 'Incorrect username or password');
-    }
-  };
+const handleLogin = async () => {
+     if (!username.trim() || !password.trim()) {
+       setError(lang === 'vi' ? 'Vui lòng nhập đầy đủ thông tin' : 'Please fill in all fields');
+       return;
+     }
+     setError('');
+     setLoading(true);
+     try {
+       const csrfResponse = await fetch('/api/security/csrf-token', {
+         credentials: 'include',
+       });
+
+       if (!csrfResponse.ok) {
+         setError(lang === 'vi' ? 'Lỗi kết nối đến server' : 'Connection error');
+         setLoading(false);
+         return;
+       }
+
+       const csrfData = await csrfResponse.json() as CsrfTokenResponse;
+       const response = await fetch('/api/auth/login', {
+         method: 'POST',
+         credentials: 'include',
+         headers: {
+           'Content-Type': 'application/json',
+           [csrfData.headerName]: csrfData.token,
+         },
+         body: JSON.stringify({
+           username: username.trim(),
+           password: password,
+           rememberMe: remember,
+         }),
+       });
+
+       if (!response.ok) {
+         const errorData = await response.json();
+         setError(lang === 'vi' ? (errorData.message || 'Tên đăng nhập hoặc mật khẩu không đúng') : (errorData.message || 'Invalid username or password'));
+         setLoading(false);
+         return;
+       }
+
+       const data = await response.json() as ApiResponse<LoginResponse>;
+       const user = data.data;
+       if (data.success && user && (user.userId || user.UserId)) {
+         onLoginSuccess();
+       } else {
+         setError(lang === 'vi' ? 'Đăng nhập thất bại' : 'Login failed');
+         setLoading(false);
+       }
+     } catch (err) {
+       setError(lang === 'vi' ? 'Lỗi kết nối đến server' : 'Connection error');
+       setLoading(false);
+     }
+   };
 
   return (
     <div style={{
@@ -238,30 +292,21 @@ export function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps) {
               )}
             </button>
 
-            <p style={{ textAlign: 'center', fontSize: 12, color: '#5d7a8c', marginTop: 16, lineHeight: 1.5 }}>
-              {lang === 'vi'
-                ? 'Chỉ dành cho cán bộ quản lý di sản được cấp tài khoản'
-                : 'For authorized heritage management staff only'}
-            </p>
+<p style={{ textAlign: 'center', fontSize: 12, color: '#5d7a8c', marginTop: 16, lineHeight: 1.5 }}>
+               {lang === 'vi'
+                 ? 'Chỉ dành cho cán bộ quản lý di sản được cấp tài khoản'
+                 : 'For authorized heritage management staff only'}
+             </p>
+           </div>
+         </div>
 
-            {/* Demo hint */}
-            <div style={{
-              marginTop: 12, padding: '8px 12px', borderRadius: 8,
-              background: '#EBF5FB', border: '1px solid rgba(15,61,94,0.1)',
-              fontSize: 11, color: '#5d7a8c', textAlign: 'center',
-            }}>
-              <strong style={{ color: '#0F3D5E' }}>Demo:</strong> admin / admin123
-            </div>
-          </div>
-        </div>
+         {/* Bottom text */}
+         <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 16 }}>
+           © 2024 {lang === 'vi' ? 'Bản đồ số Di sản Văn hóa Vân Đình' : 'Van Dinh Digital Heritage Map'}
+         </p>
+       </div>
 
-        {/* Bottom text */}
-        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 16 }}>
-          © 2024 {lang === 'vi' ? 'Bản đồ số Di sản Văn hóa Vân Đình' : 'Van Dinh Digital Heritage Map'}
-        </p>
-      </div>
-
-      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-    </div>
-  );
-}
+       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+     </div>
+   );
+ }

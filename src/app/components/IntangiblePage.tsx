@@ -1,14 +1,11 @@
 import { useLanguage } from './LanguageContext';
 import { intangibleHeritage } from './data';
 import { Play, Eye } from 'lucide-react';
+import { intangibleCategoryIcons } from '../constants';
 
 interface IntangiblePageProps {
   onNavigate: (page: string, id?: string) => void;
 }
-
-const intangibleCategoryIcons: Record<string, string> = {
-  festival: '🎭', performance: '🎶', craft: '🧵', ritual: '🙏', story: '📜',
-};
 
 export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
   const { lang, t } = useLanguage();

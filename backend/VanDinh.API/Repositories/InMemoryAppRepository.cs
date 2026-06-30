@@ -175,8 +175,6 @@ public sealed class InMemoryAppRepository : IAppRepository
     }
 
     public void SaveChanges() { }
-}
-    }
 
     private void Seed()
     {
