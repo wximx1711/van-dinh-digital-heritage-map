@@ -2,3 +2,7 @@ node_modules
 dist
 .vscode
 .env
+bin/
+obj/
+**/bin/
+**/obj/

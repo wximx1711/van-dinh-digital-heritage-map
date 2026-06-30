@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites, intangibleHeritage, classificationLabels, typeLabels } from './data';
+import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels } from '../hooks/useHeritageData';
 import { classificationColors, classificationBackgrounds, intangibleCategoryIcons } from '../constants';
 import {
   Search, Building2, Star, Award, LayoutGrid, BookOpen,
@@ -14,6 +14,10 @@ interface HomePageProps {
 export function HomePage({ onNavigate }: HomePageProps) {
   const { lang, t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
+  const { data: heritageSites, loading: sitesLoading } = useHeritageSites();
+  const { data: intangibleHeritage } = useIntangibleHeritage();
+  const classificationLabels = useClassificationLabels();
+  const typeLabels = useTypeLabels();
 
   const nationalCount = heritageSites.filter(h => h.classification === 'national').length;
   const cityCount = heritageSites.filter(h => h.classification === 'city').length;

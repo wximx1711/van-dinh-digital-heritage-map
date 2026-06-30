@@ -23,7 +23,7 @@ public sealed class AuthController(IAppRepository repository, IPasswordHasher ha
     /// </summary>
     /// <remarks>
     /// Sample request:
-    /// Form data: username=admin&amp;password=Admin@123&amp;rememberMe=false
+    /// JSON body: { "username": "...", "password": "...", "rememberMe": false }
     /// </remarks>
     /// <returns>Login response with user info and role</returns>
     [HttpPost("login")]
