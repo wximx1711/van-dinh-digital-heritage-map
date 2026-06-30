@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites, classificationLabels, typeLabels, Classification, HeritageType } from './data';
+import { heritageSites } from '../../data/mockData';
+import { classificationLabels, typeLabels } from '../../data/labels';
+import type { Classification, HeritageType } from '../../core/types';
 import { classificationColors, classificationBackgrounds, statusColors } from '../constants';
 import { Search, Filter, MapPin, Calendar, Eye, RotateCcw, Grid2x2, List } from 'lucide-react';
 

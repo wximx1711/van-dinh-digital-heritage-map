@@ -1,7 +1,8 @@
 // Custom hooks for fetching heritage data from API
 
 import { useState, useEffect, useCallback } from 'react';
-import { heritageSites, intangibleHeritage, monthlyUpdates, typeLabels, classificationLabels, statusLabels } from '../components/data';
+import { heritageSites, intangibleHeritage, monthlyUpdates } from '../../data/mockData';
+import { typeLabels, classificationLabels, statusLabels } from '../../data/labels';
 
 export function useHeritageSites() {
   const [data, setData] = useState<typeof heritageSites>([]);

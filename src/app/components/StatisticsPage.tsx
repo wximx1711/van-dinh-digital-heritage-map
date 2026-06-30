@@ -1,5 +1,6 @@
 import { useLanguage } from './LanguageContext';
-import { heritageSites, intangibleHeritage, classificationLabels, typeLabels, monthlyUpdates } from './data';
+import { heritageSites, intangibleHeritage, monthlyUpdates } from '../../data/mockData';
+import { classificationLabels, typeLabels } from '../../data/labels';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, AreaChart, Area

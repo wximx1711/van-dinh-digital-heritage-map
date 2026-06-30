@@ -1,40 +1,4 @@
-export type Classification = 'national' | 'city' | 'unranked';
-export type HeritageType = 'dinh' | 'chua' | 'den' | 'mieu' | 'phu' | 'quan' | 'nhacu' | 'nhatho' | 'lang';
-export type HeritageStatus = 'active' | 'maintenance' | 'closed';
-
-export interface HeritageSite {
-  id: string;
-  code: string;
-  nameVi: string;
-  nameEn: string;
-  type: HeritageType;
-  classification: Classification;
-  status: HeritageStatus;
-  addressVi: string;
-  addressEn: string;
-  lat: number;
-  lon: number;
-  descriptionVi: string;
-  descriptionEn: string;
-  historyVi: string;
-  historyEn: string;
-  image: string;
-  images: string[];
-  updatedAt: string;
-  yearBuilt: string;
-  guardian: string;
-}
-
-export interface IntangibleHeritage {
-  id: string;
-  nameVi: string;
-  nameEn: string;
-  category: 'festival' | 'performance' | 'craft' | 'ritual' | 'story';
-  descriptionVi: string;
-  descriptionEn: string;
-  image: string;
-  videoUrl?: string;
-}
+import type { HeritageSite, IntangibleHeritage } from '../core/types';
 
 export const heritageSites: HeritageSite[] = [
   {
@@ -331,30 +295,6 @@ export const intangibleHeritage: IntangibleHeritage[] = [
     image: 'https://images.unsplash.com/photo-1758298135151-e1283f571030?w=800&h=500&fit=crop&auto=format',
   },
 ];
-
-export const typeLabels: Record<HeritageType, { vi: string; en: string }> = {
-  dinh: { vi: 'Đình', en: 'Communal House' },
-  chua: { vi: 'Chùa', en: 'Pagoda' },
-  den: { vi: 'Đền', en: 'Temple' },
-  mieu: { vi: 'Miếu', en: 'Shrine' },
-  phu: { vi: 'Phủ', en: 'Palace' },
-  quan: { vi: 'Quán', en: 'Taoist Temple' },
-  nhacu: { vi: 'Nhà cổ', en: 'Ancient House' },
-  nhatho: { vi: 'Nhà thờ họ', en: 'Clan House' },
-  lang: { vi: 'Lăng Mộ', en: 'Mausoleum' },
-};
-
-export const classificationLabels: Record<Classification, { vi: string; en: string }> = {
-  national: { vi: 'Quốc gia', en: 'National' },
-  city: { vi: 'Thành phố', en: 'City' },
-  unranked: { vi: 'Chưa xếp hạng', en: 'Unranked' },
-};
-
-export const statusLabels: Record<HeritageStatus, { vi: string; en: string }> = {
-  active: { vi: 'Đang hoạt động', en: 'Active' },
-  maintenance: { vi: 'Đang trùng tu', en: 'Under Renovation' },
-  closed: { vi: 'Tạm đóng cửa', en: 'Temporarily Closed' },
-};
 
 export const monthlyUpdates = [
   { month: '01/2024', count: 3, vi: 'Tháng 1', en: 'Jan' },

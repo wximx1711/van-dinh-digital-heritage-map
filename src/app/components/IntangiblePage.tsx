@@ -1,5 +1,5 @@
 import { useLanguage } from './LanguageContext';
-import { intangibleHeritage } from './data';
+import { intangibleHeritage } from '../../data/mockData';
 import { Play, Eye } from 'lucide-react';
 import { intangibleCategoryIcons } from '../constants';
 

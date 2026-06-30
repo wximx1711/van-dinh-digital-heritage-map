@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites, intangibleHeritage, classificationLabels, typeLabels, statusLabels } from './data';
+import { heritageSites, intangibleHeritage } from '../../data/mockData';
+import { classificationLabels, typeLabels, statusLabels } from '../../data/labels';
 import {
   LayoutDashboard, Building2, BookOpen, Map, ImageIcon, BarChart2,
   Users, Settings, Bell, LogOut, ChevronRight, TrendingUp, Star,

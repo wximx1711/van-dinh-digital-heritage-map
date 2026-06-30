@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
-import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels } from '../hooks/useHeritageData';
+import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
 import { classificationColors, classificationBackgrounds, intangibleCategoryIcons } from '../constants';
 import {
   Search, Building2, Star, Award, LayoutGrid, BookOpen,

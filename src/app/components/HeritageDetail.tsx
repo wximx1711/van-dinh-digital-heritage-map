@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites, typeLabels, classificationLabels, statusLabels } from './data';
+import { heritageSites } from '../../data/mockData';
+import { typeLabels, classificationLabels, statusLabels } from '../../data/labels';
 import { classificationColors, statusColors } from '../constants';
 import {
   ArrowLeft, MapPin, Calendar, Download, Share2, QrCode, Navigation,

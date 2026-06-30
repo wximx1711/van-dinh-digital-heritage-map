@@ -1,6 +1,8 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites, typeLabels, classificationLabels, HeritageSite, HeritageType, Classification } from './data';
+import { heritageSites } from '../../data/mockData';
+import { typeLabels, classificationLabels } from '../../data/labels';
+import type { HeritageSite, HeritageType, Classification } from '../../core/types';
 import { classificationColors } from '../constants';
 import {
   X, MapPin, Share2, QrCode, Navigation, Eye, RotateCcw, Search,

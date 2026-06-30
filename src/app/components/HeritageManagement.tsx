@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites, classificationLabels, typeLabels, statusLabels, HeritageSite, Classification, HeritageType, HeritageStatus } from './data';
+import { heritageSites } from '../../data/mockData';
+import { classificationLabels, typeLabels, statusLabels } from '../../data/labels';
+import type { HeritageSite, Classification, HeritageType, HeritageStatus } from '../../core/types';
 import { classificationColors, statusColors } from '../constants';
 import {
   Plus, Search, Filter, Eye, Pencil, Trash2, X, Upload, QrCode,
