@@ -21,7 +21,7 @@ public sealed class AboutController(IAppRepository repository, IActivityLogServi
         return ApiResponse.Success(about);
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpPut]
     [ValidateAntiForgeryToken]
     public IActionResult Update(AboutPageRequest request)

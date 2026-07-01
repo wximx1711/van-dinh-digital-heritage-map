@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites } from '../../data/mockData';
-import { typeLabels, classificationLabels } from '../../data/labels';
+import { useHeritageSites, useTypeLabels, useClassificationLabels } from '../../presentation/hooks/useHeritageData';
 import type { HeritageSite, HeritageType, Classification } from '../../core/types';
 import { classificationColors } from '../constants';
 import {
@@ -92,6 +91,9 @@ function QrModal({ site, onClose, lang }: QrModalProps) {
 
 export function MapPage({ onNavigate }: MapPageProps) {
   const { lang, t } = useLanguage();
+  const { data: heritageSites } = useHeritageSites();
+  const typeLabels = useTypeLabels();
+  const classificationLabels = useClassificationLabels();
   const [selectedSite, setSelectedSite] = useState<HeritageSite | null>(null);
   const [filterClassification, setFilterClassification] = useState<Record<Classification, boolean>>({
     national: true, city: true, unranked: true,

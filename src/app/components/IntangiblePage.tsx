@@ -1,5 +1,5 @@
 import { useLanguage } from './LanguageContext';
-import { intangibleHeritage } from '../../data/mockData';
+import { useIntangibleHeritage } from '../../presentation/hooks/useHeritageData';
 import { Play, Eye } from 'lucide-react';
 import { intangibleCategoryIcons } from '../constants';
 
@@ -9,6 +9,7 @@ interface IntangiblePageProps {
 
 export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
   const { lang, t } = useLanguage();
+  const { data: intangibleHeritage } = useIntangibleHeritage();
 
   return (
     <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>

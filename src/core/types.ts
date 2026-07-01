@@ -25,6 +25,13 @@ export interface HeritageSite {
   guardian: string;
 }
 
+export interface UserInfo {
+  userId: number;
+  username: string;
+  fullName: string | null;
+  roleName: string;
+}
+
 export interface IntangibleHeritage {
   id: string;
   nameVi: string;

@@ -1,6 +1,5 @@
 import { useLanguage } from './LanguageContext';
-import { heritageSites, intangibleHeritage, monthlyUpdates } from '../../data/mockData';
-import { classificationLabels, typeLabels } from '../../data/labels';
+import { useHeritageSites, useIntangibleHeritage, useMonthlyUpdates, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
 import {
   PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, AreaChart, Area
@@ -16,6 +15,11 @@ const COLORS = ['#E74C3C', '#1A5276', '#7F8C8D', '#D4A017', '#27AE60', '#8E44AD'
 
 export function StatisticsPage({ isAdmin = false, onNavigate }: StatisticsPageProps) {
   const { lang, t } = useLanguage();
+  const { data: heritageSites } = useHeritageSites();
+  const { data: intangibleHeritage } = useIntangibleHeritage();
+  const { data: monthlyUpdates } = useMonthlyUpdates();
+  const classificationLabels = useClassificationLabels();
+  const typeLabels = useTypeLabels();
 
   const nationalCount = heritageSites.filter(h => h.classification === 'national').length;
   const cityCount = heritageSites.filter(h => h.classification === 'city').length;

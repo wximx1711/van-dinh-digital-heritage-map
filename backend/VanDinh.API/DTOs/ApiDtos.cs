@@ -199,3 +199,10 @@ public sealed record UploadResult(string Url, string FileName, long Size);
 
 /// <summary>Monthly update statistics for charts.</summary>
 public sealed record MonthlyUpdateDto(int UpdateId, string MonthLabel, string DisplayVi, string DisplayEn, int UpdateCount);
+
+/// <summary>Request to create or update a monthly update entry.</summary>
+public sealed record MonthlyUpdateRequest(
+    [Required, MaxLength(20)] string MonthLabel,
+    [Required, MaxLength(50)] string DisplayVi,
+    [Required, MaxLength(50)] string DisplayEn,
+    int UpdateCount);

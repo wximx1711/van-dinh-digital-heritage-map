@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites } from '../../data/mockData';
-import { classificationLabels, typeLabels } from '../../data/labels';
+import { useHeritageSites, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
 import type { Classification, HeritageType } from '../../core/types';
 import { classificationColors, classificationBackgrounds, statusColors } from '../constants';
 import { Search, Filter, MapPin, Calendar, Eye, RotateCcw, Grid2x2, List } from 'lucide-react';
@@ -12,6 +11,9 @@ interface RelicsPageProps {
 
 export function RelicsPage({ onNavigate }: RelicsPageProps) {
   const { lang, t } = useLanguage();
+  const { data: heritageSites } = useHeritageSites();
+  const classificationLabels = useClassificationLabels();
+  const typeLabels = useTypeLabels();
   const [search, setSearch] = useState('');
   const [filterCls, setFilterCls] = useState<Classification | 'all'>('all');
   const [filterType, setFilterType] = useState<HeritageType | 'all'>('all');

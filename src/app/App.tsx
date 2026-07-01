@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { LanguageProvider, useLanguage } from './components/LanguageContext';
+import { AuthProvider, useAuth } from './components/AuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { HomePage } from './components/HomePage';
@@ -10,6 +11,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { RelicsPage } from './components/RelicsPage';
 import { StatisticsPage } from './components/StatisticsPage';
 import { IntangiblePage } from './components/IntangiblePage';
+import type { UserInfo } from '../core/types';
 
 type Page =
   | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
@@ -168,7 +170,7 @@ function StatisticsPageWrapper({ onNavigate }: { onNavigate: (page: string) => v
 function AppInner() {
   const [page, setPage] = useState<Page>('home');
   const [heritageSiteId, setHeritageSiteId] = useState<string>('h001');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const auth = useAuth();
 
   const navigate = (targetPage: string, id?: string) => {
     if (targetPage === 'heritage-detail' && id) setHeritageSiteId(id);
@@ -178,13 +180,13 @@ function AppInner() {
     }
   };
 
-  const handleLogout = () => {
-    setIsLoggedIn(false);
+  const handleLogout = async () => {
+    await auth.logout();
     setPage('home');
   };
 
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
+  const handleLoginSuccess = (userData: UserInfo) => {
+    auth.login(userData);
     setPage('admin');
   };
 
@@ -195,8 +197,23 @@ function AppInner() {
 
   // Admin panel — full screen with compact top bar
   if (page === 'admin') {
-    if (!isLoggedIn) {
+    if (auth.isLoading) {
+      return (
+        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F0F4F8' }}>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+          <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
+            <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+            <div style={{ fontSize: 13 }}>Loading...</div>
+          </div>
+        </div>
+      );
+    }
+    if (!auth.isAuthenticated) {
       return <LoginPage onNavigate={navigate} onLoginSuccess={handleLoginSuccess} />;
+    }
+    if (!auth.isAdmin && !auth.isManager) {
+      navigate('home');
+      return null;
     }
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
@@ -258,7 +275,9 @@ function AppInner() {
 export default function App() {
   return (
     <LanguageProvider>
-      <AppInner />
+      <AuthProvider>
+        <AppInner />
+      </AuthProvider>
     </LanguageProvider>
   );
 }

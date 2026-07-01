@@ -12,7 +12,7 @@ namespace VanDinh.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/uploads")]
-[Authorize(Roles = "ADMIN,MANAGER")]
+[Authorize(Roles = "MANAGER")]
 public sealed class UploadsController(IUploadService uploads) : ControllerBase
 {
     [HttpPost("images")]

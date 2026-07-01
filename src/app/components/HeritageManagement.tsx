@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites } from '../../data/mockData';
-import { classificationLabels, typeLabels, statusLabels } from '../../data/labels';
+import { useHeritageSites, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import type { HeritageSite, Classification, HeritageType, HeritageStatus } from '../../core/types';
 import { classificationColors, statusColors } from '../constants';
 import {
@@ -17,8 +16,18 @@ type FormMode = 'add' | 'edit' | null;
 
 export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const { lang, t } = useLanguage();
-  const [sites, setSites] = useState<HeritageSite[]>(heritageSites);
+  const { data: apiSites } = useHeritageSites();
+  const classificationLabels = useClassificationLabels();
+  const typeLabels = useTypeLabels();
+  const statusLabels = useStatusLabels();
+  const [sites, setSites] = useState<HeritageSite[]>([]);
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    if (apiSites.length > 0) {
+      setSites(apiSites);
+    }
+  }, [apiSites]);
   const [filterCls, setFilterCls] = useState<Classification | 'all'>('all');
   const [formMode, setFormMode] = useState<FormMode>(null);
   const [editSite, setEditSite] = useState<HeritageSite | null>(null);

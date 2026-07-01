@@ -293,6 +293,33 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
         _context.SaveChanges();
     }
 
+    public MonthlyUpdate? FindMonthlyUpdate(int id) => _context.MonthlyUpdates
+        .AsNoTracking()
+        .FirstOrDefault(x => x.UpdateId == id);
+
+    public MonthlyUpdate AddMonthlyUpdate(MonthlyUpdate item)
+    {
+        _context.MonthlyUpdates.Add(item);
+        _context.SaveChanges();
+        return item;
+    }
+
+    public void UpdateMonthlyUpdate(MonthlyUpdate item)
+    {
+        _context.MonthlyUpdates.Update(item);
+        _context.SaveChanges();
+    }
+
+    public void DeleteMonthlyUpdate(int id)
+    {
+        var item = _context.MonthlyUpdates.Find(id);
+        if (item is not null)
+        {
+            _context.MonthlyUpdates.Remove(item);
+            _context.SaveChanges();
+        }
+    }
+
     public ActivityLog AddLog(ActivityLog log)
     {
         _context.ActivityLogs.Add(log);

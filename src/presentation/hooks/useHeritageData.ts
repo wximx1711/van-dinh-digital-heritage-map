@@ -1,20 +1,20 @@
-// Custom hooks for fetching heritage data from API
-
 import { useState, useEffect, useCallback } from 'react';
-import { heritageSites, intangibleHeritage, monthlyUpdates } from '../../data/mockData';
+import { fetchHeritageSites, fetchHeritageSite } from '../../app/services/heritageService';
+import { fetchIntangibleHeritage } from '../../app/services/intangibleService';
+import { fetchMonthlyUpdates } from '../../app/services/statisticsService';
 import { typeLabels, classificationLabels, statusLabels } from '../../data/labels';
+import type { HeritageSite, IntangibleHeritage } from '../../core/types';
 
 export function useHeritageSites() {
-  const [data, setData] = useState<typeof heritageSites>([]);
+  const [data, setData] = useState<HeritageSite[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 100));
-      setData(heritageSites);
+      const sites = await fetchHeritageSites();
+      setData(sites);
       setError(null);
     } catch (err) {
       setError(err as Error);
@@ -31,15 +31,15 @@ export function useHeritageSites() {
 }
 
 export function useIntangibleHeritage() {
-  const [data, setData] = useState<typeof intangibleHeritage>([]);
+  const [data, setData] = useState<IntangibleHeritage[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 100));
-      setData(intangibleHeritage);
+      const items = await fetchIntangibleHeritage();
+      setData(items);
       setError(null);
     } catch (err) {
       setError(err as Error);
@@ -56,15 +56,14 @@ export function useIntangibleHeritage() {
 }
 
 export function useHeritageSite(id: string) {
-  const [data, setData] = useState<typeof heritageSites[0] | null>(null);
+  const [data, setData] = useState<HeritageSite | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 100));
-      const site = heritageSites.find(s => s.id === id) || heritageSites[0];
+      const site = await fetchHeritageSite(id);
       setData(site);
       setError(null);
     } catch (err) {
@@ -82,15 +81,15 @@ export function useHeritageSite(id: string) {
 }
 
 export function useMonthlyUpdates() {
-  const [data, setData] = useState<typeof monthlyUpdates>([]);
+  const [data, setData] = useState<Array<{ month: string; count: number; vi: string; en: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      await new Promise(resolve => setTimeout(resolve, 50));
-      setData(monthlyUpdates);
+      const items = await fetchMonthlyUpdates();
+      setData(items);
       setError(null);
     } catch (err) {
       setError(err as Error);

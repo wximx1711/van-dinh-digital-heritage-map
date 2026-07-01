@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites, intangibleHeritage } from '../../data/mockData';
-import { classificationLabels, typeLabels, statusLabels } from '../../data/labels';
+import { useAuth } from './AuthContext';
+import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import {
   LayoutDashboard, Building2, BookOpen, Map, ImageIcon, BarChart2,
   Users, Settings, Bell, LogOut, ChevronRight, TrendingUp, Star,
@@ -19,24 +19,43 @@ type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'map' | 'media' | 
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
+  const auth = useAuth();
+  const { data: heritageSites } = useHeritageSites();
+  const { data: intangibleHeritage } = useIntangibleHeritage();
+  const classificationLabels = useClassificationLabels();
+  const typeLabels = useTypeLabels();
+  const statusLabels = useStatusLabels();
   const [section, setSection] = useState<AdminSection>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
+
+  const allowedSections = allNavItems.filter(n => n.roles.includes(auth.role ?? '')).map(n => n.key as AdminSection);
+
+  const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
+  const initials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .map(s => s[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || '?';
 
   const nationalCount = heritageSites.filter(h => h.classification === 'national').length;
   const cityCount = heritageSites.filter(h => h.classification === 'city').length;
   const unrankedCount = heritageSites.filter(h => h.classification === 'unranked').length;
 
-  const navItems = [
-    { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} /> },
-    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} /> },
-    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} /> },
-    { key: 'map', label: t('admin.map_mgmt'), icon: <Map size={16} /> },
-    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} /> },
-    { key: 'statistics', label: t('admin.statistics'), icon: <BarChart2 size={16} /> },
-    { key: 'users', label: t('admin.users'), icon: <Users size={16} /> },
-    { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} /> },
+  const allNavItems = [
+    { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} />, roles: ['ADMIN', 'MANAGER'] },
+    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} />, roles: ['MANAGER'] },
+    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} />, roles: ['MANAGER'] },
+    { key: 'map', label: t('admin.map_mgmt'), icon: <Map size={16} />, roles: ['MANAGER'] },
+    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} />, roles: ['MANAGER'] },
+    { key: 'statistics', label: t('admin.statistics'), icon: <BarChart2 size={16} />, roles: ['ADMIN', 'MANAGER'] },
+    { key: 'users', label: t('admin.users'), icon: <Users size={16} />, roles: ['ADMIN'] },
+    { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} />, roles: ['ADMIN'] },
   ];
+
+  const navItems = allNavItems.filter(n => n.roles.includes(auth.role ?? ''));
 
   const notifications = [
     { id: 1, textVi: 'Di tích Chùa Thanh Đình cần cập nhật hồ sơ', textEn: 'Thanh Dinh Pagoda profile needs update', time: '2h' },
@@ -52,6 +71,12 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const statusColors: Record<string, string> = {
     active: '#27AE60', maintenance: '#F39C12', closed: '#E74C3C',
   };
+
+  useEffect(() => {
+    if (!allowedSections.includes(section)) {
+      setSection('dashboard');
+    }
+  }, [section, allowedSections]);
 
   return (
     <div style={{ display: 'flex', height: 'calc(100vh - 0px)', background: '#F0F4F8', overflow: 'hidden' }}>
@@ -218,11 +243,11 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 color: 'white', fontSize: 13, fontWeight: 700,
               }}>
-                AD
+                {initials}
               </div>
               <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>Admin</div>
-                <div style={{ fontSize: 10, color: '#5d7a8c' }}>{lang === 'vi' ? 'Quản trị viên' : 'Administrator'}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{displayName}</div>
+                <div style={{ fontSize: 10, color: '#5d7a8c' }}>{auth.user?.roleName === 'ADMIN' ? (lang === 'vi' ? 'Quản trị viên' : 'Administrator') : auth.user?.roleName === 'MANAGER' ? (lang === 'vi' ? 'Quản lý' : 'Manager') : (lang === 'vi' ? 'Người dùng' : 'User')}</div>
               </div>
             </div>
 
@@ -247,7 +272,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
             <div style={{ padding: '24px' }}>
               <div style={{ marginBottom: 24 }}>
                 <h1 style={{ color: '#0F3D5E', margin: '0 0 4px', fontSize: 22, fontFamily: 'Merriweather, serif' }}>
-                  {t('admin.welcome')} 👋
+                  {lang === 'vi' ? `Xin chào, ${displayName}` : `Welcome, ${displayName}`} 👋
                 </h1>
                 <p style={{ color: '#5d7a8c', fontSize: 13, margin: 0 }}>
                   {lang === 'vi' ? `Hôm nay là ${new Date().toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}` : `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`}
@@ -328,10 +353,10 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {[
-                        { label: lang === 'vi' ? 'Thêm di tích mới' : 'Add New Heritage', icon: <Plus size={14} />, section: 'heritage' as AdminSection },
+                        ...(auth.isManager ? [{ label: lang === 'vi' ? 'Thêm di tích mới' : 'Add New Heritage', icon: <Plus size={14} />, section: 'heritage' as AdminSection }] : []),
                         { label: lang === 'vi' ? 'Xem thống kê' : 'View Statistics', icon: <BarChart2 size={14} />, section: 'statistics' as AdminSection },
-                        { label: lang === 'vi' ? 'Quản lý người dùng' : 'Manage Users', icon: <Users size={14} />, section: 'users' as AdminSection },
-                        { label: lang === 'vi' ? 'Cài đặt hệ thống' : 'System Settings', icon: <Settings size={14} />, section: 'settings' as AdminSection },
+                        ...(auth.isAdmin ? [{ label: lang === 'vi' ? 'Quản lý người dùng' : 'Manage Users', icon: <Users size={14} />, section: 'users' as AdminSection }] : []),
+                        ...(auth.isAdmin ? [{ label: lang === 'vi' ? 'Cài đặt hệ thống' : 'System Settings', icon: <Settings size={14} />, section: 'settings' as AdminSection }] : []),
                       ].map(a => (
                         <button
                           key={a.label}

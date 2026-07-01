@@ -45,6 +45,11 @@ public interface IAppRepository
     void UpdateIntangible(IntangibleHeritage item);
     void DeleteIntangible(string publicId);
 
+    MonthlyUpdate? FindMonthlyUpdate(int id);
+    MonthlyUpdate AddMonthlyUpdate(MonthlyUpdate item);
+    void UpdateMonthlyUpdate(MonthlyUpdate item);
+    void DeleteMonthlyUpdate(int id);
+
     ActivityLog AddLog(ActivityLog log);
     void SaveChanges();
 }

@@ -13,7 +13,7 @@ namespace VanDinh.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/activity-logs")]
-[Authorize(Roles = "ADMIN,MANAGER")]
+[Authorize(Roles = "ADMIN")]
 public sealed class ActivityLogsController(IAppRepository repository) : ControllerBase
 {
     [HttpGet]

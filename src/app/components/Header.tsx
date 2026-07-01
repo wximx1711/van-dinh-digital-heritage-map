@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
+import { useAuth } from './AuthContext';
 import {
-  Map, BookOpen, BarChart2, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark
+  Map, BookOpen, BarChart2, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -11,8 +12,18 @@ interface HeaderProps {
 
 export function Header({ currentPage, onNavigate }: HeaderProps) {
   const { lang, setLang, t } = useLanguage();
+  const auth = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
+  const initials = displayName
+    .split(' ')
+    .filter(Boolean)
+    .map(s => s[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2) || '?';
 
   const navItems = [
     { key: 'home', label: t('nav.home'), icon: null },
@@ -148,21 +159,68 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
             )}
           </div>
 
-          {/* Login button */}
-          <button
-            onClick={() => onNavigate('login')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '7px 16px', borderRadius: 6,
-              background: 'linear-gradient(135deg, #D4A017, #B8860B)',
-              border: 'none', color: 'white', fontSize: 13, fontWeight: 600,
-              cursor: 'pointer', whiteSpace: 'nowrap',
-              boxShadow: '0 2px 8px rgba(212,160,23,0.4)',
-            }}
-          >
-            <LogIn size={14} />
-            {t('nav.login')}
-          </button>
+          {/* Auth button */}
+          {auth.isAuthenticated && (auth.isAdmin || auth.isManager) ? (
+            <button
+              onClick={() => onNavigate('admin')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '5px 12px 5px 5px', borderRadius: 20,
+                background: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(212,160,23,0.3)',
+                color: 'white', fontSize: 13, fontWeight: 500,
+                cursor: 'pointer', whiteSpace: 'nowrap',
+              }}
+            >
+              <div style={{
+                width: 26, height: 26, borderRadius: '50%',
+                background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontSize: 11, fontWeight: 700, flexShrink: 0,
+              }}>
+                {initials}
+              </div>
+              <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</span>
+              <Shield size={11} style={{ color: '#D4A017', flexShrink: 0 }} />
+            </button>
+          ) : auth.isAuthenticated ? (
+            <button
+              onClick={() => onNavigate('home')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '5px 12px 5px 5px', borderRadius: 20,
+                background: 'rgba(255,255,255,0.12)',
+                border: '1px solid rgba(212,160,23,0.3)',
+                color: 'white', fontSize: 13, fontWeight: 500,
+                cursor: 'pointer', whiteSpace: 'nowrap',
+              }}
+            >
+              <div style={{
+                width: 26, height: 26, borderRadius: '50%',
+                background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: 'white', fontSize: 11, fontWeight: 700, flexShrink: 0,
+              }}>
+                {initials}
+              </div>
+              <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => onNavigate('login')}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6,
+                padding: '7px 16px', borderRadius: 6,
+                background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+                border: 'none', color: 'white', fontSize: 13, fontWeight: 600,
+                cursor: 'pointer', whiteSpace: 'nowrap',
+                boxShadow: '0 2px 8px rgba(212,160,23,0.4)',
+              }}
+            >
+              <LogIn size={14} />
+              {t('nav.login')}
+            </button>
+          )}
 
           {/* Mobile menu button */}
           <button

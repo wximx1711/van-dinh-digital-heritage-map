@@ -15,7 +15,7 @@ public sealed class HeritageCategoriesController(IAppRepository repository, IAct
     [HttpGet]
     public IActionResult GetAll() => ApiResponse.Success(repository.Categories.Select(x => x.ToDto()).ToList());
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(HeritageCategoryRequest request)
@@ -31,7 +31,7 @@ public sealed class HeritageCategoriesController(IAppRepository repository, IAct
         return ApiResponse.Success(item.ToDto(), "Category created successfully.", StatusCodes.Status201Created);
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpPut("{id:int}")]
     [ValidateAntiForgeryToken]
     public IActionResult Update(int id, HeritageCategoryRequest request)
@@ -53,7 +53,7 @@ public sealed class HeritageCategoriesController(IAppRepository repository, IAct
         return ApiResponse.Success(item.ToDto(), "Category updated successfully.");
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpDelete("{id:int}")]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(int id)

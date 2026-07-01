@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { Eye, EyeOff, LogIn, ArrowLeft, Landmark, Globe } from 'lucide-react';
+import type { UserInfo } from '../../core/types';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -14,13 +15,15 @@ interface CsrfTokenResponse {
 }
 
 interface LoginResponse {
-  userId?: number;
-  UserId?: number;
+  userId: number;
+  username: string;
+  fullName: string | null;
+  roleName: string;
 }
 
 interface LoginPageProps {
   onNavigate: (page: string) => void;
-  onLoginSuccess: () => void;
+  onLoginSuccess: (user: UserInfo) => void;
 }
 
 export function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps) {
@@ -72,11 +75,16 @@ const handleLogin = async () => {
          return;
        }
 
-       const data = await response.json() as ApiResponse<LoginResponse>;
-       const user = data.data;
-       if (data.success && user && (user.userId || user.UserId)) {
-         onLoginSuccess();
-       } else {
+        const data = await response.json() as ApiResponse<LoginResponse>;
+        const loginData = data.data;
+        if (data.success && loginData) {
+          onLoginSuccess({
+            userId: loginData.userId,
+            username: loginData.username,
+            fullName: loginData.fullName ?? loginData.username,
+            roleName: loginData.roleName,
+          });
+        } else {
          setError(lang === 'vi' ? 'Đăng nhập thất bại' : 'Login failed');
          setLoading(false);
        }

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageSites } from '../../data/mockData';
-import { typeLabels, classificationLabels, statusLabels } from '../../data/labels';
+import { useHeritageSites, useTypeLabels, useClassificationLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { classificationColors, statusColors } from '../constants';
 import {
   ArrowLeft, MapPin, Calendar, Download, Share2, QrCode, Navigation,
@@ -16,6 +15,10 @@ interface HeritageDetailProps {
 
 export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   const { lang, t } = useLanguage();
+  const { data: heritageSites } = useHeritageSites();
+  const typeLabels = useTypeLabels();
+  const classificationLabels = useClassificationLabels();
+  const statusLabels = useStatusLabels();
   const site = heritageSites.find(s => s.id === siteId) || heritageSites[0];
   const [activeImage, setActiveImage] = useState(0);
   const [showQr, setShowQr] = useState(false);
