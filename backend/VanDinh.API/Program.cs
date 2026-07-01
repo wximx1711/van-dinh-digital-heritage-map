@@ -37,7 +37,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 builder.Services.AddAntiforgery(options =>
 {
     options.HeaderName = csrfOptions.HeaderName;

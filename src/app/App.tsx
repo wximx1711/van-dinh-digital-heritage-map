@@ -190,6 +190,19 @@ function AppInner() {
     setPage('admin');
   };
 
+  // Global loading gate: block ALL UI until auth initialization completes
+  if (auth.isLoading) {
+    return (
+      <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F0F4F8' }}>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
+          <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
+          <div style={{ fontSize: 13 }}>Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
   // Login page — full screen, no header/footer
   if (page === 'login') {
     return <LoginPage onNavigate={navigate} onLoginSuccess={handleLoginSuccess} />;
@@ -197,17 +210,6 @@ function AppInner() {
 
   // Admin panel — full screen with compact top bar
   if (page === 'admin') {
-    if (auth.isLoading) {
-      return (
-        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F0F4F8' }}>
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
-            <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-            <div style={{ fontSize: 13 }}>Loading...</div>
-          </div>
-        </div>
-      );
-    }
     if (!auth.isAuthenticated) {
       return <LoginPage onNavigate={navigate} onLoginSuccess={handleLoginSuccess} />;
     }

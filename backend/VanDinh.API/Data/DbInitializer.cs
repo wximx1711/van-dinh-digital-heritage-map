@@ -15,7 +15,7 @@ public static class DbInitializer
             await context.Database.EnsureDeletedAsync();
         }
 
-        await context.Database.EnsureCreatedAsync();
+        await context.Database.MigrateAsync();
 
         if (!context.Roles.Any())
         {

@@ -159,8 +159,10 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
             )}
           </div>
 
-          {/* Auth button */}
-          {auth.isAuthenticated && (auth.isAdmin || auth.isManager) ? (
+          {/* Auth button — only render after auth check completes */}
+          {auth.isLoading ? (
+            <div style={{ width: 34, height: 34 }} />
+          ) : auth.isAuthenticated && (auth.isAdmin || auth.isManager) ? (
             <button
               onClick={() => onNavigate('admin')}
               style={{

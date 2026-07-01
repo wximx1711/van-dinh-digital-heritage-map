@@ -7,6 +7,7 @@ import {
   Users, Settings, Bell, LogOut, ChevronRight, TrendingUp, Star,
   Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus
 } from 'lucide-react';
+import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
 import { StatisticsPage } from './StatisticsPage';
 
@@ -29,6 +30,17 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
 
+  const allNavItems = [
+    { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} />, roles: ['ADMIN', 'MANAGER'] },
+    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} />, roles: ['MANAGER'] },
+    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} />, roles: ['MANAGER'] },
+    { key: 'map', label: t('admin.map_mgmt'), icon: <Map size={16} />, roles: ['MANAGER'] },
+    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} />, roles: ['MANAGER'] },
+    { key: 'statistics', label: t('admin.statistics'), icon: <BarChart2 size={16} />, roles: ['ADMIN', 'MANAGER'] },
+    { key: 'users', label: t('admin.users'), icon: <Users size={16} />, roles: ['ADMIN'] },
+    { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} />, roles: ['ADMIN'] },
+  ];
+
   const allowedSections = allNavItems.filter(n => n.roles.includes(auth.role ?? '')).map(n => n.key as AdminSection);
 
   const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
@@ -43,17 +55,6 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const nationalCount = heritageSites.filter(h => h.classification === 'national').length;
   const cityCount = heritageSites.filter(h => h.classification === 'city').length;
   const unrankedCount = heritageSites.filter(h => h.classification === 'unranked').length;
-
-  const allNavItems = [
-    { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} />, roles: ['ADMIN', 'MANAGER'] },
-    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} />, roles: ['MANAGER'] },
-    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} />, roles: ['MANAGER'] },
-    { key: 'map', label: t('admin.map_mgmt'), icon: <Map size={16} />, roles: ['MANAGER'] },
-    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} />, roles: ['MANAGER'] },
-    { key: 'statistics', label: t('admin.statistics'), icon: <BarChart2 size={16} />, roles: ['ADMIN', 'MANAGER'] },
-    { key: 'users', label: t('admin.users'), icon: <Users size={16} />, roles: ['ADMIN'] },
-    { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} />, roles: ['ADMIN'] },
-  ];
 
   const navItems = allNavItems.filter(n => n.roles.includes(auth.role ?? ''));
 
