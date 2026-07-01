@@ -50,8 +50,6 @@ public sealed class HeritageService(IAppRepository repository) : IHeritageServic
             Status = request.Status,
             AddressVi = request.AddressVi,
             AddressEn = request.AddressEn,
-            Latitude = request.Lat,
-            Longitude = request.Lon,
             DescriptionVi = request.DescriptionVi,
             DescriptionEn = request.DescriptionEn,
             HistoryVi = request.HistoryVi,
@@ -60,7 +58,7 @@ public sealed class HeritageService(IAppRepository repository) : IHeritageServic
             YearBuilt = request.YearBuilt,
             Guardian = request.Guardian,
             CreatedBy = userId,
-            GoogleMapUrl = request.Lat is null || request.Lon is null ? null : $"https://www.google.com/maps?q={request.Lat},{request.Lon}"
+            GoogleMapUrl = request.GoogleMapUrl
         };
         repository.AddHeritage(heritage);
         heritage.QrCodeUrl = $"/api/qr/heritage/{heritage.PublicId}";
@@ -85,8 +83,6 @@ public sealed class HeritageService(IAppRepository repository) : IHeritageServic
         heritage.Status = request.Status;
         heritage.AddressVi = request.AddressVi;
         heritage.AddressEn = request.AddressEn;
-        heritage.Latitude = request.Lat;
-        heritage.Longitude = request.Lon;
         heritage.DescriptionVi = request.DescriptionVi;
         heritage.DescriptionEn = request.DescriptionEn;
         heritage.HistoryVi = request.HistoryVi;
@@ -94,7 +90,7 @@ public sealed class HeritageService(IAppRepository repository) : IHeritageServic
         heritage.ThumbnailUrl = request.Image;
         heritage.YearBuilt = request.YearBuilt;
         heritage.Guardian = request.Guardian;
-        heritage.GoogleMapUrl = request.Lat is null || request.Lon is null ? null : $"https://www.google.com/maps?q={request.Lat},{request.Lon}";
+        heritage.GoogleMapUrl = request.GoogleMapUrl;
         repository.UpdateHeritage(heritage);
         return heritage.ToDto(repository);
     }

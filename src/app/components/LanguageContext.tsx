@@ -101,6 +101,10 @@ const translations: Record<string, Record<Lang, string>> = {
   'admin.statistics': { vi: 'Thống kê', en: 'Statistics' },
   'admin.users': { vi: 'Tài khoản người dùng', en: 'User Accounts' },
   'admin.settings': { vi: 'Cài đặt', en: 'Settings' },
+  'admin.categories': { vi: 'Danh mục di tích', en: 'Heritage Categories' },
+  'admin.monthly_updates': { vi: 'Cập nhật hàng tháng', en: 'Monthly Updates' },
+  'admin.about': { vi: 'Trang giới thiệu', en: 'About Page' },
+  'admin.activity_logs': { vi: 'Nhật ký hoạt động', en: 'Activity Logs' },
   'admin.recent_updates': { vi: 'Cập nhật gần đây', en: 'Recent Updates' },
   'admin.welcome': { vi: 'Xin chào, Quản trị viên', en: 'Welcome, Administrator' },
   // Heritage management table
@@ -158,6 +162,26 @@ const translations: Record<string, Record<Lang, string>> = {
   'common.upload_doc': { vi: 'Tải tài liệu lên', en: 'Upload Document' },
   'common.gen_qr': { vi: 'Tạo mã QR', en: 'Generate QR Code' },
   'common.select_map': { vi: 'Chọn vị trí trên bản đồ', en: 'Select Location on Map' },
+  // Intangible management
+  'im.name_vi': { vi: 'Tên (Tiếng Việt)', en: 'Name (Vietnamese)' },
+  'im.name_en': { vi: 'Tên (Tiếng Anh)', en: 'Name (English)' },
+  'im.category': { vi: 'Thể loại', en: 'Category' },
+  'im.description_vi': { vi: 'Mô tả (Tiếng Việt)', en: 'Description (Vietnamese)' },
+  'im.description_en': { vi: 'Mô tả (Tiếng Anh)', en: 'Description (English)' },
+  'im.image': { vi: 'Ảnh đại diện', en: 'Representative Image' },
+  'im.video_url': { vi: 'Video URL', en: 'Video URL' },
+  'im.add': { vi: 'Thêm di sản phi vật thể', en: 'Add Intangible Heritage' },
+  'im.edit': { vi: 'Chỉnh sửa di sản phi vật thể', en: 'Edit Intangible Heritage' },
+  'im.search': { vi: 'Tìm kiếm...', en: 'Search...' },
+  'im.filter_category': { vi: 'Lọc theo thể loại', en: 'Filter by Category' },
+  'im.delete_confirm': { vi: 'Xác nhận xóa di sản phi vật thể này?', en: 'Are you sure you want to delete this intangible heritage item?' },
+  'im.created': { vi: 'Ngày tạo', en: 'Created Date' },
+  'im.updated': { vi: 'Cập nhật', en: 'Last Updated' },
+  'im.upload': { vi: 'Tải ảnh lên', en: 'Upload Image' },
+  'im.upload_hint': { vi: 'PNG, JPG, WebP — tối đa 5MB', en: 'PNG, JPG, WebP — max 5MB' },
+  'im.upload_btn': { vi: 'Chọn ảnh', en: 'Choose Image' },
+  'im.replace_image': { vi: 'Thay đổi ảnh', en: 'Replace Image' },
+  'im.no_image': { vi: 'Chưa có ảnh', en: 'No image yet' },
 };
 
 const LanguageContext = createContext<LanguageContextType>({

@@ -226,7 +226,7 @@ CREATE INDEX IX_ActivityLogs_User ON ActivityLogs(UserId);
 GO
 
 INSERT INTO Roles(RoleName)
-VALUES (N'ADMIN'), (N'MANAGER'), (N'VISITOR');
+VALUES (N'ADMIN'), (N'MANAGER');
 GO
 
 INSERT INTO Users(RoleId, Username, PasswordHash, FullName, Email)

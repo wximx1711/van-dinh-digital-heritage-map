@@ -23,7 +23,7 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
         return heritage is null ? ApiResponse.NotFound("Heritage not found.") : ApiResponse.Success(heritage.Images.OrderBy(x => x.SortOrder).Select(x => x.ToDto()).ToList());
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpPost("images")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UploadImage(string heritageId, IFormFile file, [FromForm] string? caption, CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
         }
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpDelete("images/{imageId:long}")]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteImage(string heritageId, long imageId)
@@ -51,7 +51,7 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
         return ApiResponse.Success(null, "Image deleted successfully.");
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpPost("videos")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> AddVideo(string heritageId, [FromForm] string? title, [FromForm] string? youtubeUrl, IFormFile? file, CancellationToken cancellationToken)
@@ -75,7 +75,7 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
         }
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpDelete("videos/{videoId:long}")]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteVideo(string heritageId, long videoId)
@@ -92,7 +92,7 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
         return heritage is null ? ApiResponse.NotFound("Heritage not found.") : ApiResponse.Success(heritage.Documents.Select(x => x.ToDto()).ToList());
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpPost("documents")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UploadDocument(string heritageId, IFormFile file, CancellationToken cancellationToken)
@@ -110,7 +110,7 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
         }
     }
 
-    [Authorize(Roles = "ADMIN,MANAGER")]
+    [Authorize(Roles = "MANAGER")]
     [HttpDelete("documents/{documentId:long}")]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteDocument(string heritageId, long documentId)

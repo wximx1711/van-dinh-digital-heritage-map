@@ -25,16 +25,17 @@ export async function apiGet<T>(path: string): Promise<T> {
   return json.data as T;
 }
 
-export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+export async function apiPost<T>(path: string, body: unknown, isFormData = false): Promise<T> {
   const { token, headerName } = await getCsrfToken();
+  const headers: Record<string, string> = { [headerName]: token };
+  if (!isFormData) {
+    headers['Content-Type'] = 'application/json';
+  }
   const res = await fetch(`/api${path}`, {
     method: 'POST',
     credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      [headerName]: token,
-    },
-    body: JSON.stringify(body),
+    headers,
+    body: isFormData ? (body as FormData) : JSON.stringify(body),
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));

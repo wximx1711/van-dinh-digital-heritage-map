@@ -43,10 +43,6 @@ public sealed class AuthController(IAppRepository repository, IPasswordHasher ha
         }
 
         var role = repository.Roles.First(x => x.RoleId == user.RoleId).RoleName;
-        if (role == "VISITOR")
-        {
-            return ApiResponse.Forbidden("Visitors are not allowed to log in to the system.");
-        }
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.UserId.ToString()),

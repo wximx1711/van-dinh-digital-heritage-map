@@ -33,7 +33,7 @@ interface QrModalProps {
 }
 
 function QrModal({ site, onClose, lang }: QrModalProps) {
-  const qrData = `DITICHR:${site.id}|${site.nameVi}|${site.lat},${site.lon}`;
+  const qrData = `DITICHR:${site.id}|${site.nameVi}|${site.googleMapUrl || `${site.lat},${site.lon}`}`;
   const cells = 21;
   const seed = site.id.charCodeAt(0) + site.id.charCodeAt(1);
   const pattern = Array.from({ length: cells * cells }, (_, i) => {
@@ -454,7 +454,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
                   </span>
                 </div>
                 <div style={{ fontSize: 11, color: '#5d7a8c', marginBottom: 8 }}>
-                  📍 {selectedSite.lat.toFixed(4)}°N, {selectedSite.lon.toFixed(4)}°E
+                  📍 {selectedSite.googleMapUrl ? selectedSite.googleMapUrl : `${selectedSite.lat.toFixed(4)}°N, ${selectedSite.lon.toFixed(4)}°E`}
                 </div>
                 <p style={{
                   fontSize: 11, color: '#5d7a8c', lineHeight: 1.5, margin: '0 0 12px',
@@ -496,7 +496,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
                     <Share2 size={12} /> {t('map.share')}
                   </button>
                   <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedSite.lat},${selectedSite.lon}`}
+                    href={selectedSite.googleMapUrl || `https://www.google.com/maps?q=${selectedSite.lat},${selectedSite.lon}`}
                     target="_blank"
                     rel="noreferrer"
                     style={{

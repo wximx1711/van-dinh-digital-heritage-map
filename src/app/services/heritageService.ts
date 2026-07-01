@@ -47,6 +47,7 @@ function toHeritageSite(dto: HeritageDto): HeritageSite {
     addressEn: dto.addressEn ?? '',
     lat: dto.lat ?? 0,
     lon: dto.lon ?? 0,
+    googleMapUrl: dto.googleMapUrl ?? '',
     descriptionVi: dto.descriptionVi ?? '',
     descriptionEn: dto.descriptionEn ?? '',
     historyVi: dto.historyVi ?? '',

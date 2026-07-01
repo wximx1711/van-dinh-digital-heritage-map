@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
+import { createHeritageSite, updateHeritageSite, deleteHeritageSite } from '../services/heritageService';
+import { apiPost } from '../services/api';
 import type { HeritageSite, Classification, HeritageType, HeritageStatus } from '../../core/types';
 import { classificationColors, statusColors } from '../constants';
 import {
@@ -16,26 +18,27 @@ type FormMode = 'add' | 'edit' | null;
 
 export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const { lang, t } = useLanguage();
-  const { data: apiSites } = useHeritageSites();
+  const { data: apiSites, refetch } = useHeritageSites();
   const classificationLabels = useClassificationLabels();
   const typeLabels = useTypeLabels();
   const statusLabels = useStatusLabels();
   const [sites, setSites] = useState<HeritageSite[]>([]);
   const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    if (apiSites.length > 0) {
-      setSites(apiSites);
-    }
-  }, [apiSites]);
   const [filterCls, setFilterCls] = useState<Classification | 'all'>('all');
   const [formMode, setFormMode] = useState<FormMode>(null);
   const [editSite, setEditSite] = useState<HeritageSite | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const [uploading, setUploading] = useState(false);
 
   const PER_PAGE = 6;
+
+  useEffect(() => {
+    if (apiSites.length > 0) {
+      setSites(apiSites);
+    }
+  }, [apiSites]);
 
   const filtered = sites.filter(s => {
     const matchSearch = !search || s.nameVi.toLowerCase().includes(search.toLowerCase()) || s.nameEn.toLowerCase().includes(search.toLowerCase()) || s.code.toLowerCase().includes(search.toLowerCase());
@@ -51,10 +54,15 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
     setTimeout(() => setToast(null), 3000);
   };
 
-  const handleDelete = (id: string) => {
-    setSites(prev => prev.filter(s => s.id !== id));
-    setDeleteId(null);
-    showToast(lang === 'vi' ? 'Đã xóa di tích thành công' : 'Heritage site deleted successfully');
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteHeritageSite(id);
+      setSites(prev => prev.filter(s => s.id !== id));
+      setDeleteId(null);
+      showToast(lang === 'vi' ? 'Đã xóa di tích thành công' : 'Heritage site deleted successfully');
+    } catch {
+      showToast(lang === 'vi' ? 'Lỗi khi xóa di tích' : 'Failed to delete heritage site', 'error');
+    }
   };
 
   const openEdit = (site: HeritageSite) => {
@@ -68,10 +76,10 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
       code: `VĐHN-DT-${String(sites.length + 1).padStart(3, '0')}`,
       nameVi: '', nameEn: '', type: 'dinh', classification: 'unranked',
       status: 'active', addressVi: '', addressEn: '',
-      lat: 20.752, lon: 105.852,
+      lat: 0, lon: 0, googleMapUrl: '',
       descriptionVi: '', descriptionEn: '',
       historyVi: '', historyEn: '',
-      image: 'https://images.unsplash.com/photo-1571842533456-9b0d746c5a9b?w=800&h=500&fit=crop&auto=format',
+      image: '',
       images: [],
       updatedAt: new Date().toISOString().slice(0, 10),
       yearBuilt: '', guardian: '',
@@ -79,20 +87,66 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
     setFormMode('add');
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!editSite?.nameVi) {
       showToast(lang === 'vi' ? 'Vui lòng nhập tên di tích' : 'Please enter heritage name', 'error');
       return;
     }
-    if (formMode === 'add') {
-      setSites(prev => [...prev, { ...editSite!, updatedAt: new Date().toISOString().slice(0, 10) }]);
-      showToast(lang === 'vi' ? 'Đã thêm di tích mới thành công' : 'New heritage site added successfully');
-    } else {
-      setSites(prev => prev.map(s => s.id === editSite!.id ? { ...editSite!, updatedAt: new Date().toISOString().slice(0, 10) } : s));
-      showToast(lang === 'vi' ? 'Đã cập nhật di tích thành công' : 'Heritage site updated successfully');
+
+    try {
+      const payload: Record<string, unknown> = {
+        code: editSite.code,
+        nameVi: editSite.nameVi,
+        nameEn: editSite.nameEn,
+        type: editSite.type,
+        classification: editSite.classification,
+        status: editSite.status,
+        addressVi: editSite.addressVi || null,
+        addressEn: editSite.addressEn || null,
+        googleMapUrl: editSite.googleMapUrl || null,
+        descriptionVi: editSite.descriptionVi || null,
+        descriptionEn: editSite.descriptionEn || null,
+        historyVi: editSite.historyVi || null,
+        historyEn: editSite.historyEn || null,
+        image: editSite.image || null,
+        yearBuilt: editSite.yearBuilt || null,
+        guardian: editSite.guardian || null,
+      };
+
+      if (formMode === 'add') {
+        await createHeritageSite(payload);
+        showToast(lang === 'vi' ? 'Đã thêm di tích mới thành công' : 'New heritage site added successfully');
+      } else {
+        await updateHeritageSite(editSite.id, payload);
+        showToast(lang === 'vi' ? 'Đã cập nhật di tích thành công' : 'Heritage site updated successfully');
+      }
+      setFormMode(null);
+      setEditSite(null);
+      refetch();
+    } catch {
+      showToast(lang === 'vi' ? 'Lỗi khi lưu dữ liệu' : 'Failed to save data', 'error');
     }
-    setFormMode(null);
-    setEditSite(null);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowed.includes(file.type)) {
+      showToast(lang === 'vi' ? 'Chỉ chấp nhận JPG, PNG, WebP' : 'Only JPG, PNG, WebP allowed', 'error');
+      return;
+    }
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const result = await apiPost<{ url: string }>('/uploads/images', formData, true);
+      setEditSite(s => s ? { ...s, image: result.url } : s);
+    } catch {
+      showToast(lang === 'vi' ? 'Tải ảnh thất bại' : 'Upload failed', 'error');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const inputStyle = {
@@ -290,7 +344,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500 }}
           onClick={() => { setFormMode(null); setEditSite(null); }}>
           <div style={{
-            background: 'white', borderRadius: 12, width: '90%', maxWidth: 680, maxHeight: '90vh',
+            background: 'white', borderRadius: 12, width: '90%', maxWidth: 720, maxHeight: '90vh',
             overflow: 'hidden', display: 'flex', flexDirection: 'column',
             boxShadow: '0 24px 64px rgba(0,0,0,0.25)',
           }} onClick={e => e.stopPropagation()}>
@@ -309,7 +363,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
             <div style={{ overflowY: 'auto', flex: 1, padding: '20px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 {/* Code */}
-                <div style={{ gridColumn: '1' }}>
+                <div>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('detail.code')}</label>
                   <input style={inputStyle} value={editSite.code} onChange={e => setEditSite(s => s ? { ...s, code: e.target.value } : s)} />
                 </div>
@@ -365,22 +419,28 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                   </select>
                 </div>
 
-                {/* Lat */}
+                {/* Guardian */}
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.latitude')}</label>
-                  <input style={inputStyle} type="number" step="0.0001" value={editSite.lat} onChange={e => setEditSite(s => s ? { ...s, lat: parseFloat(e.target.value) || 0 } : s)} />
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Đơn vị quản lý' : 'Managing Unit'}</label>
+                  <input style={inputStyle} value={editSite.guardian} onChange={e => setEditSite(s => s ? { ...s, guardian: e.target.value } : s)} />
                 </div>
 
-                {/* Lon */}
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.longitude')}</label>
-                  <input style={inputStyle} type="number" step="0.0001" value={editSite.lon} onChange={e => setEditSite(s => s ? { ...s, lon: parseFloat(e.target.value) || 0 } : s)} />
+                {/* Google Maps URL */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Google Maps URL' : 'Google Maps URL'}</label>
+                  <input style={inputStyle} type="url" placeholder="https://maps.google.com/..." value={editSite.googleMapUrl} onChange={e => setEditSite(s => s ? { ...s, googleMapUrl: e.target.value } : s)} />
                 </div>
 
                 {/* Address VI */}
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.address')} (VI)</label>
                   <input style={inputStyle} value={editSite.addressVi} onChange={e => setEditSite(s => s ? { ...s, addressVi: e.target.value } : s)} />
+                </div>
+
+                {/* Address EN */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.address')} (EN)</label>
+                  <input style={inputStyle} value={editSite.addressEn} onChange={e => setEditSite(s => s ? { ...s, addressEn: e.target.value } : s)} />
                 </div>
 
                 {/* Description VI */}
@@ -393,18 +453,65 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                   />
                 </div>
 
-                {/* Upload image placeholder */}
+                {/* Description EN */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.description')} (EN)</label>
+                  <textarea
+                    style={{ ...inputStyle, resize: 'vertical', minHeight: 72 }}
+                    value={editSite.descriptionEn}
+                    onChange={e => setEditSite(s => s ? { ...s, descriptionEn: e.target.value } : s)}
+                  />
+                </div>
+
+                {/* History VI */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Lịch sử (VI)' : 'History (VI)'}</label>
+                  <textarea
+                    style={{ ...inputStyle, resize: 'vertical', minHeight: 100 }}
+                    value={editSite.historyVi}
+                    onChange={e => setEditSite(s => s ? { ...s, historyVi: e.target.value } : s)}
+                  />
+                </div>
+
+                {/* History EN */}
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Lịch sử (EN)' : 'History (EN)'}</label>
+                  <textarea
+                    style={{ ...inputStyle, resize: 'vertical', minHeight: 100 }}
+                    value={editSite.historyEn}
+                    onChange={e => setEditSite(s => s ? { ...s, historyEn: e.target.value } : s)}
+                  />
+                </div>
+
+                {/* Image upload */}
                 <div style={{ gridColumn: '1 / -1' }}>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.upload_image')}</label>
-                  <div style={{
-                    border: '2px dashed rgba(15,61,94,0.2)', borderRadius: 8, padding: '20px',
-                    textAlign: 'center', background: '#F8FAFC', cursor: 'pointer',
-                  }}>
-                    <Upload size={24} style={{ color: '#5d7a8c', marginBottom: 6 }} />
-                    <p style={{ fontSize: 12, color: '#5d7a8c', margin: 0 }}>
-                      {lang === 'vi' ? 'Kéo thả ảnh hoặc nhấn để chọn' : 'Drag & drop images or click to browse'}
-                    </p>
-                    <p style={{ fontSize: 10, color: '#cbced4', margin: '4px 0 0' }}>PNG, JPG, WebP — tối đa 5MB</p>
+                  <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                    {/* Preview */}
+                    <div style={{
+                      width: 120, height: 90, borderRadius: 8, overflow: 'hidden',
+                      background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    }}>
+                      {editSite.image ? (
+                        <img src={editSite.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <span style={{ fontSize: 11, color: '#5d7a8c' }}>{lang === 'vi' ? 'Chưa có ảnh' : 'No image yet'}</span>
+                      )}
+                    </div>
+                    <div>
+                      <label style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 6,
+                        padding: '8px 16px', borderRadius: 6,
+                        background: '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600,
+                        cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1,
+                      }}>
+                        <Upload size={14} />
+                        {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (editSite.image ? (lang === 'vi' ? 'Thay đổi ảnh' : 'Replace Image') : (lang === 'vi' ? 'Chọn ảnh' : 'Choose Image'))}
+                        <input type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
+                      </label>
+                      <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, WebP — tối đa 5MB' : 'PNG, JPG, WebP — max 5MB'}</p>
+                    </div>
                   </div>
                 </div>
 

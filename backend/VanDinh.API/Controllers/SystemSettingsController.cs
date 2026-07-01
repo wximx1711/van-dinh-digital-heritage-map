@@ -17,7 +17,7 @@ public sealed class SystemSettingsController(IAppRepository repository, IActivit
     [HttpGet]
     public IActionResult Get() => ApiResponse.Success(repository.SystemSetting.ToDto());
 
-    [Authorize(Roles = "ADMIN")]
+    [Authorize(Roles = "MANAGER")]
     [HttpPut]
     [ValidateAntiForgeryToken]
     public IActionResult Update(SystemSettingRequest request)

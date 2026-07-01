@@ -185,9 +185,10 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                         { label: lang === 'vi' ? 'Trạng thái' : 'Status', value: statusLabels[site.status][lang] },
                         { label: lang === 'vi' ? 'Năm xây dựng' : 'Year Built', value: site.yearBuilt },
                         { label: lang === 'vi' ? 'Đơn vị quản lý' : 'Managing Unit', value: site.guardian },
-                        { label: t('common.latitude'), value: `${site.lat.toFixed(6)}°N` },
-                        { label: t('common.longitude'), value: `${site.lon.toFixed(6)}°E` },
-                      ].map(item => (
+                        { label: lang === 'vi' ? 'Google Maps' : 'Google Maps', value: site.googleMapUrl, isLink: true },
+                      ].map(item => {
+                        const isLink = (item as { isLink?: boolean }).isLink;
+                        return (
                         <div key={item.label} style={{ padding: '12px', background: '#F8FAFC', borderRadius: 8 }}>
                           <div style={{ fontSize: 11, color: '#5d7a8c', marginBottom: 4, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.3 }}>
                             {item.label}
@@ -201,10 +202,14 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                               }}>{item.value}</span>
                             ) : item.label === (lang === 'vi' ? 'Trạng thái' : 'Status') ? (
                               <span style={{ color: statusColors[site.status] }}>{item.value}</span>
-                            ) : item.value}
+                            ) : isLink && item.value ? (
+                              <a href={item.value} target="_blank" rel="noreferrer" style={{ color: '#D4A017', textDecoration: 'underline', fontSize: 12 }}>
+                                {lang === 'vi' ? 'Xem trên Google Maps' : 'View on Google Maps'}
+                              </a>
+                            ) : item.value || (lang === 'vi' ? 'Chưa có' : 'Not available')}
                           </div>
                         </div>
-                      ))}
+                      );})}
                     </div>
                     <div style={{ marginTop: 16, padding: '16px', background: '#F8FAFC', borderRadius: 8 }}>
                       <div style={{ fontSize: 11, color: '#5d7a8c', marginBottom: 8, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.3 }}>
@@ -369,7 +374,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${site.lat},${site.lon}`}
+                  href={site.googleMapUrl || `https://www.google.com/maps?q=${site.lat},${site.lon}`}
                   target="_blank"
                   rel="noreferrer"
                   style={{
@@ -403,7 +408,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
               </div>
             </div>
 
-            {/* Map embed */}
+            {/* Google Maps link */}
             <div style={{
               background: 'white', borderRadius: 12, overflow: 'hidden',
               boxShadow: '0 2px 12px rgba(15,61,94,0.08)',
@@ -412,26 +417,24 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                 <MapPin size={14} style={{ color: '#D4A017' }} />
                 <span style={{ fontSize: 13, fontWeight: 700, color: '#0F3D5E' }}>{t('detail.location')}</span>
               </div>
-              <div style={{ position: 'relative', height: 180, background: '#c8d8c0', overflow: 'hidden' }}>
-                <img
-                  src="https://images.unsplash.com/photo-1758298135151-e1283f571030?w=400&h=200&fit=crop&auto=format"
-                  alt="Map"
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }}
-                />
-                <div style={{ position: 'absolute', inset: 0, background: 'rgba(180,210,190,0.3)' }} />
-                <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -100%)' }}>
-                  <div style={{
-                    width: 24, height: 24, borderRadius: '50% 50% 50% 0',
-                    transform: 'rotate(-45deg)', background: '#E74C3C',
-                    border: '3px solid white', boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                  }} />
-                </div>
-                <div style={{
-                  position: 'absolute', bottom: 8, left: 8, right: 8,
-                  background: 'rgba(255,255,255,0.95)', borderRadius: 6, padding: '6px 10px', fontSize: 11,
-                }}>
-                  <span style={{ color: '#0F3D5E', fontWeight: 600 }}>📍 {site.lat.toFixed(4)}°N, {site.lon.toFixed(4)}°E</span>
-                </div>
+              <div style={{ padding: '16px', textAlign: 'center' }}>
+                <MapPin size={32} style={{ color: '#D4A017', marginBottom: 8 }} />
+                <p style={{ fontSize: 13, color: '#5d7a8c', margin: '0 0 12px' }}>
+                  {lang === 'vi' ? 'Xem vị trí trên Google Maps' : 'View location on Google Maps'}
+                </p>
+                <a
+                  href={site.googleMapUrl || `https://www.google.com/maps?q=${site.lat},${site.lon}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '8px 20px', borderRadius: 8,
+                    background: '#D4A017', color: 'white',
+                    fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                  }}
+                >
+                  <Navigation size={14} /> {t('detail.route')}
+                </a>
               </div>
             </div>
 

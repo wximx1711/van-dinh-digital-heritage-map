@@ -17,8 +17,7 @@ public static class DbInitializer
         {
             context.Roles.AddRange(
                 new Role { RoleName = "ADMIN" },
-                new Role { RoleName = "MANAGER" },
-                new Role { RoleName = "VISITOR" }
+                new Role { RoleName = "MANAGER" }
             );
             await context.SaveChangesAsync();
         }

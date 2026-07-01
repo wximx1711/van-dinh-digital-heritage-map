@@ -225,7 +225,7 @@ function AppInner() {
           borderBottom: '2px solid #D4A017',
         }}>
           <span style={{ color: '#D4A017', fontSize: 13, fontWeight: 700, fontFamily: 'Merriweather, serif' }}>
-            🏛️ Di sản Vân Đình — Quản trị hệ thống
+            {auth.isAdmin ? '👤 Vân Đình — Quản trị người dùng' : '🏛️ Di sản Vân Đình — Quản trị hệ thống'}
           </span>
           <button onClick={() => navigate('home')} style={{ padding: '4px 12px', borderRadius: 5, background: 'rgba(255,255,255,0.1)', border: 'none', color: 'rgba(255,255,255,0.8)', fontSize: 12, cursor: 'pointer' }}>
             ← Trang chủ

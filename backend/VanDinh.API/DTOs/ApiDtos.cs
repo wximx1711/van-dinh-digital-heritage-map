@@ -29,7 +29,7 @@ public sealed record UserCreateRequest(
     /// <summary>Password (minimum 6 characters).</summary>
     [Required, MinLength(6)] string Password,
 
-    /// <summary>Role name (ADMIN, MANAGER, or VISITOR).</summary>
+    /// <summary>Role name (ADMIN or MANAGER).</summary>
     [Required] string RoleName,
 
     /// <summary>Full display name.</summary>
@@ -127,11 +127,8 @@ public sealed record HeritageRequest(
     /// <summary>Address in English.</summary>
     string? AddressEn,
 
-    /// <summary>Latitude coordinate.</summary>
-    decimal? Lat,
-
-    /// <summary>Longitude coordinate.</summary>
-    decimal? Lon,
+    /// <summary>Google Maps URL for the heritage location.</summary>
+    [Url] string? GoogleMapUrl,
 
     /// <summary>Description in Vietnamese.</summary>
     string? DescriptionVi,

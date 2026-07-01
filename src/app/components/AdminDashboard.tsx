@@ -3,21 +3,22 @@ import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import {
-  LayoutDashboard, Building2, BookOpen, Map, ImageIcon, BarChart2,
+  LayoutDashboard, Building2, BookOpen, ImageIcon, BarChart2,
   Users, Settings, Bell, LogOut, ChevronRight, TrendingUp, Star,
-  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown
+  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown, List, Calendar, Info, ClipboardList
 } from 'lucide-react';
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
 import { UserManagement } from './UserManagement';
 import { StatisticsPage } from './StatisticsPage';
+import { IntangibleManagement } from './IntangibleManagement';
 
 interface AdminDashboardProps {
   onNavigate: (page: string) => void;
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'map' | 'media' | 'statistics' | 'users' | 'settings';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'statistics' | 'users' | 'settings' | 'activity-logs';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -32,18 +33,25 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const [notifOpen, setNotifOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const allNavItems = [
-    { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} />, roles: ['ADMIN', 'MANAGER'] },
-    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} />, roles: ['ADMIN', 'MANAGER'] },
-    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} />, roles: ['ADMIN', 'MANAGER'] },
-    { key: 'map', label: t('admin.map_mgmt'), icon: <Map size={16} />, roles: ['ADMIN'] },
-    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} />, roles: ['ADMIN'] },
-    { key: 'statistics', label: t('admin.statistics'), icon: <BarChart2 size={16} />, roles: ['ADMIN'] },
-    { key: 'users', label: t('admin.users'), icon: <Users size={16} />, roles: ['ADMIN'] },
-    { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} />, roles: ['ADMIN'] },
+  const adminNavItems = [
+    { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} /> },
+    { key: 'users', label: t('admin.users'), icon: <Users size={16} /> },
+    { key: 'activity-logs', label: t('admin.activity_logs'), icon: <ClipboardList size={16} /> },
   ];
 
-  const allowedSections = allNavItems.filter(n => n.roles.includes(auth.role ?? '')).map(n => n.key as AdminSection);
+  const managerNavItems = [
+    { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} /> },
+    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} /> },
+    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} /> },
+    { key: 'categories', label: t('admin.categories'), icon: <List size={16} /> },
+    { key: 'monthly-updates', label: t('admin.monthly_updates'), icon: <Calendar size={16} /> },
+    { key: 'about', label: t('admin.about'), icon: <Info size={16} /> },
+    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} /> },
+    { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} /> },
+  ];
+
+  const navItems = auth.isAdmin ? adminNavItems : managerNavItems;
+  const allowedSections = navItems.map(n => n.key as AdminSection);
 
   const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
   const initials = displayName
@@ -57,8 +65,6 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const nationalCount = heritageSites.filter(h => h.classification === 'national').length;
   const cityCount = heritageSites.filter(h => h.classification === 'city').length;
   const unrankedCount = heritageSites.filter(h => h.classification === 'unranked').length;
-
-  const navItems = allNavItems.filter(n => n.roles.includes(auth.role ?? ''));
 
   const notifications = [
     { id: 1, textVi: 'Di tích Chùa Thanh Đình cần cập nhật hồ sơ', textEn: 'Thanh Dinh Pagoda profile needs update', time: '2h' },
@@ -403,12 +409,15 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
                       {lang === 'vi' ? 'Thao tác nhanh' : 'Quick Actions'}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                      {[
-                        ...(auth.isManager ? [{ label: lang === 'vi' ? 'Thêm di tích mới' : 'Add New Heritage', icon: <Plus size={14} />, section: 'heritage' as AdminSection }] : []),
-                        { label: lang === 'vi' ? 'Xem thống kê' : 'View Statistics', icon: <BarChart2 size={14} />, section: 'statistics' as AdminSection },
-                        ...(auth.isAdmin ? [{ label: lang === 'vi' ? 'Quản lý người dùng' : 'Manage Users', icon: <Users size={14} />, section: 'users' as AdminSection }] : []),
-                        ...(auth.isAdmin ? [{ label: lang === 'vi' ? 'Cài đặt hệ thống' : 'System Settings', icon: <Settings size={14} />, section: 'settings' as AdminSection }] : []),
-                      ].map(a => (
+                      {(auth.isManager ? [
+                        { label: lang === 'vi' ? 'Thêm di tích mới' : 'Add New Heritage', icon: <Plus size={14} />, section: 'heritage' as AdminSection },
+                        { label: lang === 'vi' ? 'Di sản phi vật thể' : 'Intangible Heritage', icon: <BookOpen size={14} />, section: 'intangible' as AdminSection },
+                        { label: lang === 'vi' ? 'Danh mục di tích' : 'Categories', icon: <List size={14} />, section: 'categories' as AdminSection },
+                        { label: lang === 'vi' ? 'Cài đặt hệ thống' : 'System Settings', icon: <Settings size={14} />, section: 'settings' as AdminSection },
+                      ] : [
+                        { label: lang === 'vi' ? 'Quản lý người dùng' : 'Manage Users', icon: <Users size={14} />, section: 'users' as AdminSection },
+                        { label: lang === 'vi' ? 'Nhật ký hoạt động' : 'Activity Logs', icon: <ClipboardList size={14} />, section: 'activity-logs' as AdminSection },
+                      ]).map(a => (
                         <button
                           key={a.label}
                           onClick={() => setSection(a.section)}
@@ -459,6 +468,10 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
             <HeritageManagement onNavigate={onNavigate} />
           )}
 
+          {section === 'intangible' && (
+            <IntangibleManagement />
+          )}
+
           {section === 'statistics' && (
             <StatisticsPage isAdmin />
           )}
@@ -467,7 +480,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
             <UserManagement />
           )}
 
-          {(section === 'intangible' || section === 'map' || section === 'media' || section === 'settings') && (
+          {(section === 'categories' || section === 'monthly-updates' || section === 'about' || section === 'media' || section === 'settings' || section === 'activity-logs') && (
             <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
               <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🚧</div>

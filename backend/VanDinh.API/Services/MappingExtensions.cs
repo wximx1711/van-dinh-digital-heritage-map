@@ -8,7 +8,7 @@ public static class MappingExtensions
 {
     public static UserDto ToDto(this User user, IAppRepository repository)
     {
-        var role = repository.Roles.FirstOrDefault(x => x.RoleId == user.RoleId)?.RoleName ?? "VISITOR";
+        var role = repository.Roles.FirstOrDefault(x => x.RoleId == user.RoleId)?.RoleName ?? "";
         return new UserDto(user.UserId, user.Username, user.FullName, user.Email, role, user.Status, user.CreatedAt);
     }
 

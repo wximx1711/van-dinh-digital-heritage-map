@@ -14,6 +14,7 @@ export interface HeritageSite {
   addressEn: string;
   lat: number;
   lon: number;
+  googleMapUrl: string;
   descriptionVi: string;
   descriptionEn: string;
   historyVi: string;
