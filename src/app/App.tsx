@@ -182,7 +182,7 @@ function AppInner() {
 
   const handleLogout = async () => {
     await auth.logout();
-    setPage('home');
+    setPage('login');
   };
 
   const handleLoginSuccess = (userData: UserInfo) => {
@@ -214,7 +214,7 @@ function AppInner() {
       return <LoginPage onNavigate={navigate} onLoginSuccess={handleLoginSuccess} />;
     }
     if (!auth.isAdmin && !auth.isManager) {
-      navigate('home');
+      navigate('login');
       return null;
     }
     return (

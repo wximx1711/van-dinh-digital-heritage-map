@@ -8,7 +8,13 @@ public sealed class HeritageConfiguration : IEntityTypeConfiguration<Heritage>
 {
     public void Configure(EntityTypeBuilder<Heritage> builder)
     {
-        builder.ToTable("Heritage");
+        builder.ToTable("Heritage", t =>
+        {
+            t.HasCheckConstraint("CK_Heritage_Classification",
+                "Classification IN ('national', 'city', 'unranked')");
+            t.HasCheckConstraint("CK_Heritage_Status",
+                "Status IN ('active', 'maintenance', 'closed')");
+        });
         builder.HasKey(x => x.HeritageId);
         builder.Property(x => x.HeritageId).ValueGeneratedOnAdd();
         builder.Property(x => x.PublicId).HasColumnType("nvarchar(20)").IsRequired();
@@ -55,9 +61,6 @@ public sealed class HeritageConfiguration : IEntityTypeConfiguration<Heritage>
         builder.HasIndex(x => x.Code).IsUnique();
         builder.HasIndex(x => x.Slug).IsUnique();
 
-        builder.HasCheckConstraint("CK_Heritage_Classification",
-            "Classification IN ('national', 'city', 'unranked')");
-        builder.HasCheckConstraint("CK_Heritage_Status",
-            "Status IN ('active', 'maintenance', 'closed')");
+
     }
 }

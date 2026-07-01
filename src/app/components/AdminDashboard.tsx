@@ -5,10 +5,11 @@ import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTy
 import {
   LayoutDashboard, Building2, BookOpen, Map, ImageIcon, BarChart2,
   Users, Settings, Bell, LogOut, ChevronRight, TrendingUp, Star,
-  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus
+  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown
 } from 'lucide-react';
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
+import { UserManagement } from './UserManagement';
 import { StatisticsPage } from './StatisticsPage';
 
 interface AdminDashboardProps {
@@ -29,14 +30,15 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const [section, setSection] = useState<AdminSection>('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const allNavItems = [
     { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} />, roles: ['ADMIN', 'MANAGER'] },
-    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} />, roles: ['MANAGER'] },
-    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} />, roles: ['MANAGER'] },
-    { key: 'map', label: t('admin.map_mgmt'), icon: <Map size={16} />, roles: ['MANAGER'] },
-    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} />, roles: ['MANAGER'] },
-    { key: 'statistics', label: t('admin.statistics'), icon: <BarChart2 size={16} />, roles: ['ADMIN', 'MANAGER'] },
+    { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} />, roles: ['ADMIN', 'MANAGER'] },
+    { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} />, roles: ['ADMIN', 'MANAGER'] },
+    { key: 'map', label: t('admin.map_mgmt'), icon: <Map size={16} />, roles: ['ADMIN'] },
+    { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} />, roles: ['ADMIN'] },
+    { key: 'statistics', label: t('admin.statistics'), icon: <BarChart2 size={16} />, roles: ['ADMIN'] },
     { key: 'users', label: t('admin.users'), icon: <Users size={16} />, roles: ['ADMIN'] },
     { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} />, roles: ['ADMIN'] },
   ];
@@ -236,20 +238,68 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
               )}
             </div>
 
-            {/* Profile */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div style={{
-                width: 34, height: 34, borderRadius: '50%',
-                background: 'linear-gradient(135deg, #0F3D5E, #1A5276)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontSize: 13, fontWeight: 700,
-              }}>
-                {initials}
-              </div>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{displayName}</div>
-                <div style={{ fontSize: 10, color: '#5d7a8c' }}>{auth.user?.roleName === 'ADMIN' ? (lang === 'vi' ? 'Quản trị viên' : 'Administrator') : auth.user?.roleName === 'MANAGER' ? (lang === 'vi' ? 'Quản lý' : 'Manager') : (lang === 'vi' ? 'Người dùng' : 'User')}</div>
-              </div>
+            {/* User dropdown */}
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                onBlur={() => setTimeout(() => setUserMenuOpen(false), 200)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '4px 8px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.1)',
+                  background: userMenuOpen ? '#EBF5FB' : 'transparent', cursor: 'pointer',
+                }}
+              >
+                <div style={{
+                  width: 34, height: 34, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #0F3D5E, #1A5276)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', fontSize: 13, fontWeight: 700,
+                }}>
+                  {initials}
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{displayName}</div>
+                  <div style={{ fontSize: 10, color: '#5d7a8c' }}>
+                    {auth.isAdmin ? (lang === 'vi' ? 'Quản trị viên' : 'Administrator') : (lang === 'vi' ? 'Quản lý' : 'Manager')}
+                  </div>
+                </div>
+                <ChevronDown size={14} style={{ color: '#5d7a8c' }} />
+              </button>
+              {userMenuOpen && (
+                <div style={{
+                  position: 'absolute', top: '100%', right: 0, marginTop: 4, zIndex: 300,
+                  background: 'white', borderRadius: 10, minWidth: 180,
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.12)', border: '1px solid rgba(15,61,94,0.08)',
+                  overflow: 'hidden',
+                }}>
+                  <button
+                    onClick={() => { setUserMenuOpen(false); }}
+                    style={{
+                      width: '100%', padding: '10px 16px', border: 'none', cursor: 'pointer',
+                      background: 'white', color: '#0F3D5E', fontSize: 13,
+                      display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#F0F4F8'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'white'; }}
+                  >
+                    <UserCheck size={14} /> {t('common.profile')}
+                  </button>
+                  <div style={{ borderTop: '1px solid rgba(15,61,94,0.08)' }}>
+                    <button
+                      onClick={() => { setUserMenuOpen(false); onLogout(); }}
+                      style={{
+                        width: '100%', padding: '10px 16px', border: 'none', cursor: 'pointer',
+                        background: 'white', color: '#E74C3C', fontSize: 13,
+                        display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FDEDEC'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'white'; }}
+                    >
+                      <LogOut size={14} /> {t('common.logout')}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             <button
@@ -413,7 +463,11 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
             <StatisticsPage isAdmin />
           )}
 
-          {(section === 'intangible' || section === 'map' || section === 'media' || section === 'users' || section === 'settings') && (
+          {section === 'users' && (
+            <UserManagement />
+          )}
+
+          {(section === 'intangible' || section === 'map' || section === 'media' || section === 'settings') && (
             <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
               <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
                 <div style={{ fontSize: 48, marginBottom: 12 }}>🚧</div>

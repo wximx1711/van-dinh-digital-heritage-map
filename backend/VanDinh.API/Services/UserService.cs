@@ -7,8 +7,11 @@ namespace VanDinh.API.Services;
 public interface IUserService
 {
     IReadOnlyList<UserDto> GetAll();
+    UserDto? GetById(long id);
     UserDto Create(UserCreateRequest request);
     UserDto? Update(long id, UserUpdateRequest request);
+    UserDto? UpdateRole(long id, string roleName);
+    UserDto? UpdateStatus(long id, bool status);
     bool Delete(long id);
     bool ResetPassword(long id, string newPassword);
 }
@@ -16,6 +19,12 @@ public interface IUserService
 public sealed class UserService(IAppRepository repository, IPasswordHasher hasher) : IUserService
 {
     public IReadOnlyList<UserDto> GetAll() => repository.Users.Select(x => x.ToDto(repository)).ToList();
+
+    public UserDto? GetById(long id)
+    {
+        var user = repository.FindUser(id);
+        return user?.ToDto(repository);
+    }
 
     public UserDto Create(UserCreateRequest request)
     {
@@ -42,6 +51,25 @@ public sealed class UserService(IAppRepository repository, IPasswordHasher hashe
         user.FullName = request.FullName;
         user.Email = request.Email;
         user.Status = request.Status;
+        repository.UpdateUser(user);
+        return user.ToDto(repository);
+    }
+
+    public UserDto? UpdateRole(long id, string roleName)
+    {
+        var user = repository.FindUser(id);
+        var role = repository.FindRole(roleName);
+        if (user is null || role is null) return null;
+        user.RoleId = role.RoleId;
+        repository.UpdateUser(user);
+        return user.ToDto(repository);
+    }
+
+    public UserDto? UpdateStatus(long id, bool status)
+    {
+        var user = repository.FindUser(id);
+        if (user is null) return null;
+        user.Status = status;
         repository.UpdateUser(user);
         return user.ToDto(repository);
     }

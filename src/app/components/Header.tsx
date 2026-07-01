@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import {
-  Map, BookOpen, BarChart2, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield
+  Map, BookOpen, BarChart2, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -15,6 +15,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
   const auth = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
 
   const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
   const initials = displayName
@@ -24,6 +25,12 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
     .join('')
     .toUpperCase()
     .slice(0, 2) || '?';
+
+  const handleLogoutClick = async () => {
+    setUserMenuOpen(false);
+    await auth.logout();
+    onNavigate('login');
+  };
 
   const navItems = [
     { key: 'home', label: t('nav.home'), icon: null },
@@ -163,50 +170,65 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
           {auth.isLoading ? (
             <div style={{ width: 34, height: 34 }} />
           ) : auth.isAuthenticated && (auth.isAdmin || auth.isManager) ? (
-            <button
-              onClick={() => onNavigate('admin')}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '5px 12px 5px 5px', borderRadius: 20,
-                background: 'rgba(255,255,255,0.12)',
-                border: '1px solid rgba(212,160,23,0.3)',
-                color: 'white', fontSize: 13, fontWeight: 500,
-                cursor: 'pointer', whiteSpace: 'nowrap',
-              }}
-            >
-              <div style={{
-                width: 26, height: 26, borderRadius: '50%',
-                background: 'linear-gradient(135deg, #D4A017, #B8860B)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontSize: 11, fontWeight: 700, flexShrink: 0,
-              }}>
-                {initials}
-              </div>
-              <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</span>
-              <Shield size={11} style={{ color: '#D4A017', flexShrink: 0 }} />
-            </button>
-          ) : auth.isAuthenticated ? (
-            <button
-              onClick={() => onNavigate('home')}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '5px 12px 5px 5px', borderRadius: 20,
-                background: 'rgba(255,255,255,0.12)',
-                border: '1px solid rgba(212,160,23,0.3)',
-                color: 'white', fontSize: 13, fontWeight: 500,
-                cursor: 'pointer', whiteSpace: 'nowrap',
-              }}
-            >
-              <div style={{
-                width: 26, height: 26, borderRadius: '50%',
-                background: 'linear-gradient(135deg, #D4A017, #B8860B)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: 'white', fontSize: 11, fontWeight: 700, flexShrink: 0,
-              }}>
-                {initials}
-              </div>
-              <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</span>
-            </button>
+            <div style={{ position: 'relative' }}>
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 8,
+                  padding: '5px 12px 5px 5px', borderRadius: 20,
+                  background: 'rgba(255,255,255,0.12)',
+                  border: '1px solid rgba(212,160,23,0.3)',
+                  color: 'white', fontSize: 13, fontWeight: 500,
+                  cursor: 'pointer', whiteSpace: 'nowrap',
+                }}
+              >
+                <div style={{
+                  width: 26, height: 26, borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'white', fontSize: 11, fontWeight: 700, flexShrink: 0,
+                }}>
+                  {initials}
+                </div>
+                <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</span>
+                <ChevronDown size={11} style={{ color: '#D4A017', flexShrink: 0 }} />
+              </button>
+              {userMenuOpen && (
+                <div style={{
+                  position: 'absolute', top: '100%', right: 0, marginTop: 4, zIndex: 300,
+                  background: 'white', borderRadius: 10, minWidth: 180,
+                  boxShadow: '0 8px 24px rgba(0,0,0,0.15)', border: '1px solid rgba(15,61,94,0.08)',
+                  overflow: 'hidden',
+                }}>
+                  <button
+                    onClick={() => { setUserMenuOpen(false); onNavigate('admin'); }}
+                    style={{
+                      width: '100%', padding: '10px 16px', border: 'none', cursor: 'pointer',
+                      background: 'white', color: '#0F3D5E', fontSize: 13,
+                      display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left',
+                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#F0F4F8'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'white'; }}
+                  >
+                    <Shield size={14} /> {lang === 'vi' ? 'Quản trị' : 'Admin Panel'}
+                  </button>
+                  <div style={{ borderTop: '1px solid rgba(15,61,94,0.08)' }}>
+                    <button
+                      onClick={handleLogoutClick}
+                      style={{
+                        width: '100%', padding: '10px 16px', border: 'none', cursor: 'pointer',
+                        background: 'white', color: '#E74C3C', fontSize: 13,
+                        display: 'flex', alignItems: 'center', gap: 8, textAlign: 'left',
+                      }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = '#FDEDEC'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'white'; }}
+                    >
+                      <LogOut size={14} /> {t('common.logout')}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <button
               onClick={() => onNavigate('login')}

@@ -8,7 +8,11 @@ public sealed class IntangibleHeritageConfiguration : IEntityTypeConfiguration<I
 {
     public void Configure(EntityTypeBuilder<IntangibleHeritage> builder)
     {
-        builder.ToTable("IntangibleHeritage");
+        builder.ToTable("IntangibleHeritage", t =>
+        {
+            t.HasCheckConstraint("CK_IntangibleHeritage_Category",
+                "Category IN ('festival', 'performance', 'craft', 'ritual', 'story')");
+        });
         builder.HasKey(x => x.IntangibleId);
         builder.Property(x => x.IntangibleId).ValueGeneratedOnAdd();
         builder.Property(x => x.PublicId).HasColumnType("nvarchar(20)").IsRequired();
@@ -26,7 +30,5 @@ public sealed class IntangibleHeritageConfiguration : IEntityTypeConfiguration<I
         builder.HasIndex(x => x.Category);
         builder.HasIndex(x => x.PublicId).IsUnique();
 
-        builder.HasCheckConstraint("CK_IntangibleHeritage_Category",
-            "Category IN ('festival', 'performance', 'craft', 'ritual', 'story')");
     }
 }

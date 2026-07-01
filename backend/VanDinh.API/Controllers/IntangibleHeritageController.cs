@@ -19,7 +19,7 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     [HttpGet]
     public IActionResult GetAll() => ApiResponse.Success(repository.IntangibleHeritages.Select(x => x.ToDto()).ToList());
 
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(IntangibleHeritageRequest request)
@@ -44,7 +44,7 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
         return ApiResponse.Success(item.ToDto(), "Intangible heritage created successfully.", StatusCodes.Status201Created);
     }
 
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPut("{id}")]
     [ValidateAntiForgeryToken]
     public IActionResult Update(string id, IntangibleHeritageRequest request)
@@ -69,7 +69,7 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
         return ApiResponse.Success(item.ToDto(), "Intangible heritage updated successfully.");
     }
 
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpDelete("{id}")]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(string id)

@@ -19,7 +19,7 @@ public sealed record LoginRequest(
 public sealed record LoginResponse(long UserId, string Username, string? FullName, string RoleName);
 
 /// <summary>User data transfer object for display.</summary>
-public sealed record UserDto(long UserId, string Username, string? FullName, string? Email, string RoleName, bool Status);
+public sealed record UserDto(long UserId, string Username, string? FullName, string? Email, string RoleName, bool Status, DateTime CreatedAt);
 
 /// <summary>Request to create a new user account.</summary>
 public sealed record UserCreateRequest(
@@ -43,6 +43,12 @@ public sealed record UserUpdateRequest(string RoleName, string? FullName, [Email
 
 /// <summary>Request to reset user password.</summary>
 public sealed record ResetPasswordRequest([Required, MinLength(6)] string NewPassword);
+
+/// <summary>Request to update user role.</summary>
+public sealed record UpdateRoleRequest([Required] string RoleName);
+
+/// <summary>Request to update user status.</summary>
+public sealed record UpdateStatusRequest(bool Status);
 
 /// <summary>Heritage category data transfer object.</summary>
 public sealed record HeritageCategoryDto(int CategoryId, string Code, string NameVi, string NameEn, string? IconUrl);

@@ -24,7 +24,7 @@ public sealed class MonthlyUpdatesController(IAppRepository repository, IActivit
     /// <summary>
     /// Create a new monthly update entry.
     /// </summary>
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(MonthlyUpdateRequest request)
@@ -50,7 +50,7 @@ public sealed class MonthlyUpdatesController(IAppRepository repository, IActivit
     /// <summary>
     /// Update an existing monthly update entry.
     /// </summary>
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPut("{id:int}")]
     [ValidateAntiForgeryToken]
     public IActionResult Update(int id, MonthlyUpdateRequest request)
@@ -75,7 +75,7 @@ public sealed class MonthlyUpdatesController(IAppRepository repository, IActivit
     /// <summary>
     /// Delete a monthly update entry.
     /// </summary>
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpDelete("{id:int}")]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(int id)

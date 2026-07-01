@@ -37,6 +37,14 @@ public sealed class UsersController(IUserService service, IActivityLogService lo
         return ApiResponse.Success(result);
     }
 
+    [HttpGet("{id:long}")]
+    public IActionResult GetById(long id)
+    {
+        var user = service.GetById(id);
+        if (user is null) return ApiResponse.NotFound("User not found.");
+        return ApiResponse.Success(user);
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(UserCreateRequest request)
@@ -66,6 +74,26 @@ public sealed class UsersController(IUserService service, IActivityLogService lo
         if (user is null) return ApiResponse.NotFound("User not found.");
         logs.Log(User, "UPDATE", "Users", id, user.Username);
         return ApiResponse.Success(user, "User updated successfully.");
+    }
+
+    [HttpPut("{id:long}/role")]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateRole(long id, UpdateRoleRequest request)
+    {
+        var user = service.UpdateRole(id, request.RoleName);
+        if (user is null) return ApiResponse.NotFound("User not found.");
+        logs.Log(User, "UPDATE_ROLE", "Users", id, request.RoleName);
+        return ApiResponse.Success(user, "Role updated successfully.");
+    }
+
+    [HttpPut("{id:long}/status")]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateStatus(long id, UpdateStatusRequest request)
+    {
+        var user = service.UpdateStatus(id, request.Status);
+        if (user is null) return ApiResponse.NotFound("User not found.");
+        logs.Log(User, "UPDATE_STATUS", "Users", id, request.Status ? "Active" : "Disabled");
+        return ApiResponse.Success(user, $"User {(request.Status ? "enabled" : "disabled")} successfully.");
     }
 
     [HttpPost("{id:long}/reset-password")]

@@ -51,7 +51,7 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
     /// Create a new heritage site.
     /// </summary>
     /// <returns>Created heritage site details</returns>
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Create(HeritageRequest request)
@@ -72,7 +72,7 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
     /// Update an existing heritage site.
     /// </summary>
     /// <returns>Updated heritage site details</returns>
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpPut("{id}")]
     [ValidateAntiForgeryToken]
     public IActionResult Update(string id, HeritageRequest request)
@@ -92,7 +92,7 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
     /// <summary>
     /// Soft delete a heritage site (marks as deleted).
     /// </summary>
-    [Authorize(Roles = "MANAGER")]
+    [Authorize(Roles = "ADMIN,MANAGER")]
     [HttpDelete("{id}")]
     [ValidateAntiForgeryToken]
     public IActionResult Delete(string id)

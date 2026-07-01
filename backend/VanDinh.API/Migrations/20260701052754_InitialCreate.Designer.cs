@@ -12,7 +12,7 @@ using VanDinh.API.Data;
 namespace VanDinh.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260701041829_InitialCreate")]
+    [Migration("20260701052754_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
