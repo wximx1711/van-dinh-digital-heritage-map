@@ -17,9 +17,19 @@ export async function getCsrfToken(): Promise<{ token: string; headerName: strin
   return data;
 }
 
+function getErrorMsg(res: Response, body: any): string {
+  if (body?.errors && Array.isArray(body.errors) && body.errors.length > 0) {
+    return body.errors.join('; ');
+  }
+  return body?.message || `Request failed: ${res.status} ${res.statusText}`;
+}
+
 export async function apiGet<T>(path: string): Promise<T> {
   const res = await fetch(`/api${path}`, { credentials: 'include' });
-  if (!res.ok) throw new Error(`GET ${path} failed: ${res.statusText}`);
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(getErrorMsg(res, body));
+  }
   const json = await res.json() as ApiResponse<T>;
   if (!json.success) throw new Error(json.message || `GET ${path} failed`);
   return json.data as T;
@@ -39,7 +49,7 @@ export async function apiPost<T>(path: string, body: unknown, isFormData = false
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || `POST ${path} failed`);
+    throw new Error(getErrorMsg(res, errorData));
   }
   const json = await res.json() as ApiResponse<T>;
   if (!json.success) throw new Error(json.message || `POST ${path} failed`);
@@ -59,7 +69,7 @@ export async function apiPut<T>(path: string, body: unknown): Promise<T> {
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || `PUT ${path} failed`);
+    throw new Error(getErrorMsg(res, errorData));
   }
   const json = await res.json() as ApiResponse<T>;
   if (!json.success) throw new Error(json.message || `PUT ${path} failed`);
@@ -75,7 +85,7 @@ export async function apiDelete<T>(path: string): Promise<T> {
   });
   if (!res.ok) {
     const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || `DELETE ${path} failed`);
+    throw new Error(getErrorMsg(res, errorData));
   }
   const json = await res.json() as ApiResponse<T>;
   if (!json.success) throw new Error(json.message || `DELETE ${path} failed`);

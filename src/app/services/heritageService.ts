@@ -80,6 +80,7 @@ export async function createHeritageSite(data: Record<string, unknown>): Promise
 }
 
 export async function updateHeritageSite(id: string, data: Record<string, unknown>): Promise<HeritageSite> {
+  if (!id || !id.trim()) throw new Error('Cannot update: heritage ID is empty');
   const dto = await apiPut<HeritageDto>(`/heritage/${encodeURIComponent(id)}`, data);
   return toHeritageSite(dto);
 }

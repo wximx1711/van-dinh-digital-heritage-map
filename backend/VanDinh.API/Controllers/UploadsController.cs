@@ -1,19 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using VanDinh.API.DTOs;
 using VanDinh.API.Responses;
 using VanDinh.API.Services;
 
 namespace VanDinh.API.Controllers;
 
-/// <summary>
-/// Generic file upload endpoint supporting images, videos, and documents.
-/// Files are stored under wwwroot/uploads/ with unique UUID-based names.
-/// </summary>
 [ApiController]
 [Route("api/uploads")]
 [Authorize(Roles = "MANAGER")]
-public sealed class UploadsController(IUploadService uploads) : ControllerBase
+public sealed class UploadsController(IUploadService uploads, IWebHostEnvironment env) : ControllerBase
 {
     [HttpPost("images")]
     [ValidateAntiForgeryToken]
@@ -58,5 +53,51 @@ public sealed class UploadsController(IUploadService uploads) : ControllerBase
         {
             return ApiResponse.Error(ex.Message);
         }
+    }
+
+    [HttpDelete("{**path}")]
+    [ValidateAntiForgeryToken]
+    public IActionResult Delete(string path)
+    {
+        var root = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+        var filePath = Path.Combine(root, "uploads", path);
+        if (!System.IO.File.Exists(filePath))
+            return ApiResponse.Error("File not found.");
+        System.IO.File.Delete(filePath);
+        return ApiResponse.Success(new { deleted = true }, "File deleted successfully.");
+    }
+
+    [HttpGet("list")]
+    public IActionResult ListFiles([FromQuery] string folder = "images")
+    {
+        var root = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+        var targetDir = Path.Combine(root, "uploads", folder);
+        if (!Directory.Exists(targetDir))
+            return ApiResponse.Success(Array.Empty<object>());
+
+        var files = Directory.GetFiles(targetDir)
+            .Select(f =>
+            {
+                var info = new FileInfo(f);
+                var type = folder switch
+                {
+                    "images" => "image",
+                    "videos" => "video",
+                    "documents" => "document",
+                    _ => "unknown"
+                };
+                return new
+                {
+                    url = $"/uploads/{folder}/{info.Name}",
+                    fileName = info.Name,
+                    size = info.Length,
+                    type,
+                    uploadedAt = info.CreationTimeUtc.ToString("o")
+                };
+            })
+            .OrderByDescending(f => f.uploadedAt)
+            .ToList();
+
+        return ApiResponse.Success(files);
     }
 }

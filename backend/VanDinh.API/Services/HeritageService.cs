@@ -7,6 +7,7 @@ namespace VanDinh.API.Services;
 public interface IHeritageService
 {
     IReadOnlyList<HeritageDto> Search(string? query, string? type, string? classification, string? status);
+    IReadOnlyList<HeritageDto> SearchAdvanced(string? query, string? type, string? classification, string? status, string? yearBuilt, string? district);
     HeritageDto? Get(string id);
     HeritageDto Create(HeritageRequest request, long userId);
     HeritageDto? Update(string id, HeritageRequest request);
@@ -34,13 +35,51 @@ public sealed class HeritageService(IAppRepository repository) : IHeritageServic
         return items.OrderBy(x => x.Code).Select(x => x.ToDto(repository)).ToList();
     }
 
+    public IReadOnlyList<HeritageDto> SearchAdvanced(string? query, string? type, string? classification, string? status, string? yearBuilt, string? district)
+    {
+        var items = repository.Heritages.AsEnumerable();
+        if (!string.IsNullOrWhiteSpace(query))
+        {
+            items = items.Where(x => x.NameVi.Contains(query, StringComparison.OrdinalIgnoreCase)
+                || x.NameEn.Contains(query, StringComparison.OrdinalIgnoreCase)
+                || x.Code.Contains(query, StringComparison.OrdinalIgnoreCase));
+        }
+        if (!string.IsNullOrWhiteSpace(type))
+        {
+            var category = repository.FindCategory(type);
+            items = items.Where(x => category is not null && x.CategoryId == category.CategoryId);
+        }
+        if (!string.IsNullOrWhiteSpace(classification)) items = items.Where(x => x.Classification == classification);
+        if (!string.IsNullOrWhiteSpace(status)) items = items.Where(x => x.Status == status);
+        if (!string.IsNullOrWhiteSpace(yearBuilt)) items = items.Where(x => x.YearBuilt != null && x.YearBuilt.Contains(yearBuilt));
+        if (!string.IsNullOrWhiteSpace(district))
+        {
+            items = items.Where(x =>
+                (x.AddressVi != null && x.AddressVi.Contains(district, StringComparison.OrdinalIgnoreCase)) ||
+                (x.AddressEn != null && x.AddressEn.Contains(district, StringComparison.OrdinalIgnoreCase)));
+        }
+        return items.OrderBy(x => x.Code).Select(x => x.ToDto(repository)).ToList();
+    }
+
     public HeritageDto? Get(string id) => repository.FindHeritage(id)?.ToDto(repository);
 
     public HeritageDto Create(HeritageRequest request, long userId)
     {
         var category = repository.FindCategory(request.Type) ?? throw new InvalidOperationException("Category not found.");
+
+        if (repository.Heritages.Any(h => h.NameVi == request.NameVi))
+            throw new InvalidOperationException("A heritage site with this Vietnamese name already exists.");
+        if (repository.Heritages.Any(h => h.NameEn == request.NameEn))
+            throw new InvalidOperationException("A heritage site with this English name already exists.");
+        if (!string.IsNullOrWhiteSpace(request.GoogleMapUrl) && repository.Heritages.Any(h => h.GoogleMapUrl == request.GoogleMapUrl))
+            throw new InvalidOperationException("This Google Maps URL is already used by another heritage site.");
+        if (repository.Heritages.Any(h => h.Code == request.Code))
+            throw new InvalidOperationException("This heritage code is already in use.");
+
+        var publicId = GeneratePublicId();
         var heritage = new Heritage
         {
+            PublicId = publicId,
             Code = request.Code,
             CategoryId = category.CategoryId,
             NameVi = request.NameVi,
@@ -75,6 +114,15 @@ public sealed class HeritageService(IAppRepository repository) : IHeritageServic
         var category = repository.FindCategory(request.Type);
         if (heritage is null || category is null) return null;
 
+        if (repository.Heritages.Any(h => h.NameVi == request.NameVi && h.PublicId != id))
+            throw new InvalidOperationException("A heritage site with this Vietnamese name already exists.");
+        if (repository.Heritages.Any(h => h.NameEn == request.NameEn && h.PublicId != id))
+            throw new InvalidOperationException("A heritage site with this English name already exists.");
+        if (!string.IsNullOrWhiteSpace(request.GoogleMapUrl) && repository.Heritages.Any(h => h.GoogleMapUrl == request.GoogleMapUrl && h.PublicId != id))
+            throw new InvalidOperationException("This Google Maps URL is already used by another heritage site.");
+        if (repository.Heritages.Any(h => h.Code == request.Code && h.PublicId != id))
+            throw new InvalidOperationException("This heritage code is already in use.");
+
         heritage.Code = request.Code;
         heritage.CategoryId = category.CategoryId;
         heritage.NameVi = request.NameVi;
@@ -100,6 +148,18 @@ public sealed class HeritageService(IAppRepository repository) : IHeritageServic
         if (repository.FindHeritage(id) is null) return false;
         repository.DeleteHeritage(id);
         return true;
+    }
+
+    private string GeneratePublicId()
+    {
+        var existingIds = repository.Heritages
+            .Where(h => h.PublicId.StartsWith("h"))
+            .Select(h => h.PublicId)
+            .ToList();
+
+        var num = 1;
+        while (existingIds.Contains($"h{num:D4}")) { num++; }
+        return $"h{num:D4}";
     }
 
     private static string Slugify(string value)

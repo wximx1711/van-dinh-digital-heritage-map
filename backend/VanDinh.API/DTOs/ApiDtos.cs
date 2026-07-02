@@ -152,7 +152,7 @@ public sealed record HeritageRequest(
     string? Guardian);
 
 /// <summary>Intangible heritage data transfer object.</summary>
-public sealed record IntangibleHeritageDto(string Id, string NameVi, string NameEn, string Category, string? DescriptionVi, string? DescriptionEn, string? Image, string? VideoUrl);
+public sealed record IntangibleHeritageDto(string Id, string NameVi, string NameEn, string Category, string? DescriptionVi, string? DescriptionEn, string? Image, string? VideoUrl, string CreatedAt, string? UpdatedAt);
 
 /// <summary>Request to create or update intangible heritage.</summary>
 public sealed record IntangibleHeritageRequest(
@@ -184,7 +184,7 @@ public sealed record AboutPageDto(int AboutId, string? Title, string? Content, s
 public sealed record AboutPageRequest(string? Title, string? Content, string? BannerImage);
 
 /// <summary>Activity log data transfer object.</summary>
-public sealed record ActivityLogDto(long LogId, long UserId, string? Username, string? Action, string? EntityName, long? EntityId, string? Description, DateTime CreatedAt);
+public sealed record ActivityLogDto(long LogId, long UserId, string? Username, string? RoleName, string? Action, string? EntityName, long? EntityId, string? Description, string? IpAddress, DateTime CreatedAt);
 
 /// <summary>System settings data transfer object.</summary>
 public sealed record SystemSettingDto(int SettingId, string? WebsiteName, string? LogoUrl, string? FooterText, string? ContactEmail, string? Phone, string? Address, string? FacebookUrl, string? TiktokUrl);

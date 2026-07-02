@@ -3,6 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useTypeLabels, useClassificationLabels } from '../../presentation/hooks/useHeritageData';
 import type { HeritageSite, HeritageType, Classification } from '../../core/types';
 import { classificationColors } from '../constants';
+import { getImageUrl } from '../utils/url';
 import {
   X, MapPin, Share2, QrCode, Navigation, Eye, RotateCcw, Search,
   ZoomIn, ZoomOut, Filter, ChevronDown, ChevronUp
@@ -411,7 +412,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
               {/* Site image */}
               <div style={{ position: 'relative', height: 140 }}>
                 <img
-                  src={selectedSite.image}
+                  src={getImageUrl(selectedSite.image)}
                   alt={lang === 'vi' ? selectedSite.nameVi : selectedSite.nameEn}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />

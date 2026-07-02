@@ -10,6 +10,8 @@ interface IntangibleHeritageDto {
   descriptionEn: string | null;
   image: string | null;
   videoUrl: string | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface IntangibleSearchResult {
@@ -30,6 +32,8 @@ function toIntangibleHeritage(dto: IntangibleHeritageDto): IntangibleHeritage {
     descriptionEn: dto.descriptionEn ?? '',
     image: dto.image ?? '',
     videoUrl: dto.videoUrl ?? undefined,
+    createdAt: dto.createdAt,
+    updatedAt: dto.updatedAt,
   };
 }
 

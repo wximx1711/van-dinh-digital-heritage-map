@@ -12,6 +12,13 @@ namespace VanDinh.API.Controllers;
 [Route("api/intangible-heritage")]
 public sealed class IntangibleHeritageController(IAppRepository repository, IActivityLogService logs) : ControllerBase
 {
+    [HttpGet("{id:minlength(1)}")]
+    public IActionResult Get([FromRoute] string id)
+    {
+        var item = repository.FindIntangible(id);
+        return item is null ? ApiResponse.NotFound("Intangible heritage not found.") : ApiResponse.Success(item.ToDto());
+    }
+
     [HttpGet]
     public IActionResult GetAll([FromQuery] string? q, [FromQuery] string? category, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
     {
@@ -41,13 +48,18 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     [Authorize(Roles = "MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(IntangibleHeritageRequest request)
+    public IActionResult Create([FromBody] IntangibleHeritageRequest request)
     {
         if (!ModelState.IsValid)
         {
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToArray();
             return ApiResponse.Error("Validation failed.", errors);
         }
+
+        if (repository.IntangibleHeritages.Any(i => i.NameVi == request.NameVi))
+            return ApiResponse.Error("An intangible heritage with this Vietnamese name already exists.");
+        if (repository.IntangibleHeritages.Any(i => i.NameEn == request.NameEn))
+            return ApiResponse.Error("An intangible heritage with this English name already exists.");
 
         var item = repository.AddIntangible(new IntangibleHeritage
         {
@@ -64,9 +76,9 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     }
 
     [Authorize(Roles = "MANAGER")]
-    [HttpPut("{id}")]
+    [HttpPut("{id:minlength(1)}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Update(string id, IntangibleHeritageRequest request)
+    public IActionResult Update([FromRoute] string id, [FromBody] IntangibleHeritageRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -76,6 +88,11 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
 
         var item = repository.FindIntangible(id);
         if (item is null) return ApiResponse.NotFound("Intangible heritage not found.");
+
+        if (repository.IntangibleHeritages.Any(i => i.NameVi == request.NameVi && i.PublicId != id))
+            return ApiResponse.Error("An intangible heritage with this Vietnamese name already exists.");
+        if (repository.IntangibleHeritages.Any(i => i.NameEn == request.NameEn && i.PublicId != id))
+            return ApiResponse.Error("An intangible heritage with this English name already exists.");
         item.NameVi = request.NameVi;
         item.NameEn = request.NameEn;
         item.Category = request.Category;
@@ -89,9 +106,9 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
     }
 
     [Authorize(Roles = "MANAGER")]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:minlength(1)}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(string id)
+    public IActionResult Delete([FromRoute] string id)
     {
         var item = repository.FindIntangible(id);
         if (item is null) return ApiResponse.NotFound("Intangible heritage not found.");

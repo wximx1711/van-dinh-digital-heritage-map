@@ -11,11 +11,12 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { RelicsPage } from './components/RelicsPage';
 import { StatisticsPage } from './components/StatisticsPage';
 import { IntangiblePage } from './components/IntangiblePage';
+import { NotFoundPage } from './components/NotFoundPage';
 import type { UserInfo } from '../core/types';
 
 type Page =
   | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
-  | 'about' | 'contact' | 'heritage-detail' | 'login' | 'admin';
+  | 'about' | 'contact' | 'heritage-detail' | 'login' | 'admin' | '404';
 
 function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { lang } = useLanguage();
@@ -225,7 +226,7 @@ function AppInner() {
           borderBottom: '2px solid #D4A017',
         }}>
           <span style={{ color: '#D4A017', fontSize: 13, fontWeight: 700, fontFamily: 'Merriweather, serif' }}>
-            {auth.isAdmin ? '👤 Vân Đình — Quản trị người dùng' : '🏛️ Di sản Vân Đình — Quản trị hệ thống'}
+            {auth.isAdmin ? '👤 Vân Đình — Quản trị người dùng' : '🏛️ Di sản Vân Đình — Quản lý nội dung'}
           </span>
           <button onClick={() => navigate('home')} style={{ padding: '4px 12px', borderRadius: 5, background: 'rgba(255,255,255,0.1)', border: 'none', color: 'rgba(255,255,255,0.8)', fontSize: 12, cursor: 'pointer' }}>
             ← Trang chủ
@@ -259,6 +260,7 @@ function AppInner() {
       case 'statistics': return <StatisticsPageWrapper onNavigate={navigate} />;
       case 'about': return <AboutPage onNavigate={navigate} />;
       case 'contact': return <ContactPage onNavigate={navigate} />;
+      case '404': return <NotFoundPage onNavigate={navigate} />;
       default: return <HomePage onNavigate={navigate} />;
     }
   };

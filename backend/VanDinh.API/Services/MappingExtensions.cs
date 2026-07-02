@@ -47,8 +47,8 @@ public static class MappingExtensions
     public static HeritageImageDto ToDto(this HeritageImage item) => new(item.ImageId, item.ImageUrl, item.Caption, item.SortOrder);
     public static HeritageVideoDto ToDto(this HeritageVideo item) => new(item.VideoId, item.Title, item.VideoType, item.VideoUrl, item.ThumbnailUrl);
     public static HeritageDocumentDto ToDto(this HeritageDocument item) => new(item.DocumentId, item.FileName, item.FileUrl, item.FileType, item.FileSize);
-    public static IntangibleHeritageDto ToDto(this IntangibleHeritage item) => new(item.PublicId, item.NameVi, item.NameEn, item.Category, item.DescriptionVi, item.DescriptionEn, item.ImageUrl, item.VideoUrl);
-    public static ActivityLogDto ToDto(this ActivityLog item) => new(item.LogId, item.UserId, item.User?.Username ?? "system", item.Action, item.EntityName, item.EntityId, item.Description, item.CreatedAt);
+    public static IntangibleHeritageDto ToDto(this IntangibleHeritage item) => new(item.PublicId, item.NameVi, item.NameEn, item.Category, item.DescriptionVi, item.DescriptionEn, item.ImageUrl, item.VideoUrl, item.CreatedAt.ToString("yyyy-MM-dd"), item.UpdatedAt?.ToString("yyyy-MM-dd"));
+    public static ActivityLogDto ToDto(this ActivityLog item) => new(item.LogId, item.UserId, item.User?.Username ?? "system", item.User?.Role?.RoleName ?? "", item.Action, item.EntityName, item.EntityId, item.Description, item.IpAddress, item.CreatedAt);
     public static AboutPageDto ToDto(this AboutPage item) => new(item.AboutId, item.Title, item.Content, item.BannerImage, item.UpdatedAt);
     public static SystemSettingDto ToDto(this SystemSetting item) => new(item.SettingId, item.WebsiteName, item.LogoUrl, item.FooterText, item.ContactEmail, item.Phone, item.Address, item.FacebookUrl, item.TiktokUrl);
     public static MonthlyUpdateDto ToDto(this MonthlyUpdate item) => new(item.UpdateId, item.MonthLabel, item.DisplayVi, item.DisplayEn, item.UpdateCount);

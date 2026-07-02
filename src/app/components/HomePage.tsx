@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
 import { classificationColors, classificationBackgrounds, intangibleCategoryIcons } from '../constants';
+import { getImageUrl } from '../utils/url';
 import {
   Search, Building2, Star, Award, LayoutGrid, BookOpen,
   Play, ArrowRight, ChevronRight, Eye, MapPin, Calendar
@@ -309,7 +310,7 @@ const handleSearch = () => {
                 {/* Image */}
                 <div style={{ position: 'relative', height: 180, overflow: 'hidden', background: '#dce8f0' }}>
                   <img
-                    src={site.image}
+                    src={getImageUrl(site.image)}
                     alt={lang === 'vi' ? site.nameVi : site.nameEn}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLImageElement).style.transform = 'scale(1.05)'; }}
@@ -426,7 +427,7 @@ const handleSearch = () => {
               >
                 <div style={{ position: 'relative', height: 160, background: '#dce8f0', overflow: 'hidden' }}>
                   <img
-                    src={item.image}
+                    src={getImageUrl(item.image)}
                     alt={lang === 'vi' ? item.nameVi : item.nameEn}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />

@@ -16,6 +16,7 @@ public sealed class ActivityLogConfiguration : IEntityTypeConfiguration<Activity
         builder.Property(x => x.EntityName).HasColumnType("nvarchar(100)").IsRequired();
         builder.Property(x => x.EntityId);
         builder.Property(x => x.Description).HasColumnType("nvarchar(max)");
+        builder.Property(x => x.IpAddress).HasColumnType("nvarchar(45)");
         builder.Property(x => x.CreatedAt).HasColumnType("datetime2").HasDefaultValueSql("SYSUTCDATETIME()");
 
         builder.HasOne(x => x.User)

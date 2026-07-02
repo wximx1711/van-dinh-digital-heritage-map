@@ -29,6 +29,7 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
     public IReadOnlyList<ActivityLog> ActivityLogs => _context.ActivityLogs
         .AsNoTracking()
         .Include(l => l.User)
+            .ThenInclude(u => u.Role)
         .OrderByDescending(l => l.CreatedAt)
         .ToList();
 

@@ -42,4 +42,47 @@ export interface IntangibleHeritage {
   descriptionEn: string;
   image: string;
   videoUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface HeritageCategory {
+  categoryId: number;
+  code: string;
+  nameVi: string;
+  nameEn: string;
+  iconUrl: string;
+}
+
+export interface MonthlyUpdate {
+  updateId: number;
+  monthLabel: string;
+  displayVi: string;
+  displayEn: string;
+  updateCount: number;
+}
+
+export interface AboutPageData {
+  aboutId: number;
+  title: string;
+  content: string;
+  bannerImage: string;
+  updatedAt: string;
+}
+
+export interface AboutContent {
+  introductionVi: string;
+  introductionEn: string;
+  historyVi: string;
+  historyEn: string;
+  contactVi: string;
+  contactEn: string;
+}
+
+export interface MediaFile {
+  url: string;
+  fileName: string;
+  size: number;
+  type: 'image' | 'video' | 'document';
+  uploadedAt: string;
 }

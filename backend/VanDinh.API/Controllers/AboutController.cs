@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VanDinh.API.DTOs;
@@ -36,6 +37,7 @@ public sealed class AboutController(IAppRepository repository, IActivityLogServi
         about.Title = request.Title;
         about.Content = request.Content;
         about.BannerImage = request.BannerImage;
+        about.UpdatedBy = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         about.UpdatedAt = DateTime.UtcNow;
         repository.SaveChanges();
         logs.Log(User, "UPDATE", "AboutPage", about.AboutId);

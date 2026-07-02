@@ -21,12 +21,12 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
     /// </summary>
     /// <returns>Paginated list of matching heritage sites</returns>
     [HttpGet]
-    public async Task<IActionResult> Search([FromQuery] string? q, [FromQuery] string? type, [FromQuery] string? classification, [FromQuery] string? status, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+    public IActionResult Search([FromQuery] string? q, [FromQuery] string? type, [FromQuery] string? classification, [FromQuery] string? status, [FromQuery] string? yearBuilt, [FromQuery] string? district, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var allResults = service.Search(q, type, classification, status).ToList();
+        var allResults = service.SearchAdvanced(q, type, classification, status, yearBuilt, district).ToList();
         var totalRecords = allResults.Count;
         var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
         var data = allResults.Skip((page - 1) * pageSize).Take(pageSize).ToList();
@@ -40,8 +40,8 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
     /// </summary>
     /// <param name="id">The public ID of the heritage site (e.g., h001).</param>
     /// <returns>Full heritage site details</returns>
-    [HttpGet("{id}")]
-    public IActionResult Get(string id)
+    [HttpGet("{id:minlength(1)}")]
+    public IActionResult Get([FromRoute] string id)
     {
         var item = service.Get(id);
         return item is null ? ApiResponse.NotFound("Heritage item not found.") : ApiResponse.Success(item);
@@ -54,7 +54,7 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
     [Authorize(Roles = "MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create(HeritageRequest request)
+    public IActionResult Create([FromBody] HeritageRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -62,10 +62,17 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
             return ApiResponse.Error("Validation failed.", errors);
         }
 
-        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        var item = service.Create(request, userId);
-        logs.Log(User, "CREATE", "Heritage", repository.FindHeritage(item.Id)?.HeritageId, item.Code);
-        return ApiResponse.Success(item, "Heritage created successfully.", StatusCodes.Status201Created);
+        try
+        {
+            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var item = service.Create(request, userId);
+            logs.Log(User, "CREATE", "Heritage", repository.FindHeritage(item.Id)?.HeritageId, item.Code);
+            return ApiResponse.Success(item, "Heritage created successfully.", StatusCodes.Status201Created);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ApiResponse.Error(ex.Message);
+        }
     }
 
     /// <summary>
@@ -73,9 +80,9 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
     /// </summary>
     /// <returns>Updated heritage site details</returns>
     [Authorize(Roles = "MANAGER")]
-    [HttpPut("{id}")]
+    [HttpPut("{id:minlength(1)}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Update(string id, HeritageRequest request)
+    public IActionResult Update([FromRoute] string id, [FromBody] HeritageRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -83,19 +90,26 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
             return ApiResponse.Error("Validation failed.", errors);
         }
 
-        var item = service.Update(id, request);
-        if (item is null) return ApiResponse.NotFound("Heritage item not found.");
-        logs.Log(User, "UPDATE", "Heritage", repository.FindHeritage(id)?.HeritageId, item.Code);
-        return ApiResponse.Success(item, "Heritage updated successfully.");
+        try
+        {
+            var item = service.Update(id, request);
+            if (item is null) return ApiResponse.NotFound("Heritage item not found.");
+            logs.Log(User, "UPDATE", "Heritage", repository.FindHeritage(id)?.HeritageId, item.Code);
+            return ApiResponse.Success(item, "Heritage updated successfully.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ApiResponse.Error(ex.Message);
+        }
     }
 
     /// <summary>
     /// Soft delete a heritage site (marks as deleted).
     /// </summary>
     [Authorize(Roles = "MANAGER")]
-    [HttpDelete("{id}")]
+    [HttpDelete("{id:minlength(1)}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(string id)
+    public IActionResult Delete([FromRoute] string id)
     {
         var entityId = repository.FindHeritage(id)?.HeritageId;
         if (!service.Delete(id)) return ApiResponse.NotFound("Heritage item not found.");

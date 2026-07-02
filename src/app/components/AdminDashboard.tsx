@@ -2,23 +2,32 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
+import { apiGet } from '../services/api';
+import { getImageUrl } from '../utils/url';
 import {
-  LayoutDashboard, Building2, BookOpen, ImageIcon, BarChart2,
-  Users, Settings, Bell, LogOut, ChevronRight, TrendingUp, Star,
-  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown, List, Calendar, Info, ClipboardList
+  LayoutDashboard, Building2, BookOpen, ImageIcon,
+  Users, Settings, Bell, LogOut, ChevronRight, Star,
+  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown, List, Calendar, Info, ClipboardList, QrCode as QrCodeIcon
 } from 'lucide-react';
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
 import { UserManagement } from './UserManagement';
 import { StatisticsPage } from './StatisticsPage';
 import { IntangibleManagement } from './IntangibleManagement';
+import { HeritageCategoriesManagement } from './HeritageCategoriesManagement';
+import { AboutPageManagement } from './AboutPageManagement';
+import { MonthlyUpdatesManagement } from './MonthlyUpdatesManagement';
+import { MediaManagement } from './MediaManagement';
+import { QrManagement } from './QrManagement';
+import { SystemSettingsManagement } from './SystemSettingsManagement';
+import { ActivityLogPage } from './ActivityLogPage';
 
 interface AdminDashboardProps {
   onNavigate: (page: string) => void;
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'statistics' | 'users' | 'settings' | 'activity-logs';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'statistics' | 'users' | 'settings' | 'activity-logs' | 'qr';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -32,6 +41,16 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [stats, setStats] = useState<any>(null);
+
+  useEffect(() => {
+    apiGet<any>('/statistics').then(setStats).catch(() => {});
+  }, []);
+
+  const totalImages = stats?.images ?? heritageSites.reduce((s, h) => s + (h.images?.length || 0), 0);
+  const totalVideos = stats?.videos ?? 0;
+  const totalDocuments = stats?.documents ?? 0;
+  const totalIntangible = stats?.intangible ?? intangibleHeritage.length;
 
   const adminNavItems = [
     { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} /> },
@@ -47,6 +66,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'monthly-updates', label: t('admin.monthly_updates'), icon: <Calendar size={16} /> },
     { key: 'about', label: t('admin.about'), icon: <Info size={16} /> },
     { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} /> },
+    { key: 'qr', label: lang === 'vi' ? 'QR Code' : 'QR Code', icon: <QrCodeIcon size={16} /> },
     { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} /> },
   ];
 
@@ -337,14 +357,16 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
               </div>
 
               {/* Stats cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 16, marginBottom: 24 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, marginBottom: 24 }}>
                 {[
-                  { label: t('stats.total'), value: heritageSites.length, icon: <Building2 size={20} />, color: '#0F3D5E', trend: '+2' },
-                  { label: t('stats.national'), value: nationalCount, icon: <Star size={20} />, color: '#E74C3C', trend: '0' },
-                  { label: t('stats.city'), value: cityCount, icon: <Award size={20} />, color: '#1A5276', trend: '+1' },
-                  { label: t('stats.unranked'), value: unrankedCount, icon: <LayoutGrid size={20} />, color: '#7F8C8D', trend: '+1' },
-                  { label: t('stats.intangible'), value: intangibleHeritage.length, icon: <BookOpen size={20} />, color: '#D4A017', trend: '0' },
-                  { label: lang === 'vi' ? 'Cập nhật T4/2024' : 'Apr 2024 Updates', value: 7, icon: <RefreshCw size={20} />, color: '#27AE60', trend: '+7' },
+                  { label: t('stats.total'), value: heritageSites.length, icon: <Building2 size={18} />, color: '#0F3D5E' },
+                  { label: t('stats.national'), value: nationalCount, icon: <Star size={18} />, color: '#E74C3C' },
+                  { label: t('stats.city'), value: cityCount, icon: <Award size={18} />, color: '#1A5276' },
+                  { label: t('stats.unranked'), value: unrankedCount, icon: <LayoutGrid size={18} />, color: '#7F8C8D' },
+                  { label: t('stats.intangible'), value: totalIntangible, icon: <BookOpen size={18} />, color: '#D4A017' },
+                  { label: lang === 'vi' ? 'Hình ảnh' : 'Images', value: totalImages, icon: <ImageIcon size={18} />, color: '#27AE60' },
+                  { label: lang === 'vi' ? 'Video' : 'Videos', value: totalVideos, icon: <RefreshCw size={18} />, color: '#8E44AD' },
+                  { label: lang === 'vi' ? 'Tài liệu' : 'Documents', value: totalDocuments, icon: <LayoutGrid size={18} />, color: '#E67E22' },
                 ].map(s => (
                   <div key={s.label} style={{
                     background: 'white', borderRadius: 10, padding: '16px',
@@ -352,17 +374,12 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                     border: `1px solid ${s.color}18`,
                     display: 'flex', flexDirection: 'column',
                   }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
                       <div style={{ width: 38, height: 38, borderRadius: 8, background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
                         {s.icon}
                       </div>
-                      {s.trend !== '0' && (
-                        <span style={{ fontSize: 10, fontWeight: 600, color: '#27AE60', background: '#EAFAF1', padding: '2px 6px', borderRadius: 10 }}>
-                          <TrendingUp size={8} style={{ display: 'inline', marginRight: 2 }} />{s.trend}
-                        </span>
-                      )}
                     </div>
-                    <div style={{ fontSize: 26, fontWeight: 800, color: s.color, lineHeight: 1, marginBottom: 4 }}>{s.value}</div>
+                    <div style={{ fontSize: 24, fontWeight: 800, color: s.color, lineHeight: 1, marginBottom: 4 }}>{s.value}</div>
                     <div style={{ fontSize: 11, color: '#5d7a8c', fontWeight: 500 }}>{s.label}</div>
                   </div>
                 ))}
@@ -380,7 +397,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                   <div>
                     {recentUpdates.map(site => (
                       <div key={site.id} style={{ padding: '10px 16px', borderBottom: '1px solid rgba(15,61,94,0.04)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <img src={site.image} alt="" style={{ width: 40, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
+                        <img src={getImageUrl(site.image)} alt="" style={{ width: 40, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 12, fontWeight: 600, color: '#0F3D5E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {lang === 'vi' ? site.nameVi : site.nameEn}
@@ -480,19 +497,14 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
             <UserManagement />
           )}
 
-          {(section === 'categories' || section === 'monthly-updates' || section === 'about' || section === 'media' || section === 'settings' || section === 'activity-logs') && (
-            <div style={{ padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
-              <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
-                <div style={{ fontSize: 48, marginBottom: 12 }}>🚧</div>
-                <h2 style={{ color: '#0F3D5E', fontSize: 18, marginBottom: 8 }}>
-                  {navItems.find(n => n.key === section)?.label}
-                </h2>
-                <p style={{ fontSize: 13, margin: 0 }}>
-                  {lang === 'vi' ? 'Tính năng đang được phát triển' : 'Feature under development'}
-                </p>
-              </div>
-            </div>
-          )}
+          {section === 'categories' && <HeritageCategoriesManagement />}
+          {section === 'monthly-updates' && <MonthlyUpdatesManagement />}
+          {section === 'about' && <AboutPageManagement />}
+          {section === 'media' && <MediaManagement />}
+          {section === 'qr' && <QrManagement />}
+          {section === 'settings' && <SystemSettingsManagement />}
+
+          {section === 'activity-logs' && <ActivityLogPage />}
         </div>
       </div>
     </div>
