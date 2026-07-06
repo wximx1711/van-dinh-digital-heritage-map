@@ -20,9 +20,7 @@ public sealed class PasswordHasher : IPasswordHasher
     public bool Verify(string password, string hash)
     {
         if (!hash.StartsWith("PBKDF2$", StringComparison.Ordinal))
-        {
-            return password == hash;
-        }
+            return false;
 
         var parts = hash.Split('$');
         if (parts.Length != 3) return false;

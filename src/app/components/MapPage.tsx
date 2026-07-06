@@ -21,7 +21,8 @@ const typeEmoji: Record<HeritageType, string> = {
 // Coordinate to percentage mapping for map display
 const MAP_BOUNDS = { minLat: 20.738, maxLat: 20.772, minLon: 105.838, maxLon: 105.873 };
 
-function latLonToPercent(lat: number, lon: number) {
+function latLonToPercent(lat: number | null, lon: number | null) {
+  if (lat === null || lon === null) return { x: 50, y: 50 };
   const x = ((lon - MAP_BOUNDS.minLon) / (MAP_BOUNDS.maxLon - MAP_BOUNDS.minLon)) * 100;
   const y = ((MAP_BOUNDS.maxLat - lat) / (MAP_BOUNDS.maxLat - MAP_BOUNDS.minLat)) * 100;
   return { x: Math.max(3, Math.min(97, x)), y: Math.max(3, Math.min(97, y)) };
@@ -34,7 +35,8 @@ interface QrModalProps {
 }
 
 function QrModal({ site, onClose, lang }: QrModalProps) {
-  const qrData = `DITICHR:${site.id}|${site.nameVi}|${site.googleMapUrl || `${site.lat},${site.lon}`}`;
+  const coordStr = site.lat !== null && site.lon !== null ? `${site.lat},${site.lon}` : '';
+  const qrData = `DITICHR:${site.id}|${site.nameVi}|${site.googleMapUrl || coordStr}`;
   const cells = 21;
   const seed = site.id.charCodeAt(0) + site.id.charCodeAt(1);
   const pattern = Array.from({ length: cells * cells }, (_, i) => {
@@ -455,7 +457,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
                   </span>
                 </div>
                 <div style={{ fontSize: 11, color: '#5d7a8c', marginBottom: 8 }}>
-                  📍 {selectedSite.googleMapUrl ? selectedSite.googleMapUrl : `${selectedSite.lat.toFixed(4)}°N, ${selectedSite.lon.toFixed(4)}°E`}
+                  📍 {selectedSite.googleMapUrl ? selectedSite.googleMapUrl : (selectedSite.lat !== null && selectedSite.lon !== null ? `${selectedSite.lat.toFixed(4)}°N, ${selectedSite.lon.toFixed(4)}°E` : '')}
                 </div>
                 <p style={{
                   fontSize: 11, color: '#5d7a8c', lineHeight: 1.5, margin: '0 0 12px',
@@ -497,7 +499,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
                     <Share2 size={12} /> {t('map.share')}
                   </button>
                   <a
-                    href={selectedSite.googleMapUrl || `https://www.google.com/maps?q=${selectedSite.lat},${selectedSite.lon}`}
+                    href={selectedSite.googleMapUrl || (selectedSite.lat !== null && selectedSite.lon !== null ? `https://www.google.com/maps?q=${selectedSite.lat},${selectedSite.lon}` : '')}
                     target="_blank"
                     rel="noreferrer"
                     style={{

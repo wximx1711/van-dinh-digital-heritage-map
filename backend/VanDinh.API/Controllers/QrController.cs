@@ -14,7 +14,7 @@ public sealed class QrController(IAppRepository repository, IQrCodeService qrCod
     {
         var item = repository.FindHeritage(id);
         if (item is null) return ApiResponse.NotFound("Heritage not found.");
-        var url = $"{Request.Scheme}://{Request.Host}/Heritage/Details/{item.PublicId}";
+        var url = $"{Request.Scheme}://{Request.Host}/?page=heritage&id={item.PublicId}";
         var svg = qrCodeService.CreateSvg(url);
         return Content(svg, "image/svg+xml");
     }

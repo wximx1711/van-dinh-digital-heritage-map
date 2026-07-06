@@ -105,6 +105,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'admin.monthly_updates': { vi: 'Cập nhật hàng tháng', en: 'Monthly Updates' },
   'admin.about': { vi: 'Trang giới thiệu', en: 'About Page' },
   'admin.activity_logs': { vi: 'Nhật ký hoạt động', en: 'Activity Logs' },
+  'admin.related_links': { vi: 'Liên kết liên quan', en: 'Related Links' },
   'admin.recent_updates': { vi: 'Cập nhật gần đây', en: 'Recent Updates' },
   'admin.welcome': { vi: 'Xin chào, Quản trị viên', en: 'Welcome, Administrator' },
   // Heritage management table
@@ -133,7 +134,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'footer.address': { vi: 'Xã Vân Đình, Huyện Ứng Hòa, Thành phố Hà Nội', en: 'Van Dinh Commune, Ung Hoa District, Hanoi City' },
   'footer.phone': { vi: 'Điện thoại: (024) 1234 5678', en: 'Phone: (024) 1234 5678' },
   'footer.email': { vi: 'Email: disanvandinh@hanoi.gov.vn', en: 'Email: disanvandinh@hanoi.gov.vn' },
-  'footer.copyright': { vi: '© 2024 Bản đồ số Di sản Văn hóa Vân Đình. Bảo lưu mọi quyền.', en: '© 2024 Van Dinh Digital Heritage Map. All rights reserved.' },
+  'footer.copyright': { vi: `© ${new Date().getFullYear()} Bản đồ số Di sản Văn hóa Vân Đình. Bảo lưu mọi quyền.`, en: `© ${new Date().getFullYear()} Van Dinh Digital Heritage Map. All rights reserved.` },
   'footer.quick_links': { vi: 'Liên kết nhanh', en: 'Quick Links' },
   'footer.contact_info': { vi: 'Thông tin liên hệ', en: 'Contact Information' },
   'footer.related': { vi: 'Liên kết liên quan', en: 'Related Links' },

@@ -66,9 +66,14 @@ CREATE TABLE [Users] (
 
 CREATE TABLE [AboutPage] (
     [AboutId] int NOT NULL IDENTITY,
-    [Title] nvarchar(255) NULL,
-    [Content] nvarchar(max) NULL,
+    [TitleVi] nvarchar(200) NOT NULL,
+    [TitleEn] nvarchar(200) NOT NULL,
+    [IntroductionVi] nvarchar(max) NOT NULL,
+    [IntroductionEn] nvarchar(max) NOT NULL,
+    [MainContentVi] nvarchar(max) NOT NULL,
+    [MainContentEn] nvarchar(max) NOT NULL,
     [BannerImage] nvarchar(500) NULL,
+    [ContactInfo] nvarchar(max) NULL,
     [UpdatedBy] bigint NOT NULL,
     [UpdatedAt] datetime2 NOT NULL DEFAULT (SYSUTCDATETIME()),
     CONSTRAINT [PK_AboutPage] PRIMARY KEY ([AboutId]),
@@ -219,6 +224,20 @@ CREATE UNIQUE INDEX [IX_Users_Username] ON [Users] ([Username]);
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
 VALUES (N'20260701052754_InitialCreate', N'10.0.9');
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+
+ALTER TABLE [IntangibleHeritage] ADD [CreatedBy] bigint NOT NULL DEFAULT 1;
+ALTER TABLE [IntangibleHeritage] ADD [UpdatedBy] bigint NULL;
+
+CREATE INDEX [IX_IntangibleHeritage_CreatedBy] ON [IntangibleHeritage] ([CreatedBy]);
+CREATE INDEX [IX_IntangibleHeritage_UpdatedBy] ON [IntangibleHeritage] ([UpdatedBy]);
+
+INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20260703000000_AddAuditFieldsToIntangibleHeritage', N'10.0.9');
 
 COMMIT;
 GO

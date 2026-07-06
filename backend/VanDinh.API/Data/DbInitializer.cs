@@ -62,6 +62,12 @@ public static class DbInitializer
                 });
             }
         }
+
+        foreach (var user in context.Users.Where(u => !u.PasswordHash.StartsWith("PBKDF2$")).ToList())
+        {
+            user.PasswordHash = passwordHasher.Hash(user.PasswordHash);
+            user.UpdatedAt = DateTime.UtcNow;
+        }
         await context.SaveChangesAsync();
 
         if (!context.HeritageCategories.Any())
@@ -102,8 +108,12 @@ public static class DbInitializer
         {
             context.AboutPages.Add(new AboutPage
             {
-                Title = "Gioi thieu Xa Van Dinh",
-                Content = "Noi dung gioi thieu se duoc cap nhat tai day.",
+                TitleVi = "Giới thiệu xã Vân Đình",
+                TitleEn = "About Van Dinh Commune",
+                IntroductionVi = "Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là dự án số hóa và bảo tồn di sản văn hóa của xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.",
+                IntroductionEn = "The Van Dinh Digital Heritage Map System is a project for digitizing and preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi City.",
+                MainContentVi = "Với tổng số hơn 10 di tích vật thể và 5 di sản phi vật thể được ghi nhận và số hóa, hệ thống cung cấp đầy đủ thông tin lịch sử, kiến trúc, tọa độ và hình ảnh của từng di sản.",
+                MainContentEn = "With over 10 tangible heritage sites and 5 intangible heritage items documented and digitized, the system provides comprehensive information on history, architecture, coordinates, and images of each heritage site.",
                 UpdatedBy = adminUser.UserId,
                 UpdatedAt = DateTime.UtcNow
             });

@@ -34,6 +34,12 @@ export function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps) {
   const [remember, setRemember] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [forgotMsg, setForgotMsg] = useState('');
+
+  const handleForgotPassword = () => {
+    setForgotMsg(lang === 'vi' ? 'Vui lòng liên hệ quản trị viên hệ thống để đặt lại mật khẩu.' : 'Please contact the system administrator to reset your password.');
+    setTimeout(() => setForgotMsg(''), 4000);
+  };
 
 const handleLogin = async () => {
      if (!username.trim() || !password.trim()) {
@@ -196,6 +202,15 @@ const handleLogin = async () => {
                 ⚠️ {error}
               </div>
             )}
+            {forgotMsg && (
+              <div style={{
+                padding: '10px 14px', borderRadius: 8, marginBottom: 16,
+                background: '#EBF5FB', border: '1px solid #A9CCE3',
+                color: '#1A5276', fontSize: 13,
+              }}>
+                ℹ️ {forgotMsg}
+              </div>
+            )}
 
             {/* Username */}
             <div style={{ marginBottom: 16 }}>
@@ -264,7 +279,7 @@ const handleLogin = async () => {
                 />
                 {t('login.remember')}
               </label>
-              <button style={{
+              <button onClick={handleForgotPassword} style={{
                 background: 'none', border: 'none', color: '#D4A017', fontSize: 13, cursor: 'pointer', fontWeight: 600,
               }}>
                 {t('login.forgot')}
@@ -310,7 +325,7 @@ const handleLogin = async () => {
 
          {/* Bottom text */}
          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 16 }}>
-           © 2024 {lang === 'vi' ? 'Bản đồ số Di sản Văn hóa Vân Đình' : 'Van Dinh Digital Heritage Map'}
+           © {new Date().getFullYear()} {lang === 'vi' ? 'Bản đồ số Di sản Văn hóa Vân Đình' : 'Van Dinh Digital Heritage Map'}
          </p>
        </div>
 

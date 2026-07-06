@@ -20,6 +20,7 @@ import { MonthlyUpdatesManagement } from './MonthlyUpdatesManagement';
 import { MediaManagement } from './MediaManagement';
 import { QrManagement } from './QrManagement';
 import { SystemSettingsManagement } from './SystemSettingsManagement';
+import { RelatedLinksManagement } from './RelatedLinksManagement';
 import { ActivityLogPage } from './ActivityLogPage';
 
 interface AdminDashboardProps {
@@ -27,7 +28,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'statistics' | 'users' | 'settings' | 'activity-logs' | 'qr';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'statistics' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'related-links';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -68,6 +69,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} /> },
     { key: 'qr', label: lang === 'vi' ? 'QR Code' : 'QR Code', icon: <QrCodeIcon size={16} /> },
     { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} /> },
+    { key: 'related-links', label: t('admin.related_links'), icon: <List size={16} /> },
   ];
 
   const navItems = auth.isAdmin ? adminNavItems : managerNavItems;
@@ -503,6 +505,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           {section === 'media' && <MediaManagement />}
           {section === 'qr' && <QrManagement />}
           {section === 'settings' && <SystemSettingsManagement />}
+          {section === 'related-links' && <RelatedLinksManagement />}
 
           {section === 'activity-logs' && <ActivityLogPage />}
         </div>

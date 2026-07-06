@@ -59,6 +59,8 @@ public sealed class HeritageCategoriesController(IAppRepository repository, IAct
     public IActionResult Delete(int id)
     {
         if (repository.FindCategory(id) is null) return ApiResponse.NotFound("Category not found.");
+        if (repository.Heritages.Any(h => h.CategoryId == id))
+            return ApiResponse.Error("Cannot delete category: it is in use by one or more heritage sites.");
         repository.DeleteCategory(id);
         logs.Log(User, "DELETE", "HeritageCategories", id);
         return ApiResponse.Success(null, "Category deleted successfully.");

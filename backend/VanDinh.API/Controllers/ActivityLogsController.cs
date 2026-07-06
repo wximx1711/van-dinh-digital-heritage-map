@@ -22,29 +22,32 @@ public sealed class ActivityLogsController(IAppRepository repository) : Controll
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var allLogs = repository.ActivityLogs.Select(x => x.ToDto()).AsEnumerable();
+        var query = repository.ActivityLogsUntracked;
 
         if (!string.IsNullOrWhiteSpace(user))
         {
-            allLogs = allLogs.Where(l => (l.Username ?? "").Contains(user, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(l => l.User != null && l.User.Username.Contains(user));
         }
         if (!string.IsNullOrWhiteSpace(action))
         {
-            allLogs = allLogs.Where(l => (l.Action ?? "").Equals(action, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(l => l.Action != null && l.Action == action);
         }
         if (fromDate.HasValue)
         {
-            allLogs = allLogs.Where(l => l.CreatedAt >= fromDate.Value);
+            query = query.Where(l => l.CreatedAt >= fromDate.Value);
         }
         if (toDate.HasValue)
         {
-            allLogs = allLogs.Where(l => l.CreatedAt <= toDate.Value);
+            query = query.Where(l => l.CreatedAt <= toDate.Value);
         }
 
-        var logList = allLogs.ToList();
-        var totalRecords = logList.Count;
+        var totalRecords = query.Count();
+        var logList = query.OrderByDescending(l => l.CreatedAt)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+        var data = logList.Select(x => x.ToDto()).ToList();
         var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-        var data = logList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
         var result = new PagedResult<ActivityLogDto>(data, page, pageSize, totalRecords, totalPages);
         return ApiResponse.Success(result);

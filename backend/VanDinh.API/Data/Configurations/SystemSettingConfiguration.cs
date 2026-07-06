@@ -19,6 +19,7 @@ public sealed class SystemSettingConfiguration : IEntityTypeConfiguration<System
         builder.Property(x => x.Address).HasColumnType("nvarchar(255)");
         builder.Property(x => x.FacebookUrl).HasColumnType("nvarchar(500)");
         builder.Property(x => x.TiktokUrl).HasColumnType("nvarchar(500)");
+        builder.Property(x => x.YoutubeUrl).HasColumnType("nvarchar(500)");
         builder.Property(x => x.UpdatedBy);
         builder.Property(x => x.UpdatedAt).HasColumnType("datetime2").HasDefaultValueSql("SYSUTCDATETIME()");
 
@@ -26,5 +27,7 @@ public sealed class SystemSettingConfiguration : IEntityTypeConfiguration<System
             .WithMany()
             .HasForeignKey(x => x.UpdatedBy)
             .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(x => x.UpdatedBy);
     }
 }

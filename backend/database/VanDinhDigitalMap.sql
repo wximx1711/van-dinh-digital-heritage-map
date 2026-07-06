@@ -153,6 +153,8 @@ CREATE TABLE IntangibleHeritage (
     ImageUrl NVARCHAR(500),
     VideoUrl NVARCHAR(500),
     IsDeleted BIT NOT NULL DEFAULT 0,
+    CreatedBy BIGINT NOT NULL,
+    UpdatedBy BIGINT NULL,
     CreatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
     UpdatedAt DATETIME2 NULL,
     CONSTRAINT CK_IntangibleHeritage_Category
@@ -171,9 +173,14 @@ GO
 
 CREATE TABLE AboutPage (
     AboutId INT IDENTITY(1,1) PRIMARY KEY,
-    Title NVARCHAR(255),
-    Content NVARCHAR(MAX),
+    TitleVi NVARCHAR(200) NOT NULL,
+    TitleEn NVARCHAR(200) NOT NULL,
+    IntroductionVi NVARCHAR(MAX) NOT NULL,
+    IntroductionEn NVARCHAR(MAX) NOT NULL,
+    MainContentVi NVARCHAR(MAX) NOT NULL,
+    MainContentEn NVARCHAR(MAX) NOT NULL,
     BannerImage NVARCHAR(500),
+    ContactInfo NVARCHAR(MAX),
     UpdatedBy BIGINT NOT NULL,
     UpdatedAt DATETIME2 NOT NULL DEFAULT SYSUTCDATETIME(),
     CONSTRAINT FK_AboutPage_User
@@ -291,13 +298,13 @@ SELECT HeritageId, ThumbnailUrl, 1
 FROM Heritage;
 GO
 
-INSERT INTO IntangibleHeritage(PublicId, NameVi, NameEn, Category, DescriptionVi, DescriptionEn, ImageUrl)
+INSERT INTO IntangibleHeritage(PublicId, NameVi, NameEn, Category, DescriptionVi, DescriptionEn, ImageUrl, CreatedBy)
 VALUES
-(N'i001', N'Le hoi Dinh Van Dinh', N'Van Dinh Communal House Festival', N'festival', N'Le hoi duoc to chuc hang nam voi nghi thuc te le va tro choi dan gian.', N'The annual festival includes ceremonial rituals and folk games.', N'https://images.unsplash.com/photo-1765510103179-0c2f628d2ff2?w=800&h=500&fit=crop&auto=format'),
-(N'i002', N'Hat Cheo Van Dinh', N'Van Dinh Cheo Folk Opera', N'performance', N'Cheo la loai hinh nghe thuat san khau dan gian truyen thong.', N'Cheo is a traditional folk performance art form.', N'https://images.unsplash.com/photo-1727402528763-af11a02966f0?w=800&h=500&fit=crop&auto=format'),
-(N'i003', N'Nghe det lua truyen thong', N'Traditional Silk Weaving', N'craft', N'Nghe det lua la nghe thu cong duoc bao ton qua nhieu the he.', N'Silk weaving is a craft preserved across generations.', N'https://images.unsplash.com/photo-1592473858143-790cde951b1a?w=800&h=500&fit=crop&auto=format'),
-(N'i004', N'Le gio to dong ho', N'Clan Ancestor Commemoration', N'ritual', N'Le gio to the hien truyen thong uong nuoc nho nguon cua cong dong.', N'Clan ancestor commemoration expresses remembrance of family roots.', N'https://images.unsplash.com/photo-1578409682213-e27b3355cad7?w=800&h=500&fit=crop&auto=format'),
-(N'i005', N'Truyen thuyet Than song Day', N'Legend of the Day River Spirit', N'story', N'Cau chuyen dan gian ve vi than song bao ho lang xom.', N'A folk story about the river spirit protecting local villages.', N'https://images.unsplash.com/photo-1758298135151-e1283f571030?w=800&h=500&fit=crop&auto=format');
+(N'i001', N'Le hoi Dinh Van Dinh', N'Van Dinh Communal House Festival', N'festival', N'Le hoi duoc to chuc hang nam voi nghi thuc te le va tro choi dan gian.', N'The annual festival includes ceremonial rituals and folk games.', N'https://images.unsplash.com/photo-1765510103179-0c2f628d2ff2?w=800&h=500&fit=crop&auto=format', 1),
+(N'i002', N'Hat Cheo Van Dinh', N'Van Dinh Cheo Folk Opera', N'performance', N'Cheo la loai hinh nghe thuat san khau dan gian truyen thong.', N'Cheo is a traditional folk performance art form.', N'https://images.unsplash.com/photo-1727402528763-af11a02966f0?w=800&h=500&fit=crop&auto=format', 1),
+(N'i003', N'Nghe det lua truyen thong', N'Traditional Silk Weaving', N'craft', N'Nghe det lua la nghe thu cong duoc bao ton qua nhieu the he.', N'Silk weaving is a craft preserved across generations.', N'https://images.unsplash.com/photo-1592473858143-790cde951b1a?w=800&h=500&fit=crop&auto=format', 1),
+(N'i004', N'Le gio to dong ho', N'Clan Ancestor Commemoration', N'ritual', N'Le gio to the hien truyen thong uong nuoc nho nguon cua cong dong.', N'Clan ancestor commemoration expresses remembrance of family roots.', N'https://images.unsplash.com/photo-1578409682213-e27b3355cad7?w=800&h=500&fit=crop&auto=format', 1),
+(N'i005', N'Truyen thuyet Than song Day', N'Legend of the Day River Spirit', N'story', N'Cau chuyen dan gian ve vi than song bao ho lang xom.', N'A folk story about the river spirit protecting local villages.', N'https://images.unsplash.com/photo-1758298135151-e1283f571030?w=800&h=500&fit=crop&auto=format', 1);
 GO
 
 INSERT INTO MonthlyUpdates(MonthLabel, UpdateCount, DisplayVi, DisplayEn)
@@ -310,9 +317,9 @@ VALUES
 (N'06/2024', 2, N'Thang 6', N'Jun');
 GO
 
-INSERT INTO AboutPage(Title, Content, UpdatedBy)
+INSERT INTO AboutPage(TitleVi, TitleEn, IntroductionVi, IntroductionEn, MainContentVi, MainContentEn, UpdatedBy)
 VALUES
-(N'Gioi thieu Xa Van Dinh', N'Noi dung gioi thieu se duoc cap nhat tai day.', 1);
+(N'Giới thiệu Xã Vân Đình', N'Introduction to Van Dinh Commune', N'Giới thiệu ngắn về Vân Đình', N'Brief introduction of Van Dinh', N'Nội dung giới thiệu sẽ được cập nhật tại đây.', N'Introduction content will be updated here.', 1);
 GO
 
 INSERT INTO SystemSettings(WebsiteName, FooterText, ContactEmail, Phone, Address, UpdatedBy)

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using VanDinh.API.DTOs;
@@ -25,24 +26,50 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var items = repository.IntangibleHeritages.AsEnumerable();
-        if (!string.IsNullOrWhiteSpace(q))
+        var query = repository.IntangibleHeritagesUntracked;
+        var normalized = string.IsNullOrWhiteSpace(q) ? null : System.Text.RegularExpressions.Regex.Replace(q.Trim(), @"\s+", " ");
+        if (!string.IsNullOrWhiteSpace(normalized))
         {
-            items = items.Where(x => x.NameVi.Contains(q, StringComparison.OrdinalIgnoreCase)
-                || x.NameEn.Contains(q, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(x => x.NameVi.Contains(normalized) || x.NameEn.Contains(normalized));
         }
         if (!string.IsNullOrWhiteSpace(category))
         {
-            items = items.Where(x => x.Category == category);
+            query = query.Where(x => x.Category == category);
         }
 
-        var all = items.OrderBy(x => x.PublicId).ToList();
-        var totalRecords = all.Count;
+        var totalRecords = query.Count();
+        var items = query.OrderBy(x => x.PublicId)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+        var data = items.Select(x => x.ToDto()).ToList();
         var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-        var data = all.Skip((page - 1) * pageSize).Take(pageSize).Select(x => x.ToDto()).ToList();
 
         var result = new { data, page, pageSize, totalRecords, totalPages };
         return ApiResponse.Success(result);
+    }
+
+    private List<string> ValidateIntangibleRequest(IntangibleHeritageRequest request)
+    {
+        var errors = new List<string>();
+        if (string.IsNullOrWhiteSpace(request.NameVi) || request.NameVi.Trim().Length < 5 || request.NameVi.Trim().Length > 200)
+            errors.Add("Vietnamese name must be between 5 and 200 characters.");
+        if (string.IsNullOrWhiteSpace(request.NameEn) || request.NameEn.Trim().Length < 5 || request.NameEn.Trim().Length > 200)
+            errors.Add("English name must be between 5 and 200 characters.");
+        if (string.IsNullOrWhiteSpace(request.Category))
+            errors.Add("Category is required.");
+        if (string.IsNullOrWhiteSpace(request.DescriptionVi) || request.DescriptionVi.Trim().Length < 30)
+            errors.Add("Vietnamese description must be at least 30 characters.");
+        if (string.IsNullOrWhiteSpace(request.DescriptionEn) || request.DescriptionEn.Trim().Length < 30)
+            errors.Add("English description must be at least 30 characters.");
+        if (string.IsNullOrWhiteSpace(request.Image))
+            errors.Add("Cover image is required.");
+        if (!string.IsNullOrWhiteSpace(request.VideoUrl) &&
+            !request.VideoUrl.StartsWith("https://www.youtube.com") &&
+            !request.VideoUrl.StartsWith("https://youtube.com") &&
+            !request.VideoUrl.StartsWith("https://youtu.be"))
+            errors.Add("Only YouTube video URLs are accepted.");
+        return errors;
     }
 
     [Authorize(Roles = "MANAGER")]
@@ -56,20 +83,26 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
             return ApiResponse.Error("Validation failed.", errors);
         }
 
-        if (repository.IntangibleHeritages.Any(i => i.NameVi == request.NameVi))
+        var validationErrors = ValidateIntangibleRequest(request);
+        if (validationErrors.Count > 0)
+            return ApiResponse.Error("Validation failed.", validationErrors);
+
+        if (repository.IntangibleHeritages.Any(i => i.NameVi == request.NameVi.Trim()))
             return ApiResponse.Error("An intangible heritage with this Vietnamese name already exists.");
-        if (repository.IntangibleHeritages.Any(i => i.NameEn == request.NameEn))
+        if (repository.IntangibleHeritages.Any(i => i.NameEn == request.NameEn.Trim()))
             return ApiResponse.Error("An intangible heritage with this English name already exists.");
 
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var item = repository.AddIntangible(new IntangibleHeritage
         {
-            NameVi = request.NameVi,
-            NameEn = request.NameEn,
+            NameVi = request.NameVi.Trim(),
+            NameEn = request.NameEn.Trim(),
             Category = request.Category,
-            DescriptionVi = request.DescriptionVi,
-            DescriptionEn = request.DescriptionEn,
+            DescriptionVi = request.DescriptionVi?.Trim(),
+            DescriptionEn = request.DescriptionEn?.Trim(),
             ImageUrl = request.Image,
-            VideoUrl = request.VideoUrl
+            VideoUrl = request.VideoUrl?.Trim(),
+            CreatedBy = userId
         });
         logs.Log(User, "CREATE", "IntangibleHeritage", item.IntangibleId, item.PublicId);
         return ApiResponse.Success(item.ToDto(), "Intangible heritage created successfully.", StatusCodes.Status201Created);
@@ -86,20 +119,26 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
             return ApiResponse.Error("Validation failed.", errors);
         }
 
+        var validationErrors = ValidateIntangibleRequest(request);
+        if (validationErrors.Count > 0)
+            return ApiResponse.Error("Validation failed.", validationErrors);
+
         var item = repository.FindIntangible(id);
         if (item is null) return ApiResponse.NotFound("Intangible heritage not found.");
 
-        if (repository.IntangibleHeritages.Any(i => i.NameVi == request.NameVi && i.PublicId != id))
+        if (repository.IntangibleHeritages.Any(i => i.NameVi == request.NameVi.Trim() && i.PublicId != id))
             return ApiResponse.Error("An intangible heritage with this Vietnamese name already exists.");
-        if (repository.IntangibleHeritages.Any(i => i.NameEn == request.NameEn && i.PublicId != id))
+        if (repository.IntangibleHeritages.Any(i => i.NameEn == request.NameEn.Trim() && i.PublicId != id))
             return ApiResponse.Error("An intangible heritage with this English name already exists.");
-        item.NameVi = request.NameVi;
-        item.NameEn = request.NameEn;
+        var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        item.NameVi = request.NameVi.Trim();
+        item.NameEn = request.NameEn.Trim();
         item.Category = request.Category;
-        item.DescriptionVi = request.DescriptionVi;
-        item.DescriptionEn = request.DescriptionEn;
+        item.DescriptionVi = request.DescriptionVi?.Trim();
+        item.DescriptionEn = request.DescriptionEn?.Trim();
         item.ImageUrl = request.Image;
-        item.VideoUrl = request.VideoUrl;
+        item.VideoUrl = request.VideoUrl?.Trim();
+        item.UpdatedBy = userId;
         repository.UpdateIntangible(item);
         logs.Log(User, "UPDATE", "IntangibleHeritage", item.IntangibleId, item.PublicId);
         return ApiResponse.Success(item.ToDto(), "Intangible heritage updated successfully.");

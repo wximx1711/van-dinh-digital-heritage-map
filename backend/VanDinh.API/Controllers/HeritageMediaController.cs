@@ -54,12 +54,14 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
     [Authorize(Roles = "MANAGER")]
     [HttpPost("videos")]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddVideo(string heritageId, [FromForm] string? title, [FromForm] string? youtubeUrl, IFormFile? file, CancellationToken cancellationToken)
+    public async Task<IActionResult> AddVideo(string heritageId, [FromForm] string? title, [FromForm] string? youtubeUrl, [FromForm] string? videoUrl, IFormFile? file, CancellationToken cancellationToken)
     {
         try
         {
-            var url = youtubeUrl;
-            var type = string.IsNullOrWhiteSpace(youtubeUrl) ? "upload" : "youtube";
+            var hasYoutube = !string.IsNullOrWhiteSpace(youtubeUrl);
+            var hasVideoUrl = !string.IsNullOrWhiteSpace(videoUrl);
+            var url = hasYoutube ? youtubeUrl : hasVideoUrl ? videoUrl : null;
+            var type = hasYoutube ? "youtube" : hasVideoUrl || file is not null ? "upload" : null;
             if (file is not null)
             {
                 var result = await uploads.SaveAsync(file, "videos", [".mp4", ".webm", ".mov"], 100 * 1024 * 1024, cancellationToken);

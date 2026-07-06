@@ -24,11 +24,14 @@ public sealed class IntangibleHeritageConfiguration : IEntityTypeConfiguration<I
         builder.Property(x => x.ImageUrl).HasColumnType("nvarchar(500)");
         builder.Property(x => x.VideoUrl).HasColumnType("nvarchar(500)");
         builder.Property(x => x.IsDeleted).HasColumnType("bit").HasDefaultValue(false);
+        builder.Property(x => x.CreatedBy).IsRequired();
+        builder.Property(x => x.UpdatedBy).HasColumnType("bigint");
         builder.Property(x => x.CreatedAt).HasColumnType("datetime2").HasDefaultValueSql("SYSUTCDATETIME()");
         builder.Property(x => x.UpdatedAt).HasColumnType("datetime2");
 
         builder.HasIndex(x => x.Category);
         builder.HasIndex(x => x.PublicId).IsUnique();
-
+        builder.HasIndex(x => x.NameVi).IsUnique().HasFilter("IsDeleted = 0");
+        builder.HasIndex(x => x.NameEn).IsUnique().HasFilter("IsDeleted = 0");
     }
 }

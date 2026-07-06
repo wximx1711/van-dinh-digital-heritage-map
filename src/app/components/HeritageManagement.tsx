@@ -34,6 +34,21 @@ interface DocumentAttachment {
   fileSize: number;
 }
 
+function isValidGoogleMapsUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url.trim());
+    const host = parsed.hostname.toLowerCase();
+    const path = parsed.pathname.toLowerCase();
+    if (host === 'maps.google.com') return true;
+    if (host === 'www.google.com' && path.startsWith('/maps')) return true;
+    if (host === 'goo.gl' && path.startsWith('/maps')) return true;
+    if (host === 'maps.app.goo.gl') return true;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const { lang, t } = useLanguage();
   const { data: apiSites, refetch } = useHeritageSites();
@@ -132,7 +147,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
       code: `VĐHN-DT-${String(sites.length + 1).padStart(3, '0')}`,
       nameVi: '', nameEn: '', type: '' as HeritageType, classification: 'unranked',
       status: 'active', addressVi: '', addressEn: '',
-      lat: 0, lon: 0, googleMapUrl: '',
+      lat: null, lon: null, googleMapUrl: '',
       descriptionVi: '', descriptionEn: '',
       historyVi: '', historyEn: '',
       image: '',
@@ -150,25 +165,58 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const validateForm = (): boolean => {
     const errors: Record<string, string> = {};
     if (!editSite) return false;
+    const currentYear = new Date().getFullYear();
+
     if (!editSite.nameVi.trim()) errors.nameVi = lang === 'vi' ? 'Tên di tích (VI) là bắt buộc' : 'Heritage Name (VI) is required';
-    else if (editSite.nameVi.length > 255) errors.nameVi = lang === 'vi' ? 'Tối đa 255 ký tự' : 'Max 255 characters';
+    else if (editSite.nameVi.trim().length < 5) errors.nameVi = lang === 'vi' ? 'Tối thiểu 5 ký tự' : 'Minimum 5 characters';
+    else if (editSite.nameVi.length > 200) errors.nameVi = lang === 'vi' ? 'Tối đa 200 ký tự' : 'Max 200 characters';
+    else if (editSite.nameVi !== editSite.nameVi.trim()) errors.nameVi = lang === 'vi' ? 'Không được có khoảng trắng đầu/cuối' : 'Cannot have leading/trailing spaces';
+
     if (!editSite.nameEn.trim()) errors.nameEn = lang === 'vi' ? 'Tên di tích (EN) là bắt buộc' : 'Heritage Name (EN) is required';
-    else if (editSite.nameEn.length > 255) errors.nameEn = lang === 'vi' ? 'Tối đa 255 ký tự' : 'Max 255 characters';
+    else if (editSite.nameEn.trim().length < 5) errors.nameEn = lang === 'vi' ? 'Tối thiểu 5 ký tự' : 'Minimum 5 characters';
+    else if (editSite.nameEn.length > 200) errors.nameEn = lang === 'vi' ? 'Tối đa 200 ký tự' : 'Max 200 characters';
+    else if (editSite.nameEn !== editSite.nameEn.trim()) errors.nameEn = lang === 'vi' ? 'Không được có khoảng trắng đầu/cuối' : 'Cannot have leading/trailing spaces';
+
     if (!editSite.type) errors.type = lang === 'vi' ? 'Loại di tích là bắt buộc' : 'Category is required';
-    if (editSite.yearBuilt) {
-      const yearNum = parseInt(editSite.yearBuilt, 10);
-      if (isNaN(yearNum) || yearNum.toString() !== editSite.yearBuilt.trim()) errors.yearBuilt = lang === 'vi' ? 'Chỉ nhập số' : 'Numbers only';
-      else if (yearNum < 0) errors.yearBuilt = lang === 'vi' ? 'Phải là số dương' : 'Must be a positive number';
-      else if (yearNum < 100 || yearNum > new Date().getFullYear()) errors.yearBuilt = lang === 'vi' ? `Năm phải từ 100 đến ${new Date().getFullYear()}` : `Year must be between 100 and ${new Date().getFullYear()}`;
+    if (!editSite.classification) errors.classification = lang === 'vi' ? 'Phân loại là bắt buộc' : 'Classification is required';
+    if (!editSite.status) errors.status = lang === 'vi' ? 'Trạng thái là bắt buộc' : 'Status is required';
+
+    if (!editSite.yearBuilt.trim()) errors.yearBuilt = lang === 'vi' ? 'Năm xây dựng là bắt buộc' : 'Year built is required';
+    else {
+      const yearStr = editSite.yearBuilt.trim();
+      const yearNum = parseInt(yearStr, 10);
+      if (isNaN(yearNum) || yearNum.toString() !== yearStr) errors.yearBuilt = lang === 'vi' ? 'Chỉ nhập số nguyên' : 'Integer numbers only';
+      else if (yearNum < 100 || yearNum > currentYear) errors.yearBuilt = lang === 'vi' ? `Năm phải từ 100 đến ${currentYear}` : `Year must be between 100 and ${currentYear}`;
     }
+
     if (!editSite.code.trim()) errors.code = lang === 'vi' ? 'Mã di tích là bắt buộc' : 'Code is required';
+
     if (!editSite.googleMapUrl.trim()) errors.googleMapUrl = lang === 'vi' ? 'Google Maps URL là bắt buộc' : 'Google Maps URL is required';
-    else if (!editSite.googleMapUrl.includes('google.com/maps') && !editSite.googleMapUrl.includes('maps.google')) errors.googleMapUrl = lang === 'vi' ? 'Phải là đường dẫn Google Maps hợp lệ' : 'Must be a valid Google Maps link';
+    else if (!isValidGoogleMapsUrl(editSite.googleMapUrl))
+      errors.googleMapUrl = lang === 'vi' ? 'Phải là đường dẫn Google Maps hợp lệ (maps.google, google.com/maps, goo.gl/maps, maps.app.goo.gl)' : 'Must be a valid Google Maps link (maps.google, google.com/maps, goo.gl/maps, maps.app.goo.gl)';
+
+    if (!editSite.addressVi.trim()) errors.addressVi = lang === 'vi' ? 'Địa chỉ (VI) là bắt buộc' : 'Address (VI) is required';
+    else if (editSite.addressVi.trim().length < 5) errors.addressVi = lang === 'vi' ? 'Tối thiểu 5 ký tự' : 'Minimum 5 characters';
+    else if (editSite.addressVi.length > 300) errors.addressVi = lang === 'vi' ? 'Tối đa 300 ký tự' : 'Max 300 characters';
+
+    if (!editSite.addressEn.trim()) errors.addressEn = lang === 'vi' ? 'Địa chỉ (EN) là bắt buộc' : 'Address (EN) is required';
+    else if (editSite.addressEn.trim().length < 5) errors.addressEn = lang === 'vi' ? 'Tối thiểu 5 ký tự' : 'Minimum 5 characters';
+    else if (editSite.addressEn.length > 300) errors.addressEn = lang === 'vi' ? 'Tối đa 300 ký tự' : 'Max 300 characters';
+
     if (!editSite.image) errors.image = lang === 'vi' ? 'Ảnh đại diện là bắt buộc' : 'Thumbnail image is required';
+
     if (!editSite.descriptionVi.trim()) errors.descriptionVi = lang === 'vi' ? 'Mô tả (VI) là bắt buộc' : 'Description (VI) is required';
+    else if (editSite.descriptionVi.trim().length < 30) errors.descriptionVi = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
     if (!editSite.descriptionEn.trim()) errors.descriptionEn = lang === 'vi' ? 'Mô tả (EN) là bắt buộc' : 'Description (EN) is required';
+    else if (editSite.descriptionEn.trim().length < 30) errors.descriptionEn = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
+
     if (!editSite.historyVi.trim()) errors.historyVi = lang === 'vi' ? 'Lịch sử (VI) là bắt buộc' : 'History (VI) is required';
+    else if (editSite.historyVi.trim().length < 50) errors.historyVi = lang === 'vi' ? 'Tối thiểu 50 ký tự' : 'Minimum 50 characters';
     if (!editSite.historyEn.trim()) errors.historyEn = lang === 'vi' ? 'Lịch sử (EN) là bắt buộc' : 'History (EN) is required';
+    else if (editSite.historyEn.trim().length < 50) errors.historyEn = lang === 'vi' ? 'Tối thiểu 50 ký tự' : 'Minimum 50 characters';
+
+    if (editSite.guardian && editSite.guardian.length > 150) errors.guardian = lang === 'vi' ? 'Tối đa 150 ký tự' : 'Max 150 characters';
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -195,9 +243,19 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
         image: editSite.image || null,
         yearBuilt: editSite.yearBuilt || null,
         guardian: editSite.guardian || null,
+        imageUrls: galleryImages.length > 0 ? galleryImages : null,
       };
       if (!editSite.id || !editSite.id.trim()) {
-        await createHeritageSite(payload);
+        const newSite = await createHeritageSite(payload);
+        // Persist videos added during add mode
+        for (const video of videos) {
+          try {
+            const formData = new FormData();
+            formData.append('title', video.title);
+            formData.append('youtubeUrl', video.videoUrl);
+            await apiPost('/heritage/' + encodeURIComponent(newSite.id) + '/media/videos', formData, true);
+          } catch { /* skip individual failures */ }
+        }
         showToast(lang === 'vi' ? 'Đã thêm di tích mới thành công' : 'New heritage site added successfully');
       } else {
         await updateHeritageSite(editSite.id, payload);
@@ -259,6 +317,12 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
 
   const handleMediaSelectMultiple = (urls: string[]) => {
     if (mediaPickerTarget === 'gallery') {
+      const maxImages = 20;
+      const currentCount = galleryImages.length;
+      if (currentCount + urls.length > maxImages) {
+        showToast(lang === 'vi' ? `Tối đa ${maxImages} ảnh trong thư viện` : `Maximum ${maxImages} gallery images`, 'error');
+        return;
+      }
       setGalleryImages(prev => [...prev, ...urls]);
     }
   };
@@ -277,8 +341,14 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
 
   const handleAddVideo = async () => {
     if (!editSite || !videoUrl.trim()) return;
+    const trimmedUrl = videoUrl.trim();
+    const isYouTube = trimmedUrl.includes('youtube.com') || trimmedUrl.includes('youtu.be');
+    if (!isYouTube && !trimmedUrl.endsWith('.mp4')) {
+      showToast(lang === 'vi' ? 'Chỉ chấp nhận URL YouTube hoặc file MP4' : 'Only YouTube URL or MP4 accepted', 'error');
+      return;
+    }
     if (formMode === 'add') {
-      setVideos(prev => [...prev, { videoId: Date.now(), title: videoTitle, videoType: videoUrl.includes('youtube') || videoUrl.includes('youtu.be') ? 'youtube' : 'upload', videoUrl }]);
+      setVideos(prev => [...prev, { videoId: Date.now(), title: videoTitle, videoType: isYouTube ? 'youtube' : 'upload', videoUrl: trimmedUrl }]);
       setVideoTitle(''); setVideoUrl(''); setShowVideoForm(false);
       return;
     }
@@ -288,7 +358,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
       if (videoUrl.includes('youtube') || videoUrl.includes('youtu.be')) {
         formData.append('youtubeUrl', videoUrl);
       } else {
-        formData.append('youtubeUrl', videoUrl);
+        formData.append('videoUrl', videoUrl);
       }
       const result = await apiPost<any>('/heritage/' + encodeURIComponent(editSite.id) + '/media/videos', formData, true);
       setVideos(prev => [...prev, { videoId: result.videoId, title: result.title || '', videoType: result.videoType || '', videoUrl: result.videoUrl || '' }]);
@@ -319,7 +389,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.type !== 'application/pdf') { showToast(lang === 'vi' ? 'Chỉ chấp nhận PDF' : 'Only PDF allowed', 'error'); return; }
-    if (file.size > 30 * 1024 * 1024) { showToast(lang === 'vi' ? 'Tối đa 30MB' : 'Max 30MB', 'error'); return; }
+    if (file.size > 20 * 1024 * 1024) { showToast(lang === 'vi' ? 'Tối đa 20MB' : 'Max 20MB', 'error'); return; }
     if (formMode === 'add') {
       showToast(lang === 'vi' ? 'Lưu di tích trước, sau đó thêm tài liệu' : 'Save the site first, then add documents', 'error');
       return;
@@ -513,11 +583,10 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
 
             <div style={{ overflowY: 'auto', flex: 1, padding: '20px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                {/* Code */}
+                {/* Code - Auto generated, read only */}
                 <div>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('detail.code')} *</label>
-                  <input style={{ ...inputStyle, borderColor: formErrors.code ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editSite.code} onChange={e => { setEditSite(s => s ? { ...s, code: e.target.value } : s); setFormErrors(prev => ({ ...prev, code: '' })); }} />
-                  {formErrors.code && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.code}</span>}
+                  <input style={{ ...inputStyle, background: '#dce8f0', color: '#5d7a8c', cursor: 'not-allowed' }} value={editSite.code} readOnly title={lang === 'vi' ? 'Mã tự động tạo' : 'Auto-generated code'} />
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Năm xây dựng' : 'Year Built'}</label>
@@ -546,22 +615,25 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                   {formErrors.type && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.type}</span>}
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('hm.classification')}</label>
-                  <select style={{ ...inputStyle, background: 'white', cursor: 'pointer' }} value={editSite.classification}
-                    onChange={e => setEditSite(s => s ? { ...s, classification: e.target.value as Classification } : s)}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('hm.classification')} *</label>
+                  <select style={{ ...inputStyle, background: 'white', cursor: 'pointer', borderColor: formErrors.classification ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editSite.classification}
+                    onChange={e => { setEditSite(s => s ? { ...s, classification: e.target.value as Classification } : s); setFormErrors(prev => ({ ...prev, classification: '' })); }}>
                     {(['national', 'city', 'unranked'] as Classification[]).map(c => (<option key={c} value={c}>{classificationLabels[c][lang]}</option>))}
                   </select>
+                  {formErrors.classification && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.classification}</span>}
                 </div>
                 <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('hm.status')}</label>
-                  <select style={{ ...inputStyle, background: 'white', cursor: 'pointer' }} value={editSite.status}
-                    onChange={e => setEditSite(s => s ? { ...s, status: e.target.value as HeritageStatus } : s)}>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('hm.status')} *</label>
+                  <select style={{ ...inputStyle, background: 'white', cursor: 'pointer', borderColor: formErrors.status ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editSite.status}
+                    onChange={e => { setEditSite(s => s ? { ...s, status: e.target.value as HeritageStatus } : s); setFormErrors(prev => ({ ...prev, status: '' })); }}>
                     {(['active', 'maintenance', 'closed'] as HeritageStatus[]).map(c => (<option key={c} value={c}>{statusLabels[c][lang]}</option>))}
                   </select>
+                  {formErrors.status && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.status}</span>}
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Đơn vị quản lý' : 'Managing Unit'}</label>
-                  <input style={inputStyle} value={editSite.guardian} onChange={e => setEditSite(s => s ? { ...s, guardian: e.target.value } : s)} />
+                  <input style={{ ...inputStyle, borderColor: formErrors.guardian ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editSite.guardian} onChange={e => { setEditSite(s => s ? { ...s, guardian: e.target.value } : s); setFormErrors(prev => ({ ...prev, guardian: '' })); }} />
+                  {formErrors.guardian && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.guardian}</span>}
                 </div>
 
                 {/* Google Maps URL */}
@@ -572,12 +644,14 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                 </div>
 
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.address')} (VI)</label>
-                  <input style={inputStyle} value={editSite.addressVi} onChange={e => setEditSite(s => s ? { ...s, addressVi: e.target.value } : s)} />
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.address')} (VI) *</label>
+                  <input style={{ ...inputStyle, borderColor: formErrors.addressVi ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editSite.addressVi} onChange={e => { setEditSite(s => s ? { ...s, addressVi: e.target.value } : s); setFormErrors(prev => ({ ...prev, addressVi: '' })); }} />
+                  {formErrors.addressVi && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.addressVi}</span>}
                 </div>
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.address')} (EN)</label>
-                  <input style={inputStyle} value={editSite.addressEn} onChange={e => setEditSite(s => s ? { ...s, addressEn: e.target.value } : s)} />
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('common.address')} (EN) *</label>
+                  <input style={{ ...inputStyle, borderColor: formErrors.addressEn ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editSite.addressEn} onChange={e => { setEditSite(s => s ? { ...s, addressEn: e.target.value } : s); setFormErrors(prev => ({ ...prev, addressEn: '' })); }} />
+                  {formErrors.addressEn && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.addressEn}</span>}
                 </div>
 
                 <div style={{ gridColumn: '1 / -1' }}>
@@ -725,7 +799,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                         <Upload size={14} /> {lang === 'vi' ? 'Chọn file PDF' : 'Select PDF file'}
                         <input ref={docInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleDocUpload} />
                       </label>
-                      <p style={{ fontSize: 10, color: '#cbced4', margin: '4px 0 0' }}>{lang === 'vi' ? 'PDF — tối đa 30MB' : 'PDF — max 30MB'}</p>
+                      <p style={{ fontSize: 10, color: '#cbced4', margin: '4px 0 0' }}>{lang === 'vi' ? 'PDF — tối đa 20MB' : 'PDF — max 20MB'}</p>
                     </div>
                   )}
 

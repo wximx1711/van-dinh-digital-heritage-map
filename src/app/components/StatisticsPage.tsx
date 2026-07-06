@@ -120,7 +120,7 @@ export function StatisticsPage({ isAdmin = false, onNavigate }: StatisticsPagePr
             { label: t('stats.city'), value: cityCount, icon: <Award size={18} />, color: '#1A5276' },
             { label: t('stats.unranked'), value: unrankedCount, icon: <LayoutGrid size={18} />, color: '#7F8C8D' },
             { label: t('stats.intangible'), value: intangibleHeritage.length, icon: <BookOpen size={18} />, color: '#D4A017' },
-            { label: lang === 'vi' ? 'Cập nhật 2024' : '2024 Updates', value: monthlyUpdates.reduce((s, m) => s + m.count, 0), icon: <TrendingUp size={18} />, color: '#27AE60' },
+            { label: lang === 'vi' ? `Cập nhật ${new Date().getFullYear()}` : `${new Date().getFullYear()} Updates`, value: monthlyUpdates.reduce((s, m) => s + m.count, 0), icon: <TrendingUp size={18} />, color: '#27AE60' },
           ].map(s => (
             <div key={s.label} style={{
               background: 'white', borderRadius: 10, padding: '14px',

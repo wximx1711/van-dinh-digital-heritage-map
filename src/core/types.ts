@@ -12,8 +12,8 @@ export interface HeritageSite {
   status: HeritageStatus;
   addressVi: string;
   addressEn: string;
-  lat: number;
-  lon: number;
+  lat: number | null;
+  lon: number | null;
   googleMapUrl: string;
   descriptionVi: string;
   descriptionEn: string;
@@ -62,21 +62,31 @@ export interface MonthlyUpdate {
   updateCount: number;
 }
 
-export interface AboutPageData {
-  aboutId: number;
-  title: string;
-  content: string;
-  bannerImage: string;
-  updatedAt: string;
+export interface AboutPageHistoryItem {
+  historyId: number;
+  titleVi: string | null;
+  titleEn: string | null;
+  introductionVi: string | null;
+  introductionEn: string | null;
+  mainContentVi: string | null;
+  mainContentEn: string | null;
+  bannerImage: string | null;
+  contactInfo: string | null;
+  updatedBy: number;
+  createdAt: string;
 }
 
-export interface AboutContent {
+export interface AboutPageData {
+  aboutId: number;
+  titleVi: string;
+  titleEn: string;
   introductionVi: string;
   introductionEn: string;
-  historyVi: string;
-  historyEn: string;
-  contactVi: string;
-  contactEn: string;
+  mainContentVi: string;
+  mainContentEn: string;
+  bannerImage: string;
+  contactInfo: string | null;
+  updatedAt: string;
 }
 
 export interface MediaFile {

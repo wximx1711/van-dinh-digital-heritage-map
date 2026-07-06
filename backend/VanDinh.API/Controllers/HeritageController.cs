@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using VanDinh.API.DTOs;
 using VanDinh.API.Repositories;
 using VanDinh.API.Responses;
@@ -14,18 +15,19 @@ namespace VanDinh.API.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/heritage")]
-public sealed class HeritageController(IHeritageService service, IAppRepository repository, IActivityLogService logs) : ControllerBase
+public sealed class HeritageController(
+    IHeritageService service,
+    IAppRepository repository,
+    IActivityLogService logs,
+    ILogger<HeritageController> controllerLogger) : ControllerBase
 {
-    /// <summary>
-    /// Search and filter heritage sites with pagination.
-    /// </summary>
-    /// <returns>Paginated list of matching heritage sites</returns>
     [HttpGet]
     public IActionResult Search([FromQuery] string? q, [FromQuery] string? type, [FromQuery] string? classification, [FromQuery] string? status, [FromQuery] string? yearBuilt, [FromQuery] string? district, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
+        q = q?.Trim();
         var allResults = service.SearchAdvanced(q, type, classification, status, yearBuilt, district).ToList();
         var totalRecords = allResults.Count;
         var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
@@ -71,6 +73,17 @@ public sealed class HeritageController(IHeritageService service, IAppRepository 
         }
         catch (InvalidOperationException ex)
         {
+            controllerLogger.LogError(ex, "InvalidOperationException in HeritageController.Create: {Msg}", ex.Message);
+            var inner = ex.InnerException;
+            var depth = 0;
+            while (inner is not null)
+            {
+                controllerLogger.LogError("InnerException[{Depth}]: {Type} — {Msg}", depth, inner.GetType().FullName, inner.Message);
+                controllerLogger.LogError("InnerException[{Depth}].StackTrace: {Stack}", depth, inner.StackTrace);
+                inner = inner.InnerException;
+                depth++;
+            }
+            MappingExtensions.LogMaterializationError(controllerLogger, ex, "HeritageController.Create");
             return ApiResponse.Error(ex.Message);
         }
     }

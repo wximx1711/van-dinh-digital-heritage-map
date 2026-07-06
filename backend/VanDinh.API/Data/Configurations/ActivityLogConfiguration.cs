@@ -12,8 +12,8 @@ public sealed class ActivityLogConfiguration : IEntityTypeConfiguration<Activity
         builder.HasKey(x => x.LogId);
         builder.Property(x => x.LogId).ValueGeneratedOnAdd();
         builder.Property(x => x.UserId).IsRequired();
-        builder.Property(x => x.Action).HasColumnType("nvarchar(50)").IsRequired();
-        builder.Property(x => x.EntityName).HasColumnType("nvarchar(100)").IsRequired();
+        builder.Property(x => x.Action).HasColumnType("nvarchar(50)");
+        builder.Property(x => x.EntityName).HasColumnType("nvarchar(100)");
         builder.Property(x => x.EntityId);
         builder.Property(x => x.Description).HasColumnType("nvarchar(max)");
         builder.Property(x => x.IpAddress).HasColumnType("nvarchar(45)");

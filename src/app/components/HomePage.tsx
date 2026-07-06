@@ -450,15 +450,19 @@ const handleSearch = () => {
                     {lang === 'vi' ? item.descriptionVi : item.descriptionEn}
                   </p>
                   <div style={{ display: 'flex', gap: 8 }}>
-                    <button style={{
-                      flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                      padding: '6px 0', borderRadius: 6,
-                      border: '1px solid #0F3D5E', background: 'white',
-                      color: '#0F3D5E', fontSize: 11, fontWeight: 600, cursor: 'pointer',
-                    }}>
-                      <Play size={11} /> {t('intangible.video')}
-                    </button>
-                    <button style={{
+                    {item.videoUrl ? (
+                      <a href={item.videoUrl} target="_blank" rel="noreferrer" style={{
+                        flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                        padding: '6px 0', borderRadius: 6,
+                        border: '1px solid #0F3D5E', background: 'white',
+                        color: '#0F3D5E', fontSize: 11, fontWeight: 600, cursor: 'pointer', textDecoration: 'none',
+                      }}>
+                        <Play size={11} /> {t('intangible.video')}
+                      </a>
+                    ) : (
+                      <div style={{ flex: 1 }} />
+                    )}
+                    <button onClick={() => onNavigate('intangible')} style={{
                       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
                       padding: '6px 0', borderRadius: 6,
                       background: '#0F3D5E', border: 'none',

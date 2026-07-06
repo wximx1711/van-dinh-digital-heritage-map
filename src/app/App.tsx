@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { LanguageProvider, useLanguage } from './components/LanguageContext';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import { Header } from './components/Header';
@@ -12,7 +12,9 @@ import { RelicsPage } from './components/RelicsPage';
 import { StatisticsPage } from './components/StatisticsPage';
 import { IntangiblePage } from './components/IntangiblePage';
 import { NotFoundPage } from './components/NotFoundPage';
-import type { UserInfo } from '../core/types';
+import { apiGet, apiPost } from './services/api';
+import { getImageUrl } from './utils/url';
+import type { UserInfo, AboutPageData } from '../core/types';
 
 type Page =
   | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
@@ -20,48 +22,68 @@ type Page =
 
 function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { lang } = useLanguage();
+  const [data, setData] = useState<AboutPageData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    apiGet<AboutPageData>('/about')
+      .then(setData)
+      .catch(() => setData(null))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return (
+      <div style={{ background: '#F0F4F8', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5d7a8c', fontSize: 13 }}>
+        {lang === 'vi' ? 'Đang tải...' : 'Loading...'}
+      </div>
+    );
+  }
+
+  if (!data) {
+    return (
+      <div style={{ background: '#F0F4F8', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5d7a8c', fontSize: 13 }}>
+        {lang === 'vi' ? 'Không thể tải nội dung.' : 'Unable to load content.'}
+      </div>
+    );
+  }
+
+  const title = lang === 'vi' ? data.titleVi : data.titleEn;
+  const introduction = lang === 'vi' ? data.introductionVi : data.introductionEn;
+  const mainContent = lang === 'vi' ? data.mainContentVi : data.mainContentEn;
+  const contact = data.contactInfo;
+  const contactText = contact ? (lang === 'vi' ? `Liên hệ: ${contact}` : `Contact: ${contact}`) : null;
+
   return (
     <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>
-      <div style={{ background: '#0F3D5E', padding: '40px 24px 48px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
+      {data.bannerImage && (
+        <div style={{ width: '100%', height: 320, overflow: 'hidden' }}>
+          <img src={getImageUrl(data.bannerImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        </div>
+      )}
+      <div style={{ background: '#0F3D5E', padding: data.bannerImage ? '32px 24px 40px' : '40px 24px 48px' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <div style={{ color: '#D4A017', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
             {lang === 'vi' ? 'Tổng quan' : 'Overview'}
           </div>
           <h1 style={{ color: 'white', fontSize: 26, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: 0 }}>
-            {lang === 'vi' ? 'Giới thiệu' : 'About'}
+            {title}
           </h1>
         </div>
       </div>
-      <div style={{ maxWidth: 800, margin: '0 auto', padding: '24px', transform: 'translateY(-24px)' }}>
+      <div style={{ maxWidth: 900, margin: '0 auto', padding: '24px', transform: 'translateY(-24px)' }}>
         <div style={{ background: 'white', borderRadius: 12, padding: '32px', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
-          <h2 style={{ color: '#0F3D5E', fontFamily: 'Merriweather, serif', marginTop: 0, marginBottom: 12 }}>
-            {lang === 'vi' ? 'Bản đồ số Di sản Văn hóa Vân Đình' : 'Van Dinh Digital Heritage Map'}
-          </h2>
+          <h2 style={{ color: '#0F3D5E', fontFamily: 'Merriweather, serif', marginTop: 0, marginBottom: 12 }}>{title}</h2>
           <div style={{ background: 'linear-gradient(90deg, #D4A017, transparent)', height: 3, width: 80, marginBottom: 20 }} />
-          <p style={{ color: '#1a2332', lineHeight: 1.8, fontSize: 14 }}>
-            {lang === 'vi'
-              ? 'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là dự án số hóa và bảo tồn di sản văn hóa của xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội. Dự án nhằm xây dựng một hệ thống thông tin di sản văn hóa toàn diện, kết hợp bản đồ GIS, cơ sở dữ liệu di sản và các công cụ quản lý hiện đại.'
-              : 'The Van Dinh Digital Heritage Map System is a project for digitizing and preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi City. The project aims to build a comprehensive cultural heritage information system combining GIS mapping, heritage databases, and modern management tools.'}
-          </p>
-          <p style={{ color: '#1a2332', lineHeight: 1.8, fontSize: 14 }}>
-            {lang === 'vi'
-              ? 'Với tổng số hơn 10 di tích vật thể và 5 di sản phi vật thể được ghi nhận và số hóa, hệ thống cung cấp đầy đủ thông tin lịch sử, kiến trúc, tọa độ và hình ảnh của từng di sản, phục vụ công tác nghiên cứu, bảo tồn và quảng bá du lịch văn hóa.'
-              : 'With over 10 tangible heritage sites and 5 intangible heritage items documented and digitized, the system provides comprehensive information on history, architecture, coordinates, and images of each heritage site, serving research, conservation, and cultural tourism promotion.'}
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginTop: 24 }}>
-            {[
-              { titleVi: 'Mục tiêu', titleEn: 'Objectives', textVi: 'Số hóa và bảo tồn di sản văn hóa địa phương', textEn: 'Digitize and preserve local cultural heritage' },
-              { titleVi: 'Phạm vi', titleEn: 'Scope', textVi: 'Toàn bộ di sản vật thể và phi vật thể xã Vân Đình', textEn: 'All tangible and intangible heritage of Van Dinh Commune' },
-              { titleVi: 'Đơn vị thực hiện', titleEn: 'Implementing Unit', textVi: 'UBND xã Vân Đình & Sở Văn hóa Hà Nội', textEn: 'Van Dinh Commune & Hanoi Department of Culture' },
-              { titleVi: 'Năm triển khai', titleEn: 'Launch Year', textVi: '2024', textEn: '2024' },
-            ].map(item => (
-              <div key={item.titleVi} style={{ padding: '14px', background: '#F0F4F8', borderRadius: 8 }}>
-                <div style={{ fontSize: 11, color: '#D4A017', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-                  {lang === 'vi' ? item.titleVi : item.titleEn}
-                </div>
-                <div style={{ fontSize: 13, color: '#0F3D5E', fontWeight: 500 }}>{lang === 'vi' ? item.textVi : item.textEn}</div>
-              </div>
-            ))}
+          {introduction && <p style={{ color: '#1a2332', lineHeight: 1.8, fontSize: 14, whiteSpace: 'pre-line' }}>{introduction}</p>}
+          {mainContent && <p style={{ color: '#1a2332', lineHeight: 1.8, fontSize: 14, whiteSpace: 'pre-line', marginTop: 16 }}>{mainContent}</p>}
+          {contactText && (
+            <div style={{ marginTop: 20, padding: '14px', background: '#F0F4F8', borderRadius: 8, fontSize: 13, color: '#0F3D5E' }}>
+              {contactText}
+            </div>
+          )}
+          <div style={{ marginTop: 20, fontSize: 11, color: '#5d7a8c', textAlign: 'right' }}>
+            {lang === 'vi' ? 'Cập nhật lần cuối: ' : 'Last updated: '}{new Date(data.updatedAt).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US')}
           </div>
         </div>
       </div>
@@ -73,6 +95,25 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { lang } = useLanguage();
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sent, setSent] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSend = async () => {
+    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
+      setError(lang === 'vi' ? 'Vui lòng điền đầy đủ thông tin bắt buộc' : 'Please fill in all required fields');
+      return;
+    }
+    setSending(true);
+    setError('');
+    try {
+      await apiPost('/contact', { name: form.name.trim(), email: form.email.trim(), subject: form.subject.trim() || undefined, message: form.message.trim() });
+      setSent(true);
+    } catch {
+      setError(lang === 'vi' ? 'Gửi thất bại, vui lòng thử lại sau' : 'Failed to send, please try again later');
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
     <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>
@@ -134,11 +175,15 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
                 />
               </div>
             </div>
+            {error && (
+              <div style={{ color: '#dc2626', fontSize: 13, marginTop: 8, textAlign: 'center' }}>{error}</div>
+            )}
             <button
-              onClick={() => setSent(true)}
-              style={{ marginTop: 16, width: '100%', padding: '12px', borderRadius: 8, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer', boxShadow: '0 4px 12px rgba(15,61,94,0.3)' }}
+              onClick={handleSend}
+              disabled={sending}
+              style={{ marginTop: 16, width: '100%', padding: '12px', borderRadius: 8, background: sending ? '#94a3b8' : '#0F3D5E', border: 'none', color: 'white', fontSize: 14, fontWeight: 700, cursor: sending ? 'not-allowed' : 'pointer', boxShadow: '0 4px 12px rgba(15,61,94,0.3)' }}
             >
-              {lang === 'vi' ? 'Gửi tin nhắn' : 'Send Message'}
+              {sending ? (lang === 'vi' ? 'Đang gửi...' : 'Sending...') : (lang === 'vi' ? 'Gửi tin nhắn' : 'Send Message')}
             </button>
           </div>
         )}
@@ -172,6 +217,16 @@ function AppInner() {
   const [page, setPage] = useState<Page>('home');
   const [heritageSiteId, setHeritageSiteId] = useState<string>('h001');
   const auth = useAuth();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const pageParam = params.get('page');
+    const idParam = params.get('id');
+    if (pageParam === 'heritage' && idParam) {
+      setHeritageSiteId(idParam);
+      setPage('heritage-detail');
+    }
+  }, []);
 
   const navigate = (targetPage: string, id?: string) => {
     if (targetPage === 'heritage-detail' && id) setHeritageSiteId(id);

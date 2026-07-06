@@ -2,52 +2,54 @@ using System.ComponentModel.DataAnnotations;
 
 namespace VanDinh.API.DTOs;
 
-/// <summary>
-/// Login request with username and password.
-/// </summary>
 public sealed record LoginRequest(
-    /// <summary>Username of the user.</summary>
     [Required] string Username,
-
-    /// <summary>User password.</summary>
     [Required] string Password,
-
-    /// <summary>Whether to persist the login session (Remember Me).</summary>
     bool RememberMe);
 
-/// <summary>Login response containing user identity and role.</summary>
 public sealed record LoginResponse(long UserId, string Username, string? FullName, string RoleName);
 
-/// <summary>User data transfer object for display.</summary>
 public sealed record UserDto(long UserId, string Username, string? FullName, string? Email, string RoleName, bool Status, DateTime CreatedAt);
 
-/// <summary>Request to create a new user account.</summary>
 public sealed record UserCreateRequest(
-    /// <summary>Username (3-50 characters).</summary>
-    [Required, MaxLength(50)] string Username,
+    [Required, StringLength(30, MinimumLength = 4)]
+    [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Username can only contain letters, numbers, and underscores.")]
+    string Username,
 
-    /// <summary>Password (minimum 6 characters).</summary>
-    [Required, MinLength(6)] string Password,
+    [Required, MinLength(8)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
+        ErrorMessage = "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.")]
+    string Password,
 
-    /// <summary>Role name (ADMIN or MANAGER).</summary>
-    [Required] string RoleName,
+    [Required, RegularExpression(@"^(ADMIN|MANAGER)$", ErrorMessage = "Role must be ADMIN or MANAGER.")]
+    string RoleName,
 
-    /// <summary>Full display name.</summary>
+    [Required, StringLength(100, MinimumLength = 5)]
     string? FullName,
 
-    /// <summary>Email address.</summary>
-    [EmailAddress] string? Email);
+    [Required, EmailAddress]
+    string? Email);
 
-/// <summary>Request to update an existing user.</summary>
-public sealed record UserUpdateRequest(string RoleName, string? FullName, [EmailAddress] string? Email, bool Status);
+public sealed record UserUpdateRequest(
+    [Required, RegularExpression(@"^(ADMIN|MANAGER)$", ErrorMessage = "Role must be ADMIN or MANAGER.")]
+    string RoleName,
 
-/// <summary>Request to reset user password.</summary>
-public sealed record ResetPasswordRequest([Required, MinLength(6)] string NewPassword);
+    [Required, StringLength(100, MinimumLength = 5)]
+    string? FullName,
 
-/// <summary>Request to update user role.</summary>
+    [Required, EmailAddress]
+    string? Email,
+
+    bool Status);
+
+public sealed record ResetPasswordRequest(
+    [Required, MinLength(8)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
+        ErrorMessage = "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.")]
+    string NewPassword);
+
 public sealed record UpdateRoleRequest([Required] string RoleName);
 
-/// <summary>Request to update user status.</summary>
 public sealed record UpdateStatusRequest(bool Status);
 
 /// <summary>Heritage category data transfer object.</summary>
@@ -101,96 +103,136 @@ public sealed record HeritageDto(
     string? QrCodeUrl,
     string? GoogleMapUrl);
 
-/// <summary>Request to create or update a heritage site.</summary>
 public sealed record HeritageRequest(
-    /// <summary>Heritage site code (unique).</summary>
     [Required, MaxLength(50)] string Code,
 
-    /// <summary>Name in Vietnamese.</summary>
-    [Required] string NameVi,
+    [Required, StringLength(200, MinimumLength = 5)]
+    string NameVi,
 
-    /// <summary>Name in English.</summary>
-    [Required] string NameEn,
+    [Required, StringLength(200, MinimumLength = 5)]
+    string NameEn,
 
-    /// <summary>Category type (e.g., dinh, chua, den).</summary>
     [Required] string Type,
 
-    /// <summary>Classification level (national, city, or unranked).</summary>
-    [Required] string Classification,
+    [Required, RegularExpression(@"^(national|city|unranked)$")]
+    string Classification,
 
-    /// <summary>Current status (active, maintenance, or closed).</summary>
-    [Required] string Status,
+    [Required, RegularExpression(@"^(active|maintenance|closed)$")]
+    string Status,
 
-    /// <summary>Address in Vietnamese.</summary>
+    [Required, StringLength(300, MinimumLength = 5)]
     string? AddressVi,
 
-    /// <summary>Address in English.</summary>
+    [Required, StringLength(300, MinimumLength = 5)]
     string? AddressEn,
 
-    /// <summary>Google Maps URL for the heritage location.</summary>
-    [Url] string? GoogleMapUrl,
+    [Required]
+    [RegularExpression(@"^(https:\/\/(maps\.google|www\.google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)).*",
+        ErrorMessage = "Google Maps URL must start with https://maps.google, https://www.google.com/maps, https://goo.gl/maps, or https://maps.app.goo.gl")]
+    string? GoogleMapUrl,
 
-    /// <summary>Description in Vietnamese.</summary>
+    [Required, MinLength(30)]
     string? DescriptionVi,
 
-    /// <summary>Description in English.</summary>
+    [Required, MinLength(30)]
     string? DescriptionEn,
 
-    /// <summary>Historical information in Vietnamese.</summary>
+    [Required, MinLength(50)]
     string? HistoryVi,
 
-    /// <summary>Historical information in English.</summary>
+    [Required, MinLength(50)]
     string? HistoryEn,
 
-    /// <summary>Thumbnail image URL.</summary>
+    [Required]
     string? Image,
 
-    /// <summary>Year the site was built.</summary>
+    [Required]
+    [RegularExpression(@"^[1-9]\d{2,3}$",
+        ErrorMessage = "Year built must be a valid integer between 100 and current year")]
     string? YearBuilt,
 
-    /// <summary>Organization or person responsible for the heritage.</summary>
-    string? Guardian);
+    [MaxLength(150)]
+    string? Guardian,
+
+    [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
+    double? Latitude = null,
+
+    [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180")]
+    double? Longitude = null,
+
+    string[]? ImageUrls = null);
 
 /// <summary>Intangible heritage data transfer object.</summary>
 public sealed record IntangibleHeritageDto(string Id, string NameVi, string NameEn, string Category, string? DescriptionVi, string? DescriptionEn, string? Image, string? VideoUrl, string CreatedAt, string? UpdatedAt);
 
-/// <summary>Request to create or update intangible heritage.</summary>
 public sealed record IntangibleHeritageRequest(
-    /// <summary>Name in Vietnamese.</summary>
-    [Required] string NameVi,
+    [Required, StringLength(200, MinimumLength = 5)]
+    string NameVi,
 
-    /// <summary>Name in English.</summary>
-    [Required] string NameEn,
+    [Required, StringLength(200, MinimumLength = 5)]
+    string NameEn,
 
-    /// <summary>Category (festival, performance, craft, ritual, or story).</summary>
-    [Required] string Category,
+    [Required, RegularExpression(@"^(festival|performance|craft|ritual|story)$")]
+    string Category,
 
-    /// <summary>Description in Vietnamese.</summary>
+    [Required, MinLength(30)]
     string? DescriptionVi,
 
-    /// <summary>Description in English.</summary>
+    [Required, MinLength(30)]
     string? DescriptionEn,
 
-    /// <summary>Image URL.</summary>
+    [Required]
     string? Image,
 
-    /// <summary>Video URL.</summary>
+    [RegularExpression(@"^(https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.*)?$",
+        ErrorMessage = "Only YouTube URLs are accepted for video.")]
     string? VideoUrl);
 
-/// <summary>About page data transfer object.</summary>
-public sealed record AboutPageDto(int AboutId, string? Title, string? Content, string? BannerImage, DateTime UpdatedAt);
+/// <summary>About page history data transfer object.</summary>
+public sealed record AboutPageHistoryDto(
+    long HistoryId,
+    string? TitleVi,
+    string? TitleEn,
+    string? IntroductionVi,
+    string? IntroductionEn,
+    string? MainContentVi,
+    string? MainContentEn,
+    string? BannerImage,
+    string? ContactInfo,
+    long UpdatedBy,
+    DateTime CreatedAt);
 
-/// <summary>Request to update the about page.</summary>
-public sealed record AboutPageRequest(string? Title, string? Content, string? BannerImage);
+/// <summary>About page data transfer object.</summary>
+public sealed record AboutPageDto(
+    int AboutId,
+    string? TitleVi,
+    string? TitleEn,
+    string? IntroductionVi,
+    string? IntroductionEn,
+    string? MainContentVi,
+    string? MainContentEn,
+    string? BannerImage,
+    string? ContactInfo,
+    DateTime UpdatedAt);
+
+public sealed record AboutPageRequest(
+    [Required, StringLength(200, MinimumLength = 5)] string? TitleVi,
+    [Required, StringLength(200, MinimumLength = 5)] string? TitleEn,
+    [Required] string? IntroductionVi,
+    [Required] string? IntroductionEn,
+    [Required] string? MainContentVi,
+    [Required] string? MainContentEn,
+    string? BannerImage,
+    string? ContactInfo);
 
 /// <summary>Activity log data transfer object.</summary>
 public sealed record ActivityLogDto(long LogId, long UserId, string? Username, string? RoleName, string? Action, string? EntityName, long? EntityId, string? Description, string? IpAddress, DateTime CreatedAt);
 
 /// <summary>System settings data transfer object.</summary>
-public sealed record SystemSettingDto(int SettingId, string? WebsiteName, string? LogoUrl, string? FooterText, string? ContactEmail, string? Phone, string? Address, string? FacebookUrl, string? TiktokUrl);
+public sealed record SystemSettingDto(int SettingId, string? WebsiteName, string? LogoUrl, string? FooterText, string? ContactEmail, string? Phone, string? Address, string? FacebookUrl, string? TiktokUrl, string? YoutubeUrl);
 
 /// <summary>Request to update system settings.</summary>
-public sealed record SystemSettingRequest(string? WebsiteName, string? LogoUrl, string? FooterText, string? ContactEmail, string? Phone, string? Address, string? FacebookUrl, string? TiktokUrl);
+public sealed record SystemSettingRequest(string? WebsiteName, string? LogoUrl, string? FooterText, string? ContactEmail, string? Phone, string? Address, string? FacebookUrl, string? TiktokUrl, string? YoutubeUrl);
 
 /// <summary>Statistics response with heritage counts and breakdowns.</summary>
 public sealed record StatisticsDto(int TotalHeritage, int National, int City, int Unranked, IReadOnlyDictionary<string, int> ByType, IReadOnlyDictionary<string, int> ByStatus);
@@ -209,3 +251,13 @@ public sealed record MonthlyUpdateRequest(
     [Required, MaxLength(50)] string DisplayVi,
     [Required, MaxLength(50)] string DisplayEn,
     int UpdateCount);
+
+/// <summary>Related link data transfer object.</summary>
+public sealed record RelatedLinkDto(int LinkId, string Title, string Url, int DisplayOrder, bool IsEnabled, DateTime CreatedAt);
+
+/// <summary>Request to create or update a related link.</summary>
+public sealed record RelatedLinkRequest(
+    [Required, StringLength(200, MinimumLength = 1)] string Title,
+    [Required, StringLength(500)] string Url,
+    int DisplayOrder,
+    bool IsEnabled);

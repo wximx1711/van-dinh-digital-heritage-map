@@ -89,11 +89,22 @@ export function IntangibleManagement() {
     const errors: Record<string, string> = {};
     if (!editItem) return false;
     if (!editItem.nameVi.trim()) errors.nameVi = lang === 'vi' ? 'Tên (VI) là bắt buộc' : 'Name (VI) is required';
+    else if (editItem.nameVi.trim().length < 5) errors.nameVi = lang === 'vi' ? 'Tối thiểu 5 ký tự' : 'Minimum 5 characters';
+    else if (editItem.nameVi.length > 200) errors.nameVi = lang === 'vi' ? 'Tối đa 200 ký tự' : 'Max 200 characters';
     if (!editItem.nameEn.trim()) errors.nameEn = lang === 'vi' ? 'Tên (EN) là bắt buộc' : 'Name (EN) is required';
+    else if (editItem.nameEn.trim().length < 5) errors.nameEn = lang === 'vi' ? 'Tối thiểu 5 ký tự' : 'Minimum 5 characters';
+    else if (editItem.nameEn.length > 200) errors.nameEn = lang === 'vi' ? 'Tối đa 200 ký tự' : 'Max 200 characters';
     if (!editItem.category) errors.category = lang === 'vi' ? 'Thể loại là bắt buộc' : 'Category is required';
     if (!editItem.descriptionVi.trim()) errors.descriptionVi = lang === 'vi' ? 'Mô tả (VI) là bắt buộc' : 'Description (VI) is required';
+    else if (editItem.descriptionVi.trim().length < 30) errors.descriptionVi = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
     if (!editItem.descriptionEn.trim()) errors.descriptionEn = lang === 'vi' ? 'Mô tả (EN) là bắt buộc' : 'Description (EN) is required';
+    else if (editItem.descriptionEn.trim().length < 30) errors.descriptionEn = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
     if (!editItem.image) errors.image = lang === 'vi' ? 'Ảnh đại diện là bắt buộc' : 'Cover image is required';
+    if (editItem.videoUrl && editItem.videoUrl.trim()) {
+      const url = editItem.videoUrl.trim();
+      if (!url.startsWith('https://www.youtube.com') && !url.startsWith('https://youtube.com') && !url.startsWith('https://youtu.be'))
+        errors.videoUrl = lang === 'vi' ? 'Chỉ chấp nhận URL YouTube' : 'Only YouTube URLs accepted';
+    }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -361,7 +372,8 @@ export function IntangibleManagement() {
 
                 <div>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.video_url')}</label>
-                  <input style={inputStyle} type="url" placeholder="https://..." value={editItem.videoUrl || ''} onChange={e => setEditItem(s => s ? { ...s, videoUrl: e.target.value } : s)} />
+                  <input style={{ ...inputStyle, borderColor: formErrors.videoUrl ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} type="url" placeholder="https://www.youtube.com/..." value={editItem.videoUrl || ''} onChange={e => { setEditItem(s => s ? { ...s, videoUrl: e.target.value } : s); setFormErrors(prev => ({ ...prev, videoUrl: '' })); }} />
+                  {formErrors.videoUrl && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.videoUrl}</span>}
                 </div>
 
                 <div style={{ gridColumn: '1 / -1' }}>

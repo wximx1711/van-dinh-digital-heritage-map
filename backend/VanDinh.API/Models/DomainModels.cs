@@ -13,11 +13,14 @@ public sealed class User
 {
     public long UserId { get; set; }
     public int RoleId { get; set; }
-    [Required, MaxLength(50)]
+    [Required, MaxLength(30)]
+    [RegularExpression(@"^[a-zA-Z0-9_]+$")]
     public string Username { get; set; } = "";
     [Required, MaxLength(255)]
     public string PasswordHash { get; set; } = "";
+    [MaxLength(100)]
     public string? FullName { get; set; }
+    [MaxLength(100)]
     public string? Email { get; set; }
     public bool Status { get; set; } = true;
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -45,9 +48,9 @@ public sealed class Heritage
     [Required, MaxLength(50)]
     public string Code { get; set; } = "";
     public int CategoryId { get; set; }
-    [Required, MaxLength(255)]
+    [Required, MinLength(5), MaxLength(200)]
     public string NameVi { get; set; } = "";
-    [Required, MaxLength(255)]
+    [Required, MinLength(5), MaxLength(200)]
     public string NameEn { get; set; } = "";
     [Required, MaxLength(255)]
     public string Slug { get; set; } = "";
@@ -55,16 +58,23 @@ public sealed class Heritage
     public string Classification { get; set; } = "unranked";
     [Required]
     public string Status { get; set; } = "active";
+    [MinLength(5), MaxLength(300)]
     public string? AddressVi { get; set; }
+    [MinLength(5), MaxLength(300)]
     public string? AddressEn { get; set; }
     public decimal? Latitude { get; set; }
     public decimal? Longitude { get; set; }
+    [MinLength(30)]
     public string? DescriptionVi { get; set; }
+    [MinLength(30)]
     public string? DescriptionEn { get; set; }
+    [MinLength(50)]
     public string? HistoryVi { get; set; }
+    [MinLength(50)]
     public string? HistoryEn { get; set; }
     public string? ThumbnailUrl { get; set; }
     public string? YearBuilt { get; set; }
+    [MaxLength(150)]
     public string? Guardian { get; set; }
     public string? QrCodeUrl { get; set; }
     public string? GoogleMapUrl { get; set; }
@@ -114,15 +124,23 @@ public sealed class HeritageDocument
 public sealed class IntangibleHeritage
 {
     public long IntangibleId { get; set; }
+    [Required, MaxLength(20)]
     public string PublicId { get; set; } = "";
+    [Required, MinLength(5), MaxLength(200)]
     public string NameVi { get; set; } = "";
+    [Required, MinLength(5), MaxLength(200)]
     public string NameEn { get; set; } = "";
+    [Required, MaxLength(30)]
     public string Category { get; set; } = "";
+    [Required, MinLength(30)]
     public string? DescriptionVi { get; set; }
+    [Required, MinLength(30)]
     public string? DescriptionEn { get; set; }
     public string? ImageUrl { get; set; }
     public string? VideoUrl { get; set; }
     public bool IsDeleted { get; set; }
+    public long CreatedBy { get; set; }
+    public long? UpdatedBy { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     public DateTime? UpdatedAt { get; set; }
 }
@@ -130,21 +148,48 @@ public sealed class IntangibleHeritage
 public sealed class AboutPage
 {
     public int AboutId { get; set; }
-    public string? Title { get; set; }
-    public string? Content { get; set; }
+    [Required, StringLength(200, MinimumLength = 5)]
+    public string? TitleVi { get; set; }
+    [Required, StringLength(200, MinimumLength = 5)]
+    public string? TitleEn { get; set; }
+    [Required]
+    public string? IntroductionVi { get; set; }
+    [Required]
+    public string? IntroductionEn { get; set; }
+    [Required]
+    public string? MainContentVi { get; set; }
+    [Required]
+    public string? MainContentEn { get; set; }
     public string? BannerImage { get; set; }
+    public string? ContactInfo { get; set; }
     public long UpdatedBy { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+}
+
+public sealed class AboutPageHistory
+{
+    public long HistoryId { get; set; }
+    public int AboutId { get; set; }
+    public string? TitleVi { get; set; }
+    public string? TitleEn { get; set; }
+    public string? IntroductionVi { get; set; }
+    public string? IntroductionEn { get; set; }
+    public string? MainContentVi { get; set; }
+    public string? MainContentEn { get; set; }
+    public string? BannerImage { get; set; }
+    public string? ContactInfo { get; set; }
+    public long UpdatedBy { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }
 
 public sealed class ActivityLog
 {
     public long LogId { get; set; }
     public long UserId { get; set; }
-    [Required, MaxLength(50)]
-    public string Action { get; set; } = "";
-    [Required, MaxLength(100)]
-    public string EntityName { get; set; } = "";
+    [MaxLength(50)]
+    public string? Action { get; set; }
+    [MaxLength(100)]
+    public string? EntityName { get; set; }
     public long? EntityId { get; set; }
     public string? Description { get; set; }
     public string? IpAddress { get; set; }
@@ -163,6 +208,7 @@ public sealed class SystemSetting
     public string? Address { get; set; }
     public string? FacebookUrl { get; set; }
     public string? TiktokUrl { get; set; }
+    public string? YoutubeUrl { get; set; }
     public long? UpdatedBy { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }
@@ -177,4 +223,19 @@ public sealed class MonthlyUpdate
     [Required, MaxLength(50)]
     public string DisplayEn { get; set; } = "";
     public int UpdateCount { get; set; }
+}
+
+public sealed class RelatedLink
+{
+    public int LinkId { get; set; }
+    [Required, MaxLength(200)]
+    public string Title { get; set; } = "";
+    [Required, MaxLength(500)]
+    public string Url { get; set; } = "";
+    public int DisplayOrder { get; set; }
+    public bool IsEnabled { get; set; } = true;
+    public long CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public long? UpdatedBy { get; set; }
+    public DateTime? UpdatedAt { get; set; }
 }

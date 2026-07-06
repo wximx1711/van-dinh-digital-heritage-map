@@ -1,11 +1,12 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using VanDinh.API.Data;
 using VanDinh.API.Models;
 using VanDinh.API.Repositories;
 
 namespace VanDinh.API.Services;
 
-public sealed class EfAppRepository(ApplicationDbContext context) : IAppRepository
+public sealed class EfAppRepository(ApplicationDbContext context, ILogger<EfAppRepository> logger) : IAppRepository
 {
     private readonly ApplicationDbContext _context = context;
 
@@ -35,46 +36,63 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
 
     public IReadOnlyList<MonthlyUpdate> MonthlyUpdates => _context.MonthlyUpdates.AsNoTracking().OrderBy(m => m.UpdateId).ToList();
 
-    AboutPage? _aboutPage;
+    public IQueryable<Heritage> HeritagesUntracked => _context.Heritage
+        .AsNoTracking()
+        .Include(h => h.Images)
+        .Include(h => h.Videos)
+        .Include(h => h.Documents)
+        .Where(h => !h.IsDeleted);
+
+    public IQueryable<IntangibleHeritage> IntangibleHeritagesUntracked => _context.IntangibleHeritages
+        .AsNoTracking()
+        .Where(i => !i.IsDeleted);
+
+    public IQueryable<ActivityLog> ActivityLogsUntracked => _context.ActivityLogs
+        .AsNoTracking()
+        .Include(l => l.User)
+            .ThenInclude(u => u.Role);
+
+    public IQueryable<User> UsersUntracked => _context.Users
+        .AsNoTracking()
+        .Include(u => u.Role);
+
     public AboutPage AboutPage
     {
         get
         {
             var existing = _context.AboutPages.Local.FirstOrDefault();
             if (existing is not null) return existing;
-            var fromDb = _context.AboutPages.AsNoTracking().FirstOrDefault() ?? new AboutPage();
-            if (fromDb.AboutId != 0)
-            {
-                _context.AboutPages.Attach(fromDb);
-            }
-            else
-            {
-                _context.AboutPages.Add(fromDb);
-            }
-            return _aboutPage = fromDb;
+            var fromDb = _context.AboutPages.FirstOrDefault();
+            if (fromDb is not null) return fromDb;
+            var newEntity = new AboutPage();
+            _context.AboutPages.Add(newEntity);
+            return newEntity;
         }
-        set => _aboutPage = value;
     }
 
-    SystemSetting? _systemSetting;
+    public IReadOnlyList<AboutPageHistory> AboutPageHistories => _context.AboutPageHistories
+        .AsNoTracking()
+        .OrderByDescending(h => h.HistoryId)
+        .ToList();
+
+    public void AddAboutPageHistory(AboutPageHistory history)
+    {
+        _context.AboutPageHistories.Add(history);
+        _context.SaveChanges();
+    }
+
     public SystemSetting SystemSetting
     {
         get
         {
             var existing = _context.SystemSettings.Local.FirstOrDefault();
             if (existing is not null) return existing;
-            var fromDb = _context.SystemSettings.AsNoTracking().FirstOrDefault() ?? new SystemSetting();
-            if (fromDb.SettingId != 0)
-            {
-                _context.SystemSettings.Attach(fromDb);
-            }
-            else
-            {
-                _context.SystemSettings.Add(fromDb);
-            }
-            return _systemSetting = fromDb;
+            var fromDb = _context.SystemSettings.FirstOrDefault();
+            if (fromDb is not null) return fromDb;
+            var newEntity = new SystemSetting();
+            _context.SystemSettings.Add(newEntity);
+            return newEntity;
         }
-        set => _systemSetting = value;
     }
 
     public Role? FindRole(string roleName) => _context.Roles
@@ -101,8 +119,10 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
 
     public void UpdateUser(User user)
     {
-        user.UpdatedAt = DateTime.UtcNow;
-        _context.Users.Update(user);
+        var existing = _context.Users.Find(user.UserId);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(user);
+        existing.UpdatedAt = DateTime.UtcNow;
         _context.SaveChanges();
     }
 
@@ -133,7 +153,9 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
 
     public void UpdateCategory(HeritageCategory category)
     {
-        _context.HeritageCategories.Update(category);
+        var existing = _context.HeritageCategories.Find(category.CategoryId);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(category);
         _context.SaveChanges();
     }
 
@@ -163,46 +185,135 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
 
     public Heritage AddHeritage(Heritage heritage)
     {
+        logger.LogInformation("AddHeritage: Adding Heritage entity (PublicId={PublicId}) to context...", heritage.PublicId);
         _context.Heritage.Add(heritage);
-        _context.SaveChanges();
+        logger.LogInformation("AddHeritage: Calling SaveChanges()...");
+        try
+        {
+            _context.SaveChanges();
+            logger.LogInformation("AddHeritage: SaveChanges() succeeded. HeritageId={HeritageId} assigned.", heritage.HeritageId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex, "AddHeritage: SaveChanges() FAILED for Heritage (PublicId={PublicId})", heritage.PublicId);
+            MappingExtensions.LogMaterializationError(logger, ex, "EfAppRepository.AddHeritage.SaveChanges");
+            throw;
+        }
+
+        // TEMPORARY DIAGNOSTIC: Inspect every property after loading
+        try
+        {
+            var reloaded = _context.Heritage
+                .AsNoTracking()
+                .Include(h => h.Images)
+                .Include(h => h.Videos)
+                .Include(h => h.Documents)
+                .FirstOrDefault(h => h.PublicId == heritage.PublicId);
+            if (reloaded is not null)
+            {
+                logger.LogInformation("AddHeritage: Successfully reloaded Heritage {PublicId} from DB. Inspecting properties...", heritage.PublicId);
+                MappingExtensions.DiagnoseHeritage(reloaded, logger, "AddHeritage-Reload");
+            }
+            else
+            {
+                logger.LogWarning("AddHeritage: Could not reload Heritage {PublicId} from DB after SaveChanges.", heritage.PublicId);
+            }
+        }
+        catch (Exception reloadEx)
+        {
+            logger.LogCritical(reloadEx, "AddHeritage: FAILED to reload Heritage {PublicId} from DB after SaveChanges! This indicates a materialization issue.", heritage.PublicId);
+            MappingExtensions.LogMaterializationError(logger, reloadEx, "EfAppRepository.AddHeritage.Reload");
+            throw;
+        }
+
         return heritage;
     }
 
     public void UpdateHeritage(Heritage heritage)
     {
-        heritage.UpdatedAt = DateTime.UtcNow;
-        _context.Heritage.Update(heritage);
+        var existing = _context.Heritage
+            .FirstOrDefault(h => h.HeritageId == heritage.HeritageId);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(heritage);
+        existing.UpdatedAt = DateTime.UtcNow;
         _context.SaveChanges();
     }
 
     public void DeleteHeritage(string publicId)
     {
-        var item = FindHeritage(publicId);
+        var item = _context.Heritage
+            .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted);
         if (item is null) return;
         item.IsDeleted = true;
         item.DeletedAt = DateTime.UtcNow;
-        _context.Heritage.Update(item);
         _context.SaveChanges();
     }
 
     public HeritageImage AddImage(string publicId, HeritageImage image)
     {
-        var heritage = _context.Heritage.FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted)
-            ?? throw new InvalidOperationException("Heritage not found.");
+        logger.LogInformation("AddImage: Loading Heritage {PublicId} with Images navigation (materialization point)...", publicId);
+        Heritage heritage;
+        try
+        {
+            heritage = _context.Heritage
+                .Include(h => h.Images)
+                .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted)
+                ?? throw new InvalidOperationException("Heritage not found.");
+            logger.LogInformation("AddImage: Heritage {PublicId} loaded successfully (HeritageId={HeritageId}, Images.Count={ImgCount})",
+                publicId, heritage.HeritageId, heritage.Images.Count);
+
+            // TEMPORARY DIAGNOSTIC: Inspect loaded Heritage entity
+            MappingExtensions.DiagnoseHeritage(heritage, logger, "AddImage-Load");
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex, "AddImage: FAILED to load Heritage {PublicId} from DB!", publicId);
+            MappingExtensions.LogMaterializationError(logger, ex, "EfAppRepository.AddImage.LoadHeritage");
+            throw;
+        }
+
         image.HeritageId = heritage.HeritageId;
         if (!heritage.Images.Any())
         {
             heritage.ThumbnailUrl = image.ImageUrl;
             _context.Heritage.Update(heritage);
         }
+        logger.LogInformation("AddImage: Adding HeritageImage (ImageUrl={ImageUrl}, SortOrder={SortOrder}) to context...", image.ImageUrl, image.SortOrder);
         _context.HeritageImages.Add(image);
-        _context.SaveChanges();
+        try
+        {
+            _context.SaveChanges();
+            logger.LogInformation("AddImage: SaveChanges() succeeded. ImageId={ImageId} assigned.", image.ImageId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogCritical(ex, "AddImage: SaveChanges() FAILED for HeritageImage (PublicId={PublicId})", publicId);
+            MappingExtensions.LogMaterializationError(logger, ex, "EfAppRepository.AddImage.SaveChanges");
+            throw;
+        }
+
+        // TEMPORARY DIAGNOSTIC: Reload and inspect the HeritageImage
+        try
+        {
+            var reloadedImage = _context.HeritageImages.AsNoTracking().FirstOrDefault(i => i.ImageId == image.ImageId);
+            if (reloadedImage is not null)
+            {
+                MappingExtensions.DiagnoseHeritageImage(reloadedImage, logger, "AddImage-Reload");
+            }
+        }
+        catch (Exception diagEx)
+        {
+            logger.LogWarning(diagEx, "AddImage: Diagnostic reload failed for ImageId={ImageId} (non-critical)", image.ImageId);
+        }
+
         return image;
     }
 
     public void DeleteImage(string publicId, long imageId)
     {
-        var heritage = _context.Heritage.FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted);
+        var heritage = _context.Heritage
+            .Include(h => h.Images)
+            .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted);
         if (heritage is null) return;
         var image = _context.HeritageImages.FirstOrDefault(i => i.ImageId == imageId && i.HeritageId == heritage.HeritageId);
         if (image is not null)
@@ -272,6 +383,19 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
 
     public IntangibleHeritage AddIntangible(IntangibleHeritage item)
     {
+        if (string.IsNullOrWhiteSpace(item.PublicId))
+        {
+            var existingIds = _context.IntangibleHeritages
+                .Where(i => i.PublicId.StartsWith("ih"))
+                .Select(i => i.PublicId)
+                .ToList();
+            var num = 1;
+            while (existingIds.Contains($"ih{num:D4}")) { num++; }
+            item.PublicId = $"ih{num:D4}";
+        }
+
+        item.CreatedAt = DateTime.UtcNow;
+
         _context.IntangibleHeritages.Add(item);
         _context.SaveChanges();
         return item;
@@ -279,18 +403,20 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
 
     public void UpdateIntangible(IntangibleHeritage item)
     {
-        item.UpdatedAt = DateTime.UtcNow;
-        _context.IntangibleHeritages.Update(item);
+        var existing = _context.IntangibleHeritages.Find(item.IntangibleId);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(item);
+        existing.UpdatedAt = DateTime.UtcNow;
         _context.SaveChanges();
     }
 
     public void DeleteIntangible(string publicId)
     {
-        var item = FindIntangible(publicId);
+        var item = _context.IntangibleHeritages
+            .FirstOrDefault(i => i.PublicId == publicId && !i.IsDeleted);
         if (item is null) return;
         item.IsDeleted = true;
         item.UpdatedAt = DateTime.UtcNow;
-        _context.IntangibleHeritages.Update(item);
         _context.SaveChanges();
     }
 
@@ -307,7 +433,9 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
 
     public void UpdateMonthlyUpdate(MonthlyUpdate item)
     {
-        _context.MonthlyUpdates.Update(item);
+        var existing = _context.MonthlyUpdates.Find(item.UpdateId);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(item);
         _context.SaveChanges();
     }
 
@@ -317,6 +445,41 @@ public sealed class EfAppRepository(ApplicationDbContext context) : IAppReposito
         if (item is not null)
         {
             _context.MonthlyUpdates.Remove(item);
+            _context.SaveChanges();
+        }
+    }
+
+    public IReadOnlyList<RelatedLink> RelatedLinks => _context.RelatedLinks
+        .AsNoTracking()
+        .OrderBy(x => x.DisplayOrder)
+        .ToList();
+
+    public RelatedLink? FindRelatedLink(int id) => _context.RelatedLinks
+        .AsNoTracking()
+        .FirstOrDefault(x => x.LinkId == id);
+
+    public RelatedLink AddRelatedLink(RelatedLink item)
+    {
+        _context.RelatedLinks.Add(item);
+        _context.SaveChanges();
+        return item;
+    }
+
+    public void UpdateRelatedLink(RelatedLink item)
+    {
+        var existing = _context.RelatedLinks.Find(item.LinkId);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(item);
+        existing.UpdatedAt = DateTime.UtcNow;
+        _context.SaveChanges();
+    }
+
+    public void DeleteRelatedLink(int id)
+    {
+        var item = _context.RelatedLinks.Find(id);
+        if (item is not null)
+        {
+            _context.RelatedLinks.Remove(item);
             _context.SaveChanges();
         }
     }

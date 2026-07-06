@@ -33,11 +33,34 @@ namespace VanDinh.API.Migrations
                     b.Property<string>("BannerImage")
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Content")
+                    b.Property<string>("ContactInfo")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<string>("IntroductionEn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IntroductionVi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MainContentEn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MainContentVi")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TitleEn")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TitleVi")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAdd()
@@ -54,6 +77,58 @@ namespace VanDinh.API.Migrations
                     b.ToTable("AboutPage", (string)null);
                 });
 
+            modelBuilder.Entity("VanDinh.API.Models.AboutPageHistory", b =>
+                {
+                    b.Property<long>("HistoryId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("HistoryId"));
+
+                    b.Property<int>("AboutId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("BannerImage")
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("ContactInfo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<string>("IntroductionEn")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IntroductionVi")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MainContentEn")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MainContentVi")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TitleEn")
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("TitleVi")
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<long>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("HistoryId");
+
+                    b.HasIndex("AboutId");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.ToTable("AboutPageHistories", (string)null);
+                });
+
             modelBuilder.Entity("VanDinh.API.Models.ActivityLog", b =>
                 {
                     b.Property<long>("LogId")
@@ -63,7 +138,6 @@ namespace VanDinh.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("LogId"));
 
                     b.Property<string>("Action")
-                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
@@ -79,7 +153,6 @@ namespace VanDinh.API.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("EntityName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -109,9 +182,11 @@ namespace VanDinh.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("HeritageId"));
 
                     b.Property<string>("AddressEn")
+                        .HasMaxLength(300)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("AddressVi")
+                        .HasMaxLength(300)
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<int>("CategoryId")
@@ -147,6 +222,7 @@ namespace VanDinh.API.Migrations
                         .HasColumnType("nvarchar(1000)");
 
                     b.Property<string>("Guardian")
+                        .HasMaxLength(150)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("HistoryEn")
@@ -168,12 +244,12 @@ namespace VanDinh.API.Migrations
 
                     b.Property<string>("NameEn")
                         .IsRequired()
-                        .HasMaxLength(255)
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("NameVi")
                         .IsRequired()
-                        .HasMaxLength(255)
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PublicId")
@@ -213,7 +289,19 @@ namespace VanDinh.API.Migrations
 
                     b.HasIndex("CreatedBy");
 
+                    b.HasIndex("GoogleMapUrl")
+                        .IsUnique()
+                        .HasFilter("GoogleMapUrl IS NOT NULL AND IsDeleted = 0");
+
                     b.HasIndex("IsDeleted");
+
+                    b.HasIndex("NameEn")
+                        .IsUnique()
+                        .HasFilter("IsDeleted = 0");
+
+                    b.HasIndex("NameVi")
+                        .IsUnique()
+                        .HasFilter("IsDeleted = 0");
 
                     b.HasIndex("PublicId")
                         .IsUnique();
@@ -225,9 +313,27 @@ namespace VanDinh.API.Migrations
 
                     b.ToTable("Heritage", null, t =>
                         {
+                            t.HasCheckConstraint("CK_Heritage_AddressEn_MinLength", "AddressEn IS NULL OR LEN(TRIM(AddressEn)) >= 5");
+
+                            t.HasCheckConstraint("CK_Heritage_AddressVi_MinLength", "AddressVi IS NULL OR LEN(TRIM(AddressVi)) >= 5");
+
                             t.HasCheckConstraint("CK_Heritage_Classification", "Classification IN ('national', 'city', 'unranked')");
 
+                            t.HasCheckConstraint("CK_Heritage_DescriptionEn_MinLength", "DescriptionEn IS NULL OR LEN(TRIM(DescriptionEn)) >= 30");
+
+                            t.HasCheckConstraint("CK_Heritage_DescriptionVi_MinLength", "DescriptionVi IS NULL OR LEN(TRIM(DescriptionVi)) >= 30");
+
+                            t.HasCheckConstraint("CK_Heritage_HistoryEn_MinLength", "HistoryEn IS NULL OR LEN(TRIM(HistoryEn)) >= 50");
+
+                            t.HasCheckConstraint("CK_Heritage_HistoryVi_MinLength", "HistoryVi IS NULL OR LEN(TRIM(HistoryVi)) >= 50");
+
+                            t.HasCheckConstraint("CK_Heritage_NameEn_NotEmpty", "LEN(TRIM(NameEn)) >= 5");
+
+                            t.HasCheckConstraint("CK_Heritage_NameVi_NotEmpty", "LEN(TRIM(NameVi)) >= 5");
+
                             t.HasCheckConstraint("CK_Heritage_Status", "Status IN ('active', 'maintenance', 'closed')");
+
+                            t.HasCheckConstraint("CK_Heritage_YearBuilt", "YearBuilt IS NULL OR (TRY_CAST(YearBuilt AS INT) IS NOT NULL AND TRY_CAST(YearBuilt AS INT) >= 100 AND TRY_CAST(YearBuilt AS INT) <= YEAR(GETDATE()))");
                         });
                 });
 
@@ -381,6 +487,7 @@ namespace VanDinh.API.Migrations
 
                     b.Property<string>("Category")
                         .IsRequired()
+                        .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -388,10 +495,15 @@ namespace VanDinh.API.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("SYSUTCDATETIME()");
 
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("DescriptionEn")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DescriptionVi")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
@@ -404,18 +516,24 @@ namespace VanDinh.API.Migrations
 
                     b.Property<string>("NameEn")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("NameVi")
                         .IsRequired()
+                        .HasMaxLength(200)
                         .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("PublicId")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("VideoUrl")
                         .HasColumnType("nvarchar(500)");
@@ -423,6 +541,14 @@ namespace VanDinh.API.Migrations
                     b.HasKey("IntangibleId");
 
                     b.HasIndex("Category");
+
+                    b.HasIndex("NameEn")
+                        .IsUnique()
+                        .HasFilter("IsDeleted = 0");
+
+                    b.HasIndex("NameVi")
+                        .IsUnique()
+                        .HasFilter("IsDeleted = 0");
 
                     b.HasIndex("PublicId")
                         .IsUnique();
@@ -464,6 +590,57 @@ namespace VanDinh.API.Migrations
                     b.HasKey("UpdateId");
 
                     b.ToTable("MonthlyUpdates", (string)null);
+                });
+
+            modelBuilder.Entity("VanDinh.API.Models.RelatedLink", b =>
+                {
+                    b.Property<int>("LinkId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("LinkId"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("SYSUTCDATETIME()");
+
+                    b.Property<long>("CreatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("DisplayOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
+                    b.Property<bool>("IsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("UpdatedBy")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("LinkId");
+
+                    b.HasIndex("CreatedBy");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.ToTable("RelatedLinks", (string)null);
                 });
 
             modelBuilder.Entity("VanDinh.API.Models.Role", b =>
@@ -527,6 +704,9 @@ namespace VanDinh.API.Migrations
                     b.Property<string>("WebsiteName")
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<string>("YoutubeUrl")
+                        .HasColumnType("nvarchar(500)");
+
                     b.HasKey("SettingId");
 
                     b.HasIndex("UpdatedBy");
@@ -548,9 +728,11 @@ namespace VanDinh.API.Migrations
                         .HasDefaultValueSql("SYSUTCDATETIME()");
 
                     b.Property<string>("Email")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("FullName")
+                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("PasswordHash")
@@ -571,20 +753,36 @@ namespace VanDinh.API.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("Email IS NOT NULL");
 
                     b.HasIndex("RoleId");
 
                     b.HasIndex("Username")
                         .IsUnique();
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Users_Username_Format", "Username LIKE '[a-zA-Z0-9_]%' AND LEN(Username) >= 4");
+                        });
                 });
 
             modelBuilder.Entity("VanDinh.API.Models.AboutPage", b =>
+                {
+                    b.HasOne("VanDinh.API.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("VanDinh.API.Models.AboutPageHistory", b =>
                 {
                     b.HasOne("VanDinh.API.Models.User", null)
                         .WithMany()
@@ -644,6 +842,20 @@ namespace VanDinh.API.Migrations
                         .HasForeignKey("HeritageId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("VanDinh.API.Models.RelatedLink", b =>
+                {
+                    b.HasOne("VanDinh.API.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedBy")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("VanDinh.API.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("VanDinh.API.Models.SystemSetting", b =>

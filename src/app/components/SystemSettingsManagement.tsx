@@ -9,7 +9,7 @@ export function SystemSettingsManagement() {
   const [form, setForm] = useState({
     websiteName: '', logoUrl: '', footerText: '',
     contactEmail: '', phone: '', address: '',
-    facebookUrl: '', tiktokUrl: '',
+    facebookUrl: '', tiktokUrl: '', youtubeUrl: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -34,6 +34,7 @@ export function SystemSettingsManagement() {
         address: data.address || '',
         facebookUrl: data.facebookUrl || '',
         tiktokUrl: data.tiktokUrl || '',
+        youtubeUrl: data.youtubeUrl || '',
       });
     } catch {
       showToast(lang === 'vi' ? 'Không thể tải cài đặt' : 'Failed to load settings', 'error');
@@ -146,6 +147,10 @@ export function SystemSettingsManagement() {
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>TikTok URL</label>
             <input style={inputStyle} value={form.tiktokUrl} onChange={e => setForm(s => ({ ...s, tiktokUrl: e.target.value }))} />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>YouTube URL</label>
+            <input style={inputStyle} value={form.youtubeUrl} onChange={e => setForm(s => ({ ...s, youtubeUrl: e.target.value }))} />
           </div>
         </div>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, borderTop: '1px solid rgba(15,61,94,0.1)', paddingTop: 16 }}>

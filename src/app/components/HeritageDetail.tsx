@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
-import { useHeritageSites, useTypeLabels, useClassificationLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
+import { useHeritageSites, useHeritageSite, useTypeLabels, useClassificationLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { classificationColors, statusColors } from '../constants';
 import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
@@ -49,11 +49,12 @@ function extractGoogleMapsDirections(url: string): string {
 
 export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   const { lang, t } = useLanguage();
-  const { data: heritageSites, loading, error } = useHeritageSites();
+  const { data: heritageSites } = useHeritageSites();
+  const { data: siteData, loading, error } = useHeritageSite(siteId);
   const typeLabels = useTypeLabels();
   const classificationLabels = useClassificationLabels();
   const statusLabels = useStatusLabels();
-  const site = heritageSites.find(s => s.id === siteId) ?? null;
+  const site = siteData;
   const [activeImage, setActiveImage] = useState(0);
   const [showQr, setShowQr] = useState(false);
   const [activeTab, setActiveTab] = useState<'info' | 'history' | 'docs' | 'gallery'>('info');
@@ -73,7 +74,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   const sameCategorySites = site ? heritageSites.filter(s => s.id !== site.id && s.type === site.type) : [];
   const relatedSites = sameCategorySites.slice(0, 4);
 
-  const allImages = site ? (site.images.length > 0 ? site.images : site.image ? [site.image] : []) : [];
+  const allImages = site ? (Array.isArray(site.images) && site.images.length > 0 ? site.images : site.image ? [site.image] : []) : [];
 
   const formatSize = (bytes: number | null) => {
     if (!bytes) return '';
@@ -91,6 +92,18 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
 
   const embedUrl = site?.googleMapUrl ? extractGoogleMapsEmbed(site.googleMapUrl) : null;
   const directionsUrl = site?.googleMapUrl ? extractGoogleMapsDirections(site.googleMapUrl) : '#';
+
+  const getSafeLabel = (labels: Record<string, { vi: string; en: string } | undefined> | undefined, key: string): string => {
+    if (!labels || !key) return key;
+    const item = labels[key];
+    if (!item) return key;
+    return item[lang] || key;
+  };
+
+  const getSafeColor = (colors: Record<string, string> | undefined, key: string, fallback: string): string => {
+    if (!colors || !key) return fallback;
+    return colors[key] || fallback;
+  };
 
   if (loading) {
     return (
@@ -235,9 +248,9 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                       {[
                         { label: t('detail.code'), value: site.code },
-                        { label: t('detail.type'), value: `${typeLabels[site.type][lang]}` },
-                        { label: t('detail.classification'), value: classificationLabels[site.classification][lang] },
-                        { label: lang === 'vi' ? 'Trạng thái' : 'Status', value: statusLabels[site.status][lang] },
+                        { label: t('detail.type'), value: getSafeLabel(typeLabels, site.type) },
+                        { label: t('detail.classification'), value: getSafeLabel(classificationLabels, site.classification) },
+                        { label: lang === 'vi' ? 'Trạng thái' : 'Status', value: getSafeLabel(statusLabels, site.status) },
                         { label: lang === 'vi' ? 'Năm xây dựng' : 'Year Built', value: site.yearBuilt },
                         { label: lang === 'vi' ? 'Đơn vị quản lý' : 'Managing Unit', value: site.guardian },
                       ].map(item => {
@@ -250,11 +263,11 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                             </div>
                             <div style={{ fontSize: 13, color: '#1a2332', fontWeight: 600 }}>
                               {isClassification ? (
-                                <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 12, background: `${classificationColors[site.classification]}15`, color: classificationColors[site.classification], fontWeight: 700 }}>
+                                <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 12, background: `${getSafeColor(classificationColors, site.classification, '#7F8C8D')}15`, color: getSafeColor(classificationColors, site.classification, '#7F8C8D'), fontWeight: 700 }}>
                                   {item.value}
                                 </span>
                               ) : isStatus ? (
-                                <span style={{ color: statusColors[site.status] }}>{item.value}</span>
+                                <span style={{ color: getSafeColor(statusColors, site.status, '#27AE60') }}>{item.value}</span>
                               ) : item.value || (lang === 'vi' ? 'Chưa có' : 'Not available')}
                             </div>
                           </div>
@@ -457,18 +470,18 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             <div style={{
               background: 'white', borderRadius: 12, overflow: 'hidden',
               boxShadow: '0 2px 12px rgba(15,61,94,0.08)',
-              borderTop: `4px solid ${classificationColors[site.classification]}`,
+              borderTop: `4px solid ${getSafeColor(classificationColors, site.classification, '#7F8C8D')}`,
             }}>
               <div style={{ padding: '20px' }}>
                 <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
-                  <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 700, background: `${classificationColors[site.classification]}15`, color: classificationColors[site.classification] }}>
-                    {classificationLabels[site.classification][lang]}
+                  <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 700, background: `${getSafeColor(classificationColors, site.classification, '#7F8C8D')}15`, color: getSafeColor(classificationColors, site.classification, '#7F8C8D') }}>
+                    {getSafeLabel(classificationLabels, site.classification)}
                   </span>
                   <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600, background: '#EBF5FB', color: '#0F3D5E' }}>
-                    {typeLabels[site.type][lang]}
+                    {getSafeLabel(typeLabels, site.type)}
                   </span>
-                  <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600, background: `${statusColors[site.status]}15`, color: statusColors[site.status] }}>
-                    {statusLabels[site.status][lang]}
+                  <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600, background: `${getSafeColor(statusColors, site.status, '#27AE60')}15`, color: getSafeColor(statusColors, site.status, '#27AE60') }}>
+                    {getSafeLabel(statusLabels, site.status)}
                   </span>
                 </div>
                 <h1 style={{ color: '#0F3D5E', fontSize: 18, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 4px' }}>
@@ -580,7 +593,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                         <div style={{ fontSize: 12, fontWeight: 600, color: '#0F3D5E', lineHeight: 1.3 }}>
                           {lang === 'vi' ? rs.nameVi : rs.nameEn}
                         </div>
-                        <div style={{ fontSize: 11, color: '#5d7a8c' }}>{typeLabels[rs.type][lang]}</div>
+                        <div style={{ fontSize: 11, color: '#5d7a8c' }}>{getSafeLabel(typeLabels, rs.type)}</div>
                       </div>
                     </div>
                   ))}

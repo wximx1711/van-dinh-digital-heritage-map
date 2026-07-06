@@ -93,7 +93,7 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
                   </p>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {item.videoUrl && (
-                      <a href={item.videoUrl} target="_blank" rel="noreferrer" style={{
+                      <a href={item.videoUrl} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} style={{
                         flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
                         padding: '8px 0', borderRadius: 7,
                         border: '1px solid #0F3D5E', background: 'white',

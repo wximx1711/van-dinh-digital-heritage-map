@@ -18,8 +18,10 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<IntangibleHeritage> IntangibleHeritages => Set<IntangibleHeritage>();
     public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
     public DbSet<AboutPage> AboutPages => Set<AboutPage>();
+    public DbSet<AboutPageHistory> AboutPageHistories => Set<AboutPageHistory>();
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
     public DbSet<MonthlyUpdate> MonthlyUpdates => Set<MonthlyUpdate>();
+    public DbSet<RelatedLink> RelatedLinks => Set<RelatedLink>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -32,8 +34,10 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new HeritageDocumentConfiguration());
         modelBuilder.ApplyConfiguration(new IntangibleHeritageConfiguration());
         modelBuilder.ApplyConfiguration(new AboutPageConfiguration());
+        modelBuilder.ApplyConfiguration(new AboutPageHistoryConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
         modelBuilder.ApplyConfiguration(new SystemSettingConfiguration());
         modelBuilder.ApplyConfiguration(new MonthlyUpdateConfiguration());
+        modelBuilder.ApplyConfiguration(new RelatedLinkConfiguration());
     }
 }

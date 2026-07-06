@@ -14,6 +14,24 @@ public sealed class HeritageConfiguration : IEntityTypeConfiguration<Heritage>
                 "Classification IN ('national', 'city', 'unranked')");
             t.HasCheckConstraint("CK_Heritage_Status",
                 "Status IN ('active', 'maintenance', 'closed')");
+            t.HasCheckConstraint("CK_Heritage_YearBuilt",
+                "YearBuilt IS NULL OR (TRY_CAST(YearBuilt AS INT) IS NOT NULL AND TRY_CAST(YearBuilt AS INT) >= 100 AND TRY_CAST(YearBuilt AS INT) <= YEAR(GETDATE()))");
+            t.HasCheckConstraint("CK_Heritage_NameVi_NotEmpty",
+                "LEN(TRIM(NameVi)) >= 5");
+            t.HasCheckConstraint("CK_Heritage_NameEn_NotEmpty",
+                "LEN(TRIM(NameEn)) >= 5");
+            t.HasCheckConstraint("CK_Heritage_DescriptionVi_MinLength",
+                "DescriptionVi IS NULL OR LEN(TRIM(DescriptionVi)) >= 30");
+            t.HasCheckConstraint("CK_Heritage_DescriptionEn_MinLength",
+                "DescriptionEn IS NULL OR LEN(TRIM(DescriptionEn)) >= 30");
+            t.HasCheckConstraint("CK_Heritage_HistoryVi_MinLength",
+                "HistoryVi IS NULL OR LEN(TRIM(HistoryVi)) >= 50");
+            t.HasCheckConstraint("CK_Heritage_HistoryEn_MinLength",
+                "HistoryEn IS NULL OR LEN(TRIM(HistoryEn)) >= 50");
+            t.HasCheckConstraint("CK_Heritage_AddressVi_MinLength",
+                "AddressVi IS NULL OR LEN(TRIM(AddressVi)) >= 5");
+            t.HasCheckConstraint("CK_Heritage_AddressEn_MinLength",
+                "AddressEn IS NULL OR LEN(TRIM(AddressEn)) >= 5");
         });
         builder.HasKey(x => x.HeritageId);
         builder.Property(x => x.HeritageId).ValueGeneratedOnAdd();
@@ -54,12 +72,16 @@ public sealed class HeritageConfiguration : IEntityTypeConfiguration<Heritage>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(x => x.CategoryId);
+        builder.HasIndex(x => x.CreatedBy);
         builder.HasIndex(x => x.Classification);
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.IsDeleted);
         builder.HasIndex(x => x.PublicId).IsUnique();
         builder.HasIndex(x => x.Code).IsUnique();
         builder.HasIndex(x => x.Slug).IsUnique();
+        builder.HasIndex(x => x.NameVi).IsUnique().HasFilter("IsDeleted = 0");
+        builder.HasIndex(x => x.NameEn).IsUnique().HasFilter("IsDeleted = 0");
+        builder.HasIndex(x => x.GoogleMapUrl).IsUnique().HasFilter("GoogleMapUrl IS NOT NULL AND IsDeleted = 0");
 
 
     }

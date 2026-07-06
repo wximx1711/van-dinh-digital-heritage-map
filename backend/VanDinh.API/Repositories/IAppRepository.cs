@@ -11,8 +11,16 @@ public interface IAppRepository
     IReadOnlyList<IntangibleHeritage> IntangibleHeritages { get; }
     IReadOnlyList<ActivityLog> ActivityLogs { get; }
     IReadOnlyList<MonthlyUpdate> MonthlyUpdates { get; }
-    AboutPage AboutPage { get; set; }
-    SystemSetting SystemSetting { get; set; }
+    AboutPage AboutPage { get; }
+    IReadOnlyList<AboutPageHistory> AboutPageHistories { get; }
+    SystemSetting SystemSetting { get; }
+
+    IQueryable<Heritage> HeritagesUntracked { get; }
+    IQueryable<IntangibleHeritage> IntangibleHeritagesUntracked { get; }
+    IQueryable<ActivityLog> ActivityLogsUntracked { get; }
+    IQueryable<User> UsersUntracked { get; }
+
+    void AddAboutPageHistory(AboutPageHistory history);
 
     Role? FindRole(string roleName);
     User? FindUser(long userId);
@@ -49,6 +57,13 @@ public interface IAppRepository
     MonthlyUpdate AddMonthlyUpdate(MonthlyUpdate item);
     void UpdateMonthlyUpdate(MonthlyUpdate item);
     void DeleteMonthlyUpdate(int id);
+
+    IReadOnlyList<RelatedLink> RelatedLinks { get; }
+
+    RelatedLink? FindRelatedLink(int id);
+    RelatedLink AddRelatedLink(RelatedLink item);
+    void UpdateRelatedLink(RelatedLink item);
+    void DeleteRelatedLink(int id);
 
     ActivityLog AddLog(ActivityLog log);
     void SaveChanges();

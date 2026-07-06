@@ -29,6 +29,7 @@ export function UserManagement() {
   const [resetPwId, setResetPwId] = useState<number | null>(null);
   const [newPassword, setNewPassword] = useState('');
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [page, setPage] = useState(1);
   const PER_PAGE = 8;
 
@@ -63,30 +64,50 @@ export function UserManagement() {
 
   const openAdd = () => {
     setEditUser({ username: '', password: '', fullName: '', email: '', roleName: 'MANAGER' });
+    setFormErrors({});
     setFormMode('add');
   };
 
   const openEdit = (user: UserDto) => {
     setEditUser({ userId: user.userId, username: user.username, fullName: user.fullName, email: user.email, roleName: user.roleName, status: user.status });
+    setFormErrors({});
     setFormMode('edit');
   };
 
+  const validateUserForm = (isCreate: boolean): boolean => {
+    const errors: Record<string, string> = {};
+    if (!editUser) return false;
+    if (!editUser.username?.trim()) errors.username = lang === 'vi' ? 'Tên đăng nhập là bắt buộc' : 'Username is required';
+    else if (editUser.username.trim().length < 4 || editUser.username.trim().length > 30) errors.username = lang === 'vi' ? 'Từ 4-30 ký tự' : '4-30 characters';
+    else if (!/^[a-zA-Z0-9_]+$/.test(editUser.username.trim())) errors.username = lang === 'vi' ? 'Chỉ chấp nhận chữ, số, dấu gạch dưới' : 'Only letters, numbers, underscores';
+    if (isCreate && !editUser.password) errors.password = lang === 'vi' ? 'Mật khẩu là bắt buộc' : 'Password is required';
+    else if (isCreate && editUser.password.length < 8) errors.password = lang === 'vi' ? 'Tối thiểu 8 ký tự' : 'Minimum 8 characters';
+    else if (isCreate && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/.test(editUser.password)) errors.password = lang === 'vi' ? 'Cần 1 chữ hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt' : 'Requires uppercase, lowercase, number, special char';
+    if (!editUser.fullName?.trim()) errors.fullName = lang === 'vi' ? 'Họ tên là bắt buộc' : 'Full name is required';
+    else if (editUser.fullName.trim().length < 5 || editUser.fullName.trim().length > 100) errors.fullName = lang === 'vi' ? 'Từ 5-100 ký tự' : '5-100 characters';
+    if (!editUser.email?.trim()) errors.email = lang === 'vi' ? 'Email là bắt buộc' : 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editUser.email.trim())) errors.email = lang === 'vi' ? 'Email không hợp lệ' : 'Invalid email';
+    if (!editUser.roleName || !['ADMIN', 'MANAGER'].includes(editUser.roleName)) errors.roleName = lang === 'vi' ? 'Vai trò phải là ADMIN hoặc MANAGER' : 'Role must be ADMIN or MANAGER';
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
   const handleCreate = async () => {
-    if (!editUser?.username || !editUser?.password) {
-      showToast(lang === 'vi' ? 'Vui lòng nhập tên đăng nhập và mật khẩu' : 'Please enter username and password', 'error');
-      return;
-    }
+    if (!editUser) return;
+    setFormErrors({});
+    if (!validateUserForm(true)) return;
     try {
       await apiPost('/users', {
-        username: editUser.username,
+        username: editUser.username?.trim(),
         password: editUser.password,
         roleName: editUser.roleName || 'MANAGER',
-        fullName: editUser.fullName || null,
-        email: editUser.email || null,
+        fullName: editUser.fullName?.trim() || null,
+        email: editUser.email?.trim() || null,
       });
       showToast(lang === 'vi' ? 'Đã tạo người dùng thành công' : 'User created successfully');
       setFormMode(null);
       setEditUser(null);
+      setFormErrors({});
       fetchUsers();
     } catch (e: any) {
       showToast(e.message || (lang === 'vi' ? 'Tạo người dùng thất bại' : 'Failed to create user'), 'error');
@@ -95,16 +116,19 @@ export function UserManagement() {
 
   const handleUpdate = async () => {
     if (!editUser?.userId) return;
+    setFormErrors({});
+    if (!validateUserForm(false)) return;
     try {
       await apiPut(`/users/${editUser.userId}`, {
         roleName: editUser.roleName,
-        fullName: editUser.fullName || null,
-        email: editUser.email || null,
+        fullName: editUser.fullName?.trim() || null,
+        email: editUser.email?.trim() || null,
         status: editUser.status ?? true,
       });
       showToast(lang === 'vi' ? 'Đã cập nhật người dùng thành công' : 'User updated successfully');
       setFormMode(null);
       setEditUser(null);
+      setFormErrors({});
       fetchUsers();
     } catch (e: any) {
       showToast(e.message || (lang === 'vi' ? 'Cập nhật thất bại' : 'Failed to update user'), 'error');
@@ -332,13 +356,13 @@ export function UserManagement() {
       {/* Add/Edit Modal */}
       {formMode && editUser && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500 }}
-          onClick={() => { setFormMode(null); setEditUser(null); }}>
+          onClick={() => { setFormMode(null); setEditUser(null); setFormErrors({}); }}>
           <div style={{ background: 'white', borderRadius: 12, width: '90%', maxWidth: 480, boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }} onClick={e => e.stopPropagation()}>
             <div style={{ padding: '16px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>
                 {formMode === 'add' ? (lang === 'vi' ? 'Thêm người dùng' : 'Add User') : (lang === 'vi' ? 'Chỉnh sửa người dùng' : 'Edit User')}
               </span>
-              <button onClick={() => { setFormMode(null); setEditUser(null); }}
+              <button onClick={() => { setFormMode(null); setEditUser(null); setFormErrors({}); }}
                 style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}>
                 <X size={18} />
               </button>
@@ -348,40 +372,46 @@ export function UserManagement() {
                 <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>
                   {lang === 'vi' ? 'Tên đăng nhập' : 'Username'} *
                 </label>
-                <input style={inputStyle} value={editUser.username || ''}
+                <input style={{ ...inputStyle, borderColor: formErrors.username ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editUser.username || ''}
                   disabled={formMode === 'edit'}
-                  onChange={e => setEditUser(s => s ? { ...s, username: e.target.value } : s)} />
+                  onChange={e => { setEditUser(s => s ? { ...s, username: e.target.value } : s); setFormErrors(prev => ({ ...prev, username: '' })); }} />
+                {formErrors.username && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.username}</span>}
               </div>
               {formMode === 'add' && (
                 <div style={{ marginBottom: 14 }}>
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>
                     {lang === 'vi' ? 'Mật khẩu' : 'Password'} *
                   </label>
-                  <input type="password" style={inputStyle} value={editUser.password || ''}
-                    onChange={e => setEditUser(s => s ? { ...s, password: e.target.value } : s)} />
+                  <input type="password" style={{ ...inputStyle, borderColor: formErrors.password ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editUser.password || ''}
+                    onChange={e => { setEditUser(s => s ? { ...s, password: e.target.value } : s); setFormErrors(prev => ({ ...prev, password: '' })); }} />
+                  {formErrors.password && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.password}</span>}
+                  <p style={{ fontSize: 10, color: '#cbced4', margin: '4px 0 0' }}>{lang === 'vi' ? 'Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, số, ký tự đặc biệt' : 'Min 8 chars: uppercase, lowercase, number, special char'}</p>
                 </div>
               )}
               <div style={{ marginBottom: 14 }}>
                 <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>
-                  {lang === 'vi' ? 'Họ tên' : 'Full Name'}
+                  {lang === 'vi' ? 'Họ tên' : 'Full Name'} *
                 </label>
-                <input style={inputStyle} value={editUser.fullName || ''}
-                  onChange={e => setEditUser(s => s ? { ...s, fullName: e.target.value } : s)} />
+                <input style={{ ...inputStyle, borderColor: formErrors.fullName ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editUser.fullName || ''}
+                  onChange={e => { setEditUser(s => s ? { ...s, fullName: e.target.value } : s); setFormErrors(prev => ({ ...prev, fullName: '' })); }} />
+                {formErrors.fullName && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.fullName}</span>}
               </div>
               <div style={{ marginBottom: 14 }}>
-                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>Email</label>
-                <input style={inputStyle} value={editUser.email || ''}
-                  onChange={e => setEditUser(s => s ? { ...s, email: e.target.value } : s)} />
+                <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>Email *</label>
+                <input style={{ ...inputStyle, borderColor: formErrors.email ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editUser.email || ''}
+                  onChange={e => { setEditUser(s => s ? { ...s, email: e.target.value } : s); setFormErrors(prev => ({ ...prev, email: '' })); }} />
+                {formErrors.email && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.email}</span>}
               </div>
               <div style={{ marginBottom: 14 }}>
                 <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>
-                  {lang === 'vi' ? 'Vai trò' : 'Role'}
+                  {lang === 'vi' ? 'Vai trò' : 'Role'} *
                 </label>
-                <select style={{ ...inputStyle, background: 'white', cursor: 'pointer' }} value={editUser.roleName || 'MANAGER'}
-                  onChange={e => setEditUser(s => s ? { ...s, roleName: e.target.value } : s)}>
+                <select style={{ ...inputStyle, background: 'white', cursor: 'pointer', borderColor: formErrors.roleName ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editUser.roleName || 'MANAGER'}
+                  onChange={e => { setEditUser(s => s ? { ...s, roleName: e.target.value } : s); setFormErrors(prev => ({ ...prev, roleName: '' })); }}>
                   <option value="ADMIN">ADMIN</option>
                   <option value="MANAGER">MANAGER</option>
                 </select>
+                {formErrors.roleName && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.roleName}</span>}
               </div>
               {formMode === 'edit' && (
                 <div style={{ marginBottom: 14, display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -402,7 +432,7 @@ export function UserManagement() {
               )}
             </div>
             <div style={{ padding: '14px 20px', borderTop: '1px solid rgba(15,61,94,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 10, background: '#F8FAFC' }}>
-              <button onClick={() => { setFormMode(null); setEditUser(null); }}
+              <button onClick={() => { setFormMode(null); setEditUser(null); setFormErrors({}); }}
                 style={{ padding: '9px 20px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#5d7a8c', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 {t('common.cancel')}
               </button>

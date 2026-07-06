@@ -16,26 +16,28 @@ public sealed class StatisticsController(IAppRepository repository) : Controller
     [HttpGet]
     public IActionResult Get()
     {
-        var heritages = repository.Heritages;
+        var heritageQuery = repository.HeritagesUntracked;
         var categories = repository.Categories.ToDictionary(x => x.CategoryId, x => x.Code);
-        var docCount = repository.Heritages.SelectMany(h => h.Documents).Count();
-        var videoCount = repository.Heritages.SelectMany(h => h.Videos).Count();
-        var imageCount = repository.Heritages.SelectMany(h => h.Images).Count();
+        var docCount = heritageQuery.SelectMany(h => h.Documents).Count();
+        var videoCount = heritageQuery.SelectMany(h => h.Videos).Count();
+        var imageCount = heritageQuery.SelectMany(h => h.Images).Count();
         var monthlyUpdates = repository.MonthlyUpdates.Select(x => x.ToDto()).ToList();
 
         var result = new
         {
-            TotalHeritage = heritages.Count,
-            National = heritages.Count(x => x.Classification == "national"),
-            City = heritages.Count(x => x.Classification == "city"),
-            Unranked = heritages.Count(x => x.Classification == "unranked"),
-            Intangible = repository.IntangibleHeritages.Count,
+            TotalHeritage = heritageQuery.Count(),
+            National = heritageQuery.Count(x => x.Classification == "national"),
+            City = heritageQuery.Count(x => x.Classification == "city"),
+            Unranked = heritageQuery.Count(x => x.Classification == "unranked"),
+            Intangible = repository.IntangibleHeritagesUntracked.Count(),
             Images = imageCount,
             Videos = videoCount,
             Documents = docCount,
             Categories = repository.Categories.Count,
-            ByType = heritages.GroupBy(x => categories.GetValueOrDefault(x.CategoryId, "unknown")).ToDictionary(x => x.Key, x => x.Count()),
-            ByStatus = heritages.GroupBy(x => x.Status).ToDictionary(x => x.Key, x => x.Count()),
+            ByType = heritageQuery.Select(h => h.CategoryId).ToList()
+                .GroupBy(id => categories.GetValueOrDefault(id, "unknown")).ToDictionary(x => x.Key, x => x.Count()),
+            ByStatus = heritageQuery.Select(h => h.Status).ToList()
+                .GroupBy(s => s).ToDictionary(x => x.Key, x => x.Count()),
             MonthlyUpdates = monthlyUpdates
         };
         return ApiResponse.Success(result);

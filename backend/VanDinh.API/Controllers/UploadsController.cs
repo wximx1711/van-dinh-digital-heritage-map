@@ -10,6 +10,13 @@ namespace VanDinh.API.Controllers;
 [Authorize(Roles = "MANAGER")]
 public sealed class UploadsController(IUploadService uploads, IWebHostEnvironment env) : ControllerBase
 {
+    private static readonly HashSet<string> AllowedFolders = ["images", "videos", "documents"];
+
+    private string GetUploadRoot()
+    {
+        return env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+    }
+
     [HttpPost("images")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Image(IFormFile file, CancellationToken cancellationToken)
@@ -55,22 +62,39 @@ public sealed class UploadsController(IUploadService uploads, IWebHostEnvironmen
         }
     }
 
-    [HttpDelete("{**path}")]
+    [HttpDelete("{fileName}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Delete(string path)
+    public IActionResult Delete(string fileName)
     {
-        var root = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
-        var filePath = Path.Combine(root, "uploads", path);
-        if (!System.IO.File.Exists(filePath))
-            return ApiResponse.Error("File not found.");
-        System.IO.File.Delete(filePath);
-        return ApiResponse.Success(new { deleted = true }, "File deleted successfully.");
+        var root = GetUploadRoot();
+
+        foreach (var subDir in AllowedFolders)
+        {
+            var filePath = Path.Combine(root, "uploads", subDir, fileName);
+            var fullPath = Path.GetFullPath(filePath);
+            var uploadsDir = Path.GetFullPath(Path.Combine(root, "uploads"));
+
+            if (!fullPath.StartsWith(uploadsDir, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+                return ApiResponse.Success(new { deleted = true }, "File deleted successfully.");
+            }
+        }
+
+        return ApiResponse.Error("File not found.");
     }
 
     [HttpGet("list")]
+    [Authorize(Roles = "MANAGER")]
     public IActionResult ListFiles([FromQuery] string folder = "images")
     {
-        var root = env.WebRootPath ?? Path.Combine(env.ContentRootPath, "wwwroot");
+        if (!AllowedFolders.Contains(folder))
+            return ApiResponse.Error("Invalid folder.");
+
+        var root = GetUploadRoot();
         var targetDir = Path.Combine(root, "uploads", folder);
         if (!Directory.Exists(targetDir))
             return ApiResponse.Success(Array.Empty<object>());
