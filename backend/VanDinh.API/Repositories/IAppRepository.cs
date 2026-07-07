@@ -1,3 +1,4 @@
+using VanDinh.API.DTOs;
 using VanDinh.API.Models;
 
 namespace VanDinh.API.Repositories;
@@ -41,6 +42,15 @@ public interface IAppRepository
     void UpdateHeritage(Heritage heritage);
     void DeleteHeritage(string publicId);
 
+    HeritageImage? FindImageById(long imageId);
+    HeritageVideo? FindVideoById(long videoId);
+    HeritageDocument? FindDocumentById(long documentId);
+    void DeleteImageRecord(HeritageImage image);
+    void DeleteVideoRecord(HeritageVideo video);
+    void DeleteDocumentRecord(HeritageDocument document);
+    Dictionary<string, long> FindAllImageUrls();
+    Dictionary<string, long> FindAllVideoUrls();
+    Dictionary<string, long> FindAllDocumentUrls();
     HeritageImage AddImage(string publicId, HeritageImage image);
     void DeleteImage(string publicId, long imageId);
     HeritageVideo AddVideo(string publicId, HeritageVideo video);
@@ -67,4 +77,29 @@ public interface IAppRepository
 
     ActivityLog AddLog(ActivityLog log);
     void SaveChanges();
+
+    // ── Diagnostic methods ──────────────────────────────────────────
+    string? GetDatabaseName();
+    string? GetDatabaseServer();
+    string? GetConnectionStringMasked();
+    List<HeritageImage> GetAllImageRecords();
+
+    // ── Media usage tracking ─────────────────────────────────────────
+    int CountHeritageReferencesByUrl(string url);
+
+    // ── Media cascade / orphan management ────────────────────────────
+    string? RemoveImageFromHeritage(string publicId, long imageId);
+    string? RemoveVideoFromHeritage(string publicId, long videoId);
+    string? RemoveDocumentFromHeritage(string publicId, long documentId);
+    void DeleteAllMediaForHeritage(string publicId);
+
+    // ── MediaFile tracking ───────────────────────────────────────────
+    MediaFile AddMediaFile(MediaFile mediaFile);
+    MediaFile? FindMediaFileByUrl(string url);
+    MediaFile? FindMediaFileById(long mediaFileId);
+    void DeleteMediaFile(long mediaFileId);
+    void DeleteMediaFileByUrl(string url);
+
+    // ── Media search ─────────────────────────────────────────────────
+    PagedResult<MediaItemDto> SearchMedia(MediaSearchRequest request);
 }

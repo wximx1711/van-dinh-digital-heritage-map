@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VanDinh.API.Data;
 
@@ -11,9 +12,11 @@ using VanDinh.API.Data;
 namespace VanDinh.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260707105710_TempCheckMigration")]
+    partial class TempCheckMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -284,7 +287,8 @@ namespace VanDinh.API.Migrations
 
                     b.HasIndex("Classification");
 
-                    b.HasIndex("Code");
+                    b.HasIndex("Code")
+                        .IsUnique();
 
                     b.HasIndex("CreatedBy");
 
@@ -556,46 +560,6 @@ namespace VanDinh.API.Migrations
                         {
                             t.HasCheckConstraint("CK_IntangibleHeritage_Category", "Category IN ('festival', 'performance', 'craft', 'ritual', 'story')");
                         });
-                });
-
-            modelBuilder.Entity("VanDinh.API.Models.MediaFile", b =>
-                {
-                    b.Property<long>("MediaFileId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("MediaFileId"));
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("MediaType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.Property<DateTime>("UploadedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("SYSUTCDATETIME()");
-
-                    b.Property<string>("Url")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("MediaFileId");
-
-                    b.HasIndex("MediaType");
-
-                    b.HasIndex("Url");
-
-                    b.ToTable("MediaFiles", (string)null);
                 });
 
             modelBuilder.Entity("VanDinh.API.Models.MonthlyUpdate", b =>

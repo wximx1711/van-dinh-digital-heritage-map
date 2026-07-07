@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VanDinh.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+71160e264bbafa241504a9bf69e17829f9c0ad37")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1a0dc48961f145c80f329a54c03b7ceb3b27763a")]
 [assembly: System.Reflection.AssemblyProductAttribute("VanDinh.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VanDinh.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

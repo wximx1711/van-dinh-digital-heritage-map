@@ -22,6 +22,7 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
     public DbSet<MonthlyUpdate> MonthlyUpdates => Set<MonthlyUpdate>();
     public DbSet<RelatedLink> RelatedLinks => Set<RelatedLink>();
+    public DbSet<MediaFile> MediaFiles => Set<MediaFile>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,5 +40,6 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new SystemSettingConfiguration());
         modelBuilder.ApplyConfiguration(new MonthlyUpdateConfiguration());
         modelBuilder.ApplyConfiguration(new RelatedLinkConfiguration());
+        modelBuilder.ApplyConfiguration(new MediaFileConfiguration());
     }
 }

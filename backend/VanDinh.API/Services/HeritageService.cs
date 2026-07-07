@@ -15,7 +15,7 @@ public interface IHeritageService
     bool Delete(string id);
 }
 
-public sealed class HeritageService(IAppRepository repository, ILogger<HeritageService> logger) : IHeritageService
+public sealed class HeritageService(IAppRepository repository, IUploadService uploads, ILogger<HeritageService> logger) : IHeritageService
 {
     private static string? NormalizeSearch(string? value)
     {
@@ -171,9 +171,6 @@ public sealed class HeritageService(IAppRepository repository, ILogger<HeritageS
             if (!string.IsNullOrWhiteSpace(request.GoogleMapUrl) && repository.Heritages.Any(h => h.GoogleMapUrl == request.GoogleMapUrl))
                 throw new InvalidOperationException("This Google Maps URL is already used by another heritage site.");
             logger.LogInformation("[4/8] GoogleMapUrl unique check passed.");
-            if (repository.Heritages.Any(h => h.Code == request.Code))
-                throw new InvalidOperationException("This heritage code is already in use.");
-            logger.LogInformation("[4/8] Code unique check passed.");
 
             // Step 4: DTO → Entity mapping
             logger.LogInformation("[5/8] Mapping HeritageRequest → Heritage entity...");
@@ -283,8 +280,6 @@ public sealed class HeritageService(IAppRepository repository, ILogger<HeritageS
             throw new InvalidOperationException("A heritage site with this English name already exists.");
         if (!string.IsNullOrWhiteSpace(request.GoogleMapUrl) && repository.Heritages.Any(h => h.GoogleMapUrl == request.GoogleMapUrl && h.PublicId != id))
             throw new InvalidOperationException("This Google Maps URL is already used by another heritage site.");
-        if (repository.Heritages.Any(h => h.Code == request.Code && h.PublicId != id))
-            throw new InvalidOperationException("This heritage code is already in use.");
 
         var heritage = repository.FindHeritage(id);
         if (heritage is null) return null;
@@ -322,7 +317,42 @@ public sealed class HeritageService(IAppRepository repository, ILogger<HeritageS
 
     public bool Delete(string id)
     {
-        if (repository.FindHeritage(id) is null) return false;
+        var heritage = repository.FindHeritage(id);
+        if (heritage is null) return false;
+
+        // ── RULE 3: Cascade-delete media files ───────────────────────
+        // Collect every media URL referenced by this heritage
+        var mediaUrls = new List<string>();
+        if (!string.IsNullOrWhiteSpace(heritage.ThumbnailUrl))
+            mediaUrls.Add(heritage.ThumbnailUrl);
+        mediaUrls.AddRange(heritage.Images.Select(i => i.ImageUrl));
+        mediaUrls.AddRange(
+            heritage.Videos.Where(v => !string.IsNullOrWhiteSpace(v.VideoUrl))
+                           .Select(v => v.VideoUrl!));
+        mediaUrls.AddRange(
+            heritage.Documents.Where(d => !string.IsNullOrWhiteSpace(d.FileUrl))
+                              .Select(d => d.FileUrl!));
+
+        // Delete physical files only if NO OTHER heritage still references them
+        foreach (var url in mediaUrls.Distinct(StringComparer.OrdinalIgnoreCase))
+        {
+            var refCount = repository.CountHeritageReferencesByUrl(url);
+            // refCount includes THIS heritage (still active);
+            // after soft-delete it will be (refCount - 1)
+            if (refCount <= 1)
+            {
+                var fileDeleted = uploads.Delete(url);
+                if (fileDeleted)
+                {
+                    repository.DeleteMediaFileByUrl(url);
+                }
+            }
+        }
+
+        // Remove all media DB records for this heritage
+        repository.DeleteAllMediaForHeritage(id);
+
+        // Soft-delete the heritage itself
         repository.DeleteHeritage(id);
         return true;
     }
@@ -339,12 +369,27 @@ public sealed class HeritageService(IAppRepository repository, ILogger<HeritageS
         if (!string.IsNullOrWhiteSpace(thumbnailUrl))
             newUrls.Add(thumbnailUrl);
 
-        // Delete images no longer in the set
+        // RULE 4: Remove images no longer in the set
         foreach (var kvp in existingByUrl)
         {
             if (!newUrls.Contains(kvp.Key))
             {
-                repository.DeleteImage(publicId, kvp.Value);
+                // Remove the DB record for this heritage
+                var removedUrl = repository.RemoveImageFromHeritage(publicId, kvp.Value);
+
+                // Delete physical file only if NOT referenced by any OTHER heritage
+                if (removedUrl is not null)
+                {
+                    var remainingRefs = repository.CountHeritageReferencesByUrl(removedUrl);
+                    if (remainingRefs == 0)
+                    {
+                        var fileDeleted = uploads.Delete(removedUrl);
+                        if (fileDeleted)
+                        {
+                            repository.DeleteMediaFileByUrl(removedUrl);
+                        }
+                    }
+                }
             }
         }
 

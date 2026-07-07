@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import {
-  Map, BookOpen, BarChart2, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
+  Map, BookOpen, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -37,7 +37,6 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
     { key: 'relics', label: t('nav.relics'), icon: null },
     { key: 'intangible', label: t('nav.intangible'), icon: null },
     { key: 'map', label: t('nav.map'), icon: <Map size={14} /> },
-    { key: 'statistics', label: t('nav.statistics'), icon: <BarChart2 size={14} /> },
     { key: 'about', label: t('nav.about'), icon: <Info size={14} /> },
     { key: 'contact', label: t('nav.contact'), icon: <Phone size={14} /> },
   ];

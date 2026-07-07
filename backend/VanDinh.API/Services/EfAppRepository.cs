@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using VanDinh.API.Data;
+using VanDinh.API.DTOs;
 using VanDinh.API.Models;
 using VanDinh.API.Repositories;
 
@@ -309,6 +310,148 @@ public sealed class EfAppRepository(ApplicationDbContext context, ILogger<EfAppR
         return image;
     }
 
+    public HeritageImage? FindImageById(long imageId)
+    {
+        logger.LogInformation("FindImageById: Querying table HeritageImages with PK ImageId={ImageId}", imageId);
+
+        // ════════════════════════════════════════════════════════════════
+        // STEP 1 — Raw SQL diagnostic (bypasses EF change tracker)
+        // ════════════════════════════════════════════════════════════════
+        HeritageImage? sqlResult = null;
+        try
+        {
+            sqlResult = _context.HeritageImages
+                .FromSqlRaw("SELECT * FROM HeritageImages WHERE ImageId = {0}", imageId)
+                .AsNoTracking()
+                .FirstOrDefault();
+
+            if (sqlResult is not null)
+            {
+                logger.LogInformation(
+                    "[STEP 1] SELECT * FROM HeritageImages WHERE ImageId = @imageId — {RowCount} row(s) returned:" +
+                    " ImageId={ImageId}, HeritageId={HeritageId}, ImageUrl={ImageUrl}",
+                    1, sqlResult.ImageId, sqlResult.HeritageId, sqlResult.ImageUrl);
+            }
+            else
+            {
+                logger.LogWarning("[STEP 1] SELECT * FROM HeritageImages WHERE ImageId = @imageId — 0 rows returned for ImageId={ImageId}", imageId);
+            }
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "[STEP 1] Raw SQL query FAILED for ImageId={ImageId}", imageId);
+        }
+
+        // ════════════════════════════════════════════════════════════════
+        // Original EF Find — the method the application actually uses
+        // ════════════════════════════════════════════════════════════════
+        var result = _context.HeritageImages.Find(imageId);
+
+        if (result is null)
+        {
+            logger.LogWarning("FindImageById: NO record found in HeritageImages for ImageId={ImageId}", imageId);
+
+            // ════════════════════════════════════════════════════════════
+            // STEP 5 — If raw SQL found a row but EF Find() returned null
+            // ════════════════════════════════════════════════════════════
+            if (sqlResult is not null)
+            {
+                logger.LogWarning(
+                    "[STEP 5] MISMATCH — RAW SQL returned a row but EF Find() returned null for ImageId={ImageId}!" +
+                    " Trying FirstOrDefault alternatives...", imageId);
+
+                // Attempt 1: FirstOrDefault (tracked)
+                var attempt1 = _context.HeritageImages
+                    .FirstOrDefault(x => x.ImageId == imageId);
+                logger.LogInformation(
+                    "[STEP 5] FirstOrDefault(x => x.ImageId == imageId): {Result}",
+                    attempt1 is null ? "NULL" : $"FOUND — ImageId={attempt1.ImageId}, ImageUrl={attempt1.ImageUrl}, HeritageId={attempt1.HeritageId}");
+
+                // Attempt 2: FirstOrDefault + AsNoTracking (bypasses tracker entirely)
+                var attempt2 = _context.HeritageImages
+                    .AsNoTracking()
+                    .FirstOrDefault(x => x.ImageId == imageId);
+                logger.LogInformation(
+                    "[STEP 5] FirstOrDefault + AsNoTracking(x => x.ImageId == imageId): {Result}",
+                    attempt2 is null ? "NULL" : $"FOUND — ImageId={attempt2.ImageId}, ImageUrl={attempt2.ImageUrl}, HeritageId={attempt2.HeritageId}");
+
+                if (attempt1 is not null)
+                {
+                    logger.LogWarning("[STEP 5] CONCLUSION: Find() fails but FirstOrDefault() works. The EF change tracker holds a stale entry. Call _context.Entry(stale).State = EntityState.Detached before Find().");
+                }
+                else if (attempt2 is not null)
+                {
+                    logger.LogWarning("[STEP 5] CONCLUSION: Only AsNoTracking() works. The entity is likely tracked with wrong key or in a state that blocks Find().");
+                }
+                else
+                {
+                    logger.LogWarning("[STEP 5] CONCLUSION: All EF Core methods returned null despite SQL Server having the row. Possible connection string mismatch or database context targeting wrong database.");
+                }
+            }
+        }
+        else
+        {
+            logger.LogInformation("FindImageById: FOUND record ImageId={ImageId}, ImageUrl={ImageUrl}, HeritageId={HeritageId}",
+                result.ImageId, result.ImageUrl, result.HeritageId);
+        }
+
+        return result;
+    }
+
+    public HeritageVideo? FindVideoById(long videoId)
+    {
+        return _context.HeritageVideos.Find(videoId);
+    }
+
+    public HeritageDocument? FindDocumentById(long documentId)
+    {
+        return _context.HeritageDocuments.Find(documentId);
+    }
+
+    public void DeleteImageRecord(HeritageImage image)
+    {
+        _context.HeritageImages.Remove(image);
+        _context.SaveChanges();
+    }
+
+    public void DeleteVideoRecord(HeritageVideo video)
+    {
+        _context.HeritageVideos.Remove(video);
+        _context.SaveChanges();
+    }
+
+    public void DeleteDocumentRecord(HeritageDocument document)
+    {
+        _context.HeritageDocuments.Remove(document);
+        _context.SaveChanges();
+    }
+
+    public Dictionary<string, long> FindAllImageUrls()
+    {
+        var records = _context.MediaFiles
+            .AsNoTracking()
+            .Where(mf => mf.MediaType == "image")
+            .ToList();
+        logger.LogInformation("FindAllImageUrls: Loaded {Count} records from table MediaFiles (MediaType=image)", records.Count);
+        return records.ToDictionary(mf => mf.Url, mf => mf.MediaFileId);
+    }
+
+    public Dictionary<string, long> FindAllVideoUrls()
+    {
+        return _context.MediaFiles
+            .AsNoTracking()
+            .Where(mf => mf.MediaType == "video")
+            .ToDictionary(mf => mf.Url, mf => mf.MediaFileId);
+    }
+
+    public Dictionary<string, long> FindAllDocumentUrls()
+    {
+        return _context.MediaFiles
+            .AsNoTracking()
+            .Where(mf => mf.MediaType == "document")
+            .ToDictionary(mf => mf.Url, mf => mf.MediaFileId);
+    }
+
     public void DeleteImage(string publicId, long imageId)
     {
         var heritage = _context.Heritage
@@ -492,4 +635,354 @@ public sealed class EfAppRepository(ApplicationDbContext context, ILogger<EfAppR
     }
 
     public void SaveChanges() => _context.SaveChanges();
+
+    // ── Diagnostic methods ──────────────────────────────────────────
+
+    public string? GetDatabaseName()
+    {
+        try
+        {
+            return _context.Database.SqlQueryRaw<string>("SELECT DB_NAME()").FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "GetDatabaseName failed");
+            return null;
+        }
+    }
+
+    public string? GetDatabaseServer()
+    {
+        try
+        {
+            return _context.Database.SqlQueryRaw<string>("SELECT @@SERVERNAME").FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "GetDatabaseServer failed");
+            return null;
+        }
+    }
+
+    public string? GetConnectionStringMasked()
+    {
+        try
+        {
+            var cs = _context.Database.GetConnectionString();
+            if (string.IsNullOrEmpty(cs)) return null;
+            return System.Text.RegularExpressions.Regex.Replace(cs, "(Password|Pwd)=([^;]+)", "$1=*****", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "GetConnectionStringMasked failed");
+            return null;
+        }
+    }
+
+    public List<HeritageImage> GetAllImageRecords()
+    {
+        return _context.HeritageImages.AsNoTracking().ToList();
+    }
+
+    public int CountHeritageReferencesByUrl(string url)
+    {
+        return _context.Heritage
+            .AsNoTracking()
+            .Count(h => !h.IsDeleted && (
+                h.ThumbnailUrl == url ||
+                h.Images.Any(i => i.ImageUrl == url) ||
+                h.Videos.Any(v => v.VideoUrl == url) ||
+                h.Documents.Any(d => d.FileUrl == url)
+            ));
+    }
+
+    public string? RemoveImageFromHeritage(string publicId, long imageId)
+    {
+        var heritage = _context.Heritage
+            .Include(h => h.Images)
+            .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted);
+        if (heritage is null) return null;
+
+        var image = heritage.Images.FirstOrDefault(i => i.ImageId == imageId);
+        if (image is null) return null;
+
+        var url = image.ImageUrl;
+        _context.HeritageImages.Remove(image);
+
+        // Update thumbnail if the removed image was the thumbnail
+        if (heritage.ThumbnailUrl == url)
+        {
+            var nextImage = heritage.Images
+                .Where(i => i.ImageId != imageId)
+                .MinBy(i => i.SortOrder);
+            heritage.ThumbnailUrl = nextImage?.ImageUrl;
+            _context.Heritage.Update(heritage);
+        }
+
+        _context.SaveChanges();
+        return url;
+    }
+
+    public string? RemoveVideoFromHeritage(string publicId, long videoId)
+    {
+        var heritage = _context.Heritage
+            .Include(h => h.Videos)
+            .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted);
+        if (heritage is null) return null;
+
+        var video = heritage.Videos.FirstOrDefault(v => v.VideoId == videoId);
+        if (video is null) return null;
+
+        var url = video.VideoUrl;
+        _context.HeritageVideos.Remove(video);
+        _context.SaveChanges();
+        return url;
+    }
+
+    public string? RemoveDocumentFromHeritage(string publicId, long documentId)
+    {
+        var heritage = _context.Heritage
+            .Include(h => h.Documents)
+            .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted);
+        if (heritage is null) return null;
+
+        var document = heritage.Documents.FirstOrDefault(d => d.DocumentId == documentId);
+        if (document is null) return null;
+
+        var url = document.FileUrl;
+        _context.HeritageDocuments.Remove(document);
+        _context.SaveChanges();
+        return url;
+    }
+
+    public void DeleteAllMediaForHeritage(string publicId)
+    {
+        var heritage = _context.Heritage
+            .Include(h => h.Images)
+            .Include(h => h.Videos)
+            .Include(h => h.Documents)
+            .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted);
+        if (heritage is null) return;
+
+        _context.HeritageImages.RemoveRange(heritage.Images);
+        _context.HeritageVideos.RemoveRange(heritage.Videos);
+        _context.HeritageDocuments.RemoveRange(heritage.Documents);
+        heritage.ThumbnailUrl = null;
+        _context.SaveChanges();
+    }
+
+    // ── MediaFile tracking ──────────────────────────────────────────
+
+    public MediaFile AddMediaFile(MediaFile mediaFile)
+    {
+        _context.MediaFiles.Add(mediaFile);
+        _context.SaveChanges();
+        return mediaFile;
+    }
+
+    public MediaFile? FindMediaFileByUrl(string url)
+    {
+        return _context.MediaFiles.AsNoTracking().FirstOrDefault(mf => mf.Url == url);
+    }
+
+    public MediaFile? FindMediaFileById(long mediaFileId)
+    {
+        return _context.MediaFiles.AsNoTracking().FirstOrDefault(mf => mf.MediaFileId == mediaFileId);
+    }
+
+    public void DeleteMediaFile(long mediaFileId)
+    {
+        var mf = _context.MediaFiles.Find(mediaFileId);
+        if (mf is not null)
+        {
+            _context.MediaFiles.Remove(mf);
+            _context.SaveChanges();
+        }
+    }
+
+    public void DeleteMediaFileByUrl(string url)
+    {
+        var mf = _context.MediaFiles.FirstOrDefault(m => m.Url == url);
+        if (mf is not null)
+        {
+            _context.MediaFiles.Remove(mf);
+            _context.SaveChanges();
+        }
+    }
+
+    // ── Media search ────────────────────────────────────────────────
+
+    public PagedResult<MediaItemDto> SearchMedia(MediaSearchRequest request)
+    {
+        var page = Math.Max(1, request.Page);
+        var pageSize = Math.Clamp(request.PageSize, 1, 100);
+
+        // Step 1: Base query from MediaFiles
+        var baseQuery = _context.MediaFiles.AsNoTracking();
+
+        // Apply type filter
+        if (!string.IsNullOrEmpty(request.MediaType))
+            baseQuery = baseQuery.Where(mf => mf.MediaType == request.MediaType);
+
+        // Apply search filter
+        if (!string.IsNullOrEmpty(request.Search))
+        {
+            var search = request.Search.Trim().ToLower();
+            baseQuery = baseQuery.Where(mf =>
+                mf.FileName.ToLower().Contains(search) ||
+                mf.Url.ToLower().Contains(search));
+        }
+
+        // Step 2: Get all matching IDs (lightweight, just IDs and URLs for heritage lookup)
+        var allMatchingIds = baseQuery.Select(mf => mf.MediaFileId).ToList();
+        var totalBeforeUsage = allMatchingIds.Count;
+
+        // Step 3: If no results, return early
+        if (totalBeforeUsage == 0)
+            return new PagedResult<MediaItemDto>(Array.Empty<MediaItemDto>(), page, pageSize, 0, 0);
+
+        // Step 4: Load full items for matching IDs
+        var allItems = _context.MediaFiles.AsNoTracking()
+            .Where(mf => allMatchingIds.Contains(mf.MediaFileId))
+            .ToList();
+
+        // Step 5: Batch compute heritage references for all matching URLs
+        var urls = allItems.Select(mf => mf.Url).Distinct().ToList();
+        var heritageRefs = BatchGetHeritageReferences(urls);
+
+        // Step 6: Apply usage filter
+        List<long> filteredIds;
+        if (request.UsageFilter == "used")
+        {
+            filteredIds = allItems
+                .Where(mf => heritageRefs.TryGetValue(mf.Url, out var info) && info.Count > 0)
+                .Select(mf => mf.MediaFileId)
+                .ToList();
+        }
+        else if (request.UsageFilter == "unused")
+        {
+            filteredIds = allItems
+                .Where(mf => !heritageRefs.ContainsKey(mf.Url) || heritageRefs[mf.Url].Count == 0)
+                .Select(mf => mf.MediaFileId)
+                .ToList();
+        }
+        else
+        {
+            filteredIds = allMatchingIds.ToList();
+        }
+
+        var totalCount = filteredIds.Count;
+
+        // Step 7: Apply sorting
+        IEnumerable<long> sortedIds = (request.SortBy, request.SortDirection) switch
+        {
+            ("fileName", "asc") => allItems
+                .Where(mf => filteredIds.Contains(mf.MediaFileId))
+                .OrderBy(mf => mf.FileName)
+                .ThenBy(mf => mf.MediaFileId)
+                .Select(mf => mf.MediaFileId),
+
+            ("fileName", "desc") => allItems
+                .Where(mf => filteredIds.Contains(mf.MediaFileId))
+                .OrderByDescending(mf => mf.FileName)
+                .ThenBy(mf => mf.MediaFileId)
+                .Select(mf => mf.MediaFileId),
+
+            ("uploadedAt", "asc") => allItems
+                .Where(mf => filteredIds.Contains(mf.MediaFileId))
+                .OrderBy(mf => mf.UploadedAt)
+                .ThenBy(mf => mf.MediaFileId)
+                .Select(mf => mf.MediaFileId),
+
+            _ => allItems
+                .Where(mf => filteredIds.Contains(mf.MediaFileId))
+                .OrderByDescending(mf => mf.UploadedAt)
+                .ThenBy(mf => mf.MediaFileId)
+                .Select(mf => mf.MediaFileId),
+        };
+
+        var orderedIds = sortedIds.ToList();
+
+        // Step 8: Paginate
+        var pageIds = orderedIds
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToHashSet();
+
+        // Step 9: Get full items for current page in correct order
+        var pageItems = orderedIds
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .Select(id => allItems.First(mf => mf.MediaFileId == id))
+            .ToList();
+
+        // Step 10: Map to DTOs
+        var dtos = pageItems.Select(item =>
+        {
+            heritageRefs.TryGetValue(item.Url, out var info);
+            return new MediaItemDto(
+                Id: item.MediaFileId,
+                Url: item.Url,
+                FileName: item.FileName,
+                FileSize: item.FileSize,
+                MediaType: item.MediaType,
+                UploadedAt: item.UploadedAt,
+                UsageCount: info.Count,
+                HeritageNames: info.Names ?? Array.Empty<string>()
+            );
+        }).ToList();
+
+        var totalPages = (int)Math.Ceiling(totalCount / (double)pageSize);
+        return new PagedResult<MediaItemDto>(dtos, page, pageSize, totalCount, totalPages);
+    }
+
+    private Dictionary<string, (int Count, string[] Names)> BatchGetHeritageReferences(List<string> urls)
+    {
+        var result = new Dictionary<string, (int, string[])>();
+
+        if (urls.Count == 0) return result;
+
+        foreach (var batch in urls.Chunk(500))
+        {
+            var batchList = batch.ToList();
+
+            // Query all heritage references in a single union-style query
+            var imageRefs = _context.HeritageImages
+                .Where(hi => batchList.Contains(hi.ImageUrl))
+                .Select(hi => new { hi.ImageUrl, hi.HeritageId });
+
+            var videoRefs = _context.HeritageVideos
+                .Where(hv => hv.VideoUrl != null && batchList.Contains(hv.VideoUrl))
+                .Select(hv => new { ImageUrl = hv.VideoUrl!, hv.HeritageId });
+
+            var docRefs = _context.HeritageDocuments
+                .Where(hd => hd.FileUrl != null && batchList.Contains(hd.FileUrl))
+                .Select(hd => new { ImageUrl = hd.FileUrl!, hd.HeritageId });
+
+            var allRefs = imageRefs
+                .Concat(videoRefs)
+                .Concat(docRefs)
+                .Join(_context.Heritage.Where(h => !h.IsDeleted),
+                    r => r.HeritageId, h => h.HeritageId,
+                    (r, h) => new { r.ImageUrl, h.NameVi })
+                .ToList();
+
+            // Group by URL and collect heritage names
+            var grouped = allRefs
+                .GroupBy(r => r.ImageUrl)
+                .ToDictionary(
+                    g => g.Key,
+                    g => (
+                        Count: g.Select(r => r.NameVi).Distinct().Count(),
+                        Names: g.Select(r => r.NameVi).Distinct().ToArray()
+                    ));
+
+            foreach (var kvp in grouped)
+            {
+                result[kvp.Key] = kvp.Value;
+            }
+        }
+
+        return result;
+    }
 }

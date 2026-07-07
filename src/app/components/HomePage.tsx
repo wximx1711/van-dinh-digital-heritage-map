@@ -115,7 +115,6 @@ const handleSearch = () => {
               { label: t('nav.map'), page: 'map', icon: '🗺️' },
               { label: t('nav.relics'), page: 'relics', icon: '🏛️' },
               { label: t('nav.intangible'), page: 'intangible', icon: '🎭' },
-              { label: t('nav.statistics'), page: 'statistics', icon: '📊' },
             ].map(btn => (
               <button
                 key={btn.page}

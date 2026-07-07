@@ -119,5 +119,72 @@ public static class DbInitializer
             });
             await context.SaveChangesAsync();
         }
+
+        // Backfill MediaFiles from existing heritage media records
+        await BackfillMediaFilesAsync(context);
+    }
+
+    private static async Task BackfillMediaFilesAsync(ApplicationDbContext context)
+    {
+        var existingUrls = context.MediaFiles.Select(mf => mf.Url).ToHashSet();
+
+        var newMediaFiles = new List<MediaFile>();
+
+        // Images
+        foreach (var img in context.HeritageImages.AsNoTracking().ToList())
+        {
+            if (!existingUrls.Contains(img.ImageUrl))
+            {
+                newMediaFiles.Add(new MediaFile
+                {
+                    Url = img.ImageUrl,
+                    FileName = Path.GetFileName(img.ImageUrl) ?? img.ImageUrl,
+                    FileSize = 0,
+                    MediaType = "image",
+                    UploadedAt = img.UploadedAt
+                });
+                existingUrls.Add(img.ImageUrl);
+            }
+        }
+
+        // Videos
+        foreach (var vid in context.HeritageVideos.AsNoTracking().Where(v => v.VideoUrl != null).ToList())
+        {
+            if (!existingUrls.Contains(vid.VideoUrl!))
+            {
+                newMediaFiles.Add(new MediaFile
+                {
+                    Url = vid.VideoUrl!,
+                    FileName = vid.Title ?? Path.GetFileName(vid.VideoUrl!) ?? vid.VideoUrl!,
+                    FileSize = 0,
+                    MediaType = "video",
+                    UploadedAt = vid.UploadedAt
+                });
+                existingUrls.Add(vid.VideoUrl!);
+            }
+        }
+
+        // Documents
+        foreach (var doc in context.HeritageDocuments.AsNoTracking().Where(d => d.FileUrl != null).ToList())
+        {
+            if (!existingUrls.Contains(doc.FileUrl!))
+            {
+                newMediaFiles.Add(new MediaFile
+                {
+                    Url = doc.FileUrl!,
+                    FileName = doc.FileName ?? Path.GetFileName(doc.FileUrl!) ?? doc.FileUrl!,
+                    FileSize = doc.FileSize ?? 0,
+                    MediaType = "document",
+                    UploadedAt = doc.UploadedAt
+                });
+                existingUrls.Add(doc.FileUrl!);
+            }
+        }
+
+        if (newMediaFiles.Count > 0)
+        {
+            context.MediaFiles.AddRange(newMediaFiles);
+            await context.SaveChangesAsync();
+        }
     }
 }

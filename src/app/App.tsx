@@ -9,7 +9,7 @@ import { HeritageDetail } from './components/HeritageDetail';
 import { LoginPage } from './components/LoginPage';
 import { AdminDashboard } from './components/AdminDashboard';
 import { RelicsPage } from './components/RelicsPage';
-import { StatisticsPage } from './components/StatisticsPage';
+
 import { IntangiblePage } from './components/IntangiblePage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { apiGet, apiPost } from './services/api';
@@ -17,7 +17,7 @@ import { getImageUrl } from './utils/url';
 import type { UserInfo, AboutPageData } from '../core/types';
 
 type Page =
-  | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
+  | 'home' | 'relics' | 'intangible' | 'map'
   | 'about' | 'contact' | 'heritage-detail' | 'login' | 'admin' | '404';
 
 function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -192,27 +192,6 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   );
 }
 
-function StatisticsPageWrapper({ onNavigate }: { onNavigate: (page: string) => void }) {
-  const { lang } = useLanguage();
-  return (
-    <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>
-      <div style={{ background: '#0F3D5E', padding: '32px 24px 48px' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ color: '#D4A017', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
-            {lang === 'vi' ? 'Dữ liệu' : 'Data'}
-          </div>
-          <h1 style={{ color: 'white', fontSize: 26, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: 0 }}>
-            {lang === 'vi' ? 'Thống kê Di sản' : 'Heritage Statistics'}
-          </h1>
-        </div>
-      </div>
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px', transform: 'translateY(-24px)' }}>
-        <StatisticsPage onNavigate={onNavigate} />
-      </div>
-    </div>
-  );
-}
-
 function AppInner() {
   const [page, setPage] = useState<Page>('home');
   const [heritageSiteId, setHeritageSiteId] = useState<string>('h001');
@@ -312,7 +291,7 @@ function AppInner() {
       case 'relics': return <RelicsPage onNavigate={navigate} />;
       case 'intangible': return <IntangiblePage onNavigate={navigate} />;
       case 'heritage-detail': return <HeritageDetail siteId={heritageSiteId} onNavigate={navigate} />;
-      case 'statistics': return <StatisticsPageWrapper onNavigate={navigate} />;
+
       case 'about': return <AboutPage onNavigate={navigate} />;
       case 'contact': return <ContactPage onNavigate={navigate} />;
       case '404': return <NotFoundPage onNavigate={navigate} />;

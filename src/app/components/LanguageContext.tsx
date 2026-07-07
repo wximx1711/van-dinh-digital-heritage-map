@@ -14,7 +14,6 @@ const translations: Record<string, Record<Lang, string>> = {
   'nav.relics': { vi: 'Di tích', en: 'Relics' },
   'nav.intangible': { vi: 'Di sản phi vật thể', en: 'Intangible Heritage' },
   'nav.map': { vi: 'Bản đồ', en: 'Map' },
-  'nav.statistics': { vi: 'Thống kê', en: 'Statistics' },
   'nav.about': { vi: 'Giới thiệu', en: 'About' },
   'nav.contact': { vi: 'Liên hệ', en: 'Contact' },
   'nav.login': { vi: 'Đăng nhập', en: 'Login' },
@@ -98,7 +97,6 @@ const translations: Record<string, Record<Lang, string>> = {
   'admin.intangible_mgmt': { vi: 'Di sản phi vật thể', en: 'Intangible Heritage' },
   'admin.map_mgmt': { vi: 'Quản lý bản đồ', en: 'Map Management' },
   'admin.media': { vi: 'Thư viện ảnh', en: 'Media Library' },
-  'admin.statistics': { vi: 'Thống kê', en: 'Statistics' },
   'admin.users': { vi: 'Tài khoản người dùng', en: 'User Accounts' },
   'admin.settings': { vi: 'Cài đặt', en: 'Settings' },
   'admin.categories': { vi: 'Danh mục di tích', en: 'Heritage Categories' },
@@ -124,11 +122,6 @@ const translations: Record<string, Record<Lang, string>> = {
   'hm.status_active': { vi: 'Đang hoạt động', en: 'Active' },
   'hm.status_maintenance': { vi: 'Đang trùng tu', en: 'Under Renovation' },
   'hm.status_closed': { vi: 'Tạm đóng cửa', en: 'Temporarily Closed' },
-  // Statistics
-  'stats_page.title': { vi: 'Thống kê di sản', en: 'Heritage Statistics' },
-  'stats_page.by_classification': { vi: 'Theo xếp hạng', en: 'By Classification' },
-  'stats_page.by_type': { vi: 'Theo loại hình', en: 'By Type' },
-  'stats_page.updates': { vi: 'Cập nhật theo tháng', en: 'Monthly Updates' },
   // Footer
   'footer.authority': { vi: 'Ban Quản lý Di sản Văn hóa xã Vân Đình', en: 'Van Dinh Cultural Heritage Management Board' },
   'footer.address': { vi: 'Xã Vân Đình, Huyện Ứng Hòa, Thành phố Hà Nội', en: 'Van Dinh Commune, Ung Hoa District, Hanoi City' },

@@ -234,13 +234,35 @@ public sealed record SystemSettingDto(int SettingId, string? WebsiteName, string
 /// <summary>Request to update system settings.</summary>
 public sealed record SystemSettingRequest(string? WebsiteName, string? LogoUrl, string? FooterText, string? ContactEmail, string? Phone, string? Address, string? FacebookUrl, string? TiktokUrl, string? YoutubeUrl);
 
-/// <summary>Statistics response with heritage counts and breakdowns.</summary>
-public sealed record StatisticsDto(int TotalHeritage, int National, int City, int Unranked, IReadOnlyDictionary<string, int> ByType, IReadOnlyDictionary<string, int> ByStatus);
-
 /// <summary>
 /// File upload result.
 /// </summary>
 public sealed record UploadResult(string Url, string FileName, long Size);
+
+/// <summary>
+/// Unified media item for the media library.
+/// </summary>
+public sealed record MediaItemDto(
+    long Id,
+    string Url,
+    string FileName,
+    long FileSize,
+    string MediaType,
+    DateTime UploadedAt,
+    int UsageCount,
+    IReadOnlyList<string> HeritageNames);
+
+/// <summary>
+/// Search request for the media library.
+/// </summary>
+public sealed record MediaSearchRequest(
+    int Page = 1,
+    int PageSize = 20,
+    string? Search = null,
+    string? MediaType = null,
+    string? UsageFilter = null,
+    string? SortBy = "uploadedAt",
+    string? SortDirection = "desc");
 
 /// <summary>Monthly update statistics for charts.</summary>
 public sealed record MonthlyUpdateDto(int UpdateId, string MonthLabel, string DisplayVi, string DisplayEn, int UpdateCount);

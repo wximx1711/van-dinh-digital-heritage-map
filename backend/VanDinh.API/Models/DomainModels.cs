@@ -239,3 +239,16 @@ public sealed class RelatedLink
     public long? UpdatedBy { get; set; }
     public DateTime? UpdatedAt { get; set; }
 }
+
+public sealed class MediaFile
+{
+    public long MediaFileId { get; set; }
+    [Required, MaxLength(500)]
+    public string Url { get; set; } = "";
+    [MaxLength(255)]
+    public string FileName { get; set; } = "";
+    public long FileSize { get; set; }
+    [Required, MaxLength(20)]
+    public string MediaType { get; set; } = "";
+    public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
+}

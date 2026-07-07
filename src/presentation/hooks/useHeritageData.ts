@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchHeritageSites, fetchHeritageSite } from '../../app/services/heritageService';
 import { fetchIntangibleHeritage } from '../../app/services/intangibleService';
-import { fetchMonthlyUpdates } from '../../app/services/statisticsService';
 import { typeLabels, classificationLabels, statusLabels } from '../../data/labels';
 import type { HeritageSite, IntangibleHeritage } from '../../core/types';
 
@@ -72,31 +71,6 @@ export function useHeritageSite(id: string) {
       setLoading(false);
     }
   }, [id]);
-
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  return { data, loading, error, refetch: fetchData };
-}
-
-export function useMonthlyUpdates() {
-  const [data, setData] = useState<Array<{ month: string; count: number; vi: string; en: string }>>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      const items = await fetchMonthlyUpdates();
-      setData(items);
-      setError(null);
-    } catch (err) {
-      setError(err as Error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
     fetchData();

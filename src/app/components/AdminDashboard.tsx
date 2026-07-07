@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
-import { apiGet } from '../services/api';
+
 import { getImageUrl } from '../utils/url';
 import {
   LayoutDashboard, Building2, BookOpen, ImageIcon,
@@ -12,7 +12,7 @@ import {
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
 import { UserManagement } from './UserManagement';
-import { StatisticsPage } from './StatisticsPage';
+
 import { IntangibleManagement } from './IntangibleManagement';
 import { HeritageCategoriesManagement } from './HeritageCategoriesManagement';
 import { AboutPageManagement } from './AboutPageManagement';
@@ -28,7 +28,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'statistics' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'related-links';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'related-links';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -42,16 +42,10 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [stats, setStats] = useState<any>(null);
-
-  useEffect(() => {
-    apiGet<any>('/statistics').then(setStats).catch(() => {});
-  }, []);
-
-  const totalImages = stats?.images ?? heritageSites.reduce((s, h) => s + (h.images?.length || 0), 0);
-  const totalVideos = stats?.videos ?? 0;
-  const totalDocuments = stats?.documents ?? 0;
-  const totalIntangible = stats?.intangible ?? intangibleHeritage.length;
+  const totalImages = heritageSites.reduce((s, h) => s + (h.images?.length || 0), 0);
+  const totalVideos = 0;
+  const totalDocuments = 0;
+  const totalIntangible = intangibleHeritage.length;
 
   const adminNavItems = [
     { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} /> },
@@ -489,10 +483,6 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
 
           {section === 'intangible' && (
             <IntangibleManagement />
-          )}
-
-          {section === 'statistics' && (
-            <StatisticsPage isAdmin />
           )}
 
           {section === 'users' && (

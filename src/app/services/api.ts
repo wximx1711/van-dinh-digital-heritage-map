@@ -79,9 +79,12 @@ export async function apiPut<T>(path: string, body: unknown): Promise<T> {
 }
 
 export async function apiDelete<T>(path: string): Promise<T> {
+  console.log('[apiDelete] path argument:', path);
+  console.log('[apiDelete] final URL will be:', `/api${path}`);
   try {
     return await fetchWithCsrf<T>(path, 'DELETE');
   } catch (err) {
+    console.log('[apiDelete] caught error:', err);
     clearCsrfToken();
     throw err;
   }

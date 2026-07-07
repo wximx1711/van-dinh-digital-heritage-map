@@ -90,9 +90,30 @@ export interface AboutPageData {
 }
 
 export interface MediaFile {
+  id: number | null;
   url: string;
   fileName: string;
-  size: number;
-  type: 'image' | 'video' | 'document';
+  fileSize: number;
+  mediaType: 'image' | 'video' | 'document';
   uploadedAt: string;
+  usageCount: number;
+  heritageNames: string[];
+}
+
+export interface PagedResult<T> {
+  data: T[];
+  totalRecords: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
+export interface MediaSearchRequest {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  mediaType?: string;
+  usageFilter?: string;
+  sortBy?: string;
+  sortDirection?: string;
 }

@@ -77,7 +77,7 @@ public sealed class HeritageConfiguration : IEntityTypeConfiguration<Heritage>
         builder.HasIndex(x => x.Status);
         builder.HasIndex(x => x.IsDeleted);
         builder.HasIndex(x => x.PublicId).IsUnique();
-        builder.HasIndex(x => x.Code).IsUnique();
+        builder.HasIndex(x => x.Code);
         builder.HasIndex(x => x.Slug).IsUnique();
         builder.HasIndex(x => x.NameVi).IsUnique().HasFilter("IsDeleted = 0");
         builder.HasIndex(x => x.NameEn).IsUnique().HasFilter("IsDeleted = 0");
