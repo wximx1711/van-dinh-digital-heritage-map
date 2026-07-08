@@ -119,6 +119,10 @@ builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IHeritageService, HeritageService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAppRepository, EfAppRepository>();
+builder.Services.AddHttpClient<IGoogleMapsCoordinateExtractor, GoogleMapsCoordinateExtractor>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
 
 var app = builder.Build();
 

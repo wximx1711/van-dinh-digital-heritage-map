@@ -26,6 +26,13 @@ export interface HeritageSite {
   guardian: string;
 }
 
+export interface MapMarker {
+  id: string;
+  position: google.maps.LatLngLiteral;
+  label?: string;
+  type?: HeritageType;
+}
+
 export interface UserInfo {
   userId: number;
   username: string;
@@ -116,4 +123,56 @@ export interface MediaSearchRequest {
   usageFilter?: string;
   sortBy?: string;
   sortDirection?: string;
+}
+
+export interface ClassificationStat {
+  classification: string;
+  count: number;
+}
+
+export interface TypeStat {
+  type: string;
+  nameVi: string;
+  nameEn: string;
+  count: number;
+}
+
+export interface StatusStat {
+  status: string;
+  count: number;
+}
+
+export interface RecentHeritageStat {
+  id: string;
+  code: string;
+  nameVi: string;
+  nameEn: string;
+  image: string | null;
+  classification: string;
+  type: string;
+  updatedAt: string;
+}
+
+export interface MonthlyUpdateStat {
+  updateId: number;
+  monthLabel: string;
+  displayVi: string;
+  displayEn: string;
+  updateCount: number;
+}
+
+export interface StatisticsOverview {
+  totalHeritage: number;
+  nationalCount: number;
+  cityCount: number;
+  unrankedCount: number;
+  totalIntangible: number;
+  totalImages: number;
+  totalVideos: number;
+  totalDocuments: number;
+  classificationBreakdown: ClassificationStat[];
+  typeBreakdown: TypeStat[];
+  statusBreakdown: StatusStat[];
+  monthlyUpdates: MonthlyUpdateStat[];
+  recentHeritages: RecentHeritageStat[];
 }

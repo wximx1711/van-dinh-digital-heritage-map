@@ -56,7 +56,7 @@ public sealed class HeritageController(
     [Authorize(Roles = "MANAGER")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Create([FromBody] HeritageRequest request)
+    public async Task<IActionResult> Create([FromBody] HeritageRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -67,7 +67,7 @@ public sealed class HeritageController(
         try
         {
             var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var item = service.Create(request, userId);
+            var item = await service.CreateAsync(request, userId);
             logs.Log(User, "CREATE", "Heritage", repository.FindHeritage(item.Id)?.HeritageId, item.Code);
             return ApiResponse.Success(item, "Heritage created successfully.", StatusCodes.Status201Created);
         }
@@ -95,7 +95,7 @@ public sealed class HeritageController(
     [Authorize(Roles = "MANAGER")]
     [HttpPut("{id:minlength(1)}")]
     [ValidateAntiForgeryToken]
-    public IActionResult Update([FromRoute] string id, [FromBody] HeritageRequest request)
+    public async Task<IActionResult> Update([FromRoute] string id, [FromBody] HeritageRequest request)
     {
         if (!ModelState.IsValid)
         {
@@ -105,7 +105,7 @@ public sealed class HeritageController(
 
         try
         {
-            var item = service.Update(id, request);
+            var item = await service.UpdateAsync(id, request);
             if (item is null) return ApiResponse.NotFound("Heritage item not found.");
             logs.Log(User, "UPDATE", "Heritage", repository.FindHeritage(id)?.HeritageId, item.Code);
             return ApiResponse.Success(item, "Heritage updated successfully.");

@@ -127,8 +127,6 @@ public sealed record HeritageRequest(
     string? AddressEn,
 
     [Required]
-    [RegularExpression(@"^(https:\/\/(maps\.google|www\.google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)).*",
-        ErrorMessage = "Google Maps URL must start with https://maps.google, https://www.google.com/maps, https://goo.gl/maps, or https://maps.app.goo.gl")]
     string? GoogleMapUrl,
 
     [Required, MinLength(30)]
@@ -154,10 +152,8 @@ public sealed record HeritageRequest(
     [MaxLength(150)]
     string? Guardian,
 
-    [Range(-90, 90, ErrorMessage = "Latitude must be between -90 and 90")]
     double? Latitude = null,
 
-    [Range(-180, 180, ErrorMessage = "Longitude must be between -180 and 180")]
     double? Longitude = null,
 
     string[]? ImageUrls = null);

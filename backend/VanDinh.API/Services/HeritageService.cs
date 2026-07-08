@@ -10,12 +10,16 @@ public interface IHeritageService
     IReadOnlyList<HeritageDto> Search(string? query, string? type, string? classification, string? status);
     IReadOnlyList<HeritageDto> SearchAdvanced(string? query, string? type, string? classification, string? status, string? yearBuilt, string? district);
     HeritageDto? Get(string id);
-    HeritageDto Create(HeritageRequest request, long userId);
-    HeritageDto? Update(string id, HeritageRequest request);
+    Task<HeritageDto> CreateAsync(HeritageRequest request, long userId);
+    Task<HeritageDto?> UpdateAsync(string id, HeritageRequest request);
     bool Delete(string id);
 }
 
-public sealed class HeritageService(IAppRepository repository, IUploadService uploads, ILogger<HeritageService> logger) : IHeritageService
+public sealed class HeritageService(
+    IAppRepository repository,
+    IUploadService uploads,
+    ILogger<HeritageService> logger,
+    IGoogleMapsCoordinateExtractor coordinateExtractor) : IHeritageService
 {
     private static string? NormalizeSearch(string? value)
     {
@@ -113,10 +117,6 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
         {
             errors.Add("Google Maps URL is required.");
         }
-        else if (!IsValidGoogleMapsUrl(request.GoogleMapUrl))
-        {
-            errors.Add("Google Maps URL must be a valid Google Maps URL (maps.google.com, www.google.com/maps, goo.gl/maps, or maps.app.goo.gl)");
-        }
 
         if (string.IsNullOrWhiteSpace(request.AddressVi) || request.AddressVi.Trim().Length < 5 || request.AddressVi.Trim().Length > 300)
             errors.Add("Address (Vietnamese) must be between 5 and 300 characters.");
@@ -143,7 +143,7 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
             throw new InvalidOperationException(string.Join(" | ", errors));
     }
 
-    public HeritageDto Create(HeritageRequest request, long userId)
+    public async Task<HeritageDto> CreateAsync(HeritageRequest request, long userId)
     {
         logger.LogInformation("=== CREATE FLOW START: Heritage ===");
         logger.LogInformation("[1/8] Controller received request: NameVi={NameVi}, NameEn={NameEn}, Code={Code}", request.NameVi, request.NameEn, request.Code);
@@ -156,6 +156,16 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
             logger.LogInformation("[2/8] DTO validation passed.");
 
             // Step 2: Category lookup
+            // Step 2b: Extract coordinates from Google Maps URL
+            logger.LogInformation("[2b/8] Extracting coordinates from Google Maps URL...");
+            var (extractedLat, extractedLng) = await coordinateExtractor.ExtractCoordinatesAsync(request.GoogleMapUrl);
+            if (extractedLat.HasValue && extractedLng.HasValue)
+            {
+                logger.LogInformation("[2b/8] Coordinates extracted: Lat={Lat}, Lng={Lng}", extractedLat, extractedLng);
+            }
+            logger.LogInformation("[2b/8] Coordinate extraction complete.");
+
+            // Step 3: Category lookup
             logger.LogInformation("[3/8] Looking up category: Type={Type}", request.Type);
             var category = repository.FindCategory(request.Type) ?? throw new InvalidOperationException("Category not found.");
             logger.LogInformation("[3/8] Category found: Id={Id}, Code={Code}", category.CategoryId, category.Code);
@@ -196,8 +206,8 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
                 Guardian = request.Guardian?.Trim(),
                 CreatedBy = userId,
                 GoogleMapUrl = request.GoogleMapUrl?.Trim(),
-                Latitude = request.Latitude.HasValue ? (decimal)request.Latitude.Value : null,
-                Longitude = request.Longitude.HasValue ? (decimal)request.Longitude.Value : null
+                Latitude = extractedLat.HasValue ? (decimal)extractedLat.Value : null,
+                Longitude = extractedLng.HasValue ? (decimal)extractedLng.Value : null
             };
             heritage.QrCodeUrl = $"/api/qr/heritage/{heritage.PublicId}";
             logger.LogInformation("[5/8] Entity mapped: PublicId={PublicId}, Slug={Slug}", heritage.PublicId, heritage.Slug);
@@ -267,7 +277,7 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
         }
     }
 
-    public HeritageDto? Update(string id, HeritageRequest request)
+    public async Task<HeritageDto?> UpdateAsync(string id, HeritageRequest request)
     {
         ValidateHeritageRequest(request);
 
@@ -285,6 +295,17 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
         if (heritage is null) return null;
 
         var oldNameEn = heritage.NameEn;
+        var oldUrl = heritage.GoogleMapUrl;
+
+        // Only resolve URL if it has changed
+        var urlChanged = !string.Equals(request.GoogleMapUrl?.Trim(), oldUrl, StringComparison.OrdinalIgnoreCase);
+        double? extractedLat = null;
+        double? extractedLng = null;
+
+        if (urlChanged)
+        {
+            (extractedLat, extractedLng) = await coordinateExtractor.ExtractCoordinatesAsync(request.GoogleMapUrl);
+        }
 
         heritage.Code = request.Code;
         heritage.CategoryId = category.CategoryId;
@@ -306,8 +327,13 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
         heritage.YearBuilt = request.YearBuilt;
         heritage.Guardian = request.Guardian?.Trim();
         heritage.GoogleMapUrl = request.GoogleMapUrl?.Trim();
-        heritage.Latitude = request.Latitude.HasValue ? (decimal)request.Latitude.Value : null;
-        heritage.Longitude = request.Longitude.HasValue ? (decimal)request.Longitude.Value : null;
+
+        if (urlChanged)
+        {
+            heritage.Latitude = extractedLat.HasValue ? (decimal)extractedLat.Value : null;
+            heritage.Longitude = extractedLng.HasValue ? (decimal)extractedLng.Value : null;
+        }
+
         repository.UpdateHeritage(heritage);
 
         ReconcileImages(id, request.Image, request.ImageUrls);
@@ -417,21 +443,5 @@ public sealed class HeritageService(IAppRepository repository, IUploadService up
     {
         var chars = value.ToLowerInvariant().Select(ch => char.IsLetterOrDigit(ch) ? ch : '-').ToArray();
         return string.Join('-', new string(chars).Split('-', StringSplitOptions.RemoveEmptyEntries));
-    }
-
-    private static bool IsValidGoogleMapsUrl(string url)
-    {
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
-            return false;
-
-        var host = uri.Host.ToLowerInvariant();
-        return host switch
-        {
-            "maps.google.com" => true,
-            "www.google.com" when uri.AbsolutePath.StartsWith("/maps", StringComparison.OrdinalIgnoreCase) => true,
-            "goo.gl" when uri.AbsolutePath.StartsWith("/maps", StringComparison.OrdinalIgnoreCase) => true,
-            "maps.app.goo.gl" => true,
-            _ => false
-        };
     }
 }

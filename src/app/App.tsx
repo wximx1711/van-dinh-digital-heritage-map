@@ -11,13 +11,14 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { RelicsPage } from './components/RelicsPage';
 
 import { IntangiblePage } from './components/IntangiblePage';
+import { StatisticsPage } from './components/StatisticsPage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { apiGet, apiPost } from './services/api';
 import { getImageUrl } from './utils/url';
 import type { UserInfo, AboutPageData } from '../core/types';
 
 type Page =
-  | 'home' | 'relics' | 'intangible' | 'map'
+  | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
   | 'about' | 'contact' | 'heritage-detail' | 'login' | 'admin' | '404';
 
 function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -290,6 +291,7 @@ function AppInner() {
       case 'home': return <HomePage onNavigate={navigate} />;
       case 'relics': return <RelicsPage onNavigate={navigate} />;
       case 'intangible': return <IntangiblePage onNavigate={navigate} />;
+      case 'statistics': return <StatisticsPage onNavigate={navigate} />;
       case 'heritage-detail': return <HeritageDetail siteId={heritageSiteId} onNavigate={navigate} />;
 
       case 'about': return <AboutPage onNavigate={navigate} />;
