@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useTypeLabels, useClassificationLabels } from '../../presentation/hooks/useHeritageData';
 import { useHeritageMapMarkers } from '../../presentation/hooks/useHeritageMapMarkers';
@@ -119,6 +119,14 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
   const [routeLoading, setRouteLoading] = useState(false);
   const [routeError, setRouteError] = useState<string | null>(null);
+  const mountedRef = useRef(true);
+  const langRef = useRef(lang);
+  langRef.current = lang;
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => { mountedRef.current = false; };
+  }, []);
 
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
@@ -187,7 +195,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const locateUser = useCallback(() => {
     if (!navigator.geolocation) {
       setLocationError(
-        lang === 'vi' ? 'Trình duyệt không hỗ trợ định vị' : 'Geolocation not supported',
+        langRef.current === 'vi' ? 'Trình duyệt không hỗ trợ định vị' : 'Geolocation not supported',
       );
       return;
     }
@@ -195,33 +203,35 @@ export function MapPage({ onNavigate }: MapPageProps) {
     setLocationError(null);
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        if (!mountedRef.current) return;
         setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude });
         setIsLocating(false);
       },
       (err) => {
+        if (!mountedRef.current) return;
         switch (err.code) {
           case err.PERMISSION_DENIED:
-            setLocationError(lang === 'vi' ? 'Vui lòng cấp quyền truy cập vị trí' : 'Location permission denied');
+            setLocationError(langRef.current === 'vi' ? 'Vui lòng cấp quyền truy cập vị trí' : 'Location permission denied');
             break;
           case err.POSITION_UNAVAILABLE:
-            setLocationError(lang === 'vi' ? 'Không thể xác định vị trí' : 'Location unavailable');
+            setLocationError(langRef.current === 'vi' ? 'Không thể xác định vị trí' : 'Location unavailable');
             break;
           case err.TIMEOUT:
-            setLocationError(lang === 'vi' ? 'Yêu cầu định vị hết thời gian' : 'Location request timed out');
+            setLocationError(langRef.current === 'vi' ? 'Yêu cầu định vị hết thời gian' : 'Location request timed out');
             break;
           default:
-            setLocationError(lang === 'vi' ? 'Không thể xác định vị trí' : 'Could not determine location');
+            setLocationError(langRef.current === 'vi' ? 'Không thể xác định vị trí' : 'Could not determine location');
         }
         setIsLocating(false);
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
     );
-  }, [lang]);
+  }, []);
 
   const handleGetDirections = useCallback((siteId: string) => {
     if (!userLocation) {
       setRouteError(
-        lang === 'vi'
+        langRef.current === 'vi'
           ? 'Vui lòng bật định vị để xem chỉ đường'
           : 'Please enable location to get directions',
       );
@@ -242,15 +252,16 @@ export function MapPage({ onNavigate }: MapPageProps) {
         travelMode: google.maps.TravelMode.DRIVING,
       },
       (result, status) => {
+        if (!mountedRef.current) return;
         setRouteLoading(false);
         if (status === google.maps.DirectionsStatus.OK && result) {
           setDirectionsResult(result);
         } else {
-          setRouteError(lang === 'vi' ? 'Không thể tính toán lộ trình' : 'Could not calculate route');
+          setRouteError(langRef.current === 'vi' ? 'Không thể tính toán lộ trình' : 'Could not calculate route');
         }
       },
     );
-  }, [userLocation, siteMap, lang]);
+  }, [userLocation, siteMap]);
 
   const handleClearRoute = useCallback(() => {
     setDirectionsResult(null);
@@ -616,6 +627,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
           position: 'absolute', bottom: 16, right: 16, zIndex: 10,
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
         }}>
+          <style>{`@keyframes locate-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
           {locationError && (
             <div style={{
               padding: '6px 10px', borderRadius: 6, background: '#FDEDEC',
@@ -641,14 +653,11 @@ export function MapPage({ onNavigate }: MapPageProps) {
             }}
           >
             {isLocating ? (
-              <>
-                <style>{`@keyframes locate-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
-                <div style={{
-                  width: 16, height: 16, borderRadius: '50%',
-                  border: '2px solid #4285F4', borderTopColor: 'transparent',
-                  animation: 'locate-pulse 0.8s linear infinite',
-                }} />
-              </>
+              <div style={{
+                width: 16, height: 16, borderRadius: '50%',
+                border: '2px solid #4285F4', borderTopColor: 'transparent',
+                animation: 'locate-pulse 0.8s linear infinite',
+              }} />
             ) : (
               <Crosshair size={18} />
             )}

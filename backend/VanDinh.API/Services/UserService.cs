@@ -37,10 +37,8 @@ public sealed class UserService(IAppRepository repository, IPasswordHasher hashe
         else if (repository.FindUser(request.Username.Trim()) is not null)
             errors.Add("Username already exists.");
 
-        if (string.IsNullOrWhiteSpace(request.Password) || request.Password.Length < 8)
-            errors.Add("Password must be at least 8 characters.");
-        else if (!System.Text.RegularExpressions.Regex.IsMatch(request.Password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$"))
-            errors.Add("Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 special character.");
+        if (string.IsNullOrWhiteSpace(request.Password) || request.Password.Length < 6)
+            errors.Add("Password must be at least 6 characters.");
 
         if (string.IsNullOrWhiteSpace(request.RoleName) || !(request.RoleName == "ADMIN" || request.RoleName == "MANAGER"))
             errors.Add("Role must be ADMIN or MANAGER.");

@@ -16,9 +16,7 @@ public sealed record UserCreateRequest(
     [RegularExpression(@"^[a-zA-Z0-9_]+$", ErrorMessage = "Username can only contain letters, numbers, and underscores.")]
     string Username,
 
-    [Required, MinLength(8)]
-    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
-        ErrorMessage = "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.")]
+    [Required, MinLength(6)]
     string Password,
 
     [Required, RegularExpression(@"^(ADMIN|MANAGER)$", ErrorMessage = "Role must be ADMIN or MANAGER.")]
@@ -43,9 +41,7 @@ public sealed record UserUpdateRequest(
     bool Status);
 
 public sealed record ResetPasswordRequest(
-    [Required, MinLength(8)]
-    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$",
-        ErrorMessage = "Password must be at least 8 characters with 1 uppercase, 1 lowercase, 1 number, and 1 special character.")]
+    [Required, MinLength(6)]
     string NewPassword);
 
 public sealed record UpdateRoleRequest([Required] string RoleName);

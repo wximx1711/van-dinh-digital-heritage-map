@@ -57,10 +57,13 @@ export function GoogleMapView({
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [clustererVersion, setClustererVersion] = useState(0);
   const clustererRef = useRef<MarkerClusterer | null>(null);
   const markerMapRef = useRef<Map<string, google.maps.Marker>>(new Map());
   const onMarkerClickRef = useRef(onMarkerClick);
+  const onInfoWindowCloseRef = useRef(onInfoWindowClose);
   onMarkerClickRef.current = onMarkerClick;
+  onInfoWindowCloseRef.current = onInfoWindowClose;
 
   const mapCenter = useMemo(() => VAN_DINH_CENTER, []);
 
@@ -70,8 +73,8 @@ export function GoogleMapView({
   );
 
   const handleMapClick = useCallback(() => {
-    onInfoWindowClose?.();
-  }, [onInfoWindowClose]);
+    onInfoWindowCloseRef.current?.();
+  }, []);
 
   const handleMapLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
@@ -107,6 +110,7 @@ export function GoogleMapView({
     if (!map) return;
     const clusterer = new MarkerClusterer({ map });
     clustererRef.current = clusterer;
+    setClustererVersion(v => v + 1);
     return () => {
       clusterer.clearMarkers();
       clustererRef.current = null;
@@ -154,14 +158,16 @@ export function GoogleMapView({
           icon: icon,
           zIndex: isHighlighted ? 200 : undefined,
         });
-        const id = m.id;
-        const listener = marker.addListener('click', () => {
-          onMarkerClickRef.current?.(id);
-        });
-        cleanups.push(() => google.maps.event.removeListener(listener));
         markerMap.set(m.id, marker);
         toAdd.push(marker);
       }
+
+      // Always re-attach click listener (cleaned up by previous run's cleanup)
+      const id = m.id;
+      const listener = marker.addListener('click', () => {
+        onMarkerClickRef.current?.(id);
+      });
+      cleanups.push(() => google.maps.event.removeListener(listener));
     }
 
     if (toRemove.length > 0) {
@@ -176,29 +182,45 @@ export function GoogleMapView({
         cleanup();
       }
     };
-  }, [markers, highlightedMarkerId]);
+  }, [markers, highlightedMarkerId, clustererVersion]);
 
   // Auto-fit viewport when the visible marker set changes
   const markersKeyRef = useRef<string>('');
+  const directionsRef = useRef(directions);
+  directionsRef.current = directions;
+  const fitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!map) return;
-    if (directions) return;
-    if (markers.length === 0) return;
+    if (directionsRef.current || markers.length === 0) return;
 
     const key = markers.map((m) => `${m.id}:${m.position.lat},${m.position.lng}`).join('|');
     if (key === markersKeyRef.current) return;
     markersKeyRef.current = key;
 
-    if (markers.length === 1) {
-      map.panTo(markers[0].position);
-      map.setZoom(17);
-    } else {
-      const bounds = new google.maps.LatLngBounds();
-      markers.forEach((m) => bounds.extend(m.position));
-      map.fitBounds(bounds, 50);
+    if (fitTimerRef.current !== null) {
+      clearTimeout(fitTimerRef.current);
     }
-  }, [map, markers, directions]);
+
+    fitTimerRef.current = setTimeout(() => {
+      if (markers.length === 1) {
+        map.panTo(markers[0].position);
+        map.setZoom(17);
+      } else {
+        const bounds = new google.maps.LatLngBounds();
+        markers.forEach((m) => bounds.extend(m.position));
+        map.fitBounds(bounds, 50);
+      }
+      fitTimerRef.current = null;
+    }, 100);
+
+    return () => {
+      if (fitTimerRef.current !== null) {
+        clearTimeout(fitTimerRef.current);
+        fitTimerRef.current = null;
+      }
+    };
+  }, [map, markers]);
 
   if (loadError) {
     return (

@@ -3,7 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { apiGet, apiPost, apiPut, apiDelete } from '../services/api';
 import {
   Plus, Search, Pencil, Trash2, X, Check, AlertTriangle, Key, ToggleLeft, ToggleRight,
-  ChevronLeft, ChevronRight, Users as UsersIcon
+  ChevronLeft, ChevronRight, Users as UsersIcon, Eye, EyeOff
 } from 'lucide-react';
 
 interface UserDto {
@@ -30,6 +30,7 @@ export function UserManagement() {
   const [newPassword, setNewPassword] = useState('');
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [showPassword, setShowPassword] = useState(false);
   const [page, setPage] = useState(1);
   const PER_PAGE = 8;
 
@@ -81,8 +82,7 @@ export function UserManagement() {
     else if (editUser.username.trim().length < 4 || editUser.username.trim().length > 30) errors.username = lang === 'vi' ? 'Từ 4-30 ký tự' : '4-30 characters';
     else if (!/^[a-zA-Z0-9_]+$/.test(editUser.username.trim())) errors.username = lang === 'vi' ? 'Chỉ chấp nhận chữ, số, dấu gạch dưới' : 'Only letters, numbers, underscores';
     if (isCreate && !editUser.password) errors.password = lang === 'vi' ? 'Mật khẩu là bắt buộc' : 'Password is required';
-    else if (isCreate && editUser.password.length < 8) errors.password = lang === 'vi' ? 'Tối thiểu 8 ký tự' : 'Minimum 8 characters';
-    else if (isCreate && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,}$/.test(editUser.password)) errors.password = lang === 'vi' ? 'Cần 1 chữ hoa, 1 chữ thường, 1 số, 1 ký tự đặc biệt' : 'Requires uppercase, lowercase, number, special char';
+    else if (isCreate && editUser.password.length < 6) errors.password = lang === 'vi' ? 'Tối thiểu 6 ký tự' : 'Minimum 6 characters';
     if (!editUser.fullName?.trim()) errors.fullName = lang === 'vi' ? 'Họ tên là bắt buộc' : 'Full name is required';
     else if (editUser.fullName.trim().length < 5 || editUser.fullName.trim().length > 100) errors.fullName = lang === 'vi' ? 'Từ 5-100 ký tự' : '5-100 characters';
     if (!editUser.email?.trim()) errors.email = lang === 'vi' ? 'Email là bắt buộc' : 'Email is required';
@@ -382,10 +382,19 @@ export function UserManagement() {
                   <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>
                     {lang === 'vi' ? 'Mật khẩu' : 'Password'} *
                   </label>
-                  <input type="password" style={{ ...inputStyle, borderColor: formErrors.password ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editUser.password || ''}
-                    onChange={e => { setEditUser(s => s ? { ...s, password: e.target.value } : s); setFormErrors(prev => ({ ...prev, password: '' })); }} />
+                  <div style={{ position: 'relative' }}>
+                    <input type={showPassword ? 'text' : 'password'}
+                      style={{ ...inputStyle, paddingRight: 36, borderColor: formErrors.password ? '#E74C3C' : 'rgba(15,61,94,0.15)' }}
+                      value={editUser.password || ''}
+                      onChange={e => { setEditUser(s => s ? { ...s, password: e.target.value } : s); setFormErrors(prev => ({ ...prev, password: '' })); }} />
+                    <button type="button" onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#5d7a8c', display: 'flex', alignItems: 'center', padding: 4 }}>
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </button>
+                  </div>
                   {formErrors.password && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.password}</span>}
-                  <p style={{ fontSize: 10, color: '#cbced4', margin: '4px 0 0' }}>{lang === 'vi' ? 'Tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, số, ký tự đặc biệt' : 'Min 8 chars: uppercase, lowercase, number, special char'}</p>
+                  <p style={{ fontSize: 10, color: '#cbced4', margin: '4px 0 0' }}>{lang === 'vi' ? 'Tối thiểu 6 ký tự' : 'Minimum 6 characters'}</p>
                 </div>
               )}
               <div style={{ marginBottom: 14 }}>
