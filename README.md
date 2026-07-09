@@ -3,6 +3,16 @@
 
   This is a code bundle for Van Dinh Digital Heritage Map. The original project is available at https://www.figma.com/design/pH8mm29SpVOHYjt46Ac63P/Van-Dinh-Digital-Heritage-Map.
 
+  ## Developer Setup
+
+  After cloning:
+
+  ```powershell
+  .\scripts\install-hooks.ps1
+  ```
+
+  Git hooks are now installed. Database snapshots will automatically regenerate before every commit.
+
   ## Running the code
 
   Run `npm i` to install the dependencies.

@@ -1,0 +1,37 @@
+#!/bin/sh
+# Pre-commit hook: regenerate database snapshot before each commit.
+# Runs only if SQL Server and export-db.ps1 are available.
+
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null)
+EXPORT_SCRIPT="$REPO_ROOT/scripts/export-db.ps1"
+SNAPSHOT_FILE="$REPO_ROOT/backend/database/VanDinhDigitalMap.sql"
+
+if [ ! -f "$EXPORT_SCRIPT" ]; then
+    echo "[pre-commit] export-db.ps1 not found, skipping DB snapshot"
+    exit 0
+fi
+
+# Check if PowerShell is available
+if ! command -v powershell.exe >/dev/null 2>&1 && ! command -v pwsh >/dev/null 2>&1; then
+    echo "[pre-commit] PowerShell not available, skipping DB snapshot"
+    exit 0
+fi
+
+POWERSHELL="powershell.exe"
+command -v pwsh >/dev/null 2>&1 && POWERSHELL="pwsh"
+
+# Run the export script
+echo "[pre-commit] Regenerating database snapshot..."
+if "$POWERSHELL" -ExecutionPolicy Bypass -File "$EXPORT_SCRIPT"; then
+    # Stage the snapshot if it changed
+    if [ -f "$SNAPSHOT_FILE" ]; then
+        git add "$SNAPSHOT_FILE"
+        echo "[pre-commit] Database snapshot staged: $(basename "$SNAPSHOT_FILE")"
+    fi
+else
+    EXIT_CODE=$?
+    echo "[pre-commit] DB snapshot FAILED (exit code $EXIT_CODE)" >&2
+    exit 1
+fi
+
+exit 0
