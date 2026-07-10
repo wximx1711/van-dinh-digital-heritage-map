@@ -53,16 +53,9 @@ public sealed record HeritageCategoryDto(int CategoryId, string Code, string Nam
 
 /// <summary>Request to create or update a heritage category.</summary>
 public sealed record HeritageCategoryRequest(
-    /// <summary>Category code (unique identifier).</summary>
     [Required, MaxLength(30)] string Code,
-
-    /// <summary>Category name in Vietnamese.</summary>
     [Required, MaxLength(100)] string NameVi,
-
-    /// <summary>Category name in English.</summary>
     [Required, MaxLength(100)] string NameEn,
-
-    /// <summary>URL to category icon image.</summary>
     string? IconUrl);
 
 /// <summary>Heritage image data transfer object.</summary>
