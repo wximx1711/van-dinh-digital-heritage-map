@@ -280,8 +280,13 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const handleDragLeave = (e: React.DragEvent) => { e.preventDefault(); e.stopPropagation(); setDragOver(false); };
 
   const uploadFile = async (file: File) => {
-    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowed.includes(file.type)) { showToast(lang === 'vi' ? 'Chỉ chấp nhận JPG, PNG, WebP' : 'Only JPG, PNG, WebP allowed', 'error'); return; }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    const allowedExts = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'];
+    const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!allowedTypes.includes(file.type) && !allowedExts.includes(ext)) {
+      showToast(lang === 'vi' ? 'Chỉ chấp nhận PNG, JPG, JPEG, WebP, HEIC, HEIF' : 'Only PNG, JPG, JPEG, WebP, HEIC, HEIF allowed', 'error');
+      return;
+    }
     if (file.size > 5 * 1024 * 1024) { showToast(lang === 'vi' ? 'Kích thước tối đa 5MB' : 'Maximum file size is 5MB', 'error'); return; }
     setUploading(true);
     try {
@@ -701,10 +706,10 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                           <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
                         </div>
                       </div>
-                      <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, WebP — tối đa 5MB. Kéo thả hoặc nhấp để chọn.' : 'PNG, JPG, WebP — max 5MB. Drag & drop or click to select.'}</p>
+                      <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB. Kéo thả hoặc nhấp để chọn.' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB. Drag & drop or click to select.'}</p>
                     </div>
                   </div>
-                  <input ref={fileInputRef} type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
+                  <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
                   {formErrors.image && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 4, display: 'block' }}>{formErrors.image}</span>}
                 </div>
 

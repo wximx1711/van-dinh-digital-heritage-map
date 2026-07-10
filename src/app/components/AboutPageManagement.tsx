@@ -201,14 +201,14 @@ export function AboutPageManagement() {
                 }}>
                   <Upload size={14} />
                   {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (lang === 'vi' ? 'Chọn ảnh' : 'Choose Image')}
-                  <input type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleBannerUpload} disabled={uploading} />
+                  <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleBannerUpload} disabled={uploading} />
                 </label>
                 <div onClick={openMediaPicker}
                   style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                   <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
                 </div>
               </div>
-              <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, WebP — tối đa 5MB' : 'PNG, JPG, WebP — max 5MB'}</p>
+              <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB'}</p>
               {bannerImage && (
                 <button onClick={() => setBannerImage('')} style={{
                   marginTop: 6, padding: '4px 10px', borderRadius: 4, border: '1px solid rgba(231,76,60,0.3)',

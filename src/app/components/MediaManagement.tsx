@@ -86,7 +86,7 @@ export function MediaManagement() {
   useEffect(() => { fetchFiles(); }, [fetchFiles]);
 
   const allowedExtensions: Record<string, string[]> = {
-    images: ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp'],
+    images: ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.bmp', '.heic', '.heif'],
     videos: ['.mp4', '.webm', '.mov'],
     documents: ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'],
   };

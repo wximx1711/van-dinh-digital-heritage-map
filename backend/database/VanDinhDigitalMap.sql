@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-10T10:56:46Z
+    GENERATED: 2026-07-10T13:38:49Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -401,7 +401,7 @@ GO
 -- [AboutPageHistories]: 0 rows
 GO
 
--- [ActivityLogs]: 29 rows
+-- [ActivityLogs]: 33 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -432,9 +432,13 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (28, 3, N'CREATE', N'HeritageDocuments', 6, N'h04c50ed4', '2026-07-10T09:11:59.8961951', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (29, 3, N'UPDATE', N'Heritage', 6, N'VĐHN-DT-006', '2026-07-10T09:12:03.6323280', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (30, 3, N'CREATE', N'Heritage', 7, N'VĐHN-DT-007', '2026-07-10T10:22:10.9280097', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (31, 3, N'CREATE', N'Heritage', 8, N'VĐHN-DT-008', '2026-07-10T12:38:11.8103467', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (32, 3, N'UPDATE', N'Heritage', 2, N'VĐHN-DT-002', '2026-07-10T12:58:42.4597001', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (33, 3, N'UPDATE', N'Heritage', 8, N'VĐHN-DT-008', '2026-07-10T13:17:57.3758127', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (34, 3, N'CREATE', N'Heritage', 9, N'VĐHN-DT-009', '2026-07-10T13:30:03.5979816', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 30);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 34);
 GO
 
 -- [HeritageCategories]: 9 rows
@@ -453,7 +457,7 @@ GO
 DBCC CHECKIDENT ([HeritageCategories], RESEED, 9);
 GO
 
--- [Heritage]: 7 rows
+-- [Heritage]: 9 rows
 SET IDENTITY_INSERT [Heritage] ON;
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (1, N'heff617cc', N'VĐHN-DT-001', 2, N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'chùa-ba-chè-bà-chè-bà-trà-tự', N'city', N'active', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', 20.72903680, 105.77182720, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Ba Chè (hoặc Chùa Bà Chè).
@@ -571,7 +575,7 @@ Giai đoạn 1948 – 1950, Trung đoàn 48 thuộc Sư đoàn 320 do ông Phùn
 Năm 1950, di tích bị máy bay thực dân Pháp ném bom và bắn phá dữ dội, chịu tổn thất và hư hỏng nặng. Dù vậy, nơi đây vẫn tiếp tục duy trì làm cơ sở bí mật nuôi giấu cán bộ cách mạng an toàn.
 3. Quy mô kiến trúc nghệ thuật hiện trạng
 Chùa Cao Lãm nằm chung không gian linh thiêng của cụm di tích Đình - Miếu tại trung tâm làng, phía trước hướng ra giếng mắt rồng và cây đa cổ thụ. Mặt bằng công trình gồm có:
-Tam quan: Thiết kế nề ngõa gồm 3 lối đi (Không quan, Trung quan, Giả quan) liên kết bởi hệ thống tường bao đắp nổi hoa văn chữ "Thọ" ($\mathbf{\text{壽}}$). Hai bên cột trụ biểu lớn đắp hình búp sen, soi gờ kẻ chỉ và trang trí cốn ô lồng đèn đề tài Tứ linh. Phía trên đắp biển tên chữ chữ Hán "Diên Khánh Tự" đi kèm hình hổ phù đội lửa tam muội.
+Tam quan: Thiết kế nề ngõa gồm 3 lối đi (Không quan, Trung quan, Giả quan) liên kết bởi hệ thống tường bao đắp nổi hoa văn chữ "Thọ". Hai bên cột trụ biểu lớn đắp hình búp sen, soi gờ kẻ chỉ và trang trí cốn ô lồng đèn đề tài Tứ linh. Phía trên đắp biển tên chữ chữ Hán "Diên Khánh Tự" đi kèm hình hổ phù đội lửa tam muội.
 Tòa Tiền đường: Thiết kế gồm 3 gian 2 chái xây theo lối đầu hồi bít đốc tay ngai nối trụ biểu. Cấu trúc rầm đỡ mái dựa trên 5 hàng chân cột. Điểm độc đáo là hàng cột hiên phía trước được làm hoàn toàn bằng đá xanh nguyên khối, hệ cột cái bằng gỗ lim vuông đặt trên chân tảng đá. Vì kèo làm theo hai kiểu kết hợp: "Thượng chồng rường con nhị, trung kẻ, hạ tiên kẻ hậu bẩy" và "Thượng giá chiêng chồng rường nách, trung cốn chồng rường" trang trí họa tiết chạm thủng hình hoa quý và linh vật.
 Tòa Thượng điện: Là nếp nhà dọc gồm 3 gian bít đốc hồi liên hoàn với Tiền đường tạo thành hình chữ Đinh ($\mathbf{J}$). Vì nóc cấu trúc kiểu giá chiêng con nhị, phía trên các xà ngang gác các cấu kiện chạm thủng đề tài Lưỡng long chầu nhật có công năng mềm mại như hệ thống y môn.
 Nhà Tổ & Nhà Mẫu: Nằm quy hoạch đồng bộ ở phía sau. Đáng chú ý, hạng mục Nhà thờ Tổ được đầu tư xây mới đồng bộ từ nguồn kinh phí xã hội hóa vào tháng 8 năm 2010 với kinh phí 920.233.000 đồng.
@@ -598,7 +602,7 @@ In 1950, the site was heavily bombed and shelled by French colonial aircraft, su
 
 3. Existing Architectural and Artistic Scale
 Cao Lam Pagoda is located within the sacred space of the communal house and temple complex in the center of the village, facing the dragon''s eye well and an ancient banyan tree. The building''s layout includes:
-The Three-Gate Entrance: Designed with three entrances (Empty Gate, Middle Gate, and False Gate) connected by a system of embossed walls with the character "Thọ" (longevity) ($\mathbf{\text{壽}}$). On both sides are large pillars sculpted with lotus bud motifs, grooved edges, and decorative brackets with lantern motifs of the Four Sacred Animals. Above is a plaque in Chinese characters "Diên Khánh Tự" accompanied by a tiger-shaped figure holding a flame of the Threefold Samadhi.
+The Three-Gate Entrance: Designed with three entrances (Empty Gate, Middle Gate, and False Gate) connected by a system of embossed walls with the character "Thọ". On both sides are large pillars sculpted with lotus bud motifs, grooved edges, and decorative brackets with lantern motifs of the Four Sacred Animals. Above is a plaque in Chinese characters "Diên Khánh Tự" accompanied by a tiger-shaped figure holding a flame of the Threefold Samadhi.
 The Front Hall: Designed with three bays and two wings, built in the style of a gable with a closed gable and connected pillars. The roof support structure rests on five rows of columns. A unique feature is that the front porch columns are made entirely of solid green stone, with the main columns made of square ironwood placed on stone bases. The roof trusses are constructed in two combined styles: "Upper truss with secondary beams, middle purlins, lower purlins with front and rear purlins" and "Upper truss with supporting beams, middle purlins with supporting beams," decorated with carved and perforated motifs of precious flowers and mythical creatures.
 
 Upper Hall: A long, continuous building consisting of three bays with gable ends, connected to the front hall to form the shape of the Chinese character ($\mathbf{J}$). The roof structure is of the secondary truss type, with perforated carved elements depicting two dragons worshipping the sun above the crossbeams, serving a soft function similar to a system of decorative panels.
@@ -617,7 +621,7 @@ The boundaries of the protected area II of the temple land (Plot No. 164F): Cove
 
 The overall boundaries of the temple land are: East and West bordering the village road; South bordering plot 164B; North bordering the remaining vacant land of plot 164F.
 
-Any unauthorized excavation of ancient foundations, dismantling of carved wooden brackets or moving the ancient Thieu Tri bell or Tho Ha ceramic incense burner outside the designated corridor of the above plots is strictly prohibited and will be severely punished by law.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'1702', N'xã Vân Đình', N'/api/qr/heritage/h0d0c0cbc', N'https://maps.app.goo.gl/HmaBmvZU9Jpfp2Sk8', 0, NULL, 3, '2026-07-09T13:49:50.2184218', '2026-07-09T13:53:31.1454899');
+Any unauthorized excavation of ancient foundations, dismantling of carved wooden brackets or moving the ancient Thieu Tri bell or Tho Ha ceramic incense burner outside the designated corridor of the above plots is strictly prohibited and will be severely punished by law.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'1702', N'xã Vân Đình', N'/api/qr/heritage/h0d0c0cbc', N'https://maps.app.goo.gl/HmaBmvZU9Jpfp2Sk8', 0, NULL, 3, '2026-07-09T13:49:50.2184218', '2026-07-10T12:58:42.4051349');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (3, N'heba4c83e', N'VĐHN-DT-003', 2, N'CHÙA ĐÔNG DƯƠNG (Thiên Phúc Tự - Vĩnh Thọ Tự)', N'CHÙA ĐÔNG DƯƠNG', N'chùa-đông-dương', N'national', N'active', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', 20.70736230, 105.78912930, N'1. Thông tin hành chính và Xếp hạng di tích
 Tên di tích thống nhất: Chùa Đông Dương.
 Tên chữ qua các thời kỳ:
@@ -1035,9 +1039,142 @@ West: Adjacent to the residential land of Phuong Tu commune.
 South: Adjacent to the safety corridor of the inter-provincial asphalt road (Provincial Road 428).
 
 Prohibited regulations: Absolutely no construction, excavation, or expansion that illegally damages or distorts the ancient concrete and lim wood architectural components or moves statues outside the red boundary of the monument is permitted. The Monument Management Board requests the local authorities to develop a plan to cease using the front hall as a public meeting place to restore the purely spiritual space of the temple.', N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', N'1783', N'xã Vân Đình', N'/api/qr/heritage/hb9071290', N'https://maps.app.goo.gl/WbiEZKKn4kK8dA7X7', 0, NULL, 3, '2026-07-10T10:22:10.8893110', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (8, N'h76d93626', N'VĐHN-DT-008', 2, N'CHÙA PHÍ TRẠCH (Thái Dương Tự)', N'CHÙA PHÍ TRẠCH', N'chùa-phí-trạch', N'city', N'active', N'Vân Đình, Hà Nội, Việt Nam', N'Vân Đình, Hà Nội, Việt Nam', 20.73271540, 105.79618260, N'1. Thông tin hành chính & Xếp hạng
+Tên di tích: Chùa Phí Trạch.
+Tên chữ: Thái Dương Tự (Thái Dương theo nghĩa Hán tự là luồng ánh sáng, biểu thị cho ánh sáng của Phật pháp và sự giác ngộ).
+Địa điểm: Thôn Phí Trạch, xã Phương Tú, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội). (Vào đầu thế kỷ XIX, vùng đất này thuộc tổng Đạo Tú, huyện Sơn Minh, phủ Ứng Thiên).
+Loại hình di tích: Kiến trúc tôn giáo dạng chùa.
+Cấp xếp hạng: Được Ủy ban nhân dân tỉnh Hà Tây ban hành Quyết định số 983-QĐ/UB ngày 23/08/2000 công nhận và xếp hạng là Di tích lịch sử - văn hóa cấp Tỉnh.', N'1. Administrative Information & Ranking
+Name of the monument: Phi Trach Pagoda.
+
+Name in Chinese characters: Thai Duong Tu (Thai Duong in Chinese means a stream of light, symbolizing the light of Buddhist teachings and enlightenment).
+
+Location: Phi Trach village, Phuong Tu commune, Ung Hoa district, Ha Tay province (now part of Hanoi city). (In the early 19th century, this area belonged to Dao Tu commune, Son Minh district, Ung Thien prefecture).
+
+Type of monument: Religious architecture in the form of a pagoda.
+Ranking level: Recognized and ranked as a Provincial-level historical and cultural monument by Decision No. 983-QD/UB dated August 23, 2000, issued by the People''s Committee of Ha Tay province.', N'2. Giá trị lịch sử văn hóa & Niên đại
+Lịch sử khởi dựng: Dựa trên các vết tích vật chất thu thập được như hệ thống đá tảng xanh kê chân cột chạm nổi hoa sen, gạch hòm sớ và gạch hoa chanh, di tích được xác định có quy mô rất lớn và có niên đại thâm niên ít nhất từ thời Lê - Mạc (thế kỷ XV - XVI). Trải qua các thế kỷ tiếp theo, công trình liên tục được nhân dân Phí Trạch tu bổ, tôn tạo.
+Ý nghĩa tín ngưỡng: Chùa là nơi thờ Phật theo phái Đại Thừa nhằm đáp ứng nhu cầu tôn giáo, sinh hoạt văn hóa tâm linh lành mạnh cho cư dân địa phương và các vùng phụ cận. Giáo lý hướng con người đến tư tưởng từ bi, khuyến thiện, trừng ác và giáo dục lòng nhân nghĩa.
+3. Quy mô kết cấu và Khảo tả kiến trúc
+Chùa tọa lạc trên khuôn viên cao ráo, rộng rãi ở trung tâm làng, ẩn mình dưới bóng các cây cổ thụ và hệ thống vườn tháp. Mặt bằng các hạng mục chính bao gồm:
+Cổng chùa (Tam quan): Thiết kế giản đơn, phía trên đề bốn chữ đại tự "Thái Dương Tự môn". Qua cổng là đường đi lát gạch vuông dẫn vào khoảng sân trước được bài trí hòn non bộ và cây cảnh trang nhã.
+Tòa Tiền đường (Bái đường): Xây dựng nền cao qua 3 bậc tam cấp theo lối đầu hồi bít đốc tay ngai, mặt trước có 2 cột trụ vuông đắp đèn lồng. Hai mái lợp ngói ri cổ, hai bên tường hồi trổ ô cửa sổ đắp nổi chữ "Thọ". Hệ khung gỗ lim chắc chắn chịu lực trên các hàng chân cột xẻ vuông, kết cấu vì kèo làm kiểu "Giá chiêng con Nhị". Các bức cốn chạm nổi, sơn khắc đề tài "Tứ quý hóa long" (mai, trúc, cúc, thông hóa rồng) trên nền phủ màu đen huyền xảo diệu.
+Tòa Thượng điện: Nối liền với tòa Tiền đường theo cấu trúc dạng chữ Đinh ($\mathbf{J}$) khép kín. Kết cấu gồm 3 gian vững chãi, hệ thống bệ thờ xây 5 bậc dật cấp thoải dần từ trên xuống giúp các lớp tượng pháp được bài trí trang nghiêm, tôn kính, không bị che khuất tầm nhìn từ dưới lên.
+Các công trình phụ trợ: Mặt bằng khu đất nội tự còn quy hoạch đồng bộ dãy Nhà Mẫu (kiến trúc bít đốc ngang) và dãy Nhà Khách chạy dọc song song tạo sự bề thế.
+4. Hệ thống cổ vật, tự khí và Tượng pháp
+Hệ thống di vật tại di tích phong phú, được lưu giữ bảo quản cẩn thận, nổi bật gồm có:
+Hệ thống tượng tròn (20 pho bằng gỗ thời Nguyễn):
+Tòa Tiền đường: Bài trí cặp tượng Hộ Pháp Khuyến Thiện (canh giữ bên phải) và Trừng Ác (bên trái) đắp đất cao lớn gần 3m. Kế cạnh đặt tượng Đức Chúa (Đức Ông - ngài Cấp Cô Độc quan văn tay cầm bút lông và cuốn sách, triều phục sơn son thếp vàng liền khối) và tượng Thánh Hiền đối xứng.
+Tòa Thượng điện: Tầng cao nhất là 3 pho Tam Thế Phật bằng gỗ ngồi tọa thiền trên đài sen mãn khai chạm nổi 5 lớp cánh hoa đơn dầy. Tầng hai là pho tượng A Di Đà sơn son thếp vàng lớn nhất chùa (cao 1,15m, ngực không khắc chữ Vạn) kề cận tượng Quan Âm và Thế Chí Bồ tát đội mũ kim phật. Tầng ba là pho Quan Âm Nam Hải độc đáo ngồi tọa thiền kết ấn tam muội trên đài sen, phía dưới bệ có hình tượng con quỷ dữ màu xám đang nâng đài sen vượt sóng phò trợ, hai bên có tượng Kim Đồng và Ngọc Nữ đứng hầu. Tầng bốn là Tòa Cửu Long điêu khắc rồng phun nước tắm cho Thích Ca sơ sinh cùng 29 pho tượng tiên đồng, tiên nữ nhỏ bao quanh chào đón đức Phật.
+Di vật chất liệu giấy và kim loại: 01 quả chuông đồng cổ đúc năm Duy Tân thứ 3 (1909), quai chuông hình đôi rồng mập khỏe đấu lưng gánh sức nặng, thân chuông đúc nổi gờ triện gấm và 4 núm đánh khắc ghi bài Minh ca ngợi công đức.
+Hiện vật bằng đá và sành sứ: 01 tấm bia đá biên niên sử di tích, 02 pho tượng voi đá cổ, 02 chiếc bát hương chạm bằng đá; kết hợp 03 chiếc bát hương sứ vẽ lam, 02 cây nến gỗ, 02 ống cắm hoa chạm khắc.
+Dấu ấn kiến trúc cổ còn lại: Các chân cột cái bằng đá tảng xanh thời Lê chạm 3 lớp cánh sen tinh xảo, các viên gạch hòm sớ xây tường kích thước lớn in nổi hình chim phượng và 04 viên gạch cổ hình hoa chanh vuông (kích thước 26cm).
+5. Chỉ giới hành chính khoanh vùng bảo vệ di tích
+Căn cứ theo bản đồ giải thửa vẽ năm 1985 (Tờ số 01, tỷ lệ 1/1000) và biên bản thống nhất liên ngành ngày 12/05/2000, ranh giới địa chính của di tích được phân định khép kín cho Khu vực bảo vệ I (Vùng bất khả xâm phạm) như sau:
+Diện tích đất cốt lõi: Tổng diện tích đạt 3.707 $m^2$, nằm trên hai thửa đất ký hiệu số 239 và 241.
+Ranh giới tiếp giáp:
+Phía Đông: Tiếp giáp trực tiếp với trục Đường xóm.
+Phía Tây: Tiếp giáp với thửa ruộng giải thửa số 358.
+Phía Nam: Tiếp giáp trực tiếp với khu vực đất ruộng canh tác.
+Phía Bắc: Tiếp giáp với hai thửa đất số 358 và thửa số 236.
+Mọi hành vi đào bới, tháo dỡ cấu kiện kiến trúc gốc, lấn chiếm hoặc tự ý di chuyển cổ vật, tượng pháp ra khỏi hành lang hai thửa đất trên đều bị nghiêm cấm và xử lý nghiêm khắc theo luật định', N'2. Historical and Cultural Value & Dating
+History of Construction: Based on collected material evidence such as the system of blue stone pillars supporting columns carved with lotus motifs, bricks used for prayer boxes, and lime-colored bricks, the site is determined to be very large in scale and dates back at least to the Le-Mac period (15th-16th centuries). Over the following centuries, the structure was continuously restored and renovated by the people of Phi Trach.
+
+Religious Significance: The pagoda is a place of worship for Mahayana Buddhism, meeting the religious needs and providing a healthy spiritual and cultural life for local residents and surrounding areas. Its teachings guide people towards compassion, encouraging good deeds, punishing evil, and fostering humanity and righteousness.
+
+3. Scale, Structure, and Architectural Description
+The pagoda is located on a high, spacious plot in the center of the village, nestled under the shade of ancient trees and a system of pagoda gardens. The main structures include:
+The temple gate (Tam Quan): Simple design, with four large characters "Thai Duong Tu Mon" (Thai Duong Temple Gate) above. Beyond the gate is a paved path leading to a front courtyard adorned with a rockery and elegant plants.
+The front hall (Bai Duong): Built on a raised platform with three steps, following the gable-end design with two square pillars adorned with lanterns. The two roofs are covered with traditional tiles, and the gable walls feature windows with embossed "Longevity" characters. The sturdy wooden frame is supported by rows of square-cut columns, and the truss structure is of the "Chieng Nhang Con Nhi" style. The brackets are carved and painted with the "Four Seasons Transforming into Dragons" motif (plum, bamboo, chrysanthemum, pine transforming into dragons) on a dark black background.
+The upper hall: Connected to the front hall in a closed, T-shaped structure ($\mathbf{J}$). The structure consists of three sturdy bays, with a five-tiered, gradually sloping altar system that allows the statues to be arranged solemnly and respectfully, without obstructing the view from below.
+
+Auxiliary structures: The inner courtyard also features a planned row of Mother Houses (with a horizontal gable) and a row of Guest Houses running parallel to each other, creating a grand appearance.
+
+4. System of Ancient Artifacts, Religious Objects, and Statues
+The system of artifacts at the site is rich and carefully preserved, notably including:
+A system of round statues (20 wooden statues from the Nguyen Dynasty):
+Front Hall: Arranged are a pair of large, nearly 3-meter-tall clay statues of the Guardian Deities, one for Encouraging Goodness and the other for Punishing Evil. Next to them are statues of the Lord (Lord - the scholar Cấp Cô Độc holding a brush and a book, wearing a solid gold-plated robe) and symmetrical statues of the Sages.
+
+The Main Hall: The highest level features three wooden statues of the Three Buddhas seated in meditation on lotus pedestals, each with five layers of thick, single-petaled carvings. The second level houses the largest gilded statue of Amitabha Buddha (1.15m tall, with no swastika symbol carved on the chest), alongside statues of Avalokiteshvara and Mahasthamaprapta Bodhisattvas wearing golden Buddha crowns. The third level features a unique statue of Avalokiteshvara of the South Sea seated in meditation with the Samadhi mudra on a lotus pedestal. Below the pedestal is a gray demon figure supporting the lotus pedestal as it crosses the waves, flanked by statues of the Golden Boy and Jade Girl. The fourth level is the Nine Dragons Hall, sculpted with dragons spraying water to bathe the newborn Buddha, surrounded by 29 smaller statues of celestial boys and girls welcoming the Buddha.
+
+Artifacts made of paper and metal: One ancient bronze bell cast in the 3rd year of the Duy Tan era (1909). The bell''s handle is shaped like a pair of strong, muscular dragons supporting the weight, the bell body is cast with embossed brocade patterns, and the four striking knobs are inscribed with a hymn praising the Buddha''s virtues.
+Stone and ceramic artifacts: 1 stone stele chronicling the site, 2 ancient stone elephant statues, 2 stone incense burners; combined with 3 blue-painted porcelain incense burners, 2 wooden candlesticks, and 2 carved flower vases.
+
+Remaining ancient architectural features: Main column bases made of blue stone from the Le Dynasty, intricately carved with three layers of lotus petals; large bricks used for wall construction, embossed with phoenix motifs; and 4 ancient square lime blossom-shaped bricks (26cm in size).
+
+5. Administrative Boundaries for the Protection of the Monument
+Based on the 1985 cadastral map (Sheet No. 01, scale 1/1000) and the inter-agency agreement dated May 12, 2000, the cadastral boundaries of the monument are defined as follows for Protection Zone I (Inviolable Zone):
+Core land area: Total area of ​​3,707 m², located on two plots of land designated No. 239 and 241.
+Adjacent boundaries:
+East: Directly adjacent to the village road.
+
+West: Adjacent to the rice field plot No. 358.
+
+South: Directly adjacent to the cultivated rice field area.
+North: Adjacent to land plots No. 358 and No. 236.
+Any act of digging, dismantling original architectural components, encroaching on or arbitrarily moving artifacts and statues out of the corridor of the two land plots above is strictly prohibited and will be severely punished according to the law.', N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', N'1550', N'xã Vân Đình', N'/api/qr/heritage/h76d93626', N'https://maps.app.goo.gl/QTiDP7No4TGu7L2k8', 0, NULL, 3, '2026-07-10T12:38:11.4117215', '2026-07-10T13:17:57.2603546');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (9, N'hfbb0c594', N'VĐHN-DT-009', 2, N'CHÙA TẢO KHÊ (SÙNG LINH TỰ)', N'CHÙA TẢO KHÊ (SÙNG LINH TỰ)', N'chùa-tảo-khê-sùng-linh-tự', N'city', N'active', N'PQ7H+MXF, Vân Đình, Hà Nội, Việt Nam', N'PQ7H+MXF, Vân Đình, Hà Nội, Việt Nam', 20.71334920, 105.78105570, N'1. Thông tin chung
+Tên di tích: Chùa Tảo Khê.
+Tên chữ: Sùng Linh Tự.
+Địa điểm: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội.
+Xếp hạng: Được UBND tỉnh Hà Tây ra Quyết định số 38/QĐ-UB ngày 13/01/2000 về việc bảo vệ di tích.', N'1. General Information
+Name of the monument: Tao Khe Pagoda.
+Name in Chinese characters: Sung Linh Tu.
+Location: Tao Khe village, Tao Duong Van commune, Ung Hoa district, Hanoi city.
+Classification: Recognized by Decision No. 38/QD-UB dated January 13, 2000, of the People''s Committee of Ha Tay province regarding the protection of the monument.', N'2. Giá trị lịch sử, văn hóa và cách mạng
+Thờ phụng: Chùa thờ Phật theo phái Đại Thừa. Hệ thống tượng Phật tại chùa bao gồm các bộ tượng: Tam Thế Phật, Adiđà, Quan Âm Thiên Thủ Thiên Nhãn, tượng Ngọc Hoàng, Nam Tào, Bắc Đẩu và tòa Cửu Long.
+Sự kiện lịch sử:
+Chùa là cơ sở cách mạng quan trọng trong thời kỳ tiền khởi nghĩa năm 1945 và kháng chiến chống Pháp.
+Đây là nơi các đồng chí lãnh đạo cao cấp của Đảng như Hoàng Quốc Việt (Bí thư Xứ ủy Bắc Kỳ) đã về hoạt động, tổ chức nhiều cuộc họp quan trọng, mở lớp huấn luyện cán bộ chống khủng bố vào tháng 7 năm 1942.
+Tại gian Thượng điện của chùa vẫn còn lưu giữ dấu tích hầm bí mật nơi cán bộ cách mạng từng ẩn náu.
+3. Đặc điểm kiến trúc
+Bố cục: Chùa có kiến trúc kiểu chữ "Đinh" ($J$) gồm tòa Tiền đường và Thượng điện.
+Kiến trúc Tiền đường: Gồm 5 gian, 2 chái, tường xây hồi bít đốc, 4 hàng chân cột, vì kèo kết cấu kiểu "Thượng giá chiêng chồng rường, hạ chồng rường".
+Kiến trúc Thượng điện: Kết cấu nhà dọc 3 gian, phía dưới xây gạch giật cấp cao dần về phía sau để bài trí hệ thống tượng Phật.
+4. Hiện vật và Cổ vật tiêu biểu Chùa lưu giữ hệ thống di vật có giá trị nghệ thuật cao:
+Di vật kim loại: 01 quả chuông đồng (cao 0,8m, đúc năm Thành Thái thứ 19 - 1907).
+Di vật gỗ: Hệ thống tượng Phật (Tam Thế, Adiđà, Quan Âm Chuẩn Đề, Cửu Long, Đức Ông, Thánh Tăng...), hoành phi, câu đối, cửa võng, long ngai, bài vị, hòm sắc.
+Di vật gốm sứ: Hệ thống bát hương gốm (đặc biệt có bát hương gốm Thổ Hà), choé sứ cổ.
+Di văn Hán Nôm: 01 tấm bia đá do Tiến sĩ Dương Lâm chấp bút.
+5. Khoanh vùng bảo vệ di tích
+Căn cứ biên bản khoanh vùng ngày 15/09/1998, khu vực bảo vệ di tích được xác định như sau:
+Khu vực I (Khu vực bất khả xâm phạm): Tổng diện tích 6.336 $m^2$ (bao gồm toàn bộ công trình di tích, sân, vườn).
+Phía Đông: Giáp các thửa đất số 289, 286 và 290.
+Phía Tây: Giáp đất canh tác ruộng 5%.
+Phía Nam: Giáp đường làng.
+Phía Bắc: Giáp đất canh tác ruộng 5%.
+Mọi hoạt động xây dựng, di chuyển, thay đổi nguyên trạng trong khu vực I đều bị nghiêm cấm.', N'2. Historical, Cultural, and Revolutionary Value
+
+Worship: The pagoda is dedicated to Mahayana Buddhism. The system of Buddha statues includes: the Three Buddhas, Amitabha, Thousand-Handed and Thousand-Eyed Avalokiteshvara, the Jade Emperor, Nam Tao, Bac Dau, and the Nine Dragons altar.
+
+Historical Events:
+The pagoda was an important revolutionary base during the pre-1945 uprising and the resistance against the French.
+
+This was where high-ranking Party leaders such as Hoang Quoc Viet (Secretary of the Northern Regional Party Committee) operated, held many important meetings, and conducted counter-terrorism training in July 1942.
+The pagoda''s main hall still preserves traces of a secret tunnel where revolutionary cadres once hid.
+
+3. Architectural Features
+Layout: The pagoda has a "J" shaped architecture, consisting of a front hall and a main hall.
+
+Front Hall Architecture: Consists of 5 bays and 2 side wings, with gable walls, 4 rows of columns, and a truss structure of "upper beam and lower beam overlapping".
+
+Upper Hall Architecture: A three-bay longitudinal structure, with the lower part built in stepped brickwork, gradually rising towards the back to accommodate the system of Buddha statues.
+
+4. Representative Artifacts and Antiquities: The pagoda preserves a system of artifacts of high artistic value:
+Metal artifacts: 1 bronze bell (0.8m high, cast in the 19th year of the reign of Emperor Thành Thái - 1907).
+Wooden artifacts: A system of Buddha statues (Three Worlds, Amitabha, Avalokiteshvara, Nine Dragons, Đức Ông, Holy Monks...), horizontal plaques, couplets, arched doorways, dragon thrones, ancestral tablets, and ceremonial chests.
+Ceramic artifacts: A system of ceramic incense burners (especially a Thổ Hà ceramic incense burner), and ancient porcelain jars.
+Han Nom inscriptions: 1 stone stele inscribed by Doctor Dương Lâm. 5. Delineation of the Monument Protection Zone
+Based on the delineation record dated September 15, 1998, the monument protection zone is defined as follows:
+Zone I (Inviolable Zone): Total area of ​​6,336 m² (including all monument structures, courtyards, and gardens).
+East: Bordering land plots No. 289, 286, and 290.
+West: Bordering 5% of cultivated rice fields.
+South: Bordering the village road.
+North: Bordering 5% of cultivated rice fields.
+All construction, relocation, and alteration of the original state within Zone I are strictly prohibited.', N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', N'1907', N'xã Vân Đình', N'/api/qr/heritage/hfbb0c594', N'https://maps.app.goo.gl/m96Ff3JykPDEiWiy9', 0, NULL, 3, '2026-07-10T13:30:03.4922582', NULL);
 SET IDENTITY_INSERT [Heritage] OFF;
 GO
-DBCC CHECKIDENT ([Heritage], RESEED, 7);
+DBCC CHECKIDENT ([Heritage], RESEED, 9);
 GO
 
 -- [HeritageDocuments]: 6 rows
@@ -1053,7 +1190,7 @@ GO
 DBCC CHECKIDENT ([HeritageDocuments], RESEED, 6);
 GO
 
--- [HeritageImages]: 69 rows
+-- [HeritageImages]: 71 rows
 SET IDENTITY_INSERT [HeritageImages] ON;
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (1, 1, N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', NULL, 1, '2026-07-09T13:35:05.3147378');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (2, 1, N'/uploads/images/532b8cf854bf4208ab48161ce7439a60.jpg', NULL, 2, '2026-07-09T13:35:05.4034413');
@@ -1124,9 +1261,11 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (67, 6, N'/uploads/images/31cad23b91c3457d81873fdb885f3e9d.jpg', NULL, 6, '2026-07-10T09:12:03.6239044');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (68, 6, N'/uploads/images/2196c0824eaf48048394e970efc55c92.jpg', NULL, 7, '2026-07-10T09:12:03.6265323');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (69, 7, N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', NULL, 1, '2026-07-10T10:22:10.9088243');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (71, 8, N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', NULL, 1, '2026-07-10T13:17:57.3297938');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (72, 9, N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', NULL, 1, '2026-07-10T13:30:03.5812226');
 SET IDENTITY_INSERT [HeritageImages] OFF;
 GO
-DBCC CHECKIDENT ([HeritageImages], RESEED, 69);
+DBCC CHECKIDENT ([HeritageImages], RESEED, 72);
 GO
 
 -- [HeritageVideos]: 0 rows
@@ -1135,7 +1274,7 @@ GO
 -- [IntangibleHeritage]: 0 rows
 GO
 
--- [MediaFiles]: 75 rows
+-- [MediaFiles]: 76 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -1212,9 +1351,10 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (75, N'/uploads/images/b98d53d20e9443629e8aefb1c7bddbe4.jpg', N'IMG_1348.JPG', 564259, N'image', '2026-07-10T09:11:25.9774614');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (76, N'/uploads/documents/481851a09845409bb220e6554e9644ae.pdf', N'Lý lịch.pdf', 4734778, N'document', '2026-07-10T09:11:59.8850734');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (77, N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', N'IMG_5439.JPG', 3160408, N'image', '2026-07-10T10:21:53.8330259');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (78, N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', N'IMG_1918.HEIC', 2060111, N'image', '2026-07-10T13:17:43.8846581');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 77);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 78);
 GO
 
 -- [MonthlyUpdates]: 0 rows

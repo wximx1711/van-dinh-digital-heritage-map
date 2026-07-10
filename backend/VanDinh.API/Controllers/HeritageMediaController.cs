@@ -51,7 +51,7 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
     {
         try
         {
-            var result = await uploads.SaveAsync(file, "images", [".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"], 5 * 1024 * 1024, cancellationToken);
+            var result = await uploads.SaveAsync(file, "images", [".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".heic", ".heif"], 5 * 1024 * 1024, cancellationToken);
             TrackMediaFile(result, "images");
             var image = repository.AddImage(heritageId, new HeritageImage { ImageUrl = result.Url, Caption = caption, SortOrder = 100 });
             logs.Log(User, "CREATE", "HeritageImages", image.ImageId, heritageId);

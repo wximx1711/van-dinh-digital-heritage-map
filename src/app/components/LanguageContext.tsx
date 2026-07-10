@@ -172,7 +172,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'im.created': { vi: 'Ngày tạo', en: 'Created Date' },
   'im.updated': { vi: 'Cập nhật', en: 'Last Updated' },
   'im.upload': { vi: 'Tải ảnh lên', en: 'Upload Image' },
-  'im.upload_hint': { vi: 'PNG, JPG, WebP — tối đa 5MB', en: 'PNG, JPG, WebP — max 5MB' },
+  'im.upload_hint': { vi: 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB', en: 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB' },
   'im.upload_btn': { vi: 'Chọn ảnh', en: 'Choose Image' },
   'im.replace_image': { vi: 'Thay đổi ảnh', en: 'Replace Image' },
   'im.no_image': { vi: 'Chưa có ảnh', en: 'No image yet' },

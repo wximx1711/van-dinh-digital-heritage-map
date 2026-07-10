@@ -1,3 +1,4 @@
+using ImageMagick;
 using VanDinh.API.DTOs;
 
 namespace VanDinh.API.Services;
@@ -30,6 +31,29 @@ public sealed class UploadService(IWebHostEnvironment environment, ILogger<Uploa
         var dirExists = Directory.Exists(targetDir);
         Directory.CreateDirectory(targetDir);
         log.LogInformation("created directory (or already existed): existedBefore={Existed}", dirExists);
+
+        // Convert HEIC/HEIF to JPEG on the server
+        if (extension is ".heic" or ".heif")
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream, cancellationToken);
+            memoryStream.Position = 0;
+
+            using var image = new MagickImage(memoryStream);
+            image.Format = MagickFormat.Jpeg;
+            image.Quality = 92;
+
+            var jpgName = $"{Guid.NewGuid():N}.jpg";
+            var jpgPath = Path.Combine(targetDir, jpgName);
+            await image.WriteAsync(jpgPath, cancellationToken);
+            log.LogInformation("HEIC/HEIF converted to JPEG, saved filename: {Name}", jpgName);
+
+            var jpgUrl = $"/uploads/{folder}/{jpgName}".Replace("\\", "/");
+            var fileInfo = new FileInfo(jpgPath);
+            var jpgResult = new UploadResult(jpgUrl, file.FileName, fileInfo.Length);
+            log.LogInformation("returned UploadResult: Url={Url}, FileName={Name}, Size={Size}", jpgResult.Url, jpgResult.FileName, jpgResult.Size);
+            return jpgResult;
+        }
 
         var safeName = $"{Guid.NewGuid():N}{extension}";
         var path = Path.Combine(targetDir, safeName);

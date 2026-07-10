@@ -155,8 +155,13 @@ export function IntangibleManagement() {
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const allowed = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowed.includes(file.type)) { showToast(lang === 'vi' ? 'Chỉ chấp nhận JPG, PNG, WebP' : 'Only JPG, PNG, WebP allowed', 'error'); return; }
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+    const allowedExts = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif'];
+    const ext = '.' + file.name.split('.').pop()?.toLowerCase();
+    if (!allowedTypes.includes(file.type) && !allowedExts.includes(ext)) {
+      showToast(lang === 'vi' ? 'Chỉ chấp nhận PNG, JPG, JPEG, WebP, HEIC, HEIF' : 'Only PNG, JPG, JPEG, WebP, HEIC, HEIF allowed', 'error');
+      return;
+    }
     if (file.size > 5 * 1024 * 1024) { showToast(lang === 'vi' ? 'Kích thước tối đa 5MB' : 'Maximum file size is 5MB', 'error'); return; }
     setUploading(true);
     try {
@@ -402,7 +407,7 @@ export function IntangibleManagement() {
                         <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1 }}>
                           <Upload size={14} />
                           {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (editItem.image ? t('im.replace_image') : t('im.upload_btn'))}
-                          <input type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
+                          <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
                         </label>
                         <div onClick={() => openMediaPicker('thumbnail')}
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
