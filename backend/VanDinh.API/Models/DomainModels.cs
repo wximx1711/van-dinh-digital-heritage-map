@@ -132,9 +132,7 @@ public sealed class IntangibleHeritage
     public string NameEn { get; set; } = "";
     [Required, MaxLength(30)]
     public string Category { get; set; } = "";
-    [Required]
     public string? DescriptionVi { get; set; }
-    [Required]
     public string? DescriptionEn { get; set; }
     public string? ImageUrl { get; set; }
     public string? VideoUrl { get; set; }
@@ -202,17 +200,17 @@ public sealed class AboutPage
 {
     public int AboutId { get; set; }
     [Required, StringLength(200, MinimumLength = 5)]
-    public string? TitleVi { get; set; }
+    public string TitleVi { get; set; } = "";
     [Required, StringLength(200, MinimumLength = 5)]
-    public string? TitleEn { get; set; }
+    public string TitleEn { get; set; } = "";
     [Required]
-    public string? IntroductionVi { get; set; }
+    public string IntroductionVi { get; set; } = "";
     [Required]
-    public string? IntroductionEn { get; set; }
+    public string IntroductionEn { get; set; } = "";
     [Required]
-    public string? MainContentVi { get; set; }
+    public string MainContentVi { get; set; } = "";
     [Required]
-    public string? MainContentEn { get; set; }
+    public string MainContentEn { get; set; } = "";
     public string? BannerImage { get; set; }
     public string? ContactInfo { get; set; }
     public long UpdatedBy { get; set; }

@@ -65,12 +65,12 @@ public sealed class AboutController(IAppRepository repository, IActivityLogServi
             repository.AddAboutPageHistory(history);
         }
 
-        about.TitleVi = request.TitleVi?.Trim();
-        about.TitleEn = request.TitleEn?.Trim();
-        about.IntroductionVi = request.IntroductionVi?.Trim();
-        about.IntroductionEn = request.IntroductionEn?.Trim();
-        about.MainContentVi = request.MainContentVi?.Trim();
-        about.MainContentEn = request.MainContentEn?.Trim();
+        about.TitleVi = request.TitleVi.Trim();
+        about.TitleEn = request.TitleEn.Trim();
+        about.IntroductionVi = request.IntroductionVi.Trim();
+        about.IntroductionEn = request.IntroductionEn.Trim();
+        about.MainContentVi = request.MainContentVi.Trim();
+        about.MainContentEn = request.MainContentEn.Trim();
         about.BannerImage = request.BannerImage;
         about.ContactInfo = request.ContactInfo;
         about.UpdatedBy = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);

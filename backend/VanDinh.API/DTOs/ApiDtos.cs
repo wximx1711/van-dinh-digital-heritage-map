@@ -250,23 +250,23 @@ public sealed record AboutPageHistoryDto(
 /// <summary>About page data transfer object.</summary>
 public sealed record AboutPageDto(
     int AboutId,
-    string? TitleVi,
-    string? TitleEn,
-    string? IntroductionVi,
-    string? IntroductionEn,
-    string? MainContentVi,
-    string? MainContentEn,
+    string TitleVi,
+    string TitleEn,
+    string IntroductionVi,
+    string IntroductionEn,
+    string MainContentVi,
+    string MainContentEn,
     string? BannerImage,
     string? ContactInfo,
     DateTime UpdatedAt);
 
 public sealed record AboutPageRequest(
-    [Required, StringLength(200, MinimumLength = 5)] string? TitleVi,
-    [Required, StringLength(200, MinimumLength = 5)] string? TitleEn,
-    [Required] string? IntroductionVi,
-    [Required] string? IntroductionEn,
-    [Required] string? MainContentVi,
-    [Required] string? MainContentEn,
+    [Required, StringLength(200, MinimumLength = 5)] string TitleVi,
+    [Required, StringLength(200, MinimumLength = 5)] string TitleEn,
+    [Required] string IntroductionVi,
+    [Required] string IntroductionEn,
+    [Required] string MainContentVi,
+    [Required] string MainContentEn,
     string? BannerImage,
     string? ContactInfo);
 

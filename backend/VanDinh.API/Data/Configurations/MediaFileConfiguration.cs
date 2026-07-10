@@ -12,7 +12,7 @@ public sealed class MediaFileConfiguration : IEntityTypeConfiguration<MediaFile>
         builder.HasKey(x => x.MediaFileId);
         builder.Property(x => x.MediaFileId).ValueGeneratedOnAdd();
         builder.Property(x => x.Url).HasColumnType("nvarchar(500)").IsRequired();
-        builder.Property(x => x.FileName).HasColumnType("nvarchar(255)");
+        builder.Property(x => x.FileName).HasColumnType("nvarchar(255)").IsRequired();
         builder.Property(x => x.FileSize).HasColumnType("bigint");
         builder.Property(x => x.MediaType).HasColumnType("nvarchar(20)").IsRequired();
         builder.Property(x => x.UploadedAt).HasColumnType("datetime2").HasDefaultValueSql("SYSUTCDATETIME()");
