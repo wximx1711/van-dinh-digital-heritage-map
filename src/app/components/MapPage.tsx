@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useTypeLabels, useClassificationLabels } from '../../presentation/hooks/useHeritageData';
 import { useHeritageMapMarkers } from '../../presentation/hooks/useHeritageMapMarkers';
-import { haversineDistance } from '../utils/geo';
+import { haversineDistance, openGoogleMapsDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { CategoryLegend } from './CategoryLegend';
@@ -116,9 +116,6 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
-  const [directionsResult, setDirectionsResult] = useState<google.maps.DirectionsResult | null>(null);
-  const [routeLoading, setRouteLoading] = useState(false);
-  const [routeError, setRouteError] = useState<string | null>(null);
   const mountedRef = useRef(true);
   const langRef = useRef(lang);
   langRef.current = lang;
@@ -229,44 +226,10 @@ export function MapPage({ onNavigate }: MapPageProps) {
   }, []);
 
   const handleGetDirections = useCallback((siteId: string) => {
-    if (!userLocation) {
-      setRouteError(
-        langRef.current === 'vi'
-          ? 'Vui lòng bật định vị để xem chỉ đường'
-          : 'Please enable location to get directions',
-      );
-      return;
-    }
     const site = siteMap.get(siteId);
-    if (!site || site.lat === null || site.lon === null) return;
-
-    setRouteLoading(true);
-    setRouteError(null);
-    setDirectionsResult(null);
-
-    const directionsService = new google.maps.DirectionsService();
-    directionsService.route(
-      {
-        origin: userLocation,
-        destination: { lat: site.lat, lng: site.lon },
-        travelMode: google.maps.TravelMode.DRIVING,
-      },
-      (result, status) => {
-        if (!mountedRef.current) return;
-        setRouteLoading(false);
-        if (status === google.maps.DirectionsStatus.OK && result) {
-          setDirectionsResult(result);
-        } else {
-          setRouteError(langRef.current === 'vi' ? 'Không thể tính toán lộ trình' : 'Could not calculate route');
-        }
-      },
-    );
-  }, [userLocation, siteMap]);
-
-  const handleClearRoute = useCallback(() => {
-    setDirectionsResult(null);
-    setRouteError(null);
-  }, []);
+    if (!site) return;
+    openGoogleMapsDirections(site.lat, site.lon);
+  }, [siteMap]);
 
   const visibleSites = useMemo(
     () => heritageSites.filter(s => filteredSiteIds.has(s.id)),
@@ -332,24 +295,22 @@ export function MapPage({ onNavigate }: MapPageProps) {
           <div style={{ display: 'flex', gap: 6 }}>
             <button
               onClick={() => handleGetDirections(site.id)}
-              disabled={!userLocation || routeLoading}
-              title={!userLocation
-                ? (lang === 'vi' ? 'Cần bật định vị' : 'Location required')
+              disabled={site.lat === null || site.lon === null}
+              title={site.lat === null || site.lon === null
+                ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates')
                 : (lang === 'vi' ? 'Chỉ đường' : 'Directions')}
               style={{
                 flex: 1, padding: '8px 10px', borderRadius: 6,
                 border: '1px solid #D4A017',
-                background: userLocation ? 'rgba(212,160,23,0.05)' : '#F0F4F8',
-                color: userLocation ? '#B8860B' : '#cbced4',
+                background: site.lat !== null && site.lon !== null ? 'rgba(212,160,23,0.05)' : '#F0F4F8',
+                color: site.lat !== null && site.lon !== null ? '#B8860B' : '#cbced4',
                 fontSize: 12, fontWeight: 600,
-                cursor: userLocation && !routeLoading ? 'pointer' : 'not-allowed',
+                cursor: site.lat !== null && site.lon !== null ? 'pointer' : 'not-allowed',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
               }}
             >
               <Navigation size={12} />
-              {routeLoading
-                ? (lang === 'vi' ? 'Đang tính...' : 'Calculating...')
-                : (lang === 'vi' ? 'Chỉ đường' : 'Directions')}
+              {lang === 'vi' ? 'Chỉ đường' : 'Directions'}
             </button>
             <button
               onClick={() => handleViewDetails(site.id)}
@@ -375,7 +336,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
         </div>
       );
     },
-    [siteMap, typeLabels, lang, t, handleViewDetails, handleGetDirections, userLocation, routeLoading],
+    [siteMap, typeLabels, lang, t, handleViewDetails, handleGetDirections],
   );
 
   return (
@@ -509,7 +470,6 @@ export function MapPage({ onNavigate }: MapPageProps) {
           mapTypeId={mapType}
           userLocation={userLocation}
           highlightedMarkerId={highlightedMarkerId}
-          directions={directionsResult}
         />
 
         {visibleCount === 0 && (
@@ -543,57 +503,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
           </div>
         )}
 
-        {directionsResult && (
-          <div style={{
-            position: 'absolute', top: 12, left: 12, zIndex: 10,
-            display: 'flex', alignItems: 'center', gap: 12,
-            padding: '10px 14px', borderRadius: 8,
-            background: 'rgba(255,255,255,0.95)',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-          }}>
-            <div style={{ display: 'flex', gap: 16 }}>
-              <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#5d7a8c', textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: 1 }}>
-                  {lang === 'vi' ? 'Khoảng cách' : 'Distance'}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#0F3D5E' }}>
-                  {directionsResult.routes[0].legs[0].distance.text}
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: 10, fontWeight: 700, color: '#5d7a8c', textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: 1 }}>
-                  {lang === 'vi' ? 'Thời gian' : 'Duration'}
-                </div>
-                <div style={{ fontSize: 13, fontWeight: 700, color: '#0F3D5E' }}>
-                  {directionsResult.routes[0].legs[0].duration.text}
-                </div>
-              </div>
-            </div>
-            <button
-              onClick={handleClearRoute}
-              aria-label={lang === 'vi' ? 'Xóa lộ trình' : 'Clear route'}
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer',
-                padding: 4, color: '#5d7a8c', display: 'flex',
-              }}
-            >
-              <X size={14} />
-            </button>
-          </div>
-        )}
 
-        {routeError && (
-          <div style={{
-            position: 'absolute', top: 12, left: '50%', transform: 'translateX(-50%)', zIndex: 10,
-            padding: '8px 16px', borderRadius: 8,
-            background: '#FDEDEC', border: '1px solid #E74C3C',
-            color: '#E74C3C', fontSize: 12, fontWeight: 600,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-            maxWidth: 320, textAlign: 'center',
-          }}>
-            {routeError}
-          </div>
-        )}
 
         <div role="radiogroup" aria-label={lang === 'vi' ? 'Loại bản đồ' : 'Map type'} style={{
           position: 'absolute', top: 12, right: 12, zIndex: 10,

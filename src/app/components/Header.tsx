@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
+import { apiGet } from '../services/api';
 import {
   Map, BookOpen, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
 } from 'lucide-react';
@@ -16,6 +17,13 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [hotline, setHotline] = useState<string | null>(null);
+
+  useEffect(() => {
+    apiGet<{ phone?: string }>('/system-settings')
+      .then(data => setHotline(data?.phone ?? null))
+      .catch(() => setHotline(null));
+  }, []);
 
   const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
   const initials = displayName
@@ -51,7 +59,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
           </span>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>
-              {lang === 'vi' ? 'Đường dây nóng: 024.1234.5678' : 'Hotline: 024.1234.5678'}
+              {lang === 'vi' ? 'Đường dây nóng: ' : 'Hotline: '}{hotline ?? '--'}
             </span>
           </div>
         </div>
