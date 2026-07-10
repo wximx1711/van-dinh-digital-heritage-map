@@ -174,11 +174,11 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             {/* Image gallery */}
             {allImages.length > 0 && (
               <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', marginBottom: 20, boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
-                <div style={{ position: 'relative', height: 400, background: '#dce8f0' }}>
+                <div style={{ position: 'relative', height: 400, background: '#dce8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   <img
                     src={getImageUrl(allImages[activeImage])}
                     alt={lang === 'vi' ? site.nameVi : site.nameEn}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    style={{ width: '100%', height: '100%', objectFit: 'contain', maxWidth: '100%', maxHeight: '100%' }}
                     onError={e => {
                       (e.currentTarget as HTMLImageElement).style.display = 'none';
                       (e.currentTarget as HTMLImageElement).parentElement!.innerHTML =
@@ -208,9 +208,9 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                 {allImages.length > 1 && (
                   <div style={{ display: 'flex', gap: 8, padding: '12px', overflowX: 'auto' }}>
                     {allImages.map((img, i) => (
-                      <div key={i} onClick={() => setActiveImage(i)}
-                        style={{ width: 72, height: 52, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: i === activeImage ? '2px solid #D4A017' : '2px solid transparent', flexShrink: 0 }}>
-                        <img src={getImageUrl(img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <div key={i} onClick={() => setActiveImage(i)}
+                          style={{ width: 72, height: 52, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: i === activeImage ? '2px solid #D4A017' : '2px solid transparent', flexShrink: 0 }}>
+                          <img src={getImageUrl(img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                       </div>
                     ))}
                   </div>
@@ -453,7 +453,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                             style={{ borderRadius: 8, overflow: 'hidden', height: 120, cursor: 'pointer', border: '2px solid transparent', transition: 'border-color 0.2s' }}
                             onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#D4A017'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'transparent'; }}>
-                            <img src={getImageUrl(img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            <img src={getImageUrl(img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                           </div>
                         ))}
                       </div>

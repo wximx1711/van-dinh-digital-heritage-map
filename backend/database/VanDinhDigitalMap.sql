@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-09T14:12:42Z
+    GENERATED: 2026-07-10T06:24:14Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -401,7 +401,7 @@ GO
 -- [AboutPageHistories]: 0 rows
 GO
 
--- [ActivityLogs]: 13 rows
+-- [ActivityLogs]: 18 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -416,9 +416,14 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (12, 3, N'UPDATE', N'Heritage', 1, N'VĐHN-DT-001', '2026-07-09T13:55:38.2536852', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (13, 3, N'LOGOUT', N'Users', NULL, N'User logged out.', '2026-07-09T13:56:05.9205638', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (14, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-09T13:58:55.1516722', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (15, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-10T05:47:41.1455945', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (16, 3, N'CREATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-10T06:01:23.1038260', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (17, 3, N'CREATE', N'HeritageDocuments', 3, N'heba4c83e', '2026-07-10T06:07:05.2582409', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (18, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-10T06:07:11.2619787', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (19, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-10T06:12:56.7249192', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 14);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 19);
 GO
 
 -- [HeritageCategories]: 9 rows
@@ -437,7 +442,7 @@ GO
 DBCC CHECKIDENT ([HeritageCategories], RESEED, 9);
 GO
 
--- [Heritage]: 2 rows
+-- [Heritage]: 3 rows
 SET IDENTITY_INSERT [Heritage] ON;
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (1, N'heff617cc', N'VĐHN-DT-001', 2, N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'chùa-ba-chè-bà-chè-bà-trà-tự', N'city', N'active', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', 20.72903680, 105.77182720, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Ba Chè (hoặc Chùa Bà Chè).
@@ -602,21 +607,113 @@ The boundaries of the protected area II of the temple land (Plot No. 164F): Cove
 The overall boundaries of the temple land are: East and West bordering the village road; South bordering plot 164B; North bordering the remaining vacant land of plot 164F.
 
 Any unauthorized excavation of ancient foundations, dismantling of carved wooden brackets or moving the ancient Thieu Tri bell or Tho Ha ceramic incense burner outside the designated corridor of the above plots is strictly prohibited and will be severely punished by law.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'1702', N'xã Vân Đình', N'/api/qr/heritage/h0d0c0cbc', N'https://maps.app.goo.gl/HmaBmvZU9Jpfp2Sk8', 0, NULL, 3, '2026-07-09T13:49:50.2184218', '2026-07-09T13:53:31.1454899');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (3, N'heba4c83e', N'VĐHN-DT-003', 2, N'CHÙA ĐÔNG DƯƠNG (Thiên Phúc Tự - Vĩnh Thọ Tự)', N'CHÙA ĐÔNG DƯƠNG', N'chùa-đông-dương', N'national', N'active', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', 20.70736230, 105.78912930, N'1. Thông tin hành chính và Xếp hạng di tích
+Tên di tích thống nhất: Chùa Đông Dương.
+Tên chữ qua các thời kỳ:
+Thời Lê: Thiên Phúc Tự (Chùa Thiên Phúc).
+Từ sau triều vua Bảo Đại đến nay: Vĩnh Thọ Tự (Chùa Vĩnh Thọ).
+Địa điểm phân bố: Thôn Đông Dương, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội. (Trước thế kỷ XIX là xã Đông Dương, tổng Phương Đình, huyện Sơn Minh, phủ Ứng Hòa, trấn Sơn Nam).
+Loại hình di tích: Kiến trúc - Nghệ thuật tôn giáo dạng chùa.
+Cấp xếp hạng: Được Thứ trưởng Bộ Văn hóa Thông tin Lưu Trần Tiêu ký Quyết định số 65-QD/BT ngày 16/01/1994 chính thức công nhận và xếp hạng là Di tích Nghệ thuật cấp Quốc gia.', N'1. Administrative Information and Monument Ranking
+Unified Monument Name: Dong Duong Pagoda.
+Classified Names Through the Ages:
+During the Le Dynasty: Thien Phuc Tu (Thien Phuc Pagoda).
+
+From the reign of Emperor Bao Dai to the present: Vinh Tho Tu (Vinh Tho Pagoda).
+
+Location: Dong Duong Hamlet, Tao Duong Van Commune, Ung Hoa District, Hanoi City. (Before the 19th century, it was Dong Duong Commune, Phuong Dinh Township, Son Minh District, Ung Hoa Prefecture, Son Nam Province).
+
+Type of Monument: Religious architectural and artistic structure in the form of a pagoda.
+Ranking Level: Officially recognized and ranked as a National Artistic Monument by Deputy Minister of Culture and Information Luu Tran Tieu in Decision No. 65-QD/BT dated January 16, 1994.', N'2. Lịch sử hình thành và Tín ngưỡng thờ phụng
+Niên đại khởi dựng: Chùa được hưng công khởi dựng vào năm Hồng Đức nguyên niên (1470) thời vua Lê Thánh Tông. Cứ liệu lịch sử này được xác tín thông qua tấm bia đá cổ "Thiên Phúc tự bi ký" còn bảo tồn tại di tích.
+Lịch sử tu sửa: Chùa có lịch sử trùng tu liên tục qua các triều đại. Văn bia cổ ghi nhận đợt tái tạo lớn vào năm Cảnh Hưng nguyên niên (1740) do Cung phi Trần Thị Ngọc hưng công. Đến thời Nguyễn, công trình tiếp tục được đại tu vào năm Thành Thái nguyên niên (1889), triều vua Khải Định (1918) và triều vua Bảo Đại để bảo lưu diện mạo khang trang, bề thế.
+Ý nghĩa thờ phụng: Chùa thờ Phật theo phái Đại Thừa, hướng con người tới tư tưởng từ bi, khuyến thiện, trừng ác, giáo dục lòng nhân nghĩa và gắn kết mật thiết với đời sống tinh thần của cư dân làng xã.
+Dấu ấn cách mạng: Trong thời kỳ hoạt động bí mật tiền khởi nghĩa và kháng chiến chống thực dân Pháp, chùa Đông Dương là cơ sở nuôi giấu và che chở an toàn cho nhiều cán bộ cách mạng cấp cao của Đảng và Nhà nước như các đồng chí Đỗ Mười, Hoàng Quốc Việt, Văn Tiến Dũng, Nguyễn Văn Lộc....
+3. Quy mô kiến trúc hiện trạng
+Căn cứ theo bản vẽ trích đo hiện trạng, quần thể chùa phân bố khoa học, khép kín trong khuôn viên phong quang:
+Chùa chính (Tam bảo): Kết cấu mặt bằng dạng chữ Đinh ($\mathbf{J}$) gồm tòa Tiền đường và Thượng điện liên hoàn.
+Tiền đường: Là ngôi nhà ngang gồm 5 gian phân chia cân đối, chiều dài 10,50m và rộng 1,30m. Hệ thống chịu lực dựa trên 4 bộ vì kèo chính tương ứng 4 hàng chân cột gỗ lim tròn nhẵn bóng (đường kính cột từ 38–42cm) đặt trên chân tảng đá tạc hình vuông, bát giác. Vì kèo kết cấu kiểu "Thượng chồng rường giá chiêng, hạ kẻ bẩy" và "Thượng kẻ hạ rường kẻ bẩy" vững chãi.
+Thượng điện (Hậu cung): Làm dọc kiểu chuôi vồ đâm sâu vào gian giữa Tiền đường, chiều dài 6,0m và rộng 5,0m, chia làm 3 gian. Không gian được thiết kế thâm nghiêm, tĩnh mịch làm bệ dật cấp dốc về phía sau để đặt Phật điện.
+Hạng mục phụ trợ: Bao gồm nếp nhà Tổ (kiêm thờ Mẫu), nhà trai, nhà ở của ni sư trụ trì nối tiếp nhau hài hòa.
+4. Hệ thống cổ vật, tự khí và Tượng pháp
+Chùa bảo lưu hệ thống hiện vật cổ phong phú về chủng loại và đạt giá trị thẩm mỹ điêu khắc cao:
+Tượng đồng cổ quý hiếm: Pho tượng Giáo chủ Thích Ca bằng đồng tạc vào đầu thế kỷ XVI (nhân dân địa phương quen gọi là pho Tam Thế). Tượng tạc dáng thiền định thanh thoát, sọ nở u nhục kháo tinh tú, tai chảy dài, cổ ba ngấn, là tác phẩm tượng đồng cổ cực kỳ quý hiếm của địa phương.
+Hệ thống tượng gỗ (16 pho thời Lê - Nguyễn):
+Tại Thượng điện: Lớp cao nhất đặt bộ Tam Thế Phật ngồi thiền định. Lớp hai đặt bộ Di đà Tam tôn thời Lê thế kỷ XVII (tượng A Di Đà giữa ngực nổi chữ Vạn, tay kết ấn đặt ngửa nâng viên ngọc lưu ly kề cận tượng đứng của Quan Thế Âm và Đại Thế Chí Bồ tát đội mũ sen hoa). Lớp ba đặt tượng A Di Đà Liên Hoa kề cạnh tượng Văn Thù, Phổ Hiền. Tầng dưới đặt pho Thích Ca sơ sinh đứng trong Tòa Cửu Long gỗ chạm bong kênh tinh xảo mô phỏng rồng phun nước.
+Tại Tiền đường: Hai bên bài trí ban thờ Đức Ông và ban thờ Đức Thánh Hiền, phía ngoài đặt cặp tượng Hộ Pháp (Khuyến Thiện và Trừng Ác) lớn tạc bằng đất luyện giấy dó đầu thế kỷ XX.
+Tự khí cổ tiêu biểu:
+01 quả chuông đồng cổ đúc năm Thiệu Trị thứ 3 (1843): Thân chuông trụ tròn bám triện gấm, ghi bài Minh chữ Hán ca ngợi Phật pháp giáo hóa chúng sinh.
+01 tấm văn bia đá cổ "Thiên Phúc tự bi ký" dựng thời Lê.
+01 chiếc hương án gỗ thời Nguyễn chạm bong kênh tứ linh, bốn góc tạc bốn phượng xòe cánh, chính giữa chạm rồng múa quanh vòng ngọc.
+01 chiếc bát hương gốm men xanh thời Lê (cao 30cm, đường kính 35cm) vẽ đề tài Lưỡng long chầu nguyệt cổ kính.
+5. Chỉ giới pháp lý và Khoanh vùng bảo vệ di tích
+Căn cứ theo bản đồ địa chính trích đo xã Tảo Dương Văn vẽ năm 1988 (Tờ số 07, tỷ lệ 1/1000) và biên bản thống nhất liên ngành ngày 28/11/1993, ranh giới địa chính của di tích được phân vùng quản lý như sau:
+Khu vực I (Vùng bất khả xâm phạm - Màu đỏ):
+Phạm vi: Bao gồm Chùa chính (Tiền đường, Thượng điện), Miếu thờ kề cận, nhà Tổ, sân gạch bồn hoa và giếng nước nội tự.
+Diện tích: 3.185 $m^2$ đặt trọn vẹn trên thửa đất số 378.
+Ranh giới tiếp giáp:
+Phía Đông: Tiếp giáp lối trục Đường đồng và các thửa đất số 377, 389, 388.
+Phía Tây: Tiếp giáp thửa đất số 505 (thửa đất miếu giáp mương nước).
+Phía Nam: Giáp các thửa đất số 374, 381, 385 và hành lang Đường làng.
+Phía Bắc: Tiếp giáp thửa đất số 505 chạy gian ra phía cánh đồng.
+Quy định nghiêm cấm: Nghiêm cấm tuyệt đối mọi hoạt động xây dựng, cơi nới hoặc đào bới làm thay đổi nguyên trạng cấu kiện chịu lực gỗ lim của công trình; nghiêm cấm tự ý di chuyển pho tượng đồng cổ Thích Ca thế kỷ XVI và các cổ vật, chuông sành ra khỏi chỉ giới khoanh vùng của thửa đất di tích.', N'2. History of Formation and Worship
+Date of Construction: The pagoda was built in the first year of Hong Duc (1470) during the reign of King Le Thanh Tong. This historical fact is confirmed by the ancient stone stele "Thien Phuc Pagoda Inscription" still preserved at the site.
+
+History of Renovation: The pagoda has a history of continuous renovations throughout various dynasties. Ancient stele records a major reconstruction in the first year of Canh Hung (1740) by Concubine Tran Thi Ngoc. During the Nguyen dynasty, the structure was further renovated in the first year of Thanh Thai (1889), during the reign of King Khai Dinh (1918), and during the reign of King Bao Dai to preserve its grand and imposing appearance.
+
+Meaning of Worship: The pagoda worships Mahayana Buddhism, guiding people towards compassion, encouraging good deeds, punishing evil, educating them in righteousness, and closely connected to the spiritual life of the villagers. Revolutionary significance: During the period of clandestine activities before the uprising and the resistance against French colonialism, Dong Duong Pagoda served as a safe haven and shelter for many high-ranking revolutionary cadres of the Party and State, such as comrades Do Muoi, Hoang Quoc Viet, Van Tien Dung, Nguyen Van Loc, etc.
+3. Current architectural scale
+Based on the current survey drawing, the pagoda complex is scientifically distributed and enclosed within a spacious area:
+Main Pagoda (Tam Bao): The floor plan is in the shape of the letter J, consisting of a connected front hall and main hall.
+Front Hall: This is a horizontal building with 5 symmetrically divided bays, 10.50m long and 1.30m wide. The load-bearing system is based on 4 main truss sets corresponding to 4 rows of smooth, round lim wood columns (column diameter from 38–42cm) placed on square and octagonal carved stone bases. The roof structure is built in the "Upper beam and lower purlin" and "Upper purlin and lower beam" styles, making it sturdy.
+
+The Upper Hall (Rear Hall): Built vertically in the shape of a mallet handle, extending deep into the central section of the Front Hall, measuring 6.0m in length and 5.0m in width, divided into three sections. The space is designed to be solemn and tranquil, with a stepped platform sloping towards the back to accommodate the Buddha statue.
+Auxiliary structures: Including the Ancestral Hall (also dedicated to the Mother Goddess), the monks'' quarters, and the residence of the abbess, harmoniously connected.
+4. System of ancient artifacts, ritual objects, and statues
+The pagoda preserves a rich system of ancient artifacts of high sculptural aesthetic value:
+Rare and precious ancient bronze statues: A bronze statue of the Buddha Shakyamuni, sculpted in the early 16th century (locally known as the Three Worlds statue). The statue depicts a serene meditative posture, with a skull that is swollen and fleshy, resembling a star, elongated ears, and a neck with three creases; it is an extremely rare ancient bronze statue of the locality.
+
+The system of wooden statues (16 statues from the Le-Nguyen period):
+In the Upper Hall: The highest layer houses the Three Buddhas seated in meditation. The second layer houses the Amitabha Triad from the 17th century Le dynasty (the Amitabha statue has a swastika symbol on its chest, its hands forming a mudra and facing upwards, holding a lapis lazuli jewel, next to the standing statues of Avalokiteshvara and Mahasthamaprapta Bodhisattvas wearing lotus flower crowns). The third layer houses the Lotus Amitabha statue next to the statues of Manjushri and Samantabhadra. The lower layer houses the infant Buddha Shakyamuni standing in an exquisitely carved wooden Nine Dragon throne depicting dragons spouting water.
+
+In the Front Hall: On either side are altars dedicated to the Venerable Master and the Holy Sages; outside are a pair of large Guardian statues (Encouraging Goodness and Punishing Evil) carved from clay and made of dó paper in the early 20th century.
+Representative artifacts:
+01 ancient bronze bell cast in the 3rd year of the Thieu Tri reign (1843): The bell''s body is a round pillar with a brocade seal, inscribed with a Chinese text praising Buddhist teachings and the enlightenment of sentient beings.
+01 ancient stone stele "Thien Phuc Temple Inscription" erected during the Le Dynasty.
+
+01 wooden incense altar from the Nguyen Dynasty, carved in relief with four mythical creatures; the four corners are carved with four phoenixes spreading their wings, and the center is carved with a dragon dancing around a jade circle.
+
+01 ancient blue glazed ceramic incense bowl from the Le Dynasty (30cm high, 35cm in diameter) depicting two dragons worshipping the moon.
+5. Legal Boundaries and Protection Zones of the Monument
+Based on the cadastral map of Tao Duong Van commune drawn in 1988 (Sheet No. 07, scale 1/1000) and the inter-agency agreement dated November 28, 1993, the cadastral boundaries of the monument are divided into management zones as follows:
+Area I (Inviolable Zone - Red):
+Scope: Includes the main temple (Front Hall, Upper Hall), adjacent shrine, ancestral house, brick courtyard with flowerbeds, and the inner well.
+
+Area: 3,185 m² located entirely on plot No. 378.
+Adjacent boundaries:
+East: Adjacent to the main road and plots No. 377, 389, and 388.
+West: Adjacent to plot No. 505 (the shrine plot bordering the water ditch).
+South: Bordered by plots 374, 381, 385 and the village road corridor.
+
+North: Bordered by plot 505 extending towards the field.
+
+Strict prohibitions: Absolutely no construction, expansion, or excavation that alters the original state of the lim wood load-bearing components of the structure is permitted; unauthorized removal of the 16th-century bronze statue of Shakyamuni Buddha and other artifacts, including ceramic bells, from the boundaries of the historical site is strictly prohibited.', N'/uploads/images/8ab46954327d4f8a900f512ed8890ca3.jpg', N'1470', N'xã Vân Đình', N'/api/qr/heritage/heba4c83e', N'https://maps.app.goo.gl/wHiFR4bWhg73M5vZ7', 0, NULL, 3, '2026-07-10T06:01:22.8000117', '2026-07-10T06:12:56.6217564');
 SET IDENTITY_INSERT [Heritage] OFF;
 GO
-DBCC CHECKIDENT ([Heritage], RESEED, 2);
+DBCC CHECKIDENT ([Heritage], RESEED, 3);
 GO
 
--- [HeritageDocuments]: 2 rows
+-- [HeritageDocuments]: 3 rows
 SET IDENTITY_INSERT [HeritageDocuments] ON;
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (1, 1, N'lý lịch.pdf', N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'PDF', 5419292, '2026-07-09T13:35:15.6084942');
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (2, 2, N'Lý lịch.pdf', N'/uploads/documents/a31c8af906e242fb94bfa3b74ca3fb3c.pdf', N'PDF', 4180811, '2026-07-09T13:53:27.9933011');
+INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (3, 3, N'Lý lịch di tích.pdf', N'/uploads/documents/9f3ed517916a4fcfb716a9552e992a18.pdf', N'PDF', 4862918, '2026-07-10T06:07:05.2119762');
 SET IDENTITY_INSERT [HeritageDocuments] OFF;
 GO
-DBCC CHECKIDENT ([HeritageDocuments], RESEED, 2);
+DBCC CHECKIDENT ([HeritageDocuments], RESEED, 3);
 GO
 
--- [HeritageImages]: 22 rows
+-- [HeritageImages]: 41 rows
 SET IDENTITY_INSERT [HeritageImages] ON;
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (1, 1, N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', NULL, 1, '2026-07-09T13:35:05.3147378');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (2, 1, N'/uploads/images/532b8cf854bf4208ab48161ce7439a60.jpg', NULL, 2, '2026-07-09T13:35:05.4034413');
@@ -640,9 +737,28 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (20, 1, N'/uploads/images/606f700e26084a859ff3dc20d9a4c48a.jpg', NULL, 7, '2026-07-09T13:55:38.2407588');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (21, 1, N'/uploads/images/aa485bc5c78843dfa6240191985df4e6.jpg', NULL, 8, '2026-07-09T13:55:38.2435553');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (22, 1, N'/uploads/images/55343770f9324163b7fc8029d3bd48d0.jpg', NULL, 9, '2026-07-09T13:55:38.2464283');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (23, 3, N'/uploads/images/8ab46954327d4f8a900f512ed8890ca3.jpg', NULL, 1, '2026-07-10T06:01:22.9614740');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (24, 3, N'/uploads/images/87dc37472df6451abef98e3455b419ec.jpg', NULL, 2, '2026-07-10T06:12:56.6326673');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (25, 3, N'/uploads/images/85464ce372154f90b4f26c9fea15f19e.jpg', NULL, 3, '2026-07-10T06:12:56.6567116');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (26, 3, N'/uploads/images/7c840b7cc80f40d183a94d833d0ab890.jpg', NULL, 4, '2026-07-10T06:12:56.6622015');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (27, 3, N'/uploads/images/2f3ac657cd63485fb4406ccb36c913ff.jpg', NULL, 5, '2026-07-10T06:12:56.6674739');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (28, 3, N'/uploads/images/d4edf94177c8434080468f46c72bbffa.jpg', NULL, 6, '2026-07-10T06:12:56.6702317');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (29, 3, N'/uploads/images/75a10572ae81481ab434d39bb7f5fcae.jpg', NULL, 7, '2026-07-10T06:12:56.6732978');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (30, 3, N'/uploads/images/ed0c8b0134314b50a1cd535d03a13673.jpg', NULL, 8, '2026-07-10T06:12:56.6763971');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (31, 3, N'/uploads/images/3c34b5201d0942f8ac220d66ffdb1602.jpg', NULL, 9, '2026-07-10T06:12:56.6802769');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (32, 3, N'/uploads/images/49a99e9446ee4ff9a33f72b7704e725d.jpg', NULL, 10, '2026-07-10T06:12:56.6834739');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (33, 3, N'/uploads/images/2304806dc89f422daef66168111590b8.jpg', NULL, 11, '2026-07-10T06:12:56.6883347');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (34, 3, N'/uploads/images/8eb05a001f9c4bc49826a40d2634b753.jpg', NULL, 12, '2026-07-10T06:12:56.6930117');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (35, 3, N'/uploads/images/cf5aca640a5446aa824509a87f1d2300.jpg', NULL, 13, '2026-07-10T06:12:56.6956682');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (36, 3, N'/uploads/images/1c4f05e8d84043f98a14c5b0b04eda6b.jpg', NULL, 14, '2026-07-10T06:12:56.6996272');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (37, 3, N'/uploads/images/bda366dfa92144508ecb01daa697e384.jpg', NULL, 15, '2026-07-10T06:12:56.7026494');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (38, 3, N'/uploads/images/9fa02569d08b46d2b2a05cf2a141ed0b.jpg', NULL, 16, '2026-07-10T06:12:56.7059010');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (39, 3, N'/uploads/images/0f1856104c764fce8dbc21e66392012a.jpg', NULL, 17, '2026-07-10T06:12:56.7088132');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (40, 3, N'/uploads/images/eebe69dba41f42ea8a45e3ca10ce79e7.jpg', NULL, 18, '2026-07-10T06:12:56.7117137');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (41, 3, N'/uploads/images/cd1b8a3d2f4f4f08bc5265a537d8b478.jpg', NULL, 19, '2026-07-10T06:12:56.7160043');
 SET IDENTITY_INSERT [HeritageImages] OFF;
 GO
-DBCC CHECKIDENT ([HeritageImages], RESEED, 22);
+DBCC CHECKIDENT ([HeritageImages], RESEED, 41);
 GO
 
 -- [HeritageVideos]: 0 rows
@@ -651,7 +767,7 @@ GO
 -- [IntangibleHeritage]: 0 rows
 GO
 
--- [MediaFiles]: 20 rows
+-- [MediaFiles]: 44 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -673,9 +789,33 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (18, N'/uploads/images/606f700e26084a859ff3dc20d9a4c48a.jpg', N'IMG_5470.JPG', 3509335, N'image', '2026-07-09T13:54:51.3634060');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (19, N'/uploads/images/70673df89be848cd81cf08e9c9539376.jpg', N'IMG_5466.JPG', 4199247, N'image', '2026-07-09T13:54:56.9481913');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (20, N'/uploads/images/e8ecd4b7d4a3406a92565fc92ecb9c6c.jpg', N'IMG_5463.JPG', 4020179, N'image', '2026-07-09T13:55:08.8070044');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (21, N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', N'a7a2d72840c6457cbfa54f0118ef1981.jpg', 0, N'image', '2026-07-09T13:35:05.3147378');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (22, N'/uploads/images/532b8cf854bf4208ab48161ce7439a60.jpg', N'532b8cf854bf4208ab48161ce7439a60.jpg', 0, N'image', '2026-07-09T13:35:05.4034413');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (23, N'/uploads/images/9478b1f012c44f4b832aa73a7200a648.jpg', N'9478b1f012c44f4b832aa73a7200a648.jpg', 0, N'image', '2026-07-09T13:35:05.4129183');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (24, N'/uploads/images/0ec38c2b4f684a3ba2b07a6b6eac2ca8.jpg', N'0ec38c2b4f684a3ba2b07a6b6eac2ca8.jpg', 0, N'image', '2026-07-09T13:35:05.4157413');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (25, N'/uploads/images/8ab46954327d4f8a900f512ed8890ca3.jpg', N'IMG_5760.JPG', 3431870, N'image', '2026-07-10T06:01:17.0178153');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (26, N'/uploads/documents/9f3ed517916a4fcfb716a9552e992a18.pdf', N'Lý lịch di tích.pdf', 4862918, N'document', '2026-07-10T06:07:05.2083540');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (27, N'/uploads/images/9fa02569d08b46d2b2a05cf2a141ed0b.jpg', N'IMG_1056.jpg', 2659753, N'image', '2026-07-10T06:08:33.6539890');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (28, N'/uploads/images/cd1b8a3d2f4f4f08bc5265a537d8b478.jpg', N'IMG_1057.jpg', 2432005, N'image', '2026-07-10T06:09:33.1554001');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (29, N'/uploads/images/1c4f05e8d84043f98a14c5b0b04eda6b.jpg', N'IMG_1058.jpg', 3227839, N'image', '2026-07-10T06:09:41.3835158');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (30, N'/uploads/images/bda366dfa92144508ecb01daa697e384.jpg', N'IMG_1059.jpg', 2639308, N'image', '2026-07-10T06:09:50.8283505');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (31, N'/uploads/images/0f1856104c764fce8dbc21e66392012a.jpg', N'IMG_1060.jpg', 2569294, N'image', '2026-07-10T06:10:06.6213568');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (32, N'/uploads/images/eebe69dba41f42ea8a45e3ca10ce79e7.jpg', N'IMG_1062.jpg', 2779567, N'image', '2026-07-10T06:10:14.9861843');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (33, N'/uploads/images/cf5aca640a5446aa824509a87f1d2300.jpg', N'IMG_1064.jpg', 3862521, N'image', '2026-07-10T06:10:20.2634910');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (34, N'/uploads/images/8eb05a001f9c4bc49826a40d2634b753.jpg', N'IMG_1066.jpg', 3678464, N'image', '2026-07-10T06:10:35.9277533');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (35, N'/uploads/images/2304806dc89f422daef66168111590b8.jpg', N'IMG_1068.jpg', 4686127, N'image', '2026-07-10T06:10:41.1656916');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (36, N'/uploads/images/49a99e9446ee4ff9a33f72b7704e725d.jpg', N'IMG_1070.jpg', 2179333, N'image', '2026-07-10T06:10:52.5543015');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (37, N'/uploads/images/d4edf94177c8434080468f46c72bbffa.jpg', N'IMG_1072.jpg', 1708843, N'image', '2026-07-10T06:10:58.2172651');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (38, N'/uploads/images/75a10572ae81481ab434d39bb7f5fcae.jpg', N'IMG_1074.jpg', 3302879, N'image', '2026-07-10T06:11:02.2306696');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (39, N'/uploads/images/ed0c8b0134314b50a1cd535d03a13673.jpg', N'IMG_1078.jpg', 3598876, N'image', '2026-07-10T06:11:06.5282177');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (40, N'/uploads/images/3c34b5201d0942f8ac220d66ffdb1602.jpg', N'IMG_5537.JPG', 2061271, N'image', '2026-07-10T06:11:33.2687761');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (41, N'/uploads/images/2f3ac657cd63485fb4406ccb36c913ff.jpg', N'IMG_5535.JPG', 2666351, N'image', '2026-07-10T06:11:37.9670731');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (42, N'/uploads/images/7c840b7cc80f40d183a94d833d0ab890.jpg', N'IMG_5533.JPG', 2349532, N'image', '2026-07-10T06:11:42.9636775');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (43, N'/uploads/images/85464ce372154f90b4f26c9fea15f19e.jpg', N'IMG_5758.JPG', 3646372, N'image', '2026-07-10T06:11:51.0476820');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (44, N'/uploads/images/87dc37472df6451abef98e3455b419ec.jpg', N'IMG_5764.JPG', 3418356, N'image', '2026-07-10T06:11:57.3353559');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 20);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 44);
 GO
 
 -- [MonthlyUpdates]: 0 rows
