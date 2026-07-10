@@ -1,5 +1,5 @@
 import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
-import { useJsApiLoader, GoogleMap, Marker, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
+import { useJsApiLoader, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { heritageMarkerColors } from '../constants';
 import type { MapMarker, HeritageType } from '../../core/types';
@@ -15,7 +15,6 @@ interface GoogleMapViewProps {
   mapTypeId?: 'roadmap' | 'satellite' | 'hybrid' | 'terrain';
   userLocation?: google.maps.LatLngLiteral | null;
   highlightedMarkerId?: string | null;
-  directions?: google.maps.DirectionsResult | null;
   className?: string;
 }
 
@@ -48,7 +47,6 @@ export function GoogleMapView({
   mapTypeId,
   userLocation,
   highlightedMarkerId,
-  directions,
   className,
 }: GoogleMapViewProps) {
   const { isLoaded, loadError } = useJsApiLoader({
@@ -186,13 +184,11 @@ export function GoogleMapView({
 
   // Auto-fit viewport when the visible marker set changes
   const markersKeyRef = useRef<string>('');
-  const directionsRef = useRef(directions);
-  directionsRef.current = directions;
   const fitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!map) return;
-    if (directionsRef.current || markers.length === 0) return;
+    if (markers.length === 0) return;
 
     const key = markers.map((m) => `${m.id}:${m.position.lat},${m.position.lng}`).join('|');
     if (key === markersKeyRef.current) return;
@@ -307,13 +303,6 @@ export function GoogleMapView({
               strokeWeight: 3,
             }}
             zIndex={1000}
-          />
-        )}
-
-        {directions && (
-          <DirectionsRenderer
-            directions={directions}
-            options={{ preserveViewport: false }}
           />
         )}
 

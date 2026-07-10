@@ -13,3 +13,20 @@ export function haversineDistance(
     Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
+
+export function openGoogleMapsDirections(
+  lat: number | null,
+  lon: number | null,
+): boolean {
+  if (lat === null || lon === null) return false;
+
+  const params = new URLSearchParams({
+    api: '1',
+    destination: `${lat},${lon}`,
+    travelmode: 'driving',
+  });
+
+  const url = `https://www.google.com/maps/dir/?${params.toString()}`;
+  window.open(url, '_blank', 'noopener,noreferrer');
+  return true;
+}

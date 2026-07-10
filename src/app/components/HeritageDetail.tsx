@@ -4,6 +4,7 @@ import { useHeritageSites, useHeritageSite, useTypeLabels, useClassificationLabe
 import { classificationColors, statusColors } from '../constants';
 import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
+import { openGoogleMapsDirections } from '../utils/geo';
 import {
   ArrowLeft, MapPin, Calendar, Download, QrCode, Navigation,
   ChevronLeft, ChevronRight, FileText, Image, Info, Clock, User,
@@ -38,13 +39,6 @@ function extractGoogleMapsEmbed(url: string): string | null {
   const qmatch = url.match(/[?&]q=([^&]+)/);
   if (qmatch) return `https://www.google.com/maps/embed/v1/place?key=&q=${encodeURIComponent(qmatch[1])}&zoom=15`;
   return null;
-}
-
-function extractGoogleMapsDirections(url: string): string {
-  if (!url) return '#';
-  const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-  if (match) return `https://www.google.com/maps/dir/?api=1&destination=${match[1]},${match[2]}`;
-  return url;
 }
 
 export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
@@ -91,7 +85,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   };
 
   const embedUrl = site?.googleMapUrl ? extractGoogleMapsEmbed(site.googleMapUrl) : null;
-  const directionsUrl = site?.googleMapUrl ? extractGoogleMapsDirections(site.googleMapUrl) : '#';
 
   const getSafeLabel = (labels: Record<string, { vi: string; en: string } | undefined> | undefined, key: string): string => {
     if (!labels || !key) return key;
@@ -167,10 +160,10 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
       </div>
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 360px', gap: 24 }} className="heritage-detail-layout">
+        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: 24 }} className="heritage-detail-layout">
 
           {/* ===== MAIN CONTENT ===== */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             {/* Image gallery */}
             {allImages.length > 0 && (
               <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', marginBottom: 20, boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
@@ -314,14 +307,19 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                             title="Google Maps"
                           />
                         </div>
-                        <a href={directionsUrl} target="_blank" rel="noreferrer"
+                        <button
+                          onClick={() => openGoogleMapsDirections(site.lat, site.lon)}
+                          disabled={site.lat === null || site.lon === null}
+                          title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps')}
                           style={{
                             display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 10,
-                            padding: '8px 16px', borderRadius: 6, background: '#D4A017', color: 'white',
-                            fontSize: 12, fontWeight: 600, textDecoration: 'none',
+                            padding: '8px 16px', borderRadius: 6,
+                            background: site.lat !== null && site.lon !== null ? '#D4A017' : '#F0F4F8',
+                            color: site.lat !== null && site.lon !== null ? 'white' : '#cbced4',
+                            fontSize: 12, fontWeight: 600, cursor: site.lat !== null && site.lon !== null ? 'pointer' : 'not-allowed', border: 'none',
                           }}>
                           <ExternalLink size={13} /> {lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps'}
-                        </a>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -514,14 +512,19 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             {/* Action buttons */}
             <div style={{ background: 'white', borderRadius: 12, padding: '16px', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                <a href={directionsUrl} target="_blank" rel="noreferrer"
+                <button
+                  onClick={() => openGoogleMapsDirections(site.lat, site.lon)}
+                  disabled={site.lat === null || site.lon === null}
+                  title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Chỉ đường đến đây' : 'Directions')}
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    padding: '10px', borderRadius: 8, background: '#0F3D5E', color: 'white',
-                    fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                    padding: '10px', borderRadius: 8,
+                    background: site.lat !== null && site.lon !== null ? '#0F3D5E' : '#F0F4F8',
+                    color: site.lat !== null && site.lon !== null ? 'white' : '#cbced4',
+                    fontSize: 13, fontWeight: 600, cursor: site.lat !== null && site.lon !== null ? 'pointer' : 'not-allowed', border: 'none',
                   }}>
                   <Navigation size={14} /> {t('detail.route')}
-                </a>
+                </button>
                 <button onClick={() => setShowQr(true)}
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
@@ -560,14 +563,19 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                   />
                 </div>
                 <div style={{ padding: '12px', textAlign: 'center' }}>
-                  <a href={directionsUrl} target="_blank" rel="noreferrer"
+                  <button
+                    onClick={() => openGoogleMapsDirections(site.lat, site.lon)}
+                    disabled={site.lat === null || site.lon === null}
+                    title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps')}
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: 6,
-                      padding: '8px 20px', borderRadius: 8, background: '#D4A017', color: 'white',
-                      fontSize: 13, fontWeight: 600, textDecoration: 'none',
+                      padding: '8px 20px', borderRadius: 8,
+                      background: site.lat !== null && site.lon !== null ? '#D4A017' : '#F0F4F8',
+                      color: site.lat !== null && site.lon !== null ? 'white' : '#cbced4',
+                      fontSize: 13, fontWeight: 600, cursor: site.lat !== null && site.lon !== null ? 'pointer' : 'not-allowed', border: 'none',
                     }}>
                     <Globe size={14} /> {lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps'}
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
