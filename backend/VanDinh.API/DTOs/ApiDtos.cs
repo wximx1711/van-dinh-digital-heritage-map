@@ -155,7 +155,25 @@ public sealed record HeritageRequest(
     string[]? ImageUrls = null);
 
 /// <summary>Intangible heritage data transfer object.</summary>
-public sealed record IntangibleHeritageDto(string Id, string NameVi, string NameEn, string Category, string? DescriptionVi, string? DescriptionEn, string? Image, string? VideoUrl, string CreatedAt, string? UpdatedAt);
+public sealed record IntangibleHeritageDto(
+    string Id, string NameVi, string NameEn, string Category,
+    string? DescriptionVi, string? DescriptionEn,
+    string? Image, string? VideoUrl,
+    string CreatedAt, string? UpdatedAt,
+    string? OtherNames, string? Location, string? CulturalSpace,
+    string? Community, string? RepresentativePersons,
+    string? Origin, string? OriginEn, string? FormationHistory, string? HistoricalDevelopment,
+    string? WorshipObjects, string? FestivalTime, string? FestivalDuration,
+    string? FestivalLocation, string? RitualParticipants, string? RitualProcess,
+    string? CustomsAndOfferings, string? FolkGames, string? TraditionalPerformances,
+    string? RitualObjects, string? RelatedDocuments, string? RelatedDocumentsEn,
+    string? ExistingArtisans, string? TeachingArtisans, string? Practitioners,
+    string? Learners, string? OtherHumanResources, string? TransmissionMethod,
+    string? CurrentStatus, string? CurrentStatusEn,
+    string? ThreatLevel, string? RiskDescription,
+    string? HeritageValue, string? HeritageValueEn,
+    string? ExistingProtectionMeasures, string? ProposedProtectionMeasures,
+    IReadOnlyList<string>? GalleryImages);
 
 public sealed record IntangibleHeritageRequest(
     [Required, StringLength(200, MinimumLength = 5)]
@@ -167,10 +185,8 @@ public sealed record IntangibleHeritageRequest(
     [Required, RegularExpression(@"^(festival|performance|craft|ritual|story)$")]
     string Category,
 
-    [Required, MinLength(30)]
     string? DescriptionVi,
 
-    [Required, MinLength(30)]
     string? DescriptionEn,
 
     [Required]
@@ -178,7 +194,44 @@ public sealed record IntangibleHeritageRequest(
 
     [RegularExpression(@"^(https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.*)?$",
         ErrorMessage = "Only YouTube URLs are accepted for video.")]
-    string? VideoUrl);
+    string? VideoUrl,
+
+    string? OtherNames = null,
+    string? Location = null,
+    string? CulturalSpace = null,
+    string? Community = null,
+    string? RepresentativePersons = null,
+    string? Origin = null,
+    string? OriginEn = null,
+    string? FormationHistory = null,
+    string? HistoricalDevelopment = null,
+    string? WorshipObjects = null,
+    string? FestivalTime = null,
+    string? FestivalDuration = null,
+    string? FestivalLocation = null,
+    string? RitualParticipants = null,
+    string? RitualProcess = null,
+    string? CustomsAndOfferings = null,
+    string? FolkGames = null,
+    string? TraditionalPerformances = null,
+    string? RitualObjects = null,
+    string? RelatedDocuments = null,
+    string? RelatedDocumentsEn = null,
+    string? ExistingArtisans = null,
+    string? TeachingArtisans = null,
+    string? Practitioners = null,
+    string? Learners = null,
+    string? OtherHumanResources = null,
+    string? TransmissionMethod = null,
+    string? CurrentStatus = null,
+    string? CurrentStatusEn = null,
+    string? ThreatLevel = null,
+    string? RiskDescription = null,
+    string? HeritageValue = null,
+    string? HeritageValueEn = null,
+    string? ExistingProtectionMeasures = null,
+    string? ProposedProtectionMeasures = null,
+    string[]? GalleryImages = null);
 
 /// <summary>About page history data transfer object.</summary>
 public sealed record AboutPageHistoryDto(

@@ -49,7 +49,30 @@ public static class MappingExtensions
     public static HeritageImageDto ToDto(this HeritageImage item) => new(item.ImageId, item.ImageUrl, item.Caption, item.SortOrder);
     public static HeritageVideoDto ToDto(this HeritageVideo item) => new(item.VideoId, item.Title, item.VideoType, item.VideoUrl, item.ThumbnailUrl);
     public static HeritageDocumentDto ToDto(this HeritageDocument item) => new(item.DocumentId, item.FileName, item.FileUrl, item.FileType, item.FileSize);
-    public static IntangibleHeritageDto ToDto(this IntangibleHeritage item) => new(item.PublicId, item.NameVi, item.NameEn, item.Category, item.DescriptionVi, item.DescriptionEn, item.ImageUrl, item.VideoUrl, item.CreatedAt.ToString("yyyy-MM-dd"), item.UpdatedAt?.ToString("yyyy-MM-dd"));
+    public static IntangibleHeritageDto ToDto(this IntangibleHeritage item)
+    {
+        var gallery = string.IsNullOrWhiteSpace(item.GalleryImages)
+            ? []
+            : System.Text.Json.JsonSerializer.Deserialize<List<string>>(item.GalleryImages) ?? [];
+        return new IntangibleHeritageDto(
+            item.PublicId, item.NameVi, item.NameEn, item.Category,
+            item.DescriptionVi, item.DescriptionEn, item.ImageUrl, item.VideoUrl,
+            item.CreatedAt.ToString("yyyy-MM-dd"), item.UpdatedAt?.ToString("yyyy-MM-dd"),
+            item.OtherNames, item.Location, item.CulturalSpace,
+            item.Community, item.RepresentativePersons,
+            item.Origin, item.OriginEn, item.FormationHistory, item.HistoricalDevelopment,
+            item.WorshipObjects, item.FestivalTime, item.FestivalDuration,
+            item.FestivalLocation, item.RitualParticipants, item.RitualProcess,
+            item.CustomsAndOfferings, item.FolkGames, item.TraditionalPerformances,
+            item.RitualObjects, item.RelatedDocuments, item.RelatedDocumentsEn,
+            item.ExistingArtisans, item.TeachingArtisans, item.Practitioners,
+            item.Learners, item.OtherHumanResources, item.TransmissionMethod,
+            item.CurrentStatus, item.CurrentStatusEn,
+            item.ThreatLevel, item.RiskDescription,
+            item.HeritageValue, item.HeritageValueEn,
+            item.ExistingProtectionMeasures, item.ProposedProtectionMeasures,
+            gallery);
+    }
     public static ActivityLogDto ToDto(this ActivityLog item) => new(item.LogId, item.UserId, item.User?.Username ?? "system", item.User?.Role?.RoleName ?? "", item.Action, item.EntityName, item.EntityId, item.Description, item.IpAddress, item.CreatedAt);
     public static AboutPageDto ToDto(this AboutPage item) => new(item.AboutId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, item.UpdatedAt);
     public static AboutPageHistoryDto ToDto(this AboutPageHistory item) => new(item.HistoryId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, item.UpdatedBy, item.CreatedAt);

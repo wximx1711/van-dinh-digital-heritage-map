@@ -4,10 +4,13 @@ import { useHeritageSites, useHeritageSite, useTypeLabels, useClassificationLabe
 import { classificationColors, statusColors } from '../constants';
 import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
+import { ImageGallery } from './ImageGallery';
+import { InfoCard } from './InfoCard';
+import { ShareSection } from './ShareSection';
+import { RelatedItems } from './RelatedItems';
 import {
-  ArrowLeft, MapPin, Calendar, Download, QrCode, Navigation,
-  ChevronLeft, ChevronRight, FileText, Image, Info, Clock, User,
-  RotateCcw, X, Video, ExternalLink, Share2, Globe,
+  ArrowLeft, MapPin, Calendar, Download, FileText, Image, Info, Clock, User,
+  Video, ExternalLink, Globe, Navigation,
 } from 'lucide-react';
 
 interface HeritageDetailProps {
@@ -55,8 +58,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   const classificationLabels = useClassificationLabels();
   const statusLabels = useStatusLabels();
   const site = siteData;
-  const [activeImage, setActiveImage] = useState(0);
-  const [showQr, setShowQr] = useState(false);
   const [activeTab, setActiveTab] = useState<'info' | 'history' | 'docs' | 'gallery'>('info');
   const [videos, setVideos] = useState<VideoData[]>([]);
   const [documents, setDocuments] = useState<DocumentData[]>([]);
@@ -147,6 +148,8 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
     );
   }
 
+  const name = lang === 'vi' ? site.nameVi : site.nameEn;
+
   return (
     <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>
       <div style={{ background: '#0F3D5E', padding: '12px 24px' }}>
@@ -162,7 +165,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             <ArrowLeft size={14} /> {t('detail.back')}
           </button>
           <span style={{ color: 'rgba(255,255,255,0.4)' }}>/</span>
-          <span style={{ color: 'white', fontSize: 13, fontWeight: 600 }}>{lang === 'vi' ? site.nameVi : site.nameEn}</span>
+          <span style={{ color: 'white', fontSize: 13, fontWeight: 600 }}>{name}</span>
         </div>
       </div>
 
@@ -173,49 +176,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
           <div>
             {/* Image gallery */}
             {allImages.length > 0 && (
-              <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', marginBottom: 20, boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
-                <div style={{ position: 'relative', height: 400, background: '#dce8f0' }}>
-                  <img
-                    src={getImageUrl(allImages[activeImage])}
-                    alt={lang === 'vi' ? site.nameVi : site.nameEn}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    onError={e => {
-                      (e.currentTarget as HTMLImageElement).style.display = 'none';
-                      (e.currentTarget as HTMLImageElement).parentElement!.innerHTML =
-                        `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:#5d7a8c;font-size:14px">${lang === 'vi' ? 'Không thể tải ảnh' : 'Cannot load image'}</div>`;
-                    }}
-                  />
-                  <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,61,94,0.4), transparent 50%)' }} />
-
-                  {allImages.length > 1 && (
-                    <>
-                      <button onClick={() => setActiveImage(i => (i - 1 + allImages.length) % allImages.length)}
-                        style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', width: 36, height: 36, borderRadius: '50%', background: 'rgba(0,0,0,0.5)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <ChevronLeft size={18} />
-                      </button>
-                      <button onClick={() => setActiveImage(i => (i + 1) % allImages.length)}
-                        style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', width: 36, height: 36, borderRadius: '50%', background: 'rgba(0,0,0,0.5)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <ChevronRight size={18} />
-                      </button>
-                    </>
-                  )}
-
-                  <div style={{ position: 'absolute', bottom: 16, right: 16, background: 'rgba(0,0,0,0.5)', borderRadius: 12, padding: '3px 10px', color: 'white', fontSize: 12 }}>
-                    {activeImage + 1} / {allImages.length}
-                  </div>
-                </div>
-
-                {allImages.length > 1 && (
-                  <div style={{ display: 'flex', gap: 8, padding: '12px', overflowX: 'auto' }}>
-                    {allImages.map((img, i) => (
-                      <div key={i} onClick={() => setActiveImage(i)}
-                        style={{ width: 72, height: 52, borderRadius: 6, overflow: 'hidden', cursor: 'pointer', border: i === activeImage ? '2px solid #D4A017' : '2px solid transparent', flexShrink: 0 }}>
-                        <img src={getImageUrl(img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <ImageGallery images={allImages} alt={name} />
             )}
 
             {/* Tabs */}
@@ -296,7 +257,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                       </p>
                     </div>
 
-                    {/* Google Maps Embed */}
                     {embedUrl && (
                       <div style={{ marginTop: 16, padding: '16px', background: '#F8FAFC', borderRadius: 8 }}>
                         <div style={{ fontSize: 11, color: '#5d7a8c', marginBottom: 8, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.3 }}>
@@ -348,7 +308,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                 {/* DOCS & VIDEO TAB */}
                 {activeTab === 'docs' && (
                   <div>
-                    {/* Videos section */}
                     {videos.length > 0 && (
                       <>
                         <h3 style={{ color: '#0F3D5E', fontSize: 16, fontWeight: 700, marginBottom: 16 }}>
@@ -376,7 +335,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                       </>
                     )}
 
-                    {/* Documents section */}
                     <h3 style={{ color: '#0F3D5E', fontSize: 16, fontWeight: 700, marginBottom: 16 }}>
                       <FileText size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />
                       {lang === 'vi' ? 'Tài liệu đính kèm' : 'Attached Documents'}
@@ -449,7 +407,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                     ) : (
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 8 }}>
                         {allImages.map((img, i) => (
-                          <div key={i} onClick={() => { setActiveImage(i); setActiveTab('info'); }}
+                          <div key={i} onClick={() => setActiveTab('info')}
                             style={{ borderRadius: 8, overflow: 'hidden', height: 120, cursor: 'pointer', border: '2px solid transparent', transition: 'border-color 0.2s' }}
                             onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#D4A017'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'transparent'; }}>
@@ -466,52 +424,56 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
 
           {/* ===== SIDEBAR ===== */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            {/* Site title card */}
-            <div style={{
-              background: 'white', borderRadius: 12, overflow: 'hidden',
-              boxShadow: '0 2px 12px rgba(15,61,94,0.08)',
-              borderTop: `4px solid ${getSafeColor(classificationColors, site.classification, '#7F8C8D')}`,
-            }}>
-              <div style={{ padding: '20px' }}>
-                <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
-                  <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 700, background: `${getSafeColor(classificationColors, site.classification, '#7F8C8D')}15`, color: getSafeColor(classificationColors, site.classification, '#7F8C8D') }}>
-                    {getSafeLabel(classificationLabels, site.classification)}
-                  </span>
-                  <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600, background: '#EBF5FB', color: '#0F3D5E' }}>
-                    {getSafeLabel(typeLabels, site.type)}
-                  </span>
-                  <span style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600, background: `${getSafeColor(statusColors, site.status, '#27AE60')}15`, color: getSafeColor(statusColors, site.status, '#27AE60') }}>
-                    {getSafeLabel(statusLabels, site.status)}
-                  </span>
-                </div>
-                <h1 style={{ color: '#0F3D5E', fontSize: 18, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 4px' }}>
-                  {lang === 'vi' ? site.nameVi : site.nameEn}
-                </h1>
-                <div style={{ fontSize: 12, color: '#5d7a8c', marginBottom: 12 }}>{site.code}</div>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, padding: '10px', background: '#F8FAFC', borderRadius: 8 }}>
-                  <MapPin size={13} style={{ color: '#D4A017', marginTop: 1, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: '#5d7a8c', lineHeight: 1.4 }}>
-                    {lang === 'vi' ? site.addressVi : site.addressEn}
-                  </span>
-                </div>
-                {site.yearBuilt && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 8 }}>
-                    <Calendar size={13} style={{ color: '#D4A017' }} />
-                    <span style={{ fontSize: 12, color: '#5d7a8c' }}>
-                      {lang === 'vi' ? `Xây dựng: ${site.yearBuilt}` : `Built: ${site.yearBuilt}`}
-                    </span>
-                  </div>
-                )}
-                {site.guardian && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
-                    <User size={13} style={{ color: '#D4A017' }} />
-                    <span style={{ fontSize: 12, color: '#5d7a8c' }}>{site.guardian}</span>
-                  </div>
-                )}
-              </div>
-            </div>
+            <InfoCard
+              title={name}
+              subtitle={site.code}
+              badges={[
+                <span key="classification" style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 700, background: `${getSafeColor(classificationColors, site.classification, '#7F8C8D')}15`, color: getSafeColor(classificationColors, site.classification, '#7F8C8D') }}>
+                  {getSafeLabel(classificationLabels, site.classification)}
+                </span>,
+                <span key="type" style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600, background: '#EBF5FB', color: '#0F3D5E' }}>
+                  {getSafeLabel(typeLabels, site.type)}
+                </span>,
+                <span key="status" style={{ padding: '3px 10px', borderRadius: 10, fontSize: 11, fontWeight: 600, background: `${getSafeColor(statusColors, site.status, '#27AE60')}15`, color: getSafeColor(statusColors, site.status, '#27AE60') }}>
+                  {getSafeLabel(statusLabels, site.status)}
+                </span>,
+              ]}
+              fields={[
+                {
+                  label: lang === 'vi' ? 'Địa chỉ' : 'Address',
+                  value: (
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
+                      <MapPin size={13} style={{ color: '#D4A017', marginTop: 1, flexShrink: 0 }} />
+                      <span style={{ fontSize: 12, color: '#5d7a8c', lineHeight: 1.4 }}>
+                        {lang === 'vi' ? site.addressVi : site.addressEn}
+                      </span>
+                    </div>
+                  ),
+                },
+                ...(site.yearBuilt ? [{
+                  label: lang === 'vi' ? 'Năm xây dựng' : 'Year Built',
+                  value: (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <Calendar size={13} style={{ color: '#D4A017' }} />
+                      <span style={{ fontSize: 12, color: '#5d7a8c' }}>
+                        {site.yearBuilt}
+                      </span>
+                    </div>
+                  ),
+                }] : []),
+                ...(site.guardian ? [{
+                  label: lang === 'vi' ? 'Đơn vị quản lý' : 'Managing Unit',
+                  value: (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                      <User size={13} style={{ color: '#D4A017' }} />
+                      <span style={{ fontSize: 12, color: '#5d7a8c' }}>{site.guardian}</span>
+                    </div>
+                  ),
+                }] : []),
+              ]}
+              accentColor={getSafeColor(classificationColors, site.classification, '#7F8C8D')}
+            />
 
-            {/* Action buttons */}
             <div style={{ background: 'white', borderRadius: 12, padding: '16px', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <a href={directionsUrl} target="_blank" rel="noreferrer"
@@ -522,26 +484,15 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                   }}>
                   <Navigation size={14} /> {t('detail.route')}
                 </a>
-                <button onClick={() => setShowQr(true)}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    padding: '10px', borderRadius: 8, border: '1px solid #D4A017', background: 'rgba(212,160,23,0.05)',
-                    color: '#B8860B', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  }}>
-                  <QrCode size={14} /> {t('detail.share_qr')}
-                </button>
-                <button onClick={() => { navigator.clipboard.writeText(window.location.href); }}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    padding: '10px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white',
-                    color: '#0F3D5E', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  }}>
-                  <Share2 size={14} /> {lang === 'vi' ? 'Sao chép liên kết' : 'Copy Link'}
-                </button>
               </div>
             </div>
 
-            {/* Google Maps Embed in sidebar */}
+            <ShareSection
+              qrImageUrl={`/api/qr/heritage/${site.id}`}
+              title={name}
+              shareUrl={window.location.href}
+            />
+
             {embedUrl && (
               <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
                 <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(15,61,94,0.08)', display: 'flex', alignItems: 'center', gap: 6 }}>
@@ -572,73 +523,21 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
               </div>
             )}
 
-            {/* Related sites */}
-            {relatedSites.length > 0 && (
-              <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
-                <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(15,61,94,0.08)' }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: '#0F3D5E' }}>
-                    {lang === 'vi' ? 'Di tích liên quan' : 'Related Sites'}
-                  </span>
-                </div>
-                <div style={{ padding: '12px' }}>
-                  {relatedSites.map(rs => (
-                    <div key={rs.id} onClick={() => onNavigate('heritage-detail', rs.id)}
-                      style={{ display: 'flex', gap: 10, padding: '8px', borderRadius: 8, cursor: 'pointer', transition: 'background 0.2s' }}
-                      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = '#F0F4F8'; }}
-                      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}>
-                      <img src={getImageUrl(rs.image)} alt=""
-                        style={{ width: 52, height: 40, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }}
-                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
-                      <div>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: '#0F3D5E', lineHeight: 1.3 }}>
-                          {lang === 'vi' ? rs.nameVi : rs.nameEn}
-                        </div>
-                        <div style={{ fontSize: 11, color: '#5d7a8c' }}>{getSafeLabel(typeLabels, rs.type)}</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <RelatedItems
+              title={lang === 'vi' ? 'Di tích liên quan' : 'Related Sites'}
+              items={relatedSites.map(rs => ({
+                id: rs.id,
+                nameVi: rs.nameVi,
+                nameEn: rs.nameEn,
+                image: rs.image,
+                subtitle: getSafeLabel(typeLabels, rs.type),
+              }))}
+              onItemClick={(id) => onNavigate('heritage-detail', id)}
+              lang={lang}
+            />
           </div>
         </div>
       </div>
-
-      {/* QR Modal */}
-      {showQr && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}
-          onClick={() => setShowQr(false)}>
-          <div style={{ background: 'white', borderRadius: 12, padding: 28, maxWidth: 340, width: '90%', textAlign: 'center' }}
-            onClick={e => e.stopPropagation()}>
-            <h3 style={{ color: '#0F3D5E', marginBottom: 4 }}>{t('detail.share_qr')}</h3>
-            <p style={{ color: '#5d7a8c', fontSize: 12, marginBottom: 16 }}>
-              {lang === 'vi' ? site.nameVi : site.nameEn}
-            </p>
-            <div style={{ width: 200, height: 200, margin: '0 auto 16px', background: 'white', border: '2px solid #0F3D5E', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
-              <img src={`/api/qr/heritage/${site.id}`} alt="QR Code"
-                style={{ width: '100%', height: '100%', objectFit: 'contain' }}
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = 'none';
-                  (e.currentTarget as HTMLImageElement).parentElement!.innerHTML =
-                    `<div style="font-size:11px;color:#5d7a8c;padding:16px">${lang === 'vi' ? 'Không thể tạo QR' : 'QR generation failed'}</div>`;
-                }} />
-            </div>
-            <div style={{ fontSize: 11, color: '#5d7a8c', marginBottom: 16 }}>
-              {lang === 'vi' ? 'Quét mã để xem chi tiết di tích' : 'Scan to view heritage details'}
-            </div>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-              <button onClick={() => setShowQr(false)}
-                style={{ padding: '8px 20px', borderRadius: 6, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
-                {t('common.close')}
-              </button>
-              <a href={`/api/qr/heritage/${site.id}`} download={`qr-${site.id}.svg`}
-                style={{ padding: '8px 16px', borderRadius: 6, display: 'inline-flex', alignItems: 'center', gap: 6, border: '1px solid #0F3D5E', background: 'white', color: '#0F3D5E', fontSize: 13, fontWeight: 600, cursor: 'pointer', textDecoration: 'none' }}>
-                <Download size={14} /> {lang === 'vi' ? 'Tải xuống' : 'Download'}
-              </a>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -51,6 +51,43 @@ export interface IntangibleHeritage {
   videoUrl?: string;
   createdAt?: string;
   updatedAt?: string;
+  // Structured sections
+  otherNames?: string;
+  location?: string;
+  culturalSpace?: string;
+  community?: string;
+  representativePersons?: string;
+  origin?: string;
+  originEn?: string;
+  formationHistory?: string;
+  historicalDevelopment?: string;
+  worshipObjects?: string;
+  festivalTime?: string;
+  festivalDuration?: string;
+  festivalLocation?: string;
+  ritualParticipants?: string;
+  ritualProcess?: string;
+  customsAndOfferings?: string;
+  folkGames?: string;
+  traditionalPerformances?: string;
+  ritualObjects?: string;
+  relatedDocuments?: string;
+  relatedDocumentsEn?: string;
+  existingArtisans?: string;
+  teachingArtisans?: string;
+  practitioners?: string;
+  learners?: string;
+  otherHumanResources?: string;
+  transmissionMethod?: string;
+  currentStatus?: string;
+  currentStatusEn?: string;
+  threatLevel?: string;
+  riskDescription?: string;
+  heritageValue?: string;
+  heritageValueEn?: string;
+  existingProtectionMeasures?: string;
+  proposedProtectionMeasures?: string;
+  galleryImages?: string[];
 }
 
 export interface HeritageCategory {

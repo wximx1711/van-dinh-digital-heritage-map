@@ -176,6 +176,62 @@ const translations: Record<string, Record<Lang, string>> = {
   'im.upload_btn': { vi: 'Chọn ảnh', en: 'Choose Image' },
   'im.replace_image': { vi: 'Thay đổi ảnh', en: 'Replace Image' },
   'im.no_image': { vi: 'Chưa có ảnh', en: 'No image yet' },
+  // Section headers
+  'im.section_basic': { vi: 'Thông tin cơ bản', en: 'Basic Information' },
+  'im.section_description': { vi: 'Mô tả tổng quan', en: 'General Description' },
+  'im.section_additional': { vi: 'Thông tin bổ sung', en: 'Additional Information' },
+  'im.section_references': { vi: 'Tài liệu tham khảo', en: 'References & Documents' },
+  // Basic info fields
+  'im.other_names': { vi: 'Tên gọi khác', en: 'Other Names' },
+  'im.location': { vi: 'Địa điểm', en: 'Location' },
+  'im.cultural_space': { vi: 'Không gian văn hóa', en: 'Cultural Space' },
+  'im.community': { vi: 'Cộng đồng / Chủ thể văn hóa', en: 'Community / Cultural Owner' },
+  'im.representative_persons': { vi: 'Cá nhân đại diện', en: 'Representative Persons' },
+  // Origin & History fields
+  'im.origin': { vi: 'Nguồn gốc', en: 'Origin' },
+  'im.formation_history': { vi: 'Lịch sử hình thành', en: 'Formation History' },
+  'im.historical_development': { vi: 'Quá trình phát triển', en: 'Historical Development' },
+  // Practice fields
+  'im.worship_objects': { vi: 'Đồ thờ tự', en: 'Worship Objects' },
+  'im.festival_time': { vi: 'Thời gian lễ hội', en: 'Festival Time' },
+  'im.festival_duration': { vi: 'Thời gian tổ chức', en: 'Festival Duration' },
+  'im.festival_location': { vi: 'Địa điểm lễ hội', en: 'Festival Location' },
+  'im.ritual_participants': { vi: 'Thành phần tham gia', en: 'Ritual Participants' },
+  'im.ritual_process': { vi: 'Quy trình nghi lễ', en: 'Ritual Process' },
+  'im.customs_offerings': { vi: 'Tập tục & Lễ vật', en: 'Customs & Offerings' },
+  'im.folk_games': { vi: 'Trò chơi dân gian', en: 'Folk Games' },
+  'im.traditional_performances': { vi: 'Trình diễn truyền thống', en: 'Traditional Performances' },
+  'im.ritual_objects': { vi: 'Vật phẩm nghi lễ', en: 'Ritual Objects' },
+  'im.related_documents': { vi: 'Tài liệu liên quan', en: 'Related Documents' },
+  // Status fields
+  'im.existing_artisans': { vi: 'Nghệ nhân hiện có', en: 'Existing Artisans' },
+  'im.teaching_artisans': { vi: 'Nghệ nhân truyền dạy', en: 'Teaching Artisans' },
+  'im.practitioners': { vi: 'Người thực hành', en: 'Practitioners' },
+  'im.learners': { vi: 'Người học', en: 'Learners' },
+  'im.other_human_resources': { vi: 'Nguồn nhân lực khác', en: 'Other Human Resources' },
+  'im.transmission_method': { vi: 'Phương thức truyền dạy', en: 'Transmission Method' },
+  'im.current_status': { vi: 'Hiện trạng chung', en: 'Current Status' },
+  'im.preservation_status': { vi: 'Tình trạng bảo tồn', en: 'Preservation Status' },
+  // Risk fields
+  'im.threat_level': { vi: 'Mức độ đe dọa', en: 'Threat Level' },
+  'im.risk_description': { vi: 'Mô tả nguy cơ', en: 'Risk Description' },
+  // Value
+  'im.heritage_value': { vi: 'Giá trị di sản', en: 'Heritage Value' },
+  // Protection
+  'im.existing_protection': { vi: 'Biện pháp bảo vệ hiện có', en: 'Existing Protection Measures' },
+  'im.proposed_protection': { vi: 'Biện pháp bảo vệ đề xuất', en: 'Proposed Protection Measures' },
+  // Media
+  'im.gallery': { vi: 'Thư viện ảnh', en: 'Gallery Images' },
+  // Intangible detail sections
+  'intangible.section_description': { vi: 'Mô tả tổng quan', en: 'General Description' },
+  'intangible.section_origin': { vi: 'Nguồn gốc / Lịch sử', en: 'Origin / History' },
+  'intangible.section_cultural_value': { vi: 'Giá trị văn hóa', en: 'Cultural Value' },
+  'intangible.section_current_status': { vi: 'Hiện trạng', en: 'Current Status' },
+  'intangible.section_preservation': { vi: 'Bảo tồn', en: 'Preservation' },
+  'intangible.section_documents': { vi: 'Tài liệu liên quan', en: 'Related Documents' },
+  'intangible.section_video': { vi: 'Video', en: 'Video' },
+  'intangible.related': { vi: 'Di sản phi vật thể liên quan', en: 'Related Intangible Heritage' },
+  'intangible.status': { vi: 'Trạng thái', en: 'Status' },
 };
 
 const LanguageContext = createContext<LanguageContextType>({

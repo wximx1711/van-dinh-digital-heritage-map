@@ -223,3 +223,16 @@
 .badge-national { background: #E74C3C; color: white; }
 .badge-city { background: #1A5276; color: white; }
 .badge-unranked { background: #7F8C8D; color: white; }
+
+/* Heritage detail page layout — stack on mobile */
+.heritage-detail-layout {
+  display: grid !important;
+  grid-template-columns: 1fr 360px !important;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .heritage-detail-layout {
+    grid-template-columns: 1fr !important;
+  }
+}

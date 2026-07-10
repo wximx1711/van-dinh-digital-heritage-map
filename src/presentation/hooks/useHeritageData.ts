@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchHeritageSites, fetchHeritageSite } from '../../app/services/heritageService';
-import { fetchIntangibleHeritage } from '../../app/services/intangibleService';
+import { fetchIntangibleHeritage, fetchIntangibleHeritageById } from '../../app/services/intangibleService';
 import { typeLabels, classificationLabels, statusLabels } from '../../data/labels';
 import type { HeritageSite, IntangibleHeritage } from '../../core/types';
 
@@ -64,6 +64,31 @@ export function useHeritageSite(id: string) {
       setLoading(true);
       const site = await fetchHeritageSite(id);
       setData(site);
+      setError(null);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
+}
+
+export function useIntangibleHeritageById(id: string) {
+  const [data, setData] = useState<IntangibleHeritage | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const item = await fetchIntangibleHeritageById(id);
+      setData(item);
       setError(null);
     } catch (err) {
       setError(err as Error);

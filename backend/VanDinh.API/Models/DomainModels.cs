@@ -132,12 +132,65 @@ public sealed class IntangibleHeritage
     public string NameEn { get; set; } = "";
     [Required, MaxLength(30)]
     public string Category { get; set; } = "";
-    [Required, MinLength(30)]
+    [Required]
     public string? DescriptionVi { get; set; }
-    [Required, MinLength(30)]
+    [Required]
     public string? DescriptionEn { get; set; }
     public string? ImageUrl { get; set; }
     public string? VideoUrl { get; set; }
+
+    // Basic Information
+    public string? OtherNames { get; set; }
+    public string? Location { get; set; }
+    public string? CulturalSpace { get; set; }
+    public string? Community { get; set; }
+    public string? RepresentativePersons { get; set; }
+
+    // Origin & History
+    public string? Origin { get; set; }
+    public string? OriginEn { get; set; }
+    public string? FormationHistory { get; set; }
+    public string? HistoricalDevelopment { get; set; }
+
+    // Heritage Practice
+    public string? WorshipObjects { get; set; }
+    public string? FestivalTime { get; set; }
+    public string? FestivalDuration { get; set; }
+    public string? FestivalLocation { get; set; }
+    public string? RitualParticipants { get; set; }
+    public string? RitualProcess { get; set; }
+    public string? CustomsAndOfferings { get; set; }
+    public string? FolkGames { get; set; }
+    public string? TraditionalPerformances { get; set; }
+    public string? RitualObjects { get; set; }
+    public string? RelatedDocuments { get; set; }
+    public string? RelatedDocumentsEn { get; set; }
+
+    // Current Status
+    public string? ExistingArtisans { get; set; }
+    public string? TeachingArtisans { get; set; }
+    public string? Practitioners { get; set; }
+    public string? Learners { get; set; }
+    public string? OtherHumanResources { get; set; }
+    public string? TransmissionMethod { get; set; }
+    public string? CurrentStatus { get; set; }
+    public string? CurrentStatusEn { get; set; }
+
+    // Risks
+    public string? ThreatLevel { get; set; }
+    public string? RiskDescription { get; set; }
+
+    // Heritage Value
+    public string? HeritageValue { get; set; }
+    public string? HeritageValueEn { get; set; }
+
+    // Preservation
+    public string? ExistingProtectionMeasures { get; set; }
+    public string? ProposedProtectionMeasures { get; set; }
+
+    // Media
+    public string? GalleryImages { get; set; } // JSON array of image URLs
+
     public bool IsDeleted { get; set; }
     public long CreatedBy { get; set; }
     public long? UpdatedBy { get; set; }

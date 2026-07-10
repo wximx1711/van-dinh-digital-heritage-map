@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { intangibleCategoryIcons } from '../constants';
 import { fetchIntangibleHeritageList, createIntangibleHeritage, updateIntangibleHeritage, deleteIntangibleHeritage } from '../services/intangibleService';
-import { apiPost, apiGet, apiDelete } from '../services/api';
+import { apiPost, apiDelete } from '../services/api';
 import { getImageUrl } from '../utils/url';
 import { MediaPicker } from './MediaPicker';
 import {
   Plus, Search, Filter, Pencil, Trash2, X, Check, AlertTriangle, Upload,
-  ChevronLeft, ChevronRight, Image as ImageIcon, Video, FileText, Download, Eye
+  ChevronLeft, ChevronRight,
+  Image as ImageIcon, Eye
 } from 'lucide-react';
 
 interface IntangibleItem {
@@ -21,11 +22,61 @@ interface IntangibleItem {
   videoUrl?: string;
   createdAt?: string;
   updatedAt?: string;
+  otherNames: string;
+  location: string;
+  culturalSpace: string;
+  community: string;
+  representativePersons: string;
+  origin: string;
+  originEn: string;
+  formationHistory: string;
+  historicalDevelopment: string;
+  worshipObjects: string;
+  festivalTime: string;
+  festivalDuration: string;
+  festivalLocation: string;
+  ritualParticipants: string;
+  ritualProcess: string;
+  customsAndOfferings: string;
+  folkGames: string;
+  traditionalPerformances: string;
+  ritualObjects: string;
+  relatedDocuments: string;
+  relatedDocumentsEn: string;
+  existingArtisans: string;
+  teachingArtisans: string;
+  practitioners: string;
+  learners: string;
+  otherHumanResources: string;
+  transmissionMethod: string;
+  currentStatus: string;
+  currentStatusEn: string;
+  threatLevel: string;
+  riskDescription: string;
+  heritageValue: string;
+  heritageValueEn: string;
+  existingProtectionMeasures: string;
+  proposedProtectionMeasures: string;
 }
 
 type FormMode = 'add' | 'edit' | null;
 
 const categories = ['festival', 'performance', 'craft', 'ritual', 'story'];
+
+const emptyItem: IntangibleItem = {
+  id: '', nameVi: '', nameEn: '', category: 'festival',
+  descriptionVi: '', descriptionEn: '', image: '', videoUrl: '',
+  otherNames: '', location: '', culturalSpace: '', community: '', representativePersons: '',
+  origin: '', originEn: '', formationHistory: '', historicalDevelopment: '',
+  worshipObjects: '', festivalTime: '', festivalDuration: '', festivalLocation: '',
+  ritualParticipants: '', ritualProcess: '', customsAndOfferings: '', folkGames: '',
+  traditionalPerformances: '', ritualObjects: '', relatedDocuments: '', relatedDocumentsEn: '',
+  existingArtisans: '', teachingArtisans: '', practitioners: '', learners: '',
+  otherHumanResources: '', transmissionMethod: '', currentStatus: '', currentStatusEn: '',
+  threatLevel: '', riskDescription: '',
+  heritageValue: '', heritageValueEn: '',
+  existingProtectionMeasures: '', proposedProtectionMeasures: '',
+};
 
 export function IntangibleManagement() {
   const { lang, t } = useLanguage();
@@ -72,7 +123,7 @@ export function IntangibleManagement() {
   useEffect(() => { loadData(); }, [search, filterCat, page]);
 
   const openAdd = () => {
-    setEditItem({ id: '', nameVi: '', nameEn: '', category: 'festival', descriptionVi: '', descriptionEn: '', image: '', videoUrl: '' });
+    setEditItem({ ...emptyItem });
     setGalleryImages([]);
     setFormErrors({});
     setFormMode('add');
@@ -95,16 +146,7 @@ export function IntangibleManagement() {
     else if (editItem.nameEn.trim().length < 5) errors.nameEn = lang === 'vi' ? 'Tối thiểu 5 ký tự' : 'Minimum 5 characters';
     else if (editItem.nameEn.length > 200) errors.nameEn = lang === 'vi' ? 'Tối đa 200 ký tự' : 'Max 200 characters';
     if (!editItem.category) errors.category = lang === 'vi' ? 'Thể loại là bắt buộc' : 'Category is required';
-    if (!editItem.descriptionVi.trim()) errors.descriptionVi = lang === 'vi' ? 'Mô tả (VI) là bắt buộc' : 'Description (VI) is required';
-    else if (editItem.descriptionVi.trim().length < 30) errors.descriptionVi = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
-    if (!editItem.descriptionEn.trim()) errors.descriptionEn = lang === 'vi' ? 'Mô tả (EN) là bắt buộc' : 'Description (EN) is required';
-    else if (editItem.descriptionEn.trim().length < 30) errors.descriptionEn = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
     if (!editItem.image) errors.image = lang === 'vi' ? 'Ảnh đại diện là bắt buộc' : 'Cover image is required';
-    if (editItem.videoUrl && editItem.videoUrl.trim()) {
-      const url = editItem.videoUrl.trim();
-      if (!url.startsWith('https://www.youtube.com') && !url.startsWith('https://youtube.com') && !url.startsWith('https://youtu.be'))
-        errors.videoUrl = lang === 'vi' ? 'Chỉ chấp nhận URL YouTube' : 'Only YouTube URLs accepted';
-    }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -122,6 +164,42 @@ export function IntangibleManagement() {
         descriptionEn: editItem.descriptionEn || null,
         image: editItem.image || null,
         videoUrl: editItem.videoUrl || null,
+        otherNames: editItem.otherNames || null,
+        location: editItem.location || null,
+        culturalSpace: editItem.culturalSpace || null,
+        community: editItem.community || null,
+        representativePersons: editItem.representativePersons || null,
+        origin: editItem.origin || null,
+        originEn: editItem.originEn || null,
+        formationHistory: editItem.formationHistory || null,
+        historicalDevelopment: editItem.historicalDevelopment || null,
+        worshipObjects: editItem.worshipObjects || null,
+        festivalTime: editItem.festivalTime || null,
+        festivalDuration: editItem.festivalDuration || null,
+        festivalLocation: editItem.festivalLocation || null,
+        ritualParticipants: editItem.ritualParticipants || null,
+        ritualProcess: editItem.ritualProcess || null,
+        customsAndOfferings: editItem.customsAndOfferings || null,
+        folkGames: editItem.folkGames || null,
+        traditionalPerformances: editItem.traditionalPerformances || null,
+        ritualObjects: editItem.ritualObjects || null,
+        relatedDocuments: editItem.relatedDocuments || null,
+        relatedDocumentsEn: editItem.relatedDocumentsEn || null,
+        existingArtisans: editItem.existingArtisans || null,
+        teachingArtisans: editItem.teachingArtisans || null,
+        practitioners: editItem.practitioners || null,
+        learners: editItem.learners || null,
+        otherHumanResources: editItem.otherHumanResources || null,
+        transmissionMethod: editItem.transmissionMethod || null,
+        currentStatus: editItem.currentStatus || null,
+        currentStatusEn: editItem.currentStatusEn || null,
+        threatLevel: editItem.threatLevel || null,
+        riskDescription: editItem.riskDescription || null,
+        heritageValue: editItem.heritageValue || null,
+        heritageValueEn: editItem.heritageValueEn || null,
+        existingProtectionMeasures: editItem.existingProtectionMeasures || null,
+        proposedProtectionMeasures: editItem.proposedProtectionMeasures || null,
+        galleryImages: galleryImages.length > 0 ? galleryImages : null,
       };
       if (formMode === 'add') {
         await createIntangibleHeritage(payload);
@@ -199,6 +277,58 @@ export function IntangibleManagement() {
     background: '#F8FAFC', outline: 'none', boxSizing: 'border-box' as const,
   };
 
+  const updateField = (field: keyof IntangibleItem, value: string) => {
+    setEditItem(s => s ? { ...s, [field]: value } : s);
+    setFormErrors(prev => ({ ...prev, [field]: '' }));
+  };
+
+  const renderField = (field: keyof IntangibleItem, label: string, options?: { type?: string; rows?: number; required?: boolean }) => {
+    const { type = 'text', rows, required } = options || {};
+    const value = editItem?.[field] ?? '';
+    const errorKey = field as string;
+    return (
+      <div style={{ marginBottom: 12 }}>
+        <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.3 }}>
+          {label}{required ? ' *' : ''}
+        </label>
+        {type === 'textarea' ? (
+          <textarea
+            style={{ ...inputStyle, resize: 'vertical', minHeight: rows ? rows * 20 : 72, borderColor: formErrors[errorKey] ? '#E74C3C' : 'rgba(15,61,94,0.15)' }}
+            value={value as string}
+            onChange={e => updateField(field, e.target.value)}
+          />
+        ) : (
+          <input
+            style={{ ...inputStyle, borderColor: formErrors[errorKey] ? '#E74C3C' : 'rgba(15,61,94,0.15)' }}
+            type={type}
+            value={value as string}
+            onChange={e => updateField(field, e.target.value)}
+          />
+        )}
+        {formErrors[errorKey] && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors[errorKey]}</span>}
+      </div>
+    );
+  };
+
+  const renderCard = (title: string, children: React.ReactNode) => (
+    <div style={{
+      background: 'white', borderRadius: 10, overflow: 'hidden',
+      boxShadow: '0 1px 6px rgba(15,61,94,0.06)', marginBottom: 12,
+      border: '1px solid rgba(15,61,94,0.08)',
+    }}>
+      <div style={{
+        padding: '11px 18px', background: '#0F3D5E',
+      }}>
+        <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.3, color: 'white' }}>
+          {title}
+        </span>
+      </div>
+      <div style={{ padding: '18px' }}>
+        {children}
+      </div>
+    </div>
+  );
+
   return (
     <div style={{ padding: '24px', position: 'relative' }}>
       {toast && (
@@ -270,7 +400,7 @@ export function IntangibleManagement() {
                     </div>
                   </td>
                   <td style={{ padding: '10px 14px' }}>
-                    <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{lang === 'vi' ? item.nameVi : item.nameEn}</div>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}</div>
                     <div style={{ fontSize: 10, color: '#5d7a8c' }}>{lang === 'vi' ? item.nameEn : item.nameVi}</div>
                   </td>
                   <td style={{ padding: '10px 14px' }}>
@@ -280,7 +410,7 @@ export function IntangibleManagement() {
                     </span>
                   </td>
                   <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c', maxWidth: 200, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    {lang === 'vi' ? item.descriptionVi : item.descriptionEn}
+                    {lang === 'en' ? (item.descriptionEn || item.descriptionVi) : item.descriptionVi}
                   </td>
                   <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c' }}>
                     {item.videoUrl ? (
@@ -340,103 +470,155 @@ export function IntangibleManagement() {
       {formMode && editItem && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500 }}
           onClick={() => { setFormMode(null); setEditItem(null); setFormErrors({}); }}>
-          <div style={{ background: 'white', borderRadius: 12, width: '90%', maxWidth: 720, maxHeight: '90vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
+          <div style={{ background: '#F0F4F8', borderRadius: 12, width: '95%', maxWidth: 860, maxHeight: '94vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
             onClick={e => e.stopPropagation()}>
-            <div style={{ padding: '16px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '16px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
               <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>{formMode === 'add' ? t('im.add') : t('im.edit')}</span>
               <button onClick={() => { setFormMode(null); setEditItem(null); setFormErrors({}); }}
                 style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
 
-            <div style={{ overflowY: 'auto', flex: 1, padding: '20px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.name_vi')} *</label>
-                  <input style={{ ...inputStyle, borderColor: formErrors.nameVi ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editItem.nameVi} onChange={e => { setEditItem(s => s ? { ...s, nameVi: e.target.value } : s); setFormErrors(prev => ({ ...prev, nameVi: '' })); }} />
-                  {formErrors.nameVi && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.nameVi}</span>}
-                </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.name_en')} *</label>
-                  <input style={{ ...inputStyle, borderColor: formErrors.nameEn ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editItem.nameEn} onChange={e => { setEditItem(s => s ? { ...s, nameEn: e.target.value } : s); setFormErrors(prev => ({ ...prev, nameEn: '' })); }} />
-                  {formErrors.nameEn && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.nameEn}</span>}
-                </div>
+            <div style={{ overflowY: 'auto', flex: 1, padding: '16px 20px' }}>
 
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.category')} *</label>
-                  <select style={{ ...inputStyle, background: 'white', cursor: 'pointer', borderColor: formErrors.category ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editItem.category}
-                    onChange={e => { setEditItem(s => s ? { ...s, category: e.target.value } : s); setFormErrors(prev => ({ ...prev, category: '' })); }}>
-                    {categories.map(cat => (<option key={cat} value={cat}>{intangibleCategoryIcons[cat as keyof typeof intangibleCategoryIcons]} {t(`intangible.${cat}`)}</option>))}
-                  </select>
-                  {formErrors.category && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.category}</span>}
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.video_url')}</label>
-                  <input style={{ ...inputStyle, borderColor: formErrors.videoUrl ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} type="url" placeholder="https://www.youtube.com/..." value={editItem.videoUrl || ''} onChange={e => { setEditItem(s => s ? { ...s, videoUrl: e.target.value } : s); setFormErrors(prev => ({ ...prev, videoUrl: '' })); }} />
-                  {formErrors.videoUrl && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.videoUrl}</span>}
-                </div>
-
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.description_vi')} *</label>
-                  <textarea style={{ ...inputStyle, resize: 'vertical', minHeight: 72, borderColor: formErrors.descriptionVi ? '#E74C3C' : 'rgba(15,61,94,0.15)' }}
-                    value={editItem.descriptionVi} onChange={e => { setEditItem(s => s ? { ...s, descriptionVi: e.target.value } : s); setFormErrors(prev => ({ ...prev, descriptionVi: '' })); }} />
-                  {formErrors.descriptionVi && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.descriptionVi}</span>}
-                </div>
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.description_en')} *</label>
-                  <textarea style={{ ...inputStyle, resize: 'vertical', minHeight: 72, borderColor: formErrors.descriptionEn ? '#E74C3C' : 'rgba(15,61,94,0.15)' }}
-                    value={editItem.descriptionEn} onChange={e => { setEditItem(s => s ? { ...s, descriptionEn: e.target.value } : s); setFormErrors(prev => ({ ...prev, descriptionEn: '' })); }} />
-                  {formErrors.descriptionEn && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.descriptionEn}</span>}
-                </div>
-
-                {/* Cover Image */}
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.image')} *</label>
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <div style={{ width: 120, height: 90, borderRadius: 8, overflow: 'hidden', background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {editItem.image ? <img src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        : <span style={{ fontSize: 11, color: '#5d7a8c' }}>{t('im.no_image')}</span>}
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
-                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1 }}>
-                          <Upload size={14} />
-                          {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (editItem.image ? t('im.replace_image') : t('im.upload_btn'))}
-                          <input type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
-                        </label>
-                        <div onClick={() => openMediaPicker('thumbnail')}
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                          <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
-                        </div>
-                      </div>
-                      <p style={{ fontSize: 10, color: '#cbced4', margin: 0 }}>{t('im.upload_hint')}</p>
-                    </div>
+              {/* Card 1: Basic Information */}
+              {renderCard(t('im.section_basic'), (
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                  {renderField('nameVi', t('im.name_vi'), { required: true })}
+                  {renderField('nameEn', t('im.name_en'), { required: true })}
+                  <div style={{ marginBottom: 12 }}>
+                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.category')} *</label>
+                    <select style={{ ...inputStyle, background: 'white', cursor: 'pointer', borderColor: formErrors.category ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editItem.category}
+                      onChange={e => { updateField('category', e.target.value); }}>
+                      {categories.map(cat => (<option key={cat} value={cat}>{intangibleCategoryIcons[cat as keyof typeof intangibleCategoryIcons]} {t(`intangible.${cat}`)}</option>))}
+                    </select>
+                    {formErrors.category && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.category}</span>}
                   </div>
-                  {formErrors.image && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 4, display: 'block' }}>{formErrors.image}</span>}
+                  {renderField('videoUrl', t('im.video_url'))}
                 </div>
+              ))}
 
-                {/* Gallery Images */}
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.3 }}>
-                    {lang === 'vi' ? 'Thư viện ảnh' : 'Gallery Images'} <span style={{ color: '#5d7a8c', fontWeight: 400 }}>({galleryImages.length})</span>
-                  </label>
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
-                    {galleryImages.map((url, i) => (
-                      <div key={i} style={{ position: 'relative', width: 90, height: 70, borderRadius: 6, overflow: 'hidden', border: '1px solid rgba(15,61,94,0.1)' }}>
-                        <img src={getImageUrl(url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        <button onClick={() => removeGalleryImage(i)} style={{ position: 'absolute', top: 2, right: 2, width: 18, height: 18, borderRadius: '50%', background: 'rgba(231,76,60,0.85)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={10} /></button>
+              {/* Card 2: General Description */}
+              {renderCard(t('im.section_description'), (
+                <div>
+                  {renderField('descriptionVi', t('im.description_vi'), { type: 'textarea', rows: 8 })}
+                  {renderField('descriptionEn', t('im.description_en'), { type: 'textarea', rows: 8 })}
+                </div>
+              ))}
+
+              {/* Card 3: Origin / History */}
+              {renderCard(t('im.origin'), (
+                <div>
+                  <p style={{ fontSize: 11, color: '#5d7a8c', marginTop: 0, marginBottom: 12, fontStyle: 'italic' }}>
+                    {lang === 'vi' ? 'Nguồn gốc và lịch sử hình thành.' : 'Origin and formation history.'}
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>{renderField('origin', `${t('im.origin')} (VI)`, { type: 'textarea', rows: 5 })}</div>
+                    <div>{renderField('originEn', `${t('im.origin')} (EN)`, { type: 'textarea', rows: 5 })}</div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Card 4: Heritage Value */}
+              {renderCard(t('im.heritage_value'), (
+                <div>
+                  <p style={{ fontSize: 11, color: '#5d7a8c', marginTop: 0, marginBottom: 12, fontStyle: 'italic' }}>
+                    {lang === 'vi' ? 'Giá trị văn hóa, lịch sử, nghệ thuật.' : 'Cultural, historical and artistic value.'}
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>{renderField('heritageValue', `${t('im.heritage_value')} (VI)`, { type: 'textarea', rows: 5 })}</div>
+                    <div>{renderField('heritageValueEn', `${t('im.heritage_value')} (EN)`, { type: 'textarea', rows: 5 })}</div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Card 5: Current Status */}
+              {renderCard(t('im.preservation_status'), (
+                <div>
+                  <p style={{ fontSize: 11, color: '#5d7a8c', marginTop: 0, marginBottom: 12, fontStyle: 'italic' }}>
+                    {lang === 'vi' ? 'Tình trạng bảo tồn hiện tại.' : 'Current preservation status.'}
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>{renderField('currentStatus', `${t('im.preservation_status')} (VI)`, { type: 'textarea', rows: 5 })}</div>
+                    <div>{renderField('currentStatusEn', `${t('im.preservation_status')} (EN)`, { type: 'textarea', rows: 5 })}</div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Card 6: Related Documents */}
+              {renderCard(t('im.related_documents'), (
+                <div>
+                  <p style={{ fontSize: 11, color: '#5d7a8c', marginTop: 0, marginBottom: 12, fontStyle: 'italic' }}>
+                    {lang === 'vi' ? 'Tài liệu liên quan, đường dẫn ngoài, tham khảo.' : 'Related documents, external links, references.'}
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+                    <div>{renderField('relatedDocuments', `${t('im.related_documents')} (VI)`, { type: 'textarea', rows: 5 })}</div>
+                    <div>{renderField('relatedDocumentsEn', `${t('im.related_documents')} (EN)`, { type: 'textarea', rows: 5 })}</div>
+                  </div>
+                </div>
+              ))}
+
+              {/* Cover Image & Gallery - compact inline section */}
+              <div style={{
+                background: 'white', borderRadius: 10, overflow: 'hidden',
+                boxShadow: '0 1px 6px rgba(15,61,94,0.06)', marginBottom: 12,
+                border: '1px solid rgba(15,61,94,0.08)',
+              }}>
+                <div style={{ padding: '11px 18px', background: '#0F3D5E' }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: 0.3, color: 'white' }}>
+                    {lang === 'vi' ? 'Hình ảnh & Truyền thông' : 'Media'}
+                  </span>
+                </div>
+                <div style={{ padding: '18px' }}>
+                  {/* Cover Image */}
+                  <div style={{ marginBottom: 16 }}>
+                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.image')} *</label>
+                    <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+                      <div style={{ width: 120, height: 90, borderRadius: 8, overflow: 'hidden', background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                        {editItem.image ? <img src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          : <span style={{ fontSize: 11, color: '#5d7a8c' }}>{t('im.no_image')}</span>}
                       </div>
-                    ))}
-                    <button onClick={() => openMediaPicker('gallery')} style={{ width: 90, height: 70, borderRadius: 6, border: '2px dashed rgba(15,61,94,0.15)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#5d7a8c', fontSize: 10, gap: 4, background: '#F8FAFC' }}>
-                      <ImageIcon size={16} />
-                      {lang === 'vi' ? 'Thêm ảnh' : 'Add Image'}
-                    </button>
+                      <div>
+                        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
+                          <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1 }}>
+                            <Upload size={14} />
+                            {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (editItem.image ? t('im.replace_image') : t('im.upload_btn'))}
+                            <input type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
+                          </label>
+                          <div onClick={() => openMediaPicker('thumbnail')}
+                            style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                            <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
+                          </div>
+                        </div>
+                        <p style={{ fontSize: 10, color: '#cbced4', margin: 0 }}>{t('im.upload_hint')}</p>
+                      </div>
+                    </div>
+                    {formErrors.image && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 4, display: 'block' }}>{formErrors.image}</span>}
+                  </div>
+
+                  {/* Gallery */}
+                  <div>
+                    <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 0.3 }}>
+                      {t('im.gallery')} <span style={{ color: '#5d7a8c', fontWeight: 400 }}>({galleryImages.length})</span>
+                    </label>
+                    <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
+                      {galleryImages.map((url, i) => (
+                        <div key={i} style={{ position: 'relative', width: 90, height: 70, borderRadius: 6, overflow: 'hidden', border: '1px solid rgba(15,61,94,0.1)' }}>
+                          <img src={getImageUrl(url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <button onClick={() => removeGalleryImage(i)} style={{ position: 'absolute', top: 2, right: 2, width: 18, height: 18, borderRadius: '50%', background: 'rgba(231,76,60,0.85)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={10} /></button>
+                        </div>
+                      ))}
+                      <button onClick={() => openMediaPicker('gallery')} style={{ width: 90, height: 70, borderRadius: 6, border: '2px dashed rgba(15,61,94,0.15)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#5d7a8c', fontSize: 10, gap: 4, background: '#F8FAFC' }}>
+                        <ImageIcon size={16} />
+                        {lang === 'vi' ? 'Thêm ảnh' : 'Add Image'}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
 
-            <div style={{ padding: '14px 20px', borderTop: '1px solid rgba(15,61,94,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 10, background: '#F8FAFC' }}>
+            <div style={{ padding: '14px 20px', borderTop: '1px solid rgba(15,61,94,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 10, background: '#F8FAFC', flexShrink: 0 }}>
               <button onClick={() => setShowPreview(true)}
                 style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 <Eye size={14} /> {lang === 'vi' ? 'Xem trước' : 'Preview'}
@@ -454,7 +636,7 @@ export function IntangibleManagement() {
       {showPreview && editItem && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 600 }}
           onClick={() => setShowPreview(false)}>
-          <div style={{ background: 'white', borderRadius: 12, width: '90%', maxWidth: 500, maxHeight: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
+          <div style={{ background: 'white', borderRadius: 12, width: '90%', maxWidth: 600, maxHeight: '85vh', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}
             onClick={e => e.stopPropagation()}>
             <div style={{ padding: '14px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>{lang === 'vi' ? 'Xem trước' : 'Preview'}</span>
@@ -464,11 +646,55 @@ export function IntangibleManagement() {
               {editItem.image && <img src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8, marginBottom: 12 }} />}
               <h2 style={{ color: '#0F3D5E', fontSize: 18, fontFamily: 'Merriweather, serif', margin: '0 0 4px' }}>{editItem.nameVi}</h2>
               <p style={{ color: '#5d7a8c', fontSize: 12, marginBottom: 8 }}>{editItem.nameEn}</p>
-              <p style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{editItem.descriptionVi}</p>
-              <p style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.6, whiteSpace: 'pre-line' }}>{editItem.descriptionEn}</p>
+
+              {/* General Description */}
+              {(editItem.descriptionVi || editItem.descriptionEn) && renderPreviewSection(t('im.section_description'), (
+                <div style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                  {editItem.descriptionVi && <div>{editItem.descriptionVi}</div>}
+                  {editItem.descriptionEn && editItem.descriptionVi && <hr style={{ margin: '12px 0', border: 'none', borderTop: '1px solid rgba(15,61,94,0.08)' }} />}
+                  {editItem.descriptionEn && <div>{editItem.descriptionEn}</div>}
+                </div>
+              ))}
+
+              {/* Origin / History */}
+              {(editItem.origin || editItem.originEn) && renderPreviewSection(t('im.origin'), (
+                <div style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                  {editItem.origin && <div>{editItem.origin}</div>}
+                  {editItem.originEn && editItem.origin && <hr style={{ margin: '10px 0', border: 'none', borderTop: '1px solid rgba(15,61,94,0.08)' }} />}
+                  {editItem.originEn && <div style={{ color: '#5d7a8c', fontSize: 12 }}>{editItem.originEn}</div>}
+                </div>
+              ))}
+
+              {/* Heritage Value */}
+              {(editItem.heritageValue || editItem.heritageValueEn) && renderPreviewSection(t('im.heritage_value'), (
+                <div style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                  {editItem.heritageValue && <div>{editItem.heritageValue}</div>}
+                  {editItem.heritageValueEn && editItem.heritageValue && <hr style={{ margin: '10px 0', border: 'none', borderTop: '1px solid rgba(15,61,94,0.08)' }} />}
+                  {editItem.heritageValueEn && <div style={{ color: '#5d7a8c', fontSize: 12 }}>{editItem.heritageValueEn}</div>}
+                </div>
+              ))}
+
+              {/* Preservation Status */}
+              {(editItem.currentStatus || editItem.currentStatusEn) && renderPreviewSection(t('im.preservation_status'), (
+                <div style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                  {editItem.currentStatus && <div>{editItem.currentStatus}</div>}
+                  {editItem.currentStatusEn && editItem.currentStatus && <hr style={{ margin: '10px 0', border: 'none', borderTop: '1px solid rgba(15,61,94,0.08)' }} />}
+                  {editItem.currentStatusEn && <div style={{ color: '#5d7a8c', fontSize: 12 }}>{editItem.currentStatusEn}</div>}
+                </div>
+              ))}
+
+              {/* Related Documents */}
+              {(editItem.relatedDocuments || editItem.relatedDocumentsEn) && renderPreviewSection(t('im.related_documents'), (
+                <div style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.7, whiteSpace: 'pre-line' }}>
+                  {editItem.relatedDocuments && <div>{editItem.relatedDocuments}</div>}
+                  {editItem.relatedDocumentsEn && editItem.relatedDocuments && <hr style={{ margin: '10px 0', border: 'none', borderTop: '1px solid rgba(15,61,94,0.08)' }} />}
+                  {editItem.relatedDocumentsEn && <div style={{ color: '#5d7a8c', fontSize: 12 }}>{editItem.relatedDocumentsEn}</div>}
+                </div>
+              ))}
+
               {galleryImages.length > 0 && (
                 <div style={{ marginTop: 12 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E', marginBottom: 8 }}>{lang === 'vi' ? 'Thư viện ảnh' : 'Gallery'}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E', marginBottom: 8 }}>{t('im.gallery')}</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
                     {galleryImages.slice(0, 6).map((url, i) => (
                       <img key={i} src={getImageUrl(url)} alt="" style={{ width: '100%', height: 60, objectFit: 'cover', borderRadius: 4 }} />
@@ -503,6 +729,17 @@ export function IntangibleManagement() {
         onSelectMultiple={handleMediaSelectMultiple}
         multiple={mediaPickerTarget === 'gallery'}
       />
+    </div>
+  );
+}
+
+function renderPreviewSection(title: string, content: React.ReactNode) {
+  return (
+    <div style={{ marginBottom: 16, padding: 12, background: '#F8FAFC', borderRadius: 8 }}>
+      <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E', marginBottom: 6, textTransform: 'uppercase', letterSpacing: 0.3 }}>
+        {title}
+      </div>
+      {content}
     </div>
   );
 }

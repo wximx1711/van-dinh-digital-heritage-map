@@ -11,6 +11,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { RelicsPage } from './components/RelicsPage';
 
 import { IntangiblePage } from './components/IntangiblePage';
+import { IntangibleHeritageDetail } from './components/IntangibleHeritageDetail';
 import { StatisticsPage } from './components/StatisticsPage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { apiGet, apiPost } from './services/api';
@@ -19,7 +20,8 @@ import type { UserInfo, AboutPageData } from '../core/types';
 
 type Page =
   | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
-  | 'about' | 'contact' | 'heritage-detail' | 'login' | 'admin' | '404';
+  | 'about' | 'contact' | 'heritage-detail' | 'intangible-detail'
+  | 'login' | 'admin' | '404';
 
 function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { lang } = useLanguage();
@@ -196,6 +198,7 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
 function AppInner() {
   const [page, setPage] = useState<Page>('home');
   const [heritageSiteId, setHeritageSiteId] = useState<string>('h001');
+  const [intangibleId, setIntangibleId] = useState<string>('');
   const auth = useAuth();
 
   useEffect(() => {
@@ -205,11 +208,15 @@ function AppInner() {
     if (pageParam === 'heritage' && idParam) {
       setHeritageSiteId(idParam);
       setPage('heritage-detail');
+    } else if (pageParam === 'intangible' && idParam) {
+      setIntangibleId(idParam);
+      setPage('intangible-detail');
     }
   }, []);
 
   const navigate = (targetPage: string, id?: string) => {
     if (targetPage === 'heritage-detail' && id) setHeritageSiteId(id);
+    if (targetPage === 'intangible-detail' && id) setIntangibleId(id);
     setPage(targetPage as Page);
     if (!['login', 'admin'].includes(targetPage)) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -293,6 +300,7 @@ function AppInner() {
       case 'intangible': return <IntangiblePage onNavigate={navigate} />;
       case 'statistics': return <StatisticsPage onNavigate={navigate} />;
       case 'heritage-detail': return <HeritageDetail siteId={heritageSiteId} onNavigate={navigate} />;
+      case 'intangible-detail': return <IntangibleHeritageDetail itemId={intangibleId} onNavigate={navigate} />;
 
       case 'about': return <AboutPage onNavigate={navigate} />;
       case 'contact': return <ContactPage onNavigate={navigate} />;

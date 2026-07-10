@@ -427,7 +427,7 @@ const handleSearch = () => {
                 <div style={{ position: 'relative', height: 160, background: '#dce8f0', overflow: 'hidden' }}>
                   <img
                     src={getImageUrl(item.image)}
-                    alt={lang === 'vi' ? item.nameVi : item.nameEn}
+                    alt={lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                   <div style={{ position: 'absolute', inset: 0, background: 'rgba(15,61,94,0.25)' }} />
@@ -443,10 +443,10 @@ const handleSearch = () => {
                 </div>
                 <div style={{ padding: '16px' }}>
                   <h3 style={{ color: '#0F3D5E', fontSize: 14, fontWeight: 700, margin: '0 0 8px' }}>
-                    {lang === 'vi' ? item.nameVi : item.nameEn}
+                    {lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}
                   </h3>
                   <p style={{ color: '#5d7a8c', fontSize: 12, lineHeight: 1.5, margin: '0 0 14px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {lang === 'vi' ? item.descriptionVi : item.descriptionEn}
+                    {lang === 'en' ? (item.descriptionEn || item.descriptionVi) : item.descriptionVi}
                   </p>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {item.videoUrl ? (
@@ -461,7 +461,7 @@ const handleSearch = () => {
                     ) : (
                       <div style={{ flex: 1 }} />
                     )}
-                    <button onClick={() => onNavigate('intangible')} style={{
+                    <button onClick={() => onNavigate('intangible-detail', item.id)} style={{
                       flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
                       padding: '6px 0', borderRadius: 6,
                       background: '#0F3D5E', border: 'none',

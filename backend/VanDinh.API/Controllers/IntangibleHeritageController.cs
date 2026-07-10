@@ -58,10 +58,6 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
             errors.Add("English name must be between 5 and 200 characters.");
         if (string.IsNullOrWhiteSpace(request.Category))
             errors.Add("Category is required.");
-        if (string.IsNullOrWhiteSpace(request.DescriptionVi) || request.DescriptionVi.Trim().Length < 30)
-            errors.Add("Vietnamese description must be at least 30 characters.");
-        if (string.IsNullOrWhiteSpace(request.DescriptionEn) || request.DescriptionEn.Trim().Length < 30)
-            errors.Add("English description must be at least 30 characters.");
         if (string.IsNullOrWhiteSpace(request.Image))
             errors.Add("Cover image is required.");
         if (!string.IsNullOrWhiteSpace(request.VideoUrl) &&
@@ -93,6 +89,9 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
             return ApiResponse.Error("An intangible heritage with this English name already exists.");
 
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var galleryJson = request.GalleryImages is { Length: > 0 }
+            ? System.Text.Json.JsonSerializer.Serialize(request.GalleryImages)
+            : null;
         var item = repository.AddIntangible(new IntangibleHeritage
         {
             NameVi = request.NameVi.Trim(),
@@ -102,6 +101,42 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
             DescriptionEn = request.DescriptionEn?.Trim(),
             ImageUrl = request.Image,
             VideoUrl = request.VideoUrl?.Trim(),
+            OtherNames = request.OtherNames?.Trim(),
+            Location = request.Location?.Trim(),
+            CulturalSpace = request.CulturalSpace?.Trim(),
+            Community = request.Community?.Trim(),
+            RepresentativePersons = request.RepresentativePersons?.Trim(),
+            Origin = request.Origin?.Trim(),
+            OriginEn = request.OriginEn?.Trim(),
+            FormationHistory = request.FormationHistory?.Trim(),
+            HistoricalDevelopment = request.HistoricalDevelopment?.Trim(),
+            WorshipObjects = request.WorshipObjects?.Trim(),
+            FestivalTime = request.FestivalTime?.Trim(),
+            FestivalDuration = request.FestivalDuration?.Trim(),
+            FestivalLocation = request.FestivalLocation?.Trim(),
+            RitualParticipants = request.RitualParticipants?.Trim(),
+            RitualProcess = request.RitualProcess?.Trim(),
+            CustomsAndOfferings = request.CustomsAndOfferings?.Trim(),
+            FolkGames = request.FolkGames?.Trim(),
+            TraditionalPerformances = request.TraditionalPerformances?.Trim(),
+            RitualObjects = request.RitualObjects?.Trim(),
+            RelatedDocuments = request.RelatedDocuments?.Trim(),
+            RelatedDocumentsEn = request.RelatedDocumentsEn?.Trim(),
+            ExistingArtisans = request.ExistingArtisans?.Trim(),
+            TeachingArtisans = request.TeachingArtisans?.Trim(),
+            Practitioners = request.Practitioners?.Trim(),
+            Learners = request.Learners?.Trim(),
+            OtherHumanResources = request.OtherHumanResources?.Trim(),
+            TransmissionMethod = request.TransmissionMethod?.Trim(),
+            CurrentStatus = request.CurrentStatus?.Trim(),
+            CurrentStatusEn = request.CurrentStatusEn?.Trim(),
+            ThreatLevel = request.ThreatLevel?.Trim(),
+            RiskDescription = request.RiskDescription?.Trim(),
+            HeritageValue = request.HeritageValue?.Trim(),
+            HeritageValueEn = request.HeritageValueEn?.Trim(),
+            ExistingProtectionMeasures = request.ExistingProtectionMeasures?.Trim(),
+            ProposedProtectionMeasures = request.ProposedProtectionMeasures?.Trim(),
+            GalleryImages = galleryJson,
             CreatedBy = userId
         });
         logs.Log(User, "CREATE", "IntangibleHeritage", item.IntangibleId, item.PublicId);
@@ -131,6 +166,9 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
         if (repository.IntangibleHeritages.Any(i => i.NameEn == request.NameEn.Trim() && i.PublicId != id))
             return ApiResponse.Error("An intangible heritage with this English name already exists.");
         var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var galleryJson = request.GalleryImages is { Length: > 0 }
+            ? System.Text.Json.JsonSerializer.Serialize(request.GalleryImages)
+            : null;
         item.NameVi = request.NameVi.Trim();
         item.NameEn = request.NameEn.Trim();
         item.Category = request.Category;
@@ -138,6 +176,42 @@ public sealed class IntangibleHeritageController(IAppRepository repository, IAct
         item.DescriptionEn = request.DescriptionEn?.Trim();
         item.ImageUrl = request.Image;
         item.VideoUrl = request.VideoUrl?.Trim();
+        item.OtherNames = request.OtherNames?.Trim();
+        item.Location = request.Location?.Trim();
+        item.CulturalSpace = request.CulturalSpace?.Trim();
+        item.Community = request.Community?.Trim();
+        item.RepresentativePersons = request.RepresentativePersons?.Trim();
+        item.Origin = request.Origin?.Trim();
+        item.OriginEn = request.OriginEn?.Trim();
+        item.FormationHistory = request.FormationHistory?.Trim();
+        item.HistoricalDevelopment = request.HistoricalDevelopment?.Trim();
+        item.WorshipObjects = request.WorshipObjects?.Trim();
+        item.FestivalTime = request.FestivalTime?.Trim();
+        item.FestivalDuration = request.FestivalDuration?.Trim();
+        item.FestivalLocation = request.FestivalLocation?.Trim();
+        item.RitualParticipants = request.RitualParticipants?.Trim();
+        item.RitualProcess = request.RitualProcess?.Trim();
+        item.CustomsAndOfferings = request.CustomsAndOfferings?.Trim();
+        item.FolkGames = request.FolkGames?.Trim();
+        item.TraditionalPerformances = request.TraditionalPerformances?.Trim();
+        item.RitualObjects = request.RitualObjects?.Trim();
+        item.RelatedDocuments = request.RelatedDocuments?.Trim();
+        item.RelatedDocumentsEn = request.RelatedDocumentsEn?.Trim();
+        item.ExistingArtisans = request.ExistingArtisans?.Trim();
+        item.TeachingArtisans = request.TeachingArtisans?.Trim();
+        item.Practitioners = request.Practitioners?.Trim();
+        item.Learners = request.Learners?.Trim();
+        item.OtherHumanResources = request.OtherHumanResources?.Trim();
+        item.TransmissionMethod = request.TransmissionMethod?.Trim();
+        item.CurrentStatus = request.CurrentStatus?.Trim();
+        item.CurrentStatusEn = request.CurrentStatusEn?.Trim();
+        item.ThreatLevel = request.ThreatLevel?.Trim();
+        item.RiskDescription = request.RiskDescription?.Trim();
+        item.HeritageValue = request.HeritageValue?.Trim();
+        item.HeritageValueEn = request.HeritageValueEn?.Trim();
+        item.ExistingProtectionMeasures = request.ExistingProtectionMeasures?.Trim();
+        item.ProposedProtectionMeasures = request.ProposedProtectionMeasures?.Trim();
+        item.GalleryImages = galleryJson;
         item.UpdatedBy = userId;
         repository.UpdateIntangible(item);
         logs.Log(User, "UPDATE", "IntangibleHeritage", item.IntangibleId, item.PublicId);
