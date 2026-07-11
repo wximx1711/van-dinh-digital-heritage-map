@@ -120,7 +120,7 @@ export function SystemSettingsManagement() {
                 cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1,
               }}>
                 <Upload size={13} /> {uploading ? '...' : (lang === 'vi' ? 'Chọn ảnh' : 'Choose')}
-                <input type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleLogoUpload} disabled={uploading} />
+                <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleLogoUpload} disabled={uploading} />
               </label>
             </div>
           </div>

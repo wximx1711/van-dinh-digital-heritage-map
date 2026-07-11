@@ -48,12 +48,12 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
             log.LogInformation("ContentType: {Type}", file.ContentType);
             log.LogInformation("Target folder: images");
             log.LogInformation("File length: {Len}", file.Length);
-            log.LogInformation("Allowed extensions: {Exts}", string.Join(", ", ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp"));
+            log.LogInformation("Allowed extensions: {Exts}", string.Join(", ", ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".heic", ".heif"));
 
             if (file.Length == 0) { log.LogWarning("VALIDATION FAILED: file is empty"); return ApiResponse.Error("File is empty."); }
             if (file.Length > 5 * 1024 * 1024) { log.LogWarning("VALIDATION FAILED: file too large ({Len} > {Max})", file.Length, 5 * 1024 * 1024); return ApiResponse.Error("File is too large."); }
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-            var allowedImgs = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp" };
+            var allowedImgs = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".heic", ".heif" };
             if (!allowedImgs.Contains(ext)) { log.LogWarning("VALIDATION FAILED: extension '{Ext}' not allowed for images", ext); return ApiResponse.Error("File type is not allowed."); }
             log.LogInformation("VALIDATION PASSED");
 
