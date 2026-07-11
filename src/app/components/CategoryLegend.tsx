@@ -1,7 +1,20 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
-import { heritageMarkerColors, HERITAGE_TYPES } from '../constants';
-import { typeLabels } from '../../data/labels';
+import { HERITAGE_TYPES, classificationColors, heritageTypeIcons } from '../constants';
+import { typeLabels, classificationLabels } from '../../data/labels';
+import type { Classification, HeritageType } from '../../core/types';
+
+function LegendPin({ type }: { type: HeritageType }) {
+  const emoji = heritageTypeIcons[type];
+  return (
+    <svg width="14" height="20" viewBox="0 0 28 40" aria-hidden="true">
+      <path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D0D0D0" stroke-width="1"/>
+      <text x="14" y="21" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="16">{emoji}</text>
+    </svg>
+  );
+}
+
+const classificationTypes: Classification[] = ['national', 'city', 'unranked'];
 
 export function CategoryLegend() {
   const { lang } = useLanguage();
@@ -56,8 +69,8 @@ export function CategoryLegend() {
       >
         <div
           style={{
-            width: 8,
-            height: 8,
+            width: 10,
+            height: 10,
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #8E44AD, #E67E22, #C0392B, #16A085, #2C3E50, #D35400, #2980B9, #27AE60, #7F8C8D)',
             flexShrink: 0,
@@ -122,26 +135,40 @@ export function CategoryLegend() {
           pointerEvents: 'auto',
         }}
       >
+        {/* Heritage Type section */}
+        <div style={{ fontSize: 10, color: '#5d7a8c', fontWeight: 600, marginBottom: 2 }}>
+          {lang === 'vi' ? 'Loại hình' : 'Type'}
+        </div>
         {HERITAGE_TYPES.map((type) => {
-          const color = heritageMarkerColors[type];
           const label = typeLabels[type]?.[lang] ?? type;
           return (
-            <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              <div
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: '50%',
-                  background: color,
-                  flexShrink: 0,
-                  border: '1px solid rgba(255,255,255,0.8)',
-                  boxShadow: '0 0 0 1px rgba(0,0,0,0.1)',
-                }}
-              />
+            <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <LegendPin type={type} />
               <span style={{ color: '#1a2332', lineHeight: 1.3 }}>{label}</span>
             </div>
           );
         })}
+
+        {/* Ranking section */}
+        <div style={{
+          marginTop: 6, paddingTop: 6, borderTop: '1px solid rgba(0,0,0,0.08)',
+        }}>
+          <div style={{ fontSize: 10, color: '#5d7a8c', fontWeight: 600, marginBottom: 4 }}>
+            {lang === 'vi' ? 'Xếp hạng' : 'Ranking'}
+          </div>
+          {classificationTypes.map(cls => (
+            <div key={cls} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 2 }}>
+              <div style={{
+                width: 14, height: 3, borderRadius: 1.5,
+                background: classificationColors[cls],
+                flexShrink: 0,
+              }} />
+              <span style={{ color: '#1a2332', lineHeight: 1.3 }}>
+                {classificationLabels[cls][lang]}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

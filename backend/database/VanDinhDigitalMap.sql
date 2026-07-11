@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-10T19:09:39Z
+    GENERATED: 2026-07-11T16:17:54Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -33,15 +33,15 @@ GO
 -- ========================================
 
 CREATE TABLE [__EFMigrationsHistory] (
-    [MigrationId] nvarchar(600) NOT NULL,
-    [ProductVersion] nvarchar(128) NOT NULL,
+    [MigrationId] nvarchar(1200) NOT NULL,
+    [ProductVersion] nvarchar(256) NOT NULL,
     CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY CLUSTERED ([MigrationId])
 );
 GO
 
 CREATE TABLE [Roles] (
     [RoleId] int IDENTITY(1,1),
-    [RoleName] nvarchar(200) NOT NULL,
+    [RoleName] nvarchar(400) NOT NULL,
     CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED ([RoleId])
 );
 GO
@@ -49,10 +49,10 @@ GO
 CREATE TABLE [Users] (
     [UserId] bigint IDENTITY(1,1),
     [RoleId] int NOT NULL,
-    [Username] nvarchar(200) NOT NULL,
-    [PasswordHash] nvarchar(1020) NOT NULL,
-    [FullName] nvarchar(400) NULL,
-    [Email] nvarchar(400) NULL,
+    [Username] nvarchar(400) NOT NULL,
+    [PasswordHash] nvarchar(2040) NOT NULL,
+    [FullName] nvarchar(800) NULL,
+    [Email] nvarchar(800) NULL,
     [Status] bit NOT NULL CONSTRAINT [DF_Users_Status] DEFAULT (CONVERT([bit],(1))),
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_Users_CreatedAt] DEFAULT (sysutcdatetime()),
     [UpdatedAt] datetime2(7) NULL,
@@ -63,7 +63,7 @@ GO
 
 CREATE TABLE [AboutPage] (
     [AboutId] int IDENTITY(1,1),
-    [BannerImage] nvarchar(2000) NULL,
+    [BannerImage] nvarchar(4000) NULL,
     [UpdatedBy] bigint NOT NULL,
     [UpdatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_AboutPage_UpdatedAt] DEFAULT (sysutcdatetime()),
     [ContactInfo] nvarchar(MAX) NULL,
@@ -71,8 +71,8 @@ CREATE TABLE [AboutPage] (
     [IntroductionVi] nvarchar(MAX) NOT NULL CONSTRAINT [DF_AboutPage_IntroductionVi] DEFAULT (N''),
     [MainContentEn] nvarchar(MAX) NOT NULL CONSTRAINT [DF_AboutPage_MainContentEn] DEFAULT (N''),
     [MainContentVi] nvarchar(MAX) NOT NULL CONSTRAINT [DF_AboutPage_MainContentVi] DEFAULT (N''),
-    [TitleEn] nvarchar(800) NOT NULL CONSTRAINT [DF_AboutPage_TitleEn] DEFAULT (N''),
-    [TitleVi] nvarchar(800) NOT NULL CONSTRAINT [DF_AboutPage_TitleVi] DEFAULT (N''),
+    [TitleEn] nvarchar(1600) NOT NULL CONSTRAINT [DF_AboutPage_TitleEn] DEFAULT (N''),
+    [TitleVi] nvarchar(1600) NOT NULL CONSTRAINT [DF_AboutPage_TitleVi] DEFAULT (N''),
     CONSTRAINT [PK_AboutPage] PRIMARY KEY CLUSTERED ([AboutId]),
     CONSTRAINT [FK_AboutPage_Users_UpdatedBy] FOREIGN KEY ([UpdatedBy]) REFERENCES [Users]([UserId])
 );
@@ -81,13 +81,13 @@ GO
 CREATE TABLE [AboutPageHistories] (
     [HistoryId] bigint IDENTITY(1,1),
     [AboutId] int NOT NULL,
-    [TitleVi] nvarchar(800) NULL,
-    [TitleEn] nvarchar(800) NULL,
+    [TitleVi] nvarchar(1600) NULL,
+    [TitleEn] nvarchar(1600) NULL,
     [IntroductionVi] nvarchar(MAX) NULL,
     [IntroductionEn] nvarchar(MAX) NULL,
     [MainContentVi] nvarchar(MAX) NULL,
     [MainContentEn] nvarchar(MAX) NULL,
-    [BannerImage] nvarchar(2000) NULL,
+    [BannerImage] nvarchar(4000) NULL,
     [ContactInfo] nvarchar(MAX) NULL,
     [UpdatedBy] bigint NOT NULL,
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_AboutPageHistories_CreatedAt] DEFAULT (sysutcdatetime()),
@@ -99,12 +99,12 @@ GO
 CREATE TABLE [ActivityLogs] (
     [LogId] bigint IDENTITY(1,1),
     [UserId] bigint NOT NULL,
-    [Action] nvarchar(200) NULL,
-    [EntityName] nvarchar(400) NULL,
+    [Action] nvarchar(400) NULL,
+    [EntityName] nvarchar(800) NULL,
     [EntityId] bigint NULL,
     [Description] nvarchar(MAX) NULL,
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_ActivityLogs_CreatedAt] DEFAULT (sysutcdatetime()),
-    [IpAddress] nvarchar(180) NULL,
+    [IpAddress] nvarchar(360) NULL,
     CONSTRAINT [PK_ActivityLogs] PRIMARY KEY CLUSTERED ([LogId]),
     CONSTRAINT [FK_ActivityLogs_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId])
 );
@@ -112,45 +112,45 @@ GO
 
 CREATE TABLE [HeritageCategories] (
     [CategoryId] int IDENTITY(1,1),
-    [Code] nvarchar(120) NOT NULL,
-    [NameVi] nvarchar(400) NOT NULL,
-    [NameEn] nvarchar(400) NOT NULL,
-    [IconUrl] nvarchar(1020) NULL,
+    [Code] nvarchar(240) NOT NULL,
+    [NameVi] nvarchar(800) NOT NULL,
+    [NameEn] nvarchar(800) NOT NULL,
+    [IconUrl] nvarchar(2040) NULL,
     CONSTRAINT [PK_HeritageCategories] PRIMARY KEY CLUSTERED ([CategoryId])
 );
 GO
 
 CREATE TABLE [Heritage] (
     [HeritageId] bigint IDENTITY(1,1),
-    [PublicId] nvarchar(80) NOT NULL,
-    [Code] nvarchar(200) NOT NULL,
+    [PublicId] nvarchar(160) NOT NULL,
+    [Code] nvarchar(400) NOT NULL,
     [CategoryId] int NOT NULL,
-    [NameVi] nvarchar(1020) NOT NULL,
-    [NameEn] nvarchar(1020) NOT NULL,
-    [Slug] nvarchar(1020) NOT NULL,
-    [Classification] nvarchar(80) NOT NULL,
-    [Status] nvarchar(80) NOT NULL,
-    [AddressVi] nvarchar(2000) NULL,
-    [AddressEn] nvarchar(2000) NULL,
+    [NameVi] nvarchar(2040) NOT NULL,
+    [NameEn] nvarchar(2040) NOT NULL,
+    [Slug] nvarchar(2040) NOT NULL,
+    [Classification] nvarchar(160) NOT NULL,
+    [Status] nvarchar(160) NOT NULL,
+    [AddressVi] nvarchar(4000) NULL,
+    [AddressEn] nvarchar(4000) NULL,
     [Latitude] decimal(10,8) NULL,
     [Longitude] decimal(11,8) NULL,
     [DescriptionVi] nvarchar(MAX) NULL,
     [DescriptionEn] nvarchar(MAX) NULL,
     [HistoryVi] nvarchar(MAX) NULL,
     [HistoryEn] nvarchar(MAX) NULL,
-    [ThumbnailUrl] nvarchar(2000) NULL,
-    [YearBuilt] nvarchar(400) NULL,
-    [Guardian] nvarchar(1020) NULL,
-    [QrCodeUrl] nvarchar(2000) NULL,
-    [GoogleMapUrl] nvarchar(4000) NULL,
+    [ThumbnailUrl] nvarchar(4000) NULL,
+    [YearBuilt] nvarchar(800) NULL,
+    [Guardian] nvarchar(2040) NULL,
+    [QrCodeUrl] nvarchar(4000) NULL,
+    [GoogleMapUrl] nvarchar(8000) NULL,
     [IsDeleted] bit NOT NULL CONSTRAINT [DF_Heritage_IsDeleted] DEFAULT (CONVERT([bit],(0))),
     [DeletedAt] datetime2(7) NULL,
     [CreatedBy] bigint NOT NULL,
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_Heritage_CreatedAt] DEFAULT (sysutcdatetime()),
     [UpdatedAt] datetime2(7) NULL,
     CONSTRAINT [PK_Heritage] PRIMARY KEY CLUSTERED ([HeritageId]),
-    CONSTRAINT [FK_Heritage_HeritageCategories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [HeritageCategories]([CategoryId]),
     CONSTRAINT [FK_Heritage_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([UserId]),
+    CONSTRAINT [FK_Heritage_HeritageCategories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [HeritageCategories]([CategoryId]),
     CONSTRAINT [CK_Heritage_Classification] CHECK ([Classification]='unranked' OR [Classification]='city' OR [Classification]='national'),
     CONSTRAINT [CK_Heritage_Status] CHECK ([Status]='closed' OR [Status]='maintenance' OR [Status]='active')
 );
@@ -159,9 +159,9 @@ GO
 CREATE TABLE [HeritageDocuments] (
     [DocumentId] bigint IDENTITY(1,1),
     [HeritageId] bigint NOT NULL,
-    [FileName] nvarchar(1020) NULL,
-    [FileUrl] nvarchar(2000) NULL,
-    [FileType] nvarchar(80) NULL,
+    [FileName] nvarchar(2040) NULL,
+    [FileUrl] nvarchar(4000) NULL,
+    [FileType] nvarchar(160) NULL,
     [FileSize] bigint NULL,
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_HeritageDocuments_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_HeritageDocuments] PRIMARY KEY CLUSTERED ([DocumentId]),
@@ -172,8 +172,8 @@ GO
 CREATE TABLE [HeritageImages] (
     [ImageId] bigint IDENTITY(1,1),
     [HeritageId] bigint NOT NULL,
-    [ImageUrl] nvarchar(2000) NOT NULL,
-    [Caption] nvarchar(1020) NULL,
+    [ImageUrl] nvarchar(4000) NOT NULL,
+    [Caption] nvarchar(2040) NULL,
     [SortOrder] int NOT NULL CONSTRAINT [DF_HeritageImages_SortOrder] DEFAULT ((0)),
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_HeritageImages_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_HeritageImages] PRIMARY KEY CLUSTERED ([ImageId]),
@@ -184,10 +184,10 @@ GO
 CREATE TABLE [HeritageVideos] (
     [VideoId] bigint IDENTITY(1,1),
     [HeritageId] bigint NOT NULL,
-    [Title] nvarchar(1020) NULL,
-    [VideoType] nvarchar(80) NULL,
-    [VideoUrl] nvarchar(2000) NULL,
-    [ThumbnailUrl] nvarchar(2000) NULL,
+    [Title] nvarchar(2040) NULL,
+    [VideoType] nvarchar(160) NULL,
+    [VideoUrl] nvarchar(4000) NULL,
+    [ThumbnailUrl] nvarchar(4000) NULL,
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_HeritageVideos_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_HeritageVideos] PRIMARY KEY CLUSTERED ([VideoId]),
     CONSTRAINT [FK_HeritageVideos_Heritage_HeritageId] FOREIGN KEY ([HeritageId]) REFERENCES [Heritage]([HeritageId])
@@ -196,48 +196,48 @@ GO
 
 CREATE TABLE [IntangibleHeritage] (
     [IntangibleId] bigint IDENTITY(1,1),
-    [PublicId] nvarchar(80) NOT NULL,
-    [NameVi] nvarchar(1020) NOT NULL,
-    [NameEn] nvarchar(1020) NOT NULL,
-    [Category] nvarchar(120) NOT NULL,
+    [PublicId] nvarchar(160) NOT NULL,
+    [NameVi] nvarchar(2040) NOT NULL,
+    [NameEn] nvarchar(2040) NOT NULL,
+    [Category] nvarchar(240) NOT NULL,
     [DescriptionVi] nvarchar(MAX) NULL,
     [DescriptionEn] nvarchar(MAX) NULL,
-    [ImageUrl] nvarchar(2000) NULL,
-    [VideoUrl] nvarchar(2000) NULL,
+    [ImageUrl] nvarchar(4000) NULL,
+    [VideoUrl] nvarchar(4000) NULL,
     [IsDeleted] bit NOT NULL CONSTRAINT [DF_IntangibleHeritage_IsDeleted] DEFAULT (CONVERT([bit],(0))),
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_IntangibleHeritage_CreatedAt] DEFAULT (sysutcdatetime()),
     [UpdatedAt] datetime2(7) NULL,
     [CreatedBy] bigint NOT NULL CONSTRAINT [DF_IntangibleHeritage_CreatedBy] DEFAULT (CONVERT([bigint],(1))),
     [UpdatedBy] bigint NULL,
-    [Community] nvarchar(1000) NULL,
+    [Community] nvarchar(2000) NULL,
     [CulturalSpace] nvarchar(MAX) NULL,
     [CurrentStatus] nvarchar(MAX) NULL,
     [CustomsAndOfferings] nvarchar(MAX) NULL,
     [ExistingArtisans] nvarchar(MAX) NULL,
     [ExistingProtectionMeasures] nvarchar(MAX) NULL,
-    [FestivalDuration] nvarchar(400) NULL,
-    [FestivalLocation] nvarchar(1000) NULL,
-    [FestivalTime] nvarchar(400) NULL,
+    [FestivalDuration] nvarchar(800) NULL,
+    [FestivalLocation] nvarchar(2000) NULL,
+    [FestivalTime] nvarchar(800) NULL,
     [FolkGames] nvarchar(MAX) NULL,
     [FormationHistory] nvarchar(MAX) NULL,
     [GalleryImages] nvarchar(MAX) NULL,
     [HeritageValue] nvarchar(MAX) NULL,
     [HistoricalDevelopment] nvarchar(MAX) NULL,
     [Learners] nvarchar(MAX) NULL,
-    [Location] nvarchar(1000) NULL,
+    [Location] nvarchar(2000) NULL,
     [Origin] nvarchar(MAX) NULL,
     [OtherHumanResources] nvarchar(MAX) NULL,
-    [OtherNames] nvarchar(1000) NULL,
+    [OtherNames] nvarchar(2000) NULL,
     [Practitioners] nvarchar(MAX) NULL,
     [ProposedProtectionMeasures] nvarchar(MAX) NULL,
     [RelatedDocuments] nvarchar(MAX) NULL,
-    [RepresentativePersons] nvarchar(1000) NULL,
+    [RepresentativePersons] nvarchar(2000) NULL,
     [RiskDescription] nvarchar(MAX) NULL,
     [RitualObjects] nvarchar(MAX) NULL,
     [RitualParticipants] nvarchar(MAX) NULL,
     [RitualProcess] nvarchar(MAX) NULL,
     [TeachingArtisans] nvarchar(MAX) NULL,
-    [ThreatLevel] nvarchar(200) NULL,
+    [ThreatLevel] nvarchar(400) NULL,
     [TraditionalPerformances] nvarchar(MAX) NULL,
     [TransmissionMethod] nvarchar(MAX) NULL,
     [WorshipObjects] nvarchar(MAX) NULL,
@@ -252,10 +252,10 @@ GO
 
 CREATE TABLE [MediaFiles] (
     [MediaFileId] bigint IDENTITY(1,1),
-    [Url] nvarchar(2000) NOT NULL,
-    [FileName] nvarchar(1020) NOT NULL,
+    [Url] nvarchar(4000) NOT NULL,
+    [FileName] nvarchar(2040) NOT NULL,
     [FileSize] bigint NOT NULL,
-    [MediaType] nvarchar(80) NOT NULL,
+    [MediaType] nvarchar(160) NOT NULL,
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_MediaFiles_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_MediaFiles] PRIMARY KEY CLUSTERED ([MediaFileId])
 );
@@ -263,9 +263,9 @@ GO
 
 CREATE TABLE [MonthlyUpdates] (
     [UpdateId] int IDENTITY(1,1),
-    [MonthLabel] nvarchar(80) NOT NULL,
-    [DisplayVi] nvarchar(200) NOT NULL,
-    [DisplayEn] nvarchar(200) NOT NULL,
+    [MonthLabel] nvarchar(160) NOT NULL,
+    [DisplayVi] nvarchar(400) NOT NULL,
+    [DisplayEn] nvarchar(400) NOT NULL,
     [UpdateCount] int NOT NULL CONSTRAINT [DF_MonthlyUpdates_UpdateCount] DEFAULT ((0)),
     CONSTRAINT [PK_MonthlyUpdates] PRIMARY KEY CLUSTERED ([UpdateId])
 );
@@ -273,8 +273,8 @@ GO
 
 CREATE TABLE [RelatedLinks] (
     [LinkId] int IDENTITY(1,1),
-    [Title] nvarchar(800) NOT NULL,
-    [Url] nvarchar(2000) NOT NULL,
+    [Title] nvarchar(1600) NOT NULL,
+    [Url] nvarchar(4000) NOT NULL,
     [DisplayOrder] int NOT NULL CONSTRAINT [DF_RelatedLinks_DisplayOrder] DEFAULT ((0)),
     [IsEnabled] bit NOT NULL CONSTRAINT [DF_RelatedLinks_IsEnabled] DEFAULT (CONVERT([bit],(1))),
     [CreatedBy] bigint NOT NULL,
@@ -289,17 +289,17 @@ GO
 
 CREATE TABLE [SystemSettings] (
     [SettingId] int IDENTITY(1,1),
-    [WebsiteName] nvarchar(1020) NULL,
-    [LogoUrl] nvarchar(2000) NULL,
-    [FooterText] nvarchar(2000) NULL,
-    [ContactEmail] nvarchar(1020) NULL,
-    [Phone] nvarchar(200) NULL,
-    [Address] nvarchar(1020) NULL,
-    [FacebookUrl] nvarchar(2000) NULL,
-    [TiktokUrl] nvarchar(2000) NULL,
+    [WebsiteName] nvarchar(2040) NULL,
+    [LogoUrl] nvarchar(4000) NULL,
+    [FooterText] nvarchar(4000) NULL,
+    [ContactEmail] nvarchar(2040) NULL,
+    [Phone] nvarchar(400) NULL,
+    [Address] nvarchar(2040) NULL,
+    [FacebookUrl] nvarchar(4000) NULL,
+    [TiktokUrl] nvarchar(4000) NULL,
     [UpdatedBy] bigint NULL,
     [UpdatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_SystemSettings_UpdatedAt] DEFAULT (sysutcdatetime()),
-    [YoutubeUrl] nvarchar(2000) NULL,
+    [YoutubeUrl] nvarchar(4000) NULL,
     CONSTRAINT [PK_SystemSettings] PRIMARY KEY CLUSTERED ([SettingId]),
     CONSTRAINT [FK_SystemSettings_Users_UpdatedBy] FOREIGN KEY ([UpdatedBy]) REFERENCES [Users]([UserId])
 );
@@ -434,7 +434,7 @@ GO
 -- [AboutPageHistories]: 0 rows
 GO
 
--- [ActivityLogs]: 60 rows
+-- [ActivityLogs]: 98 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -496,9 +496,47 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (59, 2, N'CREATE', N'IntangibleHeritage', 24, N'ih0024', '2026-07-10T18:59:47.9873516', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (60, 2, N'CREATE', N'IntangibleHeritage', 25, N'ih0025', '2026-07-10T19:01:23.9214200', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (61, 2, N'CREATE', N'IntangibleHeritage', 26, N'ih0026', '2026-07-10T19:02:55.3420028', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (62, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-11T06:16:28.0357549', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (63, 3, N'UPDATE', N'Heritage', 8, N'VĐHN-DT-008', '2026-07-11T06:17:20.2773910', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (64, 3, N'UPDATE', N'Heritage', 9, N'VĐHN-DT-009', '2026-07-11T06:17:31.5908112', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (65, 3, N'CREATE', N'Heritage', 10, N'VĐHN-DT-010', '2026-07-11T06:21:47.2604451', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (66, 3, N'CREATE', N'Heritage', 11, N'VĐHN-DT-011', '2026-07-11T06:27:38.2772523', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (67, 3, N'CREATE', N'Heritage', 12, N'VĐHN-DT-012', '2026-07-11T06:32:02.7524811', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (68, 3, N'UPDATE', N'Heritage', 11, N'VĐHN-DT-011', '2026-07-11T06:32:14.1509835', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (69, 3, N'UPDATE', N'Heritage', 12, N'VĐHN-DT-012', '2026-07-11T08:32:06.4066049', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (70, 3, N'CREATE', N'Heritage', 13, N'VĐHN-DT-013', '2026-07-11T08:36:50.5945208', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (71, 3, N'CREATE', N'Heritage', 14, N'VĐHN-DT-014', '2026-07-11T08:39:34.4154579', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (72, 3, N'CREATE', N'Heritage', 15, N'VĐHN-DT-015', '2026-07-11T08:49:55.0551958', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (73, 3, N'CREATE', N'Heritage', 16, N'VĐHN-DT-016', '2026-07-11T08:54:52.4147506', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (74, 3, N'UPDATE', N'Heritage', 16, N'VĐHN-DT-016', '2026-07-11T08:55:11.0163562', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (75, 3, N'CREATE', N'Heritage', 17, N'VĐHN-DT-017', '2026-07-11T09:00:01.6065598', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (76, 3, N'CREATE', N'Heritage', 18, N'VĐHN-DT-018', '2026-07-11T09:04:11.3633634', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (77, 3, N'CREATE', N'Heritage', 19, N'VĐHN-DT-019', '2026-07-11T09:06:47.0877644', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (78, 3, N'CREATE', N'Heritage', 20, N'VĐHN-DT-020', '2026-07-11T09:20:15.0878876', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (79, 3, N'UPDATE', N'Heritage', 19, N'VĐHN-DT-019', '2026-07-11T09:20:24.4483672', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (80, 3, N'CREATE', N'Heritage', 21, N'VĐHN-DT-021', '2026-07-11T09:23:04.4617611', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (81, 3, N'UPDATE', N'Heritage', 21, N'VĐHN-DT-021', '2026-07-11T09:23:19.0580366', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (82, 3, N'CREATE', N'Heritage', 22, N'VĐHN-DT-022', '2026-07-11T09:25:10.2760588', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (83, 3, N'UPDATE', N'Heritage', 22, N'VĐHN-DT-022', '2026-07-11T09:26:25.8951898', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (84, 3, N'CREATE', N'Heritage', 23, N'VĐHN-DT-023', '2026-07-11T09:29:37.3346605', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (85, 3, N'CREATE', N'Heritage', 24, N'VĐHN-DT-024', '2026-07-11T09:32:35.8195928', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (86, 3, N'CREATE', N'Heritage', 25, N'VĐHN-DT-025', '2026-07-11T14:59:57.3724279', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (87, 3, N'CREATE', N'Heritage', 26, N'VĐHN-DT-026', '2026-07-11T15:06:30.0869453', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (88, 3, N'UPDATE', N'Heritage', 26, N'VĐHN-DT-026', '2026-07-11T15:06:46.0143352', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (89, 3, N'CREATE', N'Heritage', 27, N'VĐHN-DT-027', '2026-07-11T15:22:09.8224074', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (90, 3, N'CREATE', N'Heritage', 28, N'VĐHN-DT-028', '2026-07-11T15:33:12.6220254', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (91, 3, N'CREATE', N'Heritage', 29, N'VĐHN-DT-029', '2026-07-11T15:36:38.5352445', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (92, 3, N'CREATE', N'Heritage', 30, N'VĐHN-DT-030', '2026-07-11T15:40:06.6044980', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (93, 3, N'CREATE', N'Heritage', 31, N'VĐHN-DT-031', '2026-07-11T15:44:05.7736361', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (94, 3, N'CREATE', N'Heritage', 32, N'VĐHN-DT-032', '2026-07-11T15:50:13.0616055', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (95, 3, N'CREATE', N'Heritage', 33, N'VĐHN-DT-033', '2026-07-11T15:52:38.3966030', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (96, 3, N'CREATE', N'Heritage', 34, N'VĐHN-DT-034', '2026-07-11T15:55:12.0230055', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (97, 3, N'CREATE', N'Heritage', 35, N'VĐHN-DT-035', '2026-07-11T16:04:10.8939122', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (98, 3, N'CREATE', N'Heritage', 36, N'VĐHN-DT-036', '2026-07-11T16:07:25.2392946', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (99, 3, N'CREATE', N'Heritage', 37, N'VĐHN-DT-037', '2026-07-11T16:10:37.1964441', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 61);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 99);
 GO
 
 -- [HeritageCategories]: 9 rows
@@ -517,7 +555,7 @@ GO
 DBCC CHECKIDENT ([HeritageCategories], RESEED, 9);
 GO
 
--- [Heritage]: 9 rows
+-- [Heritage]: 37 rows
 SET IDENTITY_INSERT [Heritage] ON;
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (1, N'heff617cc', N'VĐHN-DT-001', 2, N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'chùa-ba-chè-bà-chè-bà-trà-tự', N'city', N'active', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', 20.72903680, 105.77182720, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Ba Chè (hoặc Chùa Bà Chè).
@@ -1172,7 +1210,7 @@ West: Adjacent to the rice field plot No. 358.
 
 South: Directly adjacent to the cultivated rice field area.
 North: Adjacent to land plots No. 358 and No. 236.
-Any act of digging, dismantling original architectural components, encroaching on or arbitrarily moving artifacts and statues out of the corridor of the two land plots above is strictly prohibited and will be severely punished according to the law.', N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', N'1550', N'xã Vân Đình', N'/api/qr/heritage/h76d93626', N'https://maps.app.goo.gl/QTiDP7No4TGu7L2k8', 0, NULL, 3, '2026-07-10T12:38:11.4117215', '2026-07-10T13:17:57.2603546');
+Any act of digging, dismantling original architectural components, encroaching on or arbitrarily moving artifacts and statues out of the corridor of the two land plots above is strictly prohibited and will be severely punished according to the law.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1550', N'xã Vân Đình', N'/api/qr/heritage/h76d93626', N'https://maps.app.goo.gl/QTiDP7No4TGu7L2k8', 0, NULL, 3, '2026-07-10T12:38:11.4117215', '2026-07-11T06:17:20.1394918');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (9, N'hfbb0c594', N'VĐHN-DT-009', 2, N'CHÙA TẢO KHÊ (SÙNG LINH TỰ)', N'CHÙA TẢO KHÊ (SÙNG LINH TỰ)', N'chùa-tảo-khê-sùng-linh-tự', N'city', N'active', N'PQ7H+MXF, Vân Đình, Hà Nội, Việt Nam', N'PQ7H+MXF, Vân Đình, Hà Nội, Việt Nam', 20.71334920, 105.78105570, N'1. Thông tin chung
 Tên di tích: Chùa Tảo Khê.
 Tên chữ: Sùng Linh Tự.
@@ -1231,10 +1269,1653 @@ East: Bordering land plots No. 289, 286, and 290.
 West: Bordering 5% of cultivated rice fields.
 South: Bordering the village road.
 North: Bordering 5% of cultivated rice fields.
-All construction, relocation, and alteration of the original state within Zone I are strictly prohibited.', N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', N'1907', N'xã Vân Đình', N'/api/qr/heritage/hfbb0c594', N'https://maps.app.goo.gl/m96Ff3JykPDEiWiy9', 0, NULL, 3, '2026-07-10T13:30:03.4922582', NULL);
+All construction, relocation, and alteration of the original state within Zone I are strictly prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1907', N'xã Vân Đình', N'/api/qr/heritage/hfbb0c594', N'https://maps.app.goo.gl/m96Ff3JykPDEiWiy9', 0, NULL, 3, '2026-07-10T13:30:03.4922582', '2026-07-11T06:17:31.4473418');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10, N'h3191e9b6', N'VĐHN-DT-010', 2, N'CHÙA VÂN ĐÌNH (Liên Hoa Tự - Liên Đàm Tự)', N'CHÙA VÂN ĐÌNH', N'chùa-vân-đình', N'city', N'active', N'Chùa Vân Đình, Vân Đình, Hà Nội, Việt Nam', N'Chùa Vân Đình, Vân Đình, Hà Nội, Việt Nam', 20.73232120, 105.76297520, N'1. Thông tin hành chính và Xếp hạng
+Tên di tích thống nhất: Chùa Vân Đình.
+Tên chữ (Tên gọi khác): Liên Hoa Tự hoặc Liên Đàm Tự (có nghĩa là Chùa Hoa Sen hoặc Chùa Đầm Sen). Trước năm 1908, khi hạ giải hạ nóc để trùng tu cổ nhân còn phát hiện dấu tích tên cũ là chùa Hoành Nhi (Hoành Nhi Tự).
+Địa điểm phân bố: Thôn Vân Đình, thị trấn Vân Đình, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội).
+Lịch sử địa giới: Xưa thuộc trang Hoa Âm (thời Trần), sau đổi thành làng Vân Đình, xã Hoa Đình, tổng Phương Đình (sau là tổng Sơn Lãng), huyện Sơn Minh, phủ Ứng Hòa, tỉnh Hà Đông.
+Loại hình di tích: Di tích Kiến trúc - Nghệ thuật Phật giáo Đại thừa.
+Cấp xếp hạng: Được UBND tỉnh Hà Tây ban hành Quyết định số 1979/QĐ-UBND ngày 02/11/2006 xếp hạng là Di tích lịch sử - văn hóa cấp Tỉnh.', N'1. Administrative Information and Ranking
+Unified name of the monument: Van Dinh Pagoda.
+
+Other names (in Chinese characters): Lien Hoa Tu or Lien Dam Tu (meaning Lotus Pagoda or Lotus Pond Pagoda). Before 1908, when the roof was dismantled for restoration, traces of the old name, Hoanh Nhi Pagoda (Hoanh Nhi Tu), were discovered.
+
+Location: Van Dinh village, Van Dinh town, Ung Hoa district, Ha Tay province (now part of Hanoi city).
+
+Historical boundaries: Formerly part of Hoa Am village (during the Tran dynasty), later renamed Van Dinh village, Hoa Dinh commune, Phuong Dinh district (later Son Lang district), Son Minh district, Ung Hoa prefecture, Ha Dong province.
+
+Type of monument: Mahayana Buddhist architectural and artistic monument.
+Ranking level: Ranked as a Provincial-level historical and cultural monument by Decision No. 1979/QD-UBND dated November 2, 2006, issued by the People''s Committee of Ha Tay province.', N'2. Giá trị lịch sử văn hóa và Điêu khắc nghệ thuật
+Giá trị tâm linh và xã hội: Ngôi chùa được hưng công xây dựng từ lâu đời ở rìa làng nhằm đáp ứng nhu cầu tín ngưỡng, tâm linh cho cư dân vùng đồng bằng chiêm trũng. Giáo lý đức Phật từ bi được lồng ghép truyền dạy nhằm hướng thiện, trừ ác và bồi dưỡng nhân cách nhân văn cho người dân làng xã qua nhiều thế hệ.
+Giá trị lịch sử kháng chiến: Trong 9 năm kháng chiến chống thực dân Pháp, chùa là cơ sở hoạt động bí mật của cán bộ Việt Minh, là nơi sinh hoạt, hội họp của UBND xã và du kích địa phương lấy làm nơi đào hầm bí mật. Thời kỳ chống Mỹ cứu nước, khuôn viên nhà chùa là địa điểm đón tiếp nhiều cơ quan trung ương, ban ngành trong và ngoài tỉnh về sơ tán an toàn.
+Giá trị nghệ thuật điêu khắc: Tuy quy mô tượng tròn trên Phật điện không quá lớn, hệ thống tượng cổ tại chùa Vân Đình được chế tác vô cùng tỉ mỉ, tinh xảo ở thế kỷ XIX - XX. Mỗi pho tượng tạc bằng gỗ mang vẻ đẹp thần thái riêng biệt, vừa mang tính quy chuẩn Phật giáo vừa biểu hiện sâu sắc kỹ nghệ tạo tác dân gian đặc trưng của vùng đất Ứng Hòa.
+3. Đặc điểm không gian và Bài trí tượng thờ
+Cảnh quan thiên nhiên: Chùa tọa lạc về phía Đông của làng trên gò đất nổi, xung quanh bao bọc khép kín bởi chuỗi đầm ao cổ nối liền (ao Mã Nhất, ao Mã Nhì, ao Chùa, ao Quán) mang lại vẻ tịch mịch, thâm nghiêm. Chùa quay mặt về hướng Tây Nam hướng vào làng ("chùa hướng làng") với ước nguyện của tiền nhân cầu mong chư Phật từ bi trông nom, che chở cho dân làng.
+Bài trí Phật điện: Các ban thờ phân tầng cao thấp tôn nghiêm từ ngoài vào trong:
+Tiền đường (Bái đường): Đặt tượng Hộ Pháp Khuyến Thiện (canh giữ bên phải) và Trừng Ác (bên trái) cưỡi sư tử. Phía ngoài bài trí ban thờ Đức Ông (ngài Cấp Cô Độc quan văn áo mũ cánh chuồn, mặt đỏ) và ban thờ Thánh Tăng (đội mũ thất phật thuyết pháp cứu độ) đối xứng hai bên.
+Thượng điện: Tầng cao nhất là bộ tượng Tam Thế Phật ngồi kiết già kết định ấn (cao 85cm); tầng tiếp theo là tượng A Di Đà áo cà sa thả mềm mại lộ chữ Vạn ở ngực (cao 133cm) cùng nhị vị Bồ tát đứng chầu; tầng dưới đặt tượng Thích Ca Niêm Hoa tay hữu cầm cành sen giơ cao (cao 165cm) kề cận pho tượng A Nan và Ca Diếp; tiếp theo là tượng Quan Âm Chuẩn Đề (12 đôi tay cầm pháp bảo tỏa đều) đặt giữa pho tượng béo tốt phú hiển Di Lặc Phật và tượng khổ hạnh Tuyết Sơn gân cốt. Dưới cùng là tượng Ngọc Hoàng đội mũ bình thiên cùng Nam Tào, Bắc Đẩu và tòa Cửu Long tạc 9 đầu rồng phun nước tắm cho tượng Thích Ca sơ sinh chỉ tay lên trời chỉ tay xuống đất.
+Ban phụ: Hai bên sườn đặt ban thờ Quan Âm tọa sơn; phía sau bài trí trang nghiêm hệ thống tượng thờ tại nhà Tổ (Tổ sư Đạt Ma) và nhà Mẫu (Tam tòa Thánh Mẫu).
+4. Hệ thống di vật, cổ vật và Tự khí lưu giữ
+Hồ sơ kiểm kê của Ban Quản lý di tích ghi nhận hệ thống hiện vật tại chùa rất đa dạng, bao gồm:
+Cổ vật kim loại quí: 01 quả chuông đồng cổ đúc năm Thành Thái thứ 11 (1899). Chuông cao 87cm, quai chuông tạc đôi rồng cách điệu gánh sức nặng chuông, thân chuông khắc bài Minh chữ Hán ghi công đức dòng họ. Ngoài ra còn có 01 bộ đỉnh đồng thờ, 01 đôi hạc đồng.
+Đồ gỗ và chất liệu giấy: 07 bức hoành phi sơn thếp cổ, 08 đôi câu đối chữ Hán khảm trai, 07 bức cửa võng sơn son thếp vàng chạm nổi đề tài Lưỡng long chầu nguyệt, Tứ linh, Tứ quý, 01 bộ khám thờ gỗ lim, 04 cây nến gỗ chạm, 10 chiếc mâm bồng sập gỗ cổ.
+Tư liệu Hán Nôm: 01 tấm bia đá cổ do nhà khoa bảng danh tiếng Tiến sĩ Dương Lâm trực tiếp biên soạn, chấp bút ký ghi lại biên niên sử trùng tu đền chùa.
+Đồ sứ, đồ sành: 02 chiếc chóe sứ cổ vẽ lam, 02 đôi lọ lục bình sứ cổ và hệ thống bát hương tế tự (đặc biệt lưu giữ được 01 bát hương dòng gốm Thổ Hà cổ vẽ rồng mây tinh xảo).
+5. Công tác khoanh vùng và Bảo vệ địa chính di tích
+Căn cứ theo sơ đồ trích lục bản đồ giải thửa vẽ năm 2003 (Tờ số 03, tỷ lệ 1/1000) và biên bản thống nhất liên ngành năm 2006, hành lang pháp lý của di tích được phân vùng rõ ràng để cấm xâm hại:
+Khu vực 1 (Vùng bất khả xâm phạm - Màu đỏ):
+Phạm vi: Bao gồm toàn bộ phần lõi công trình nội tự, chùa chính, nhà Tổ, nhà Mẫu, tháp mộ và sân gạch.
+Diện tích: 4.000 $m^2$ đặt trên thửa đất ký hiệu số $64^A$.
+Ranh giới: Cả bốn phía Đông, Tây, Nam, Bắc của thửa đất $64^A$ đều được bao bọc, tiếp giáp khép kín bởi thửa đất chùa $64^B$ (chi tiết bản đồ xem tại file bản đồ di tích cụm_2.pdf).
+Khu vực 2 (Vùng điều chỉnh xây dựng, bảo vệ cảnh quan - Màu xanh):
+Phạm vi: Bao quanh tiếp giáp khép kín Khu vực I, là vùng bảo vệ sinh thái đầm ao cây cối.
+Diện tích: 4.040,6 $m^2$ đặt trên thửa đất số $64^B$.
+Ranh giới tiếp giáp: Phía Đông giáp Ao đầm; Phía Tây giáp trục Đường làng; Phía Nam giáp trục Đường làng và Ao chuôm; Phía Bắc giáp Ao đầm cổ.
+Mọi hoạt động lấn chiếm, xây dựng nhà ở dân sinh hoặc tự ý di chuyển các động sản đồ thờ ra khỏi chỉ giới khoanh vùng của hai thửa đất trên đều bị nghiêm cấm xử lý theo quy định của Luật Di sản văn hóa. Mọi đề án tu bổ, tôn tạo công trình phụ trợ đều phải do cơ quan chuyên môn phê duyệt.', N'2. Historical, Cultural, and Sculptural Value
+Spiritual and Social Value: The temple was built long ago on the outskirts of the village to meet the religious and spiritual needs of the residents of the lowland delta. The compassionate teachings of Buddha were incorporated and transmitted to promote good, eliminate evil, and cultivate humane character in the villagers over many generations.
+Historical Value during the Resistance War: During the nine years of resistance against French colonialism, the temple served as a secret base for Viet Minh cadres, a meeting place for the commune''s People''s Committee, and a location for digging secret tunnels. During the war against the US, the temple grounds were a safe haven for many central government agencies and departments from within and outside the province.
+Sculptural Art Value: Although the scale of the round statues in the main hall is not very large, the ancient statues at Van Dinh Temple are meticulously and exquisitely crafted in the 19th and 20th centuries. Each wooden statue possesses a unique and majestic beauty, embodying both Buddhist standards and the profound folk craftsmanship characteristic of the Ung Hoa region.
+3. Spatial Features and Arrangement of Statues
+Natural Landscape: The pagoda is located to the east of the village on a raised mound, surrounded by a series of interconnected ancient ponds (Ma Nhat Pond, Ma Nhi Pond, Chua Pond, Quan Pond), creating a tranquil and solemn atmosphere. The pagoda faces southwest towards the village ("pagoda facing the village"), reflecting the ancestors'' wish for the compassionate Buddhas to watch over and protect the villagers.
+Arrangement of the Buddhist Hall: The altars are arranged in a solemn manner from outside to inside, in varying heights:
+Front Hall (Prayer Hall): Statues of the Guardian Deity Khuyen Thien (guarding on the right) and the Punishing Evil Deed (on the left) riding lions are placed. Outside, there are altars dedicated to the Venerable Master (the Venerable Cấp Cô Độc, a civil official in a red-faced, dragonfly-winged robe and hat) and the Holy Monk (wearing a seven-Buddha hat, preaching salvation) symmetrically arranged on either side.
+
+Upper Hall: The highest level features a set of statues of the Three Buddhas seated in the lotus position (85cm high); the next level has a statue of Amitabha Buddha in a flowing robe revealing the Swastika symbol on his chest (133cm high) along with two Bodhisattvas standing in attendance; the lower level houses a statue of Shakyamuni Buddha holding a lotus flower, his right hand raised high (165cm high), adjacent to the statues of Ananda and Kasyapa; next is a statue of Avalokiteshvara Bodhisattva (12 pairs of hands holding Dharma treasures) placed between a plump and prosperous Maitreya Buddha and a statue of the ascetic Buddha of the Snow Mountain with strong bones. At the bottom is a statue of the Jade Emperor wearing a flat-topped hat along with Nam Tào, Bắc Đẩu, and a Nine Dragon altar with nine dragon heads spraying water to bathe the infant Shakyamuni Buddha, pointing to the sky and down to the earth.
+Side Halls: On either side are altars of Avalokiteshvara Bodhisattva seated on a mountain; Behind the solemnly arranged statues are the Ancestor Hall (Bodhidharma) and the Mother Hall (Three Holy Mothers).
+4. System of Relics, Antiques and Temple Artifacts
+The inventory records of the Relic Management Board show that the system of artifacts at the pagoda is very diverse, including:
+Precious metal artifacts: 01 ancient bronze bell cast in the 11th year of the reign of Emperor Thành Thái (1899). The bell is 87cm high, the bell handle is carved with a pair of stylized dragons bearing the weight of the bell, the bell body is inscribed with a Chinese inscription recording the merits of the family lineage. In addition, there is 01 set of bronze incense burners, 01 pair of bronze cranes.
+
+Wooden and paper items: 07 ancient lacquered horizontal plaques, 08 pairs of Chinese couplets inlaid with mother-of-pearl, 07 lacquered and gilded archways with embossed carvings of Two Dragons Worshipping the Moon, Four Mythical Creatures, Four Seasons, 01 set of lim wood altar, 04 carved wooden candlesticks, 10 ancient wooden offering trays.
+Han Nom documents: 01 ancient stone stele directly compiled and signed by the renowned scholar and Doctor Duong Lam, recording the chronicle of temple and pagoda restoration.
+Porcelain and earthenware: 02 ancient porcelain jars with blue painted designs, 02 pairs of ancient porcelain vases, and a system of incense burners for rituals (especially preserving 01 ancient Tho Ha pottery incense burner with exquisitely painted dragon and cloud motifs).
+
+5. Delineation and Protection of the Monument''s Land
+Based on the extracted map of the land parcel drawn in 2003 (Sheet No. 03, scale 1/1000) and the inter-agency agreement minutes of 2006, the legal framework of the monument is clearly demarcated to prohibit encroachment:
+Area 1 (Inviolable Zone - Red):
+Scope: Includes the entire core of the inner temple complex, the main pagoda, the Ancestor''s House, the Mother''s House, the tomb tower, and the brick courtyard.
+Area: 4,000 m² located on plot number 64A.
+
+Boundaries: All four sides (East, West, South, and North) of plot 64A are enclosed and bordered by plot 64B (see map details in the file "Map of historical site cluster_2.pdf").
+
+Area 2 (Construction and landscape protection zone - Green):
+Scope: Encloses and borders Area I, which is an ecological protection zone for ponds, trees, and wetlands.
+
+Area: 4,040.6 m² located on plot number 64B.
+
+Boundaries: East: bordering a pond; West: bordering the village road; South: bordering the village road and a pond; North: bordering an ancient pond.
+
+Any encroachment, construction of residential houses, or unauthorized relocation of religious artifacts outside the boundaries of the two plots of land is strictly prohibited and will be dealt with according to the provisions of the Law on Cultural Heritage. All projects for the restoration and renovation of auxiliary structures must be approved by the competent authority.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1908', N'xã Vân Đình', N'/api/qr/heritage/h3191e9b6', N'https://maps.app.goo.gl/ykPsK9xCFPiHfAqL8', 0, NULL, 3, '2026-07-11T06:21:47.1498006', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (11, N'hc421f590', N'VĐHN-DT-011', 2, N'CHÙA VĨNH THƯỢNG (Cảnh Linh Tự)', N'CHÙA VĨNH THƯỢNG', N'chùa-vĩnh-thượng', N'city', N'active', N'Vĩnh Thượng, Vân Đình, Hà Nội 100000, Việt Nam', N'Vĩnh Thượng, Vân Đình, Hà Nội 100000, Việt Nam', 20.74504370, 105.69923040, N'1. Thông tin chung và Xếp hạng di tích
+Tên di tích: Chùa Vĩnh Thượng.
+Tên chữ (Tên gọi khác): Cảnh Linh Tự (nguồn gốc từ chữ Hán ghi trên cổng chùa và hoành phi cổ tại tiền đường).
+Địa điểm: Thôn Vĩnh Thượng, xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội. (Vùng đất này trước Cách mạng tháng Tám năm 1945 thuộc xã Vĩnh Lộc, tổng Sơn Lãng, huyện Sơn Lãng, phủ Ứng Hòa, tỉnh Đông/Hà Tây).
+Loại hình di tích: Kiến trúc - Nghệ thuật tôn giáo thờ Phật theo phái Đại Thừa.
+Cấp xếp hạng: Được Chủ tịch UBND Thành phố Hà Nội ký Quyết định số 6848/QĐ-UBND ngày 18/12/2018 chính thức xếp hạng là Di tích Lịch sử - Nghệ thuật cấp Thành phố (tham khảo chi tiết tại file quyết định_3.pdf).', N'1. General Information and Monument Ranking
+Name of Monument: Vinh Thuong Pagoda.
+Name in Chinese characters (Other names): Canh Linh Tu (derived from the Chinese characters inscribed on the pagoda gate and the ancient horizontal plaque in the front hall).
+
+Location: Vinh Thuong Hamlet, Son Cong Commune, Ung Hoa District, Hanoi City. (Before the August Revolution of 1945, this area belonged to Vinh Loc Commune, Son Lang Township, Son Lang District, Ung Hoa Prefecture, Dong Ha Tay Province).
+
+Type of Monument: Religious architecture and art of Mahayana Buddhism.
+Ranking Level: Officially ranked as a City-level Historical and Artistic Monument by Decision No. 6848/QD-UBND dated December 18, 2018, signed by the Chairman of the People''s Committee of Hanoi City (see details in the decision_3.pdf file).', N'2. Lịch sử hình thành và Thờ phụng
+Lịch sử địa phương: Thôn Vĩnh Thượng, xã Sơn Công tọa lạc bên bờ sông Đáy cổ, mảnh đất có truyền thống khoa bảng lâu đời với ba vị tiến sĩ thời Lê (tiến sĩ Ngô Thái Đoan, Ngô Văn Oánh và Đỗ Đức Thắng). Trong các cuộc kháng chiến bảo vệ Tổ quốc, thôn có 20 liệt sĩ và 01 Mẹ Việt Nam Anh hùng.
+Niên đại xây dựng: Căn cứ kết cấu kiến trúc, hệ thống tượng Phật và di văn Hán Nôm, di tích được nhận định khởi dựng vào thời Nguyễn. Chùa trải qua các đợt trùng tu lớn vào các năm 1993, 2009 (xây mới Tam quan) và tôn tạo tường bao, nhà Tổ, nhà Mẫu trong những năm gần đây.
+Tín ngưỡng thờ phụng: Chùa thờ Phật và chư vị Bồ tát theo phái Đại Thừa (Tam Thế Phật, Di Đà, Quan Âm...), kết hợp phối thờ Tam tòa Thánh Mẫu, Đức Thánh Trần (Trần Hưng Đạo), các vị Tổ sư và các vị Hậu Phật nhằm đề cao tính khuyến thiện, trừng ác, giáo dục nhân ái.
+3. Khảo tả công trình Kiến trúc - Nghệ thuật
+Dựa trên tài liệu bản vẽ ghi hiện trạng (bản vẽ_3.pdf), di tích nhìn về hướng Tây Nam (hướng về miền đất Phật), kết cấu dạng chữ Đinh ($T$) nguy nga kết hợp các hạng mục phụ trợ liên hoàn:
+Tam quan: Xây dựng theo kiểu cung đình bằng vôi gạch bề thế. Gồm 6 cột trụ biểu đế thắt cổ bồng, đỉnh đắp tứ phượng chầu chụm đuôi cách điệu. Khoảng giữa các cột trổ 3 cửa cuốn vòm, phía trên xây các tòa lầu 2 tầng 8 mái đao cong lợp ngói ri, phần cổ diêm tòa lầu giữa đắp nổi chữ Hán "Cảnh Linh Tự".
+Tòa Tiền đường: Ngôi nhà ngang gồm 3 gian 2 chái, hệ thống mái làm theo kết cấu 4 mái chảy với các góc đao cong vút trang trí rồng, phượng cách điệu. Hai đầu bờ nóc đắp đôi rồng lá ngậm bờ nóc, chính giữa bờ nóc đắp hai rồng chầu hổ phù đội biểu tượng Phật giáo, mái trước giật cấp làm hệ mái kép đắp nổi 3 chữ tên chùa. Khung vì kèo gỗ chịu lực vững chãi.
+Tòa Thượng điện: Nối vuông góc từ gian giữa Tiền đường chạy dọc ra phía sau. Bộ khung gồm 4 hàng cột bê tông lớn chịu lực nâng đỡ hệ mái làm theo kết cấu nhà vuông 2 tầng 8 mái lợp ngói mũi (tượng trưng cho vũ trụ luận Thái cực - Lưỡng nghi - Tứ tượng - Bát quái biến hóa). Đỉnh mái thượng điện đắp nổi hổ phù đội mặt trời lửa oai nghiêm.
+Nhà Tổ và Nhà Mẫu: Nằm phía sau và bên phải tòa Thượng điện. Nhà Tổ gồm 3 gian bít đốc hồi lợp ngói, vì kèo quá giang gối tường giản dị. Nhà Mẫu gồm 3 gian ngang chia thành tiền tế và hậu cung, vì kèo kiểu "vì kèo quá giang trốn cột, kẻ bẩy hiên" vững chắc.
+4. Hệ thống Di vật, Cổ vật và Tự khí
+Hệ thống đồ thờ tự tại chùa đa dạng về chất liệu (gỗ, đồng, sành sứ), phân bổ ngăn nắp (khoảng trên 40 pho tượng):
+Cổ vật kim loại tiêu biểu: 01 quả chuông đồng cổ đúc năm Thành Thái thứ 19 (1907). Thân chuông hình trụ màu vàng, quai chuông tạo tác 2 đầu rồng cách điệu đấu lưng vào nhau hình cánh cung, thân đúc nổi 4 núm tròn và bổ ô khắc ghi di văn chữ Hán về việc bầu hậu, trùng tu chùa (minh chứng tư liệu tại tập ảnh_3.pdf).
+Hệ thống tượng Phật tại Tam bảo (22 pho):
+Lớp 1 (Cao nhất): Bộ tượng Tam Thế Phật gồm 3 pho tạc ngồi thiền định trên đài sen, pho giữa mang phong cách cuối XIX, u nhục kháo nổi rõ.
+Lớp 2: Tượng A Di Đà (ngực lộ chữ Vạn) cùng tượng Nhị vị Bồ tát đứng và tượng Quan Âm Chuẩn Đề sáu đôi bàn tay kết ấn.
+Lớp 3: Tượng Quan Âm Thiên Thủ Thiên Nhãn, Ngọc Hoàng Đại Đế ngồi trên ngai đội mũ bình thiên cầm lệnh bài, kề cận tượng Nam Tào, Bắc Đẩu cánh chuồn.
+Lớp 4 (Dưới cùng): Tòa Cửu Long bằng gỗ chạm chín con rồng uốn khúc vòm cầu bao quanh tượng Thích Ca sơ sinh tay chỉ trời chỉ đất.
+Tượng tại Tiền đường: Tượng Đức Ông mặt đỏ mũ cánh chuồn, tượng Thánh Tăng đội mũ thất phật mặc áo cà sa thếp vàng, tượng Hộ Pháp Khuyến Thiện và Trừng Ác cưỡi trên mình sư tử oai phong.
+Hiện vật tại Nhà Tổ & Nhà Mẫu: Tượng Tổ sư Đạt Ma áo cà sa khoác 2 lớp ngồi thiền. Nhà Mẫu đặt tượng Tam tòa Thánh Mẫu áo nhiều nếp (xanh, đỏ, trắc), tượng Mẫu Sơn Trang, tượng Đức Thánh Trần mặc áo choàng đỏ đi hia, tượng hầu Tiên Đồng - Ngọc Nữ.
+Hoành phi, Câu đối & Cửa võng: Hoành phi gỗ đề chữ Hán "Sơn Anh Hải Tú", "Y Chính Trang Nghiêm", câu đối phẳng gấm triện gấm nền vàng chữ đen, kết hợp hệ thống 02 bức cửa võng sơn son thếp vàng chạm nổi đề tài Long ly quy phượng, Tứ quý tinh xảo.
+5. Công tác khoanh vùng và Bảo vệ di tích
+Căn cứ theo bản đồ giải thửa (bản đồ hiện trạng...pdf) và biên bản thống nhất liên ngành năm 2018 (Biên bản khoanh vùng...pdf), di tích được quản lý bằng hành lang pháp lý nghiêm ngặt:
+Chỉ giới khoanh vùng: Do chùa nằm biệt lập ổn định ngoài bãi cánh đồng làng, các yếu tố gốc được bảo tồn nguyên vẹn nên Hội nghị thống nhất chỉ khoanh vùng Khu vực bảo vệ I, không khoanh vùng Khu vực bảo vệ II.
+Diện tích khu vực bảo vệ I: Diện tích 8.150,1 $m^2$ giới hạn bởi 17 điểm mốc khép kín (tỷ lệ 1/500).
+Phía Bắc: Giáp đường bê tông liên thôn và đất thổ canh xã Sơn Công.
+Phía Nam: Giáp đất thổ canh và mương thoát nước bê tông.
+Phía Đông: Giáp ao làng, bãi canh tác và đê sông Đáy.
+Phía Tây: Giáp trục đường bê tông chính và đất canh tác.
+Quy định nghiêm cấm: Nghiêm cấm mọi hoạt động xây dựng, khai thác trái phép hay đào bới làm thay đổi nguyên trạng cảnh quan kiến trúc, di vật bên trong chỉ giới di tích. Cơ quan chức năng lưu ý địa phương cần sớm có phương án xử lý, di dời tượng Bạch y đặt ở sân chùa (do không phù hợp phong tục thờ phụng Bắc tông) và gỡ bỏ các tấm xi măng khắc tên người công đức bằng chữ quốc ngữ gắn sai quy cách trên tường hồi chùa chính.', N'2. History of Formation and Worship
+Local History: Vinh Thuong village, Son Cong commune, is located on the banks of the ancient Day River, a land with a long tradition of scholarship, boasting three doctoral laureates during the Le Dynasty (Doctors Ngo Thai Doan, Ngo Van Oanh, and Do Duc Thang). During the wars to defend the Fatherland, the village had 20 martyrs and one Heroic Vietnamese Mother.
+Construction Date: Based on the architectural structure, the system of Buddha statues, and the Han Nom inscriptions, the site is believed to have been built during the Nguyen Dynasty. The temple underwent major renovations in 1993 and 2009 (rebuilding the main gate) and recent restoration of the surrounding walls, the ancestral hall, and the mother''s hall.
+
+Religious Beliefs: The temple worships Buddha and Bodhisattvas of the Mahayana school (Three Buddhas, Amitabha, Avalokiteshvara...), combined with the worship of the Three Holy Mothers, Saint Tran (Tran Hung Dao), the founding masters, and later Buddhas to promote the encouragement of good deeds, the punishment of evil, and the education of compassion.
+
+3. Architectural and Artistic Description
+Based on the existing architectural drawings (drawing_3.pdf), the monument faces southwest (towards the land of Buddha), with a magnificent T-shaped structure combined with interconnected auxiliary elements:
+Triple Gate: Built in the style of a grand palace with lime and brick. It consists of 6 pillars with a constricted base and a stylized four phoenixes with their tails joined at the top. Between the pillars are 3 arched doorways, above which are 2-story, 8-roofed buildings with curved eaves covered with tiles. The central building''s eaves are embossed with the Chinese characters "Canh Linh Tu".
+
+Front Hall: A horizontal building with three bays and two wings, the roof system follows a four-sloping structure with curved eaves decorated with stylized dragons and phoenixes. At both ends of the ridge are sculpted dragons with leaves holding the ridge, and in the center of the ridge are two dragons flanking a tiger-shaped ornament supporting Buddhist symbols. The front roof is stepped, creating a double roof system with three embossed characters representing the temple''s name. The wooden truss frame provides sturdy support.
+
+Upper Hall: Connected perpendicularly from the central bay of the Front Hall, running lengthwise to the back. The frame consists of four rows of large concrete columns supporting the roof system, which follows a two-story, eight-roof square structure covered with curved tiles (symbolizing the cosmology of Tai Chi - Yin and Yang - Four Symbols - Eight Trigrams). The apex of the upper hall roof is sculpted with an embossed tiger-shaped ornament supporting a majestic fiery sun.
+Ancestral Hall and Mother Hall: Located behind and to the right of the Upper Hall. The Ancestral Hall consists of three bays with gable ends, covered with tiles, and a simple truss system resting on the walls. The main hall consists of three horizontal bays divided into a front hall and a rear hall, with a sturdy truss system of "hidden beam trusses and eaves purlins".
+4. System of Relics, Antiquities and Religious Artifacts
+The system of religious artifacts at the temple is diverse in materials (wood, bronze, ceramics), neatly arranged (approximately over 40 statues):
+Typical metal artifacts: 01 ancient bronze bell cast in the 19th year of the reign of Emperor Thành Thái (1907). The bell body is cylindrical in color, the bell handle is shaped like two stylized dragon heads facing each other in an arc shape, the body has four raised round knobs and a panel inscribed with Chinese characters about the election of the empress and the restoration of the temple (evidence in photo collection_3.pdf).
+System of Buddha statues in the Three Treasures (22 statues):
+Layer 1 (Highest): The Three Buddha statues consist of 3 statues carved in meditation on lotus pedestals, the middle statue is in the late 19th style, with clearly visible fleshy curves.
+Layer 2: Statue of Amitabha Buddha (with the Swastika symbol visible on his chest), along with statues of the two Bodhisattvas standing and a statue of Avalokiteshvara Cundi with six pairs of hands forming a mudra.
+
+Layer 3: Statue of Avalokiteshvara with a Thousand Hands and a Thousand Eyes, the Jade Emperor seated on a throne wearing a flat-topped hat and holding a ceremonial tablet, adjacent to statues of Nam Tao and Bac Dau with dragonfly wings.
+
+Layer 4 (Bottom): A wooden Nine Dragon altar carved with nine intertwined dragons encircling a statue of the infant Buddha Shakyamuni with his hands pointing to the sky and earth.
+
+Statues in the Front Hall: Statue of the red-faced Venerable Master with a dragonfly-winged hat, statue of a Holy Monk wearing a seven-Buddha hat and a gold-plated robe, statues of the Guardian Deities Encouraging Goodness and Punishing Evil riding majestic lions.
+
+Artifacts in the Ancestral Hall & Mother Goddess Hall: Statue of Patriarch Bodhidharma in a two-layered robe meditating. The Mother Goddess Hall houses statues of the Three Holy Mothers in multi-layered robes (blue, red, and pink), the Mother Goddess of the Mountain Village, the statue of Saint Tran wearing a red cloak and boots, and statues of the celestial attendants, the Immortal Boy and Jade Girl.
+
+Horizontal plaques, couplets & arched doorways: Wooden horizontal plaques inscribed with Chinese characters "Son Anh Hai Tu" and "Y Chinh Trang Nghiem," flat brocade couplets with black characters on a yellow background, combined with a system of two gilded and lacquered arched doorways featuring exquisitely carved dragons, phoenixes, turtles, and four auspicious symbols.
+
+5. Demarcation and Protection of the Monument
+Based on the land survey map (current status map...pdf) and the inter-agency agreement minutes of 2018 (Demarcation minutes...pdf), the monument is managed within a strict legal framework:
+Demarcation boundaries: Because the pagoda is located in an isolated and stable area outside the village''s rice fields, and the original elements are preserved intact, the Conference agreed to demarcate only Protection Zone I, not Protection Zone II.
+
+Area of ​​Protection Zone I: An area of ​​8,150.1 m² bounded by 17 closed boundary markers (scale 1/500).
+North: Bordered by a concrete inter-village road and agricultural land of Son Cong commune.
+
+South: Bordered by agricultural land and a concrete drainage ditch.
+
+East: Bordered by a village pond, cultivated land, and the Day River dike.
+
+West: Bordered by the main concrete road and cultivated land.
+Prohibited activities: All construction, illegal exploitation, or excavation that alters the original landscape and architecture is strictly prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1905', NULL, N'/api/qr/heritage/hc421f590', N'https://maps.app.goo.gl/UBRWZ1SCZqSsLK2K6', 0, NULL, 3, '2026-07-11T06:27:38.2282744', '2026-07-11T06:32:14.1419647');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (12, N'hd355460c', N'VĐHN-DT-012', 2, N'CỤM ĐÌNH VÀ QUÁN VÂN ĐÌNH', N'CỤM ĐÌNH VÀ QUÁN VÂN ĐÌNH', N'cụm-đình-và-quán-vân-đình', N'national', N'active', N'PQ8R+9Q4, Vân Đình, Hà Nội, Việt Nam', N'PQ8R+9Q4, Vân Đình, Hà Nội, Việt Nam', 20.71639910, 105.79110770, N'1. Thông tin chung
+Tên di tích: Cụm di tích Đình và Quán Vân Đình (bao gồm Đình Thượng, Đình Trung và Quán ông Đô).
+Địa điểm: Làng Vân Đình, xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội). Cụm di tích nằm trải dài theo hệ thống đường làng xóm chợ và xóm bến đò kề bờ hữu ngạn sông Đáy.
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin ký Quyết định số 65 QĐ/BT ngày 16/01/1995 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the site: Van Dinh Temple and Shrine Complex (including Thuong Temple, Trung Temple, and Ong Do Shrine).
+
+Location: Van Dinh Village, Tan Phuong Commune, Ung Hoa District, Ha Tay Province (now Van Dinh Town, Ung Hoa District, Hanoi City). The complex stretches along the village roads, market area, and ferry landing area on the right bank of the Day River.
+
+Type and Classification: Architectural and Artistic Monument. Recognized and classified as a National Monument by Decision No. 65 QD/BT dated January 16, 1995, signed by the Minister of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Thành hoàng thờ tại Đình: Đình thờ ba anh em sinh ba là các vị phúc thần: Viết Pháp (Chiêu Pháp thiên vương đồng súy lý vực tôn thần), Viết Cư (Đông Cư linh ứng phù hộ dực vận tôn thần) và Viết Hoàn (Mộc Hoàn cư sỹ tôn thần). Ba ngài có công dẹp loạn 12 sứ quân, phối hợp cùng Đinh Bộ Lĩnh đánh tan cánh quân của Đỗ Cảnh Thạc tại trận Đỗ Động Giang để thống nhất giang sơn. Sau khi Đinh Tiên Hoàng mất, ba ngài tuẫn tiết trên sông Đáy để giữ lòng trung quân.
+Thần thờ phụng tại Quán: Quán thờ vị nhân thần là Đô Đại tướng quân (tên thật là Tuấn, tục gọi là Vỹ), một danh tướng thời Lê - Mạc có công kiên cường trấn giữ biên cương Kinh Bắc. Khi bị thương nặng, ngài cưỡi ngựa phi về đến bến đò cầu Chỗ quê hương rồi hóa thân dưới dòng sông.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Đình Trung: Tọa lạc trên thửa đất số 27 (diện tích 1.515 $m^2$). Mặt bằng kiến trúc làm theo kiểu chữ Tam ($=$), gồm Đại bái, Thiêu hương, Hậu cung và hai dãy dải vũ. Tòa Đại bái rộng lớn dài 20m, có 4 mái đao cong uốn lượn kiểu dáng thuyền rồng độc đáo. Hệ thống vì kèo kết cấu "thượng chồng rường hạ dư, cốn, bẩy" thời Nguyễn (niên hiệu Thiệu Trị thứ 6 - 1846). Các bức cốn chạm khắc lộng lẫy đề tài tứ linh, hổ phù và tích "long cuốn thủy". Tòa Thiêu hương có kết cấu 2 tầng 8 mái đao cong phản ánh thuyết âm dương ngũ hành.
+Đình Thượng (Đình Sắc): Nằm giữa xóm Bến, kiến trúc mặt bằng chữ Nhị ($=$) gồm Đại bái và Hậu cung. Đại bái có kết cấu 4 hàng chân cột gỗ tròn, các bức cốn chạm nổi tiên cưỡi rồng và hổ cư long bàn tinh xảo thời Lê Trung Hưng; thượng lương ghi dấu năm tu sửa Tự Đức thứ 2 (1849). Hậu cung kết hợp kiến trúc cổ phương Đông với vòm cuốn Gô-tích phương Tây.
+Quán ông Đô: Nằm ven bến cầu sông Đáy, kiến trúc chữ Đinh ($J$) gồm Quán hạ (5 gian) và Quán thượng (3 gian Hậu cung). Cổng quán xây gạch dày như thành lũy, trên đỉnh có tấm hoành phi bằng đá đề chữ "Đại tướng quân miếu thần".
+4. Hệ thống Di vật, Cổ vật
+Tài liệu cổ: 02 cuốn sách chữ Hán ghi Thần phả chép sự tích do Nguyễn Bính soạn (năm 1572) và 12 đạo sắc phong thần qua các triều đại.
+Đồ thờ tự quý hiếm: 05 ngai thờ có bài vị gỗ thời Lê chạm khắc rồng thếp vàng rực rỡ, 01 phần trán của bộ cửa võng 9 tầng thời Lê cổ kính, 02 chiếc sập thờ và 01 khám thờ gỗ thời Nguyễn.
+Hiện vật khác: 02 chiếc kiệu nghệ thuật thời Nguyễn, bộ bát bửu xà mâu 12 chiếc, 15 bình hương, 2 chuông đồng, 2 bộ lư đồng, 5 đôi câu đối và 4 tấm hoành phi có giá trị văn hóa cao.
+5. Lễ nghi phụng sự
+Công tác quản lý: Cụm di tích được trông nom, quét dọn sạch sẽ thường nhật bởi Ban bảo vệ di tích và một cụ thủ từ đức cao vọng trọng am hiểu sâu sắc về phong tục địa phương.
+Sinh hoạt văn hóa: Hàng năm, tại cụm di tích diễn ra các lễ hội truyền thống long trọng mang tính chất thượng võ để tưởng nhớ công đức của các vị trung thần, thu hút đông đảo nhân dân và du khách thập phương đến chiêm bái, tham quan. Đình cũng là nơi hội họp lành mạnh của bô lão và các đoàn thể địa phương.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản đề nghị và bản đồ khoanh vùng lập năm 1994, các cơ quan chức năng thống nhất phân giới phạm vi bảo vệ cho cụm di tích như sau:
+Khu vực bảo vệ I (Vùng bất khả xâm phạm - Màu đỏ): Bao gồm thửa đất số 293 (Đình Thượng), thửa đất số 27 (Đình Trung) và thửa đất số 42 (Quán ông Đô).
+Diện tích & Tiếp giáp: Đình Trung kề sát xóm chợ và khu dân cư thị trấn Vân Đình, phía Nam giáp khu vực phụ nữ Vân Đình, phía Bắc giáp bờ đê sông Đáy. Quán ông Đô tiếp kề ngõ chợ và mương nước; các cấu kiện gốc, chi tiết điêu khắc và di vật bắt buộc phải bảo vệ nguyên vẹn trạng thái đất đai.
+Khu vực tôn tạo (Màu xanh): Bao gồm các thửa đất phụ cận bao quanh nhằm điều chỉnh xây dựng, giữ gìn cảnh quan môi trường sinh thái chung cho cụm di tích. Nghiêm cấm mọi hành vi xâm phạm, đào bới, xây dựng trái phép khi chưa được sự đồng ý của Bộ trưởng Bộ Văn hóa Thông tin.', N'2. Figures of Worship and Historical Value
+The tutelary deity worshipped at the communal house: The communal house is dedicated to three triplets who are benevolent deities: Viet Phap (Chieu Phap Thien Vuong Dong Su Ly Vuc Ton Than), Viet Cu (Dong Cu Linh Ung Phu Ho Duc Van Ton Than), and Viet Hoan (Moc Hoan Cu Sy Ton Than). These three men helped quell the rebellion of the Twelve Warlords and, in coordination with Dinh Bo Linh, defeated Do Canh Thac''s army at the Battle of Do Dong Giang to unify the country. After Dinh Tien Hoang''s death, the three men committed suicide on the Day River to maintain their loyalty to the king.
+The deity worshipped at the shrine: The shrine is dedicated to the human deity Do Dai Tuong Quan (real name Tuan, commonly known as Vy), a famous general of the Le-Mac dynasty who bravely defended the Kinh Bac border. When severely wounded, he rode his horse to the Cau Cho ferry crossing, his hometown, and then transformed into a spirit in the river.
+3. Architectural and Artistic Features
+Trung Temple: Located on plot number 27 (area 1,515 m²). The architectural plan follows the shape of the Chinese character "Tam" (meaning three), consisting of the main hall, incense burning hall, rear hall, and two rows of side wings. The large main hall is 20m long, with four curved roofs resembling unique dragon boats. The truss system uses the "upper beam, lower rafter, brackets, and purlins" structure from the Nguyen Dynasty (6th year of the Thieu Tri reign - 1846). The brackets are magnificently carved with themes of the four mythical creatures, tiger motifs, and the "dragon coiled around water" story. The incense burning hall has a two-story structure with eight curved roofs, reflecting the theory of yin and yang and the five elements.
+Upper Temple (Sac Temple): Located in the middle of Ben hamlet, the architectural plan follows the shape of the Chinese character "Nhị" (meaning two), consisting of the main hall and rear hall. The main hall has a structure of 4 rows of round wooden columns, with exquisitely carved bas-reliefs depicting immortals riding dragons and tigers residing on dragon thrones from the Le Trung Hung period; the upper beam marks the year of renovation in the 2nd year of Tu Duc (1849). The rear hall combines ancient Eastern architecture with Western Gothic arches.
+The Temple of the General: Located on the banks of the Day River, the temple is built in the shape of the letter ''Dinh'' ($J$) consisting of the Lower Temple (5 bays) and the Upper Temple (3 bays, Rear Hall). The temple gate is built of thick brick like a rampart, with a stone plaque at the top inscribed with the words "Great General''s Temple".
+
+4. System of Artifacts and Antiquities
+Ancient documents: 2 books in Chinese characters recording the legends of the deities, compiled by Nguyen Binh (1572), and 12 royal decrees conferring divine status through various dynasties.
+
+Rare and valuable religious artifacts: 5 wooden altars with carved dragon-shaped ancestral tablets from the Le Dynasty, gilded with gold leaf; 1 part of the lintel of an ancient 9-tiered Le Dynasty archway; 2 altar tables and 1 wooden shrine from the Nguyen Dynasty.
+
+Other artifacts: 2 artistic palanquins from the Nguyen Dynasty; a set of 12 precious ceremonial spears; 15 incense burners; 2 bronze bells; 2 sets of bronze incense burners; 5 pairs of couplets; and 4 valuable horizontal plaques.
+
+5. Rituals and Service
+
+Management: The complex of relics is regularly maintained and cleaned by the Relic Protection Board and a highly respected and knowledgeable caretaker who understands local customs.
+
+Cultural Activities: Every year, the complex of relics hosts solemn traditional festivals with a martial spirit to commemorate the merits of loyal officials, attracting a large number of people and tourists from all over to visit and worship. The communal house also serves as a healthy meeting place for the elders and local organizations.
+6. Protection and Demarcation of the Monument
+According to the proposal minutes and demarcation map prepared in 1994, the relevant authorities agreed to delineate the protection area for the monument complex as follows:
+Protection Area I (Inviolable Zone - Red): Includes plot number 293 (Upper Communal House), plot number 27 (Central Communal House), and plot number 42 (Ông Đô''s Inn).
+
+Area & Adjacent: The Central Communal House is adjacent to the market and residential area of ​​Vân Đình town, bordered to the south by the Vân Đình women''s area, and to the north by the embankment of the Đáy River. Ông Đô''s Inn is adjacent to the market alley and water canal; original components, sculptural details, and artifacts must be protected in their original state on the land.
+Preservation Area (Green): Includes adjacent land plots surrounding the site to regulate construction and preserve the overall ecological landscape of the monument complex. Any encroachment, excavation, or illegal construction is strictly prohibited without the approval of the Minister of Culture and Information.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1823', N'xã Vân Đình', N'/api/qr/heritage/hd355460c', N'https://maps.app.goo.gl/93ggYWUyDENRGV4R7', 0, NULL, 3, '2026-07-11T06:32:02.7182167', '2026-07-11T08:32:06.3985936');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (13, N'hb4069ccf', N'VĐHN-DT-013', 3, N'ĐỀN PHÍ TRẠCH (Đền Quán Ông)', N'ĐỀN PHÍ TRẠCH (Đền Quán Ông)', N'đền-phí-trạch-đền-quán-ông', N'city', N'active', N'PRV2+F9R, Phí Trạch, Vân Đình, Hà Nội, Việt Nam', N'PRV2+F9R, Phí Trạch, Vân Đình, Hà Nội, Việt Nam', 20.74373330, 105.79830230, N'1. Thông tin chung
+Tên di tích: Đền Phí Trạch hay còn có tên gọi khác là đền Quán Ông.
+Địa điểm: Tọa lạc giữa cánh đồng thôn Phí Trạch, xã Phương Tú, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tổng Đạo Tú, huyện Sơn Lãng, phủ Ứng Hòa, tỉnh Hà Tây / Hà Đông).
+Loại hình di tích: Kiến trúc Tín ngưỡng (dạng đền).
+Xếp hạng: Được UBND tỉnh Hà Tây ban hành Quyết định bảo vệ di tích lịch sử văn hóa số 983-QĐ/UB vào ngày 23/08/2000.', N'1. General Information
+Name of the monument: Phi Trach Temple, also known as Quan Ong Temple.
+Location: Situated in the middle of the fields of Phi Trach village, Phuong Tu commune, Ung Hoa district, Hanoi city (formerly part of Dao Tu commune, Son Lang district, Ung Hoa prefecture, Ha Tay/Ha Dong province).
+
+Type of monument: Religious architecture (temple type).
+
+Classification: The People''s Committee of Ha Tay province issued Decision No. 983-QD/UB on August 23, 2000, to protect this historical and cultural monument.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đền thờ một vị chân tu, Tổ sư của Thiền phái Trúc Lâm đời thứ 4, có tôn hiệu là "Trúc Lâm Đại đầu đà, đả tam quy bất đắc, kiêm thủy pháp đại quốc thần".
+Thần tích & Lịch sử: Thiền phái Trúc Lâm do vua Trần Nhân Tông (Hương Vân Đại đầu đà) phát tích tại Yên Tử, là giáo phái Phật giáo thuần Việt duy nhất xuất phát từ lòng yêu nước và tinh thần tự chủ độc lập dân tộc. Thần tích tại đền ghi nhận vị chân tu này vốn là đệ tử của vị tổ thứ ba – thiền sư Huyền Quang (Lý Đạo Tái). Ngài đã du hành đến đất Phí Trạch, trú tại nhà ông Nguyễn Vĩnh Công để truyền đạo và sinh hoạt giản dị.
+Vào một năm, khi dân làng Phí Trạch gặp nạn hoang mang vì bệnh dịch hoành hành, nhà sư đã đứng ra lập đàn cúng lễ, giúp tiêu trừ tai họa, mang lại bình yên cho nhân dân. Để ghi nhớ công ơn cứu độ, nhân dân địa phương đã lập đền phụng thờ ngài ngay tại thế đất thiêng.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Đền tọa lạc trên gò đất cao ráo mang thế "đầu rồng" biệt lập giữa cánh đồng phía Bắc của làng, có hồ rộng phía trước và nhiều cây xanh che phủ thâm nghiêm. Đền được khởi dựng từ khoảng thế kỷ XIV và trải qua đợt trùng tu lớn vào năm 1995. Mặt bằng gồm 3 tòa đơn nguyên chính:
+Tòa Đại bái: Được xây dựng muộn hơn để mở rộng không gian hành lễ. Đại bái gồm 3 gian, có kiến trúc vô cùng độc đáo với 2 mái bên cao vút và bờ nóc chạy dọc theo đường thần đạo, tạo hình mảng cổ diêm đắp nổi tích "Lưỡng long chầu nguyệt". Khung nhà làm hoàn toàn bằng gỗ tứ thiết theo kết cấu vì kèo "chồng rường con nhị", bào trơn đóng bén cân đối.
+Tòa Trung cung: Được xây dựng từ sớm, tường bao quanh làm bằng chất liệu gạch lục cổ nung ở nhiệt độ cao và chỉ xây khít mà không trát vôi vữa bên ngoài (tương tự lối xây ở chùa Tây Phương). Các bộ vì kèo gỗ lim được sơn son nguy nga. Giá trị điêu khắc đỉnh cao tập trung tại các bức cốn chạm nổi tích "Độc long" từ thời Hậu Lê (thế kỷ XVIII) còn lưu giữ được qua các đợt trùng tu.
+Tòa Hậu cung: Nối dọc liền với Trung cung tạo thành kết cấu kiểu chữ Đinh ($J$) khép kín. Ba mặt tường cũng được xây bằng gạch lục trần không trát. Giữa Hậu cung đặt bệ thờ và cỗ long ngai bài vị cổ thời Lê được sơn son thếp vàng trang trọng.
+4. Hệ thống Di vật, Cổ vật
+Đền Phí Trạch bảo lưu một hệ thống cổ vật tự khí phong phú gắn liền với lịch sử giáo phái Trúc Lâm:
+Tài liệu cổ: 01 bản Thần phả chữ Hán cùng hệ thống 31 đạo sắc phong qua các triều đại phong kiến.
+Đồ gỗ và thờ tự: 01 cỗ long ngai bài vị thời Lê sơn son thếp vàng rực rỡ (khung bài vị cao tới 1,8m, rộng 50cm có kính bảo vệ) khắc dòng chữ “Trúc Lâm Đại đầu đài tam quy kiêm thủy pháp thần vị”. Ngoài ra còn có 01 bức hoành phi cổ đề bốn chữ "Vạn cổ anh linh", 03 đôi câu đối sơn mài khảm trai, 02 mâm bồng gỗ sơn mài, 02 đài gỗ, 04 cây nến gỗ, 02 ống cắm hoa, 01 mũ chầu, 01 bộ áo chầu và đôi hia vải thờ.
+Hiện vật khác: 01 trống cái, 02 thanh gươm thờ, 02 bát hương gốm cổ men nâu của dòng gốm Thổ Hà.
+5. Lễ nghi phụng sự
+Thời gian: Hàng năm nhân dân tổ chức cúng tế, mở hội đền vào các ngày mùng 12 tháng 12 (ngày lập đền), các ngày đầu tháng 2 âm lịch và đặc biệt là ngày 13 tháng 2 âm lịch (ngày hóa của nhà sư).
+Quy định lễ vật: Do vị thần chủ là một nhà sư tu hành đắc đạo của phái Trúc Lâm nên nhân dân địa phương tuyệt đối chỉ sửa lễ chay (hương hoa, oản quả, trà rượu), nghiêm cấm không được sửa lễ mặn hay sát sinh dâng cúng tại đền.
+Tuần tiết: Đền còn duy trì cúng tế vào các ngày sóc, vọng (mùng một, rằm), lễ Thượng điền, hạ điền gắn với mùa vụ sản xuất nông nghiệp và các dịp tết cổ truyền (Đoan ngọ, Trung nguyên, Trung thu, Trùng thập).
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản khoanh vùng lập ngày 12/05/2000, di tích được phân định ranh giới nghiêm ngặt cho Khu vực bảo vệ I (Vùng bất khả xâm phạm):
+Phạm vi: Nằm trọn vẹn trên thửa đất số 87, tờ bản đồ địa chính số 01 (vẽ năm 1985 của xã Phương Tú) với tổng diện tích 5.106 $m^2$.
+Ranh giới tiếp giáp: Phía Đông giáp thửa đất số 98, thửa 99 và đường làng; phía Tây giáp đường làng; phía Nam giáp đường làng; phía Bắc giáp các thửa đất số 400 và thửa 86.
+Nghiêm cấm mọi hoạt động xây dựng, đào bới, xâm hại trái phép làm thay đổi hoặc giảm sút giá trị các cấu kiện kiến trúc gốc và di vật bên trong chỉ giới màu đỏ của đền. Mọi phương án tôn tạo cảnh quan xung quanh (Khu vực II) bắt buộc phải tuân thủ Pháp lệnh bảo vệ di tích lịch sử và được cấp có thẩm quyền phê duyệt.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The temple is dedicated to a true ascetic, the 4th Patriarch of the Truc Lam Zen sect, whose title is "Truc Lam Dai Dau Da, who failed to attain the Three Refuges, and who also served as a great national deity in the water-practice rituals."
+Legends & History: The Truc Lam Zen sect, founded by King Tran Nhan Tong (Huong Van Dai Dau Da) at Yen Tu, is the only purely Vietnamese Buddhist sect originating from patriotism and the spirit of national independence and self-reliance. Legend at the temple records that this true ascetic was a disciple of the third patriarch – Zen Master Huyen Quang (Ly Dao Tai). He traveled to Phi Trach, residing at the house of Mr. Nguyen Vinh Cong to spread his teachings and live a simple life.
+
+One year, when the villagers of Phi Trach were in turmoil due to a raging epidemic, the monk set up an altar and performed rituals, helping to eliminate the calamity and bring peace to the people. To commemorate his saving grace, the local people erected a temple to worship him on this sacred land.
+3. Architectural and Artistic Features
+The temple is situated on a high, dry mound shaped like a "dragon''s head," isolated in the northern fields of the village, with a large lake in front and many trees providing a solemn atmosphere. The temple was built around the 14th century and underwent a major restoration in 1995. The layout consists of three main buildings:
+The Main Hall: Built later to expand the ceremonial space. The Main Hall has three bays, with a unique architecture featuring two soaring side roofs and a ridge running along the sacred path, creating a relief sculpture depicting "Two Dragons Worshipping the Moon." The frame is made entirely of ironwood in a "stacked beam and rafter" truss structure, smoothly planed and precisely fitted.
+The Central Hall: Built earlier, the surrounding walls are made of ancient green bricks fired at high temperatures and built tightly together without plastering (similar to the construction style of Tay Phuong Pagoda). The wooden trusses are painted in magnificent red lacquer. The highest sculptural value is concentrated in the bas-relief carvings depicting the "Single Dragon" from the Late Le Dynasty (18th century), which have been preserved through restoration efforts.
+The Rear Hall: Connected vertically to the Central Hall, forming a closed, J-shaped structure. The three walls are also built of unplastered green brick. In the center of the Rear Hall is an altar and an ancient Le Dynasty dragon throne and ancestral tablets, painted in red and gold, in a dignified manner.
+
+4. System of Artifacts and Antiquities
+Phi Trach Temple preserves a rich system of ancient artifacts and religious objects associated with the history of the Truc Lam sect:
+Ancient documents: 01 copy of the Divine Genealogy in Chinese characters along with a system of 31 imperial decrees from various feudal dynasties.
+Wooden objects and worship items: 01 magnificent Le Dynasty dragon throne and ancestral tablets, painted in red and gold (the ancestral tablet frame is 1.8m high and 50cm wide with protective glass) inscribed with the words "Truc Lam Great Altar, Three Refuges, and Water Law Divine Tablet". In addition, there is one ancient horizontal plaque inscribed with the four characters "Eternal Heroic Spirit," three pairs of lacquered couplets inlaid with mother-of-pearl, two lacquered wooden offering trays, two wooden pedestals, four wooden candlesticks, two flower vases, one ceremonial hat, one ceremonial robe set, and a pair of cloth ceremonial shoes.
+
+Other artifacts: one large drum, two ceremonial swords, and two ancient brown-glazed ceramic incense burners from the Tho Ha pottery line.
+
+5. Rituals and Service
+
+Time: Annually, the people organize worship ceremonies and hold temple festivals on the 12th of December (the temple''s founding day), the first days of February in the lunar calendar, and especially on the 13th of February in the lunar calendar (the monk''s passing day).
+
+Regulations on offerings: Because the main deity is an enlightened Buddhist monk of the Truc Lam sect, the local people are strictly prohibited from offering only vegetarian offerings (incense, flowers, cakes, fruits, tea, and wine). Offering meat or slaughtering animals is strictly forbidden at the temple.
+
+Regular rituals: The temple also maintains rituals on the first and fifteenth days of the lunar month, the Upper and Lower Field ceremonies associated with agricultural production seasons, and traditional festivals (Dragon Boat Festival, Mid-Autumn Festival, and Double Ten Festival).
+
+6. Protection and Demarcation of the Monument
+According to the demarcation record dated May 12, 2000, the monument is strictly demarcated for Protection Zone I (Inviolable Zone):
+Scope: Located entirely on plot number 87, cadastral map number 01 (drawn in 1985 by Phuong Tu commune) with a total area of ​​5,106 m².
+Boundaries: East: bordered by plots 98 and 99 and the village road; West: bordered by the village road; South: bordered by the village road; North: bordered by plots 400 and 86.
+All construction, excavation, and illegal encroachment that alters or diminishes the value of the original architectural components and artifacts within the red boundary of the temple are strictly prohibited. All plans for landscape restoration around the temple (Area II) must comply with the Ordinance on the Protection of Historical Monuments and be approved by the competent authority.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1862', N'xã Vân Đình', N'/api/qr/heritage/hb4069ccf', N'https://maps.app.goo.gl/6mv2ZvpuVsVgycEXA', 0, NULL, 3, '2026-07-11T08:36:50.5479268', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (14, N'h217d569c', N'VĐHN-DT-014', 1, N'ĐỀN VÀ ĐÌNH THANH ẤM', N'ĐỀN VÀ ĐÌNH THANH ẤM', N'đền-và-đình-thanh-ấm', N'national', N'active', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', 20.72735920, 105.76932830, N'1. Thông tin chung
+Tên di tích: Đền Thanh Ấm và Đình Thanh Ấm.
+Địa điểm: Thôn Thanh Ấm (nguyên xưa thủa nhà Trần có tên cổ là trang Hoa Âm, sau đổi là xã Hoa Đình), xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội).
+Loại hình và Xếp hạng: Di tích Lịch sử và Kiến trúc - Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin ký Quyết định số 65 QĐ/BT ngày 16/01/1995 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the site: Thanh Am Temple and Thanh Am Communal House.
+Location: Thanh Am Village (originally known as Hoa Am during the Tran Dynasty, later renamed Hoa Dinh Commune), Tan Phuong Commune, Ung Hoa District, Ha Tay Province (now Van Dinh Town, Ung Hoa District, Hanoi City).
+
+Type and Classification: Historical and Architectural-Artistic Monument. Recognized and classified as a National Monument by Decision No. 65 QD/BT dated January 16, 1995, signed by the Minister of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Cụm di tích đền và đình Thanh Ấm thờ vị Thành hoàng, Phúc thần là ngài Minh Phúc Đại vương (tên thật là Chu Minh Phúc).
+Thần tích & Công trạng: Ngài sinh trưởng tại Châu Ái (Thanh Hóa), là bậc thông minh, văn võ song toàn. Vào thế kỷ thứ X, khi đất nước lâm vào nạn 12 sứ quân cát cứ, ngài đã đến đầu quân dưới trướng anh hùng Đinh Bộ Lĩnh tại động Hoa Lư và được phong làm "Tiền bộ tướng quân".
+Khi đi chiêu dụ hiền tài qua trang Hoa Âm, ngài phối hợp cùng đạo quân của Dương Công (Hoàng Độ) tuyển mộ được 1 vạn 5 nghìn binh sĩ. Nghĩa quân của Minh Phúc và Hoàng Độ đã lập chiến công vang dội, đánh tan sứ quân Kiều Công Mậu ở Phong Châu, rồi xuôi quân xuống Đỗ Động Giang hỗ trợ Đinh Bộ Lĩnh tiêu diệt sứ quân Đỗ Cảnh Thạc, thống nhất giang sơn. Ngài được Đinh Tiên Hoàng phong tước "Minh ứng Thuận phúc đại vương Thượng đẳng Thần". Sau khi nhà Đinh mất, ngài lui về trang Hoa Âm cùng dân cày cấy, làm điều nhân nghĩa và hóa thần tại đồn binh cũ vào ngày 10 tháng 12.
+Dấu ấn kháng chiến: Trong thời kỳ kháng chiến chống Pháp, di tích là địa bàn chiến lược vững chắc, nơi bảo vệ và diễn ra các cuộc họp tối mật của các đồng chí lãnh đạo Trung ương Đảng và Nhà nước như Trường Chinh, Hoàng Quốc Việt, Đỗ Mười, Văn Tiến Dũng...
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Đền Thanh Ấm: Tọa lạc trên một gò đất cao hình con rùa biệt lập ở cuối làng. Qua Nghi môn trụ biểu có câu đối Hán Nôm và mái tam quan giả ngói là vào khuôn viên chính. Kiến trúc đền làm theo kiểu chữ Nhị ($=$) gồm đền Thượng và đền Hạ:
+Đền Hạ: Gồm 5 gian vững chắc xây bít đốc hồi, khung gỗ lim chịu lực trên các hàng cột lớn kê đá tảng cổ bồng. Hệ thống vì kèo kết cấu "thượng chồng rường, hạ kẻ bẩy" truyền thống kết hợp tường xây bao gạch Nguyễn muộn; thượng lương ghi dấu năm tu sửa Bảo Đại thứ 12 (1944).
+Đền Thượng: Nằm song song phía sau đền Hạ, có 3 gian nhỏ xây bít đốc, vì kèo kiểu chồng rường và trụ trốn mộc mạc, bên trong đặt khám thờ Thành hoàng chạm trổ tinh xảo tích Tứ linh, Tứ quý.
+Đình Thanh Ấm: Nằm ở đầu làng cạnh trục đường lộ, được di chuyển và tôn tạo lại vào năm 1926. Đình gồm 5 gian làm bằng khung gỗ lim với 4 hàng chân cột tròn (đường kính cột cái tới 40cm), chân tảng đá chạm khắc hình bát giác. Đình bảo lưu được một số cấu kiện kiến trúc cổ thời Lê Trung Hưng (đầu dư chạm rồng đao mác hình tia lửa thẳng) đan xen hài hòa với bộ vì "thượng giá chiêng, hạ chồng rường, bẩy hiên" thời Nguyễn.
+4. Hệ thống Di vật, Cổ vật Cụm di tích bảo tồn nguyên vẹn nhiều đồ tự khí, cổ vật vùng miền phong phú:
+Tài liệu cổ: 01 cuốn Thần phả "Ngọc phả Đại Vương từ điển" do Nguyễn Bính phụng soạn năm 1557 (thời Lê) và 06 đạo sắc phong bằng giấy dó, cổ nhất là sắc niên hiệu Cảnh Hưng năm thứ 40 (1779).
+Đồ gỗ và đồ thờ: Khám thờ cổ, cỗ long ngai bài vị Thành hoàng chạm đầu rồng thế kỷ XVII, 01 chiếc kiệu tay bành gỗ sơn son thếp vàng thời Nguyễn, hương án gỗ, đại tự, giá văn, quán tẩy, đôi hia thờ, mi môn và bộ binh khí bát bửu xà mâu 12 chiếc.
+Đồ kim loại & Sành sứ: 01 khánh đồng, 01 chuông đồng, bộ đỉnh lư đồng, 04 đôi lộc bình sứ, bát bình hương sành và nậm rượu. Đặc biệt, xung quanh khu vực khảo cổ đền còn phát hiện nhiều mảnh gốm xám có hoa văn hình học, vạch chéo đặc trưng của nền văn hóa Đông Sơn muộn.
+5. Sinh hoạt lễ hội truyền thống
+Lễ hội truyền thống của làng Thanh Ấm được tổ chức đều đặn hàng năm vào ngày mùng 10 tháng Chạp (âm lịch), trùng với ngày hóa của Đức Thành hoàng Minh Phúc Đại vương.
+Trước ngày hội chính, ban khánh tiết và cụ thủ từ làm lễ Mộc dục bao sái long ngai đồ tế tự bằng nước mưa tinh khiết pha ngũ vị hương, dùng vải lụa đỏ bao sái nghiêm ngặt. Lễ vật dâng thánh là mâm xôi chay do các giáp trong làng chu tất, có chúc văn tế sớ ca ngợi công đức phò Đinh tiễn Tống của bậc phúc thần để giáo dục lòng yêu nước cho con cháu đời sau.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản đề nghị xếp hạng năm 1994 và tập bản vẽ kỹ thuật, ranh giới khu vực bảo vệ I (Vùng bất khả xâm phạm) của cụm di tích được phân định khép kín trên bản đồ giải thửa tỷ lệ 1/1000:
+Ngôi Đình (Thửa số 298): Diện tích đất rộng rãi bám sát khu dân cư đầu làng và quốc lộ. Phía Đông giáp thửa 324, 325; Phía Tây giáp thửa 319 và quốc lộ 21B; Phía Nam giáp các thửa 320, 321, 227, 323; Phía Bắc giáp thửa 296, 227.
+Ngôi Đền (Thửa số 457 và 216): Nằm trên gò đất rộng biệt lập ngoài bãi. Phía Đông giáp thửa 75 và lối vào đền; Phía Tây giáp thửa 100; Phía Nam giáp các thửa 77, 78; Phía Bắc giáp khu vực ruộng canh tác.
+Mọi hoạt động xây dựng, đào bới, khai thác làm thay đổi nguyên trạng trong chỉ giới khu vực màu đỏ đều bị nghiêm cấm. Trường hợp tu sửa nhỏ hoặc bổ sung các công trình tôn tạo màu xanh phải có đề án khoa học được UBND tỉnh/thành phố phê duyệt.', N'2. The Figure of Worship and Historical Value
+The Figure of Worship: The Thanh Am temple and communal house complex worships the tutelary deity, the benevolent god Minh Phuc Dai Vuong (real name Chu Minh Phuc).
+Legend & Achievements: He was born in Ai Chau (Thanh Hoa), a man of great intelligence and skill in both literature and martial arts. In the 10th century, when the country was plagued by the Twelve Warlords, he joined the army under the hero Dinh Bo Linh at Hoa Lu and was appointed "Front Army General".
+
+While recruiting talented people through Hoa Am village, he collaborated with the army of Duong Cong (Hoang Do) to recruit 15,000 soldiers. The army of Minh Phuc and Hoang Do achieved resounding victories, defeating the warlord Kieu Cong Mau in Phong Chau, then marched down to Do Dong Giang to support Dinh Bo Linh in eliminating the warlord Do Canh Thac, unifying the country. He was bestowed the title "Minh Ung Thuan Phuc Dai Vuong Thuong Dang Than" by Dinh Tien Hoang. After the fall of the Dinh Dynasty, he retired to Hoa Am village to cultivate the land with the people, performing acts of kindness and righteousness, and became a deity at the old military outpost on December 10th.
+Resistance Mark: During the resistance against the French, the site was a strategic stronghold, protecting and hosting top-secret meetings of leading comrades of the Central Party and State such as Truong Chinh, Hoang Quoc Viet, Do Muoi, Van Tien Dung...
+3. Architectural and Artistic Characteristics
+Thanh Am Temple: Located on a high, isolated turtle-shaped mound at the end of the village. Passing through the ceremonial gate with its Han Nom couplets and a three-arched gate resembling tiles leads to the main courtyard. The temple''s architecture follows the character "Nhị" ($=$) and consists of the Upper Temple and the Lower Temple:
+Lower Temple: Consists of 5 sturdy bays built with solid gable ends, the frame of lim wood supports the load on rows of large columns supporting ancient stone blocks. The truss system uses the traditional "upper beam, lower purlin" structure combined with brick walls built by the late Nguyen Dynasty; The main beam marks the year of the 12th Bảo Đại reign renovation (1944).
+
+Upper Temple: Located parallel to the back of the Lower Temple, it has three small bays built with solid gables, a simple double-beam truss system, and hidden pillars. Inside is an exquisitely carved shrine dedicated to the tutelary deity, depicting the Four Sacred Animals and Four Seasons.
+
+Thanh Ấm Communal House: Located at the beginning of the village next to the main road, it was moved and renovated in 1926. The communal house consists of five bays made of ironwood with four rows of round columns (main columns up to 40cm in diameter), and octagonal carved stone bases. The communal house preserves some ancient architectural elements from the Lê Trung Hưng period (dragon-shaped finials with straight flame-shaped dragons and swords) harmoniously interwoven with the "upper beam, lower double-beam, and eaves" truss system of the Nguyễn dynasty.
+
+4. The System of Relics and Antiquities: The complex of relics preserves a rich collection of regional artifacts and relics:
+Ancient documents: 01 book of the "Ngoc Pha Dai Vuong Tu Dien" (Dictionary of the Great King''s Genealogy) compiled by Nguyen Binh in 1557 (Le Dynasty) and 06 royal decrees on Do paper, the oldest being a decree from the 40th year of the Canh Hung reign (1779).
+Wooden and religious objects: Ancient altar, ancient dragon throne and ancestral tablets of the tutelary deity carved with dragon heads from the 17th century, 01 wooden palanquin with gilded and lacquered arms from the Nguyen Dynasty, wooden incense table, large inscription, writing stand, washing basin, pair of ceremonial shoes, gate and a set of 12 precious weapons including spears.
+Metal and ceramic objects: 01 bronze chime, 01 bronze bell, a set of bronze incense burners, 04 pairs of porcelain vases, ceramic incense bowls and wine flasks. In particular, around the archaeological site of the temple, many fragments of gray pottery with geometric patterns and diagonal lines characteristic of the late Dong Son culture have been discovered.
+5. Traditional Festival Activities
+The traditional festival of Thanh Am village is held regularly every year on the 10th day of the 12th lunar month, coinciding with the death anniversary of the village''s patron deity, Minh Phuc Dai Vuong.
+Before the main festival day, the ceremonial committee and the village elder perform the ritual of bathing and cleaning the dragon throne and sacrificial objects with pure rainwater mixed with five spices, and meticulously cleaning them with red silk cloth. The offerings to the deity are vegetarian sticky rice prepared by the village''s hamlets, along with a eulogy praising the merits of the benevolent deity in supporting the Dinh and Song dynasties, to educate future generations about patriotism.
+6. Protection and Demarcation of the Monument
+According to the 1994 ranking proposal minutes and the technical drawing set, the boundary of Protection Zone I (Inviolable Zone) of the monument complex is defined on a 1/1000 scale cadastral map:
+The Village Temple (Plot No. 298): A spacious plot of land adjacent to the residential area at the beginning of the village and the national highway. East: borders plots 324 and 325; West: borders plot 319 and national highway 21B; South: borders plots 320, 321, 227, and 323; North: borders plots 296 and 227.
+The Shrine (Plots No. 457 and 216): Located on a large, isolated mound outside the main area. East: borders plot 75 and the entrance to the shrine; West: borders plot 100; South: borders plots 77 and 78; To the north, it borders an agricultural area.
+All construction, excavation, and exploitation activities that alter the original state within the red-marked area are strictly prohibited. Minor repairs or additions to green-marked structures must be approved by the Provincial/City People''s Committee.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1782', NULL, N'/api/qr/heritage/h217d569c', N'https://maps.app.goo.gl/pCxXxFhRqocLfH6R8', 0, NULL, 3, '2026-07-11T08:39:34.3705914', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (15, N'ha1d5034e', N'VĐHN-DT-015', 3, N'ĐỀN VĨNH THƯỢNG (Đền Đệ Nhất - Đệ Nhị - Đệ Tam - Đệ Tứ - Đệ Ngũ)', N'ĐỀN VĨNH THƯỢNG', N'đền-vĩnh-thượng', N'city', N'active', N'Vĩnh Lộc Thượng, Vân Đình, Hà Nội 100000, Việt Nam', N'Vĩnh Lộc Thượng, Vân Đình, Hà Nội 100000, Việt Nam', 20.74575360, 105.69917160, N'1. Thông tin chung
+Tên di tích: Đền Vĩnh Thượng (Đền Đệ Nhất, Đền Đệ Nhị, Đền Đệ Tam, Đền Đệ Tứ, Đền Đệ Ngũ).
+Địa điểm: Thôn Vĩnh Thượng (xưa là xã Vĩnh Lộc Thượng, tổng Sơn Lãng, phủ Ứng Hòa, tỉnh Hà Đông), xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội. Cụm năm ngôi đền nằm rải rác ven chiền sông Đáy cổ thuộc địa phận thôn.
+Loại hình và Xếp hạng: Là di tích Lịch sử - Nghệ thuật. Được UBND thành phố Hà Nội xếp hạng là Di tích cấp Thành phố theo Quyết định số 6847/QĐ-UBND ngày 18/12/2018.', N'1. General Information
+Name of the site: Vinh Thuong Temple (First Temple, Second Temple, Third Temple, Fourth Temple, Fifth Temple).
+
+Location: Vinh Thuong village (formerly Vinh Loc Thuong commune, Son Lang district, Ung Hoa prefecture, Ha Dong province), Son Cong commune, Ung Hoa district, Hanoi city. A cluster of five temples scattered along the ancient Day River within the village''s boundaries.
+
+Type and Classification: Historical and Artistic site. Classified as a City-level historical site by the Hanoi People''s Committee according to Decision No. 6847/QD-UBND dated December 18, 2018.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Cụm đền Vĩnh Thượng phối thờ 5 vị phúc thần anh linh có công lớn với dân với nước:
+Vị thứ nhất: Nhất Phong Đàm Hiếu hoàng đại vương.
+Vị thứ hai: Linh Lang Đại Vương (hoàng tử thứ tư của vua Lý Thánh Tông), người có công cưỡi voi phất cờ dẹp tan quân Tống xâm lược tại trận tuyến sông Cầu.
+Vị thứ ba & thứ tư: Nguyễn Phục Nghiễm Đông Hải đại vương và Cương Dũng đại vương. Hai vị tiến sĩ, tướng lĩnh thời Lý Cao Tông có công đóng quân dẹp giặc phò trợ biên cương.
+Vị thứ năm: Đại học sĩ Nguyễn Tướng Công húy Cộng (Tri phủ Ứng Hòa, Án sát Hà Nội - Hưng Yên thời Nguyễn), vị quan liêm chính có công cứu giúp dân nghèo Vĩnh Thượng vượt qua cảnh ly tán, đói khổ, khai phá ruộng hoang.
+Giá trị lịch sử: Hệ thống thần tích, thần phả tại cụm đền là nguồn tư liệu thành văn vô cùng quý giá bổ sung cho việc nghiên cứu lịch sử thời đại Lý - Nguyễn, đồng thời ghi dấu thời kỳ du kích địa phương lấy nơi đây làm cơ sở hoạt động cách mạng thời chống Pháp.
+3. Đặc điểm Kiến trúc - Nghệ thuật Trải qua nhiều biến thăng trầm, cụm di tích được trùng tu lớn vào các năm 1993, 1995, 2004 và 2010 với kết cấu vật chất vững chãi hòa quyện cùng không gian làng quê chiêm trũng:
+Đền Đệ Nhất (Đền Đệ Nhất): Kết cấu dạng ban thờ lộ thiên kề sát bờ đê, lối vào có Nghi môn trụ biểu đắp đôi nghê chầu, phía sau đặt bát hương và mâm bồng bê tông.
+Đền Đệ Nhị (Đền Đệ Nhị): Thiết kế kiểu chữ Đinh ($J$) gồm Tiền tế và Hậu cung. Tiền tế có bộ vì gỗ "Thượng giá chiêng, hạ kẻ", hiên đổ mái bằng kết hợp trụ biểu đắp nghê và câu đối chữ Hán. Hậu cung làm theo kiểu cuốn vòm bằng bê tông, lợp mái ngói giả ống.
+Đền Đệ Tam (Đền Đệ Tam): Kết cấu kiểu chữ Nhất ($-$) dạng cuốn vòm bê tông bít đốc hồi, tạo hình hai tầng mái cong duyên dáng, mở 3 cửa thông thoáng.
+Đền Đệ Tứ & Đền Đệ Ngũ: Bố cục dạng ban thờ lộ thiên kết hợp với Nghi môn trụ biểu được tạo tác chủ yếu bằng chất liệu gạch, xi măng và bê tông bền chắc chịu bão lũ. Đền Đệ Tứ đắp nổi tượng võ sĩ canh ngai và ngựa chiến oai nghiêm.
+4. Hệ thống Di vật, Cổ vật Hệ thống đồ thờ tự tại cụm đền đa dạng về thể loại, chất liệu, phân bổ ngăn nắp:
+Tài liệu cổ: 01 cuốn Thần phả giấy dó chữ Hán (thời Nguyễn) cùng 16 đạo sắc phong thời Lê - Nguyễn của các vị thần (hiện đang được lưu giữ trang trọng tại ngôi đình chung của thôn Vĩnh Thượng).
+Đồ gỗ và thờ tự (Tập trung tại đền Đệ Nhị và Đệ Tam): Bộ Long ngai bài vị thờ Thành hoàng sơn son thếp vàng chạm khắc hình hổ phù tinh xảo từ thế kỷ XIX, các bức cửa võng, hoành phi (đề chữ "Thần Từ Tối Linh"), câu đối phẳng, hòm sắc, giá văn, ống hương.
+Đồ kim loại và bê tông: Tượng hạc đồng, đỉnh đồng, chân nến đồng; hệ thống mâm bồng, bát hương, chân đèn đúc bằng xi măng và sứ men lam vẽ hình rồng chầu mặt trời.
+5. Lễ hội truyền thống và Sinh hoạt tín ngưỡng
+Thời gian: Tiệc hội chính của cụm đền diễn ra trọng thể từ ngày mùng 8 đến ngày mùng 11 tháng 2 Âm lịch hàng năm (trong đó ngày mùng 10 là chính tiệc). Ngoài ra đền còn làm lễ vào các ngày hóa của các vị thần ($18/3$, $18/4$, $20/8$, $27/10$ âm lịch).
+Nghi thức cúng tế: Sáng ngày mùng 6 diễn ra lễ Mộc dục bao sái đồ thờ cúng. Lễ vật mặn chay (xôi, gà, oản) do người cao tuổi trong làng chuẩn bị. Đội tế gồm 12 thành viên, chủ tế giữ chức sắc cao trong làng, mặc trang phục choàng đỏ, hia đỏ, mũ đỏ vô cùng oai nghiêm.
+Lễ rước kiệu: Nghi thức rước kiệu thánh hành tiến long trọng dọc theo mặt đê sông Đáy qua Chùa rồi đến các đền, đoàn rước gồm 76 người khi đi và khi về đều tuân thủ nghiêm ngặt đội hình cờ hội, bát âm, múa rồng.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng ranh giới: Dựa trên thực trạng di tích nằm kề thổ canh, sử dụng ổn định và có khuôn viên rõ ràng, Hội nghị thống nhất chỉ khoanh vùng Khu vực bảo vệ I (Không khoanh vùng khu vực bảo vệ II).
+Diện tích bảo vệ I của các đền (Bản đồ tháng 9/2018, tỷ lệ 1/500):
+Đền Đệ Nhất: Diện tích 560,3 m² (Bắc giáp đường đê bê tông, Nam giáp đất thổ canh, Đông giáp bờ đất, Tây giáp bờ đê).
+Đền Đệ Nhị: Diện tích 3.637,6 m² (Bắc giáp đê và thổ canh, Nam giáp thổ canh, Đông giáp ao làng, Tây giáp đường bê tông và thổ canh).
+Đền Đệ Tam: Diện tích 189,6 m² (Bắc giáp vườn, Nam giáp khu đất trống, Đông giáp thổ cư, Tây giáp đê sông Đáy bê tông).
+Đền Đệ Tứ: Diện tích 1.183,3 m² (Cả bốn phía Đông, Tây, Nam, Bắc đều tiếp giáp với đất thổ canh xã Sơn Công).
+Đền Đệ Ngũ: Diện tích 827,8 m² (Bắc giáp đất bãi ven sông, Nam giáp vườn cây, Đông giáp đường bê tông và thổ canh, Tây giáp sông Đáy).
+Mọi hoạt động xây dựng, khai thác trái phép trong chỉ giới bảo vệ của cụm 5 ngôi đền đều bị nghiêm cấm theo quy định của pháp luật.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The Vinh Thuong temple complex worships five benevolent and heroic deities who made great contributions to the people and the nation:
+First: Nhat Phong Dam Hieu Hoang Dai Vuong.
+
+Second: Linh Lang Dai Vuong (the fourth prince of King Ly Thanh Tong), who rode an elephant and raised a banner to repel the invading Song army at the Cau River battlefront.
+Third & Fourth: Nguyen Phuc Nghiem Dong Hai Dai Vuong and Cuong Dung Dai Vuong. Two scholars and generals during the reign of Ly Cao Tong who contributed to suppressing the enemy and supporting the border.
+
+Fifth: Grand Scholar Nguyen Tuong Cong, whose given name was Cong (Prefect of Ung Hoa, Judge of Hanoi - Hung Yen during the Nguyen dynasty), an upright official who helped the poor people of Vinh Thuong overcome displacement, hunger, and poverty, and reclaim barren land.
+Historical Value: The system of legends and genealogies at the temple complex is an invaluable source of written documentation supplementing the study of the history of the Ly-Nguyen era, and also marks the period when local guerrillas used this place as a base for revolutionary activities during the resistance against the French.
+3. Architectural and Artistic Characteristics: Having undergone many ups and downs, the complex of relics was extensively restored in 1993, 1995, 2004, and 2010, with a solid physical structure blending harmoniously with the rural landscape:
+First Temple (First Temple): An open-air altar structure adjacent to the dike, with an entrance gate featuring a ceremonial gate and pillars adorned with two kneeling mythical creatures (Nghê), and behind it a concrete incense burner and offering tray.
+Second Temple (Second Temple): Designed in the shape of the letter ''Đinh'' ($J$) consisting of a front hall and a rear hall. The front hall has a wooden truss system ("Upper frame, lower beam"), a flat-roofed porch combined with pillars adorned with Nghê and Chinese couplets. The rear hall is constructed in a vaulted concrete style, with a tiled roof resembling tubular pipes.
+Third Temple (Third Temple): The structure is in the shape of the Chinese character ($-$), with a vaulted concrete gable, creating a graceful two-tiered curved roof, and three open doors for ventilation.
+Fourth Temple & Fifth Temple: The layout features an open-air altar combined with a ceremonial gate and pillars, primarily constructed from durable brick, cement, and concrete to withstand storms and floods. The Fourth Temple has embossed statues of warriors guarding the throne and majestic warhorses.
+
+4. System of Artifacts and Antiquities: The system of religious artifacts at the temple complex is diverse in type and material, and neatly arranged:
+Ancient documents: 01 book of divine genealogies on dó paper with Chinese characters (Nguyen Dynasty) along with 16 royal decrees from the Le and Nguyen Dynasties for the deities (currently respectfully preserved in the communal temple of Vinh Thuong village).
+Wooden and Religious Artifacts (Concentrated at the Second and Third Temples): A set of gilded and lacquered dragon thrones and ancestral tablets for the tutelary deity, intricately carved with tiger motifs, dating from the 19th century; ornate archways, horizontal plaques (inscribed with "The Most Sacred Temple"), flat couplets, ceremonial chests, document stands, and incense holders.
+
+Metal and Concrete Items: Bronze crane statues, bronze incense burners, bronze candlesticks; a system of trays, incense bowls, and candlesticks made of cement and blue glazed porcelain with dragons facing the sun.
+
+5. Traditional Festivals and Religious Activities
+Time: The main festival of the temple complex takes place solemnly from the 8th to the 11th of February in the lunar calendar each year (with the 10th being the main feast). In addition, the temple also holds ceremonies on the death anniversaries of the deities ($18/3, $18/4, $20/8, $27/10 in the lunar calendar).
+
+Ritual of Offering: On the morning of the 6th, the ritual of cleansing the altar takes place. The offerings (sticky rice, chicken, and cakes) are prepared by the village elders. The ceremonial team consists of 12 members, with the chief officiant being a high-ranking village official, dressed in a majestic red robe, red shoes, and red hat.
+
+Procession of the palanquin: The solemn procession of the sacred palanquin proceeds along the embankment of the Day River, passing the pagoda and then the temples. The procession consists of 76 people, strictly adhering to the formation of flags, musical instruments, and dragon dances on both the way there and back.
+
+6. Protection and Boundary Demarcation of the Monument
+Boundary Demarcation: Based on the current situation of the monument being adjacent to cultivated land, with stable use and a clearly defined area, the Conference unanimously agreed to demarcate only Protection Zone I (not Protection Zone II).
+
+Area of ​​Protection Zone I of the Temples (Map September 2018, scale 1/500):
+First Temple: Area 560.3 m² (North bordered by concrete dike road, South bordered by agricultural land, East bordered by earthen embankment, West bordered by dike).
+Second Temple: Area 3,637.6 m² (North bordered by dike and agricultural land, South bordered by agricultural land, East bordered by village pond, West bordered by concrete road and agricultural land).
+Third Temple: Area 189.6 m² (North bordered by garden, South bordered by vacant land, East bordered by residential land, West bordered by concrete dike of the Day River).
+
+Fourth Temple: Area 1,183.3 m² (All four sides (East, West, South, and North) are bordered by agricultural land of Son Cong commune).
+Fifth Temple: Area 827.8 m² (North bordered by riverside alluvial land, South bordered by orchards, East bordered by concrete road and cultivated land, West bordered by the Day River).
+All illegal construction and exploitation activities within the protected area of ​​the five temples are strictly prohibited by law.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1296', N'xã Vân Đình', N'/api/qr/heritage/ha1d5034e', N'https://maps.app.goo.gl/JyXo2tZ6qbaE95s36', 0, NULL, 3, '2026-07-11T08:49:55.0109777', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (16, N'h5e5909c5', N'VĐHN-DT-016', 3, N'ĐỀN, MIẾU TẢO KHÊ (MIẾU THƯỢNG, MIẾU HẠ VÀ ĐỀN MẪU)', N'ĐỀN, MIẾU TẢO KHÊ', N'đền-miếu-tảo-khê', N'city', N'active', N'QP34+P2H, Tảo Khê, Hồng Sơn, Hà Nội, Việt Nam', N'QP34+P2H, Tảo Khê, Hồng Sơn, Hà Nội, Việt Nam', 20.75483250, 105.70191840, N'1. Thông tin chung và Xếp hạng di tích
+Tên di tích chính thức: Đền, miếu Tảo Khê (gồm Miếu Thượng, Miếu Hạ và Đền Mẫu).
+Địa điểm phân bố: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội.
+Loại hình di tích: Lịch sử - Nghệ thuật.
+Cấp xếp hạng: Được UBND Thành phố Hà Nội xếp hạng là Di tích lịch sử - nghệ thuật cấp Thành phố theo Quyết định số 8774/QĐ-UBND ngày 20/12/2017 (tham khảo tài liệu chi tiết tại quyết định_2.pdf).', N'1. General Information and Monument Ranking
+Official Monument Name: Tao Khe Temple and Shrine (including Upper Shrine, Lower Shrine, and Mother Goddess Temple).
+
+Location: Tao Khe Hamlet, Tao Duong Van Commune, Ung Hoa District, Hanoi City.
+
+Type of Monument: Historical - Artistic.
+
+Ranking Level: Ranked as a City-level Historical - Artistic Monument by the Hanoi People''s Committee according to Decision No. 8774/QD-UBND dated December 20, 2017 (see detailed document at decision_2.pdf).', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Thành hoàng làng phụng thờ tại Miếu: Miếu Thượng và Miếu Hạ thờ hai vị tướng quân đời Trần là Vô Thông Thượng Sỹ Đại Tướng Quân đại vương (Vô Công) và Thông Công Thái Tể Tướng Quân đại vương (Thông Công). Hai ngài là anh em sinh đôi, sinh ngày 8 tháng Giêng năm Bính Tý (1236) và cùng hóa ngày 12 tháng 11 năm Giáp Thìn (1274).
+Huân công: Các ngài là những bậc thiên thần có công dẹp loạn cát cứ và phò tá vua Trần Thánh Tông đánh đuổi giặc ngoại xâm Nguyên Mông, giữ yên bờ cõi đất nước.
+Đền Mẫu: Thờ đức thánh Mẫu Nguyễn Thị Xuân, người đã hạ sinh ra hai vị Thành hoàng.
+Dấu ấn cách mạng và địa phương: Thôn Tảo Khê là nơi sinh trưởng của cụ Nguyễn Văn Lộc (1914 - 1979, tên gọi khác là Trương Đỗ Uông), một nhà cách mạng ưu tú từng giữ chức Bộ trưởng Bộ Nông nghiệp và được truy tặng Huân chương Sao Vàng. Trước Cách mạng tháng Tám năm 1945, cụm di tích đền, miếu này là nơi tập trung quần chúng nhân dân đi cướp chính quyền tại phủ Ứng Thiên (chi tiết xem tại tài liệu lý lịch.pdf).
+3. Quy mô kiến trúc nghệ thuật
+Căn cứ theo tài liệu bản vẽ kỹ thuật hiện trạng (bản vẽ_2.pdf), cụm di tích được tôn tạo chủ yếu vào thời Nguyễn muộn và phân bố trong không gian riêng biệt sát rìa làng nhìn về hướng Tây:
+Miếu Thượng: Thiết kế mặt bằng tổng thể theo kết cấu chữ Nhị ($\mathbf{=}$) gồm tòa Tiền tế (3 gian tường hồi bít đốc hồi, 4 hàng chân cột bê tông giả gỗ) và tòa Hậu cung (3 gian chạy song song, mái lợp ngói truyền thống, chính giữa đắp hình rồng chầu mặt trời).
+Miếu Hạ: Kết cấu mặt bằng kiểu chữ Nhị ($\mathbf{=}$) gồm Nghi môn (lối kiến trúc 2 tầng mái đao cong uốn lượn có đắp chữ Hán "Nhị Nhất Nhị"), tòa Tiền tế (3 gian 2 dĩ xây nền cao, vì kèo làm theo kiểu "Giá chiêng kẻ chuyền, bẩy hiên") và tòa Hậu cung (3 gian xây gạch cổ trần không trát, đặt khám thờ và long ngai).
+Đền Mẫu: Cấu trúc mặt bằng theo lối chữ Nhất ($\mathbf{-}$) gồm 01 gian chạy dọc, mặt trước trang trí hiên Tây đắp nổi hình cuốn thư, kiếm, bút và đề chữ Hán "Tối linh từ", cửa có đắp tượng hai võ sĩ canh đền là Vũ Đinh và Thiên Ất.
+4. Hệ thống cổ vật, di vật tiêu biểu
+Theo số liệu thống kê hiện vật (tham khảo tập ảnh_2.pdf), di vật tại cụm di tích rất phong phú về chất liệu và mang giá trị nghệ thuật cao từ thời Lê Trung Hưng đến thời Nguyễn:
+Tài liệu cổ: 01 cuốn Thần phả chữ Hán do Đông các đại học sĩ Nguyễn Bính phụng soạn năm Hồng Phúc (1572) cùng hệ thống 40 đạo sắc phong gốc (32 đạo thời Lê và 8 đạo thời Nguyễn). Đạo sắc phong cổ nhất mang niên hiệu Sùng Khang thứ 6 (1586) và đạo sắc phong tại miếu Hạ có niên hiệu Cảnh Hưng thứ 44 (1783).
+Hiện vật tại Miếu Thượng: Hoành phi gỗ đề chữ "Sơn Anh Hải Tú", Y môn gỗ sơn son thếp vàng, 02 bát hương gốm Phù Lãng cổ (Thế kỷ XVIII), mâm bồng gỗ, hòm sắc, long ngai bài vị đầu rồng thời Nguyễn, sắc phong Duy Tân 3 (1909) và sắc phong Khải Định 9 (1924).
+Hiện vật tại Miếu Hạ: Hoành phi cổ "Trạch Kỳ Thiên Phối" và "Thánh cung vạn tuế", 02 lư hương đồng cổ (01 lư khắc chữ Hán đúc năm Tân Dậu), bộ đài nước gỗ, giá kiếm, đặc biệt có 02 pho tượng phỗng chầu bằng gỗ mang phong cách nghệ thuật thế kỷ XVIII và bát hương gốm Phù Lãng (Thế kỷ XVIII) bị sút miệng.
+Hiện vật tại Đền Mẫu: Hệ thống câu đối chữ Hán ca ngợi mẫu nữ, bát hương đồng, mâm bồng, đôi chân đèn đồng và bức phù điêu gỗ tạc hình đức thánh Mẫu.
+5. Sinh hoạt lễ hội và tín ngưỡng truyền thống
+Thời gian tổ chức: Lễ hội truyền thống của làng Tảo Khê phụ trách phụng thờ cụm di tích diễn ra từ ngày 7 đến ngày 9 tháng Giêng âm lịch (chính hội vào mùng 10).
+Các ngày tuần tiết: Ngày mùng 8 tháng Giêng (ngày sinh của hai thần), ngày 20 tháng 2 (lễ Khánh hạ), ngày 15 tháng 8 (lễ Phong sắc) và ngày 12 tháng 11 (ngày hóa).
+Nghi thức: Sáng mùng 7 tổ chức lễ Mộc dục bao sái bài vị và phong mũ áo mới. Ban tế gồm 16 thành viên (tế chủ mặc choàng đỏ, hia đỏ, các quan viên mặc áo xanh). Lễ hội có nghi thức nghinh rước các kiệu bát cống, kiệu sắc, kiệu Thành hoàng đền Thượng, đền Hạ và kiệu Mẫu do 76 thanh niên tráng kiện song hành di chuyển dọc theo mặt đê. Phần hội tổ chức trò chơi dân gian như bắt vịt dưới nước, đi cầu khỉ, kéo co, đập niêu và hát chèo xướng về đêm.
+6. Quy định và chỉ giới khoanh vùng bảo vệ
+Theo hồ sơ quy hoạch bản đồ (bản đồ di tích cụm.pdf) và biên bản thống nhất liên ngành năm 2016 (Biên bản khoanh vùng_3.pdf), cụm di tích được phân định địa giới như sau:
+Khu vực bảo vệ I (Vùng bất khả xâm phạm - nghiêm cấm xây dựng trái phép):
+Miếu Thượng: Diện tích 1.164,0 m² (Bắc giáp đường bê tông; Nam và Đông giáp chùa Tảo Khê; Tây giáp đường bê tông và Đền Mẫu).
+Miếu Hạ: Diện tích 1.047,2 m² (Bắc giáp ngõ bê tông và vườn; Nam giáp đường bê tông và đất canh tác; Đông giáp đất canh tác; Tây giáp đường bê tông và đất thổ cư).
+Đền Mẫu (Khu đo I): Diện tích 460,6 m² (Bắc giáp đường bê tông và Miếu Thượng; Nam giáp đất canh tác; Đông giáp đường bê tông và vườn; Tây giáp khu vực ao).
+Khu vực bảo vệ II (Vùng điều chỉnh xây dựng, tôn tạo cảnh quan): Chỉ áp dụng duy nhất đối với khu vực ao của Đền Mẫu (Khu đo II) với diện tích 1.307,7 m² (Bắc giáp khu đo I; Nam giáp bờ đất thổ canh; Đông giáp vườn đất trống; Tây giáp đất canh tác xã Tảo Dương Văn). Miếu Thượng và Miếu Hạ không khoanh vùng khu vực bảo vệ II do nằm xen kẽ trong khu dân cư hiện hữu ổn định.', N'2. Figures of Worship and Historical Value
+The village tutelary deities worshipped at the Upper and Lower Temples are two generals of the Tran Dynasty: Vo Thong Thuong Sy Dai Tuong Quan Dai Vuong (Vo Cong) and Thong Cong Thai Te Tuong Quan Dai Vuong (Thong Cong). They were twin brothers, born on January 8th, 1236 (Binh Ty year) and both passed away on November 12th, 1274 (Giap Thin year).
+
+Merits: They were celestial beings who helped quell rebellions and assisted King Tran Thanh Tong in repelling the Mongol invaders, securing the country''s borders.
+Mother Goddess Temple: Worship of the Holy Mother Nguyen Thi Xuan, the mother of the two tutelary deities.
+Revolutionary and Local Significance: Tao Khe village is the birthplace of Mr. Nguyen Van Loc (1914 - 1979, also known as Truong Do Uong), an outstanding revolutionary who served as Minister of Agriculture and was posthumously awarded the Gold Star Medal. Before the August Revolution of 1945, this complex of temples and shrines was a gathering place for the people to seize power at Ung Thien Prefecture (details can be found in the biographical document.pdf).
+
+3. Architectural and Artistic Scale
+Based on the current technical drawings (drawing_2.pdf), the complex of relics was mainly renovated during the late Nguyen Dynasty and is located in a separate space near the edge of the village facing west:
+Upper Shrine: The overall floor plan is designed in the shape of the Chinese character ($\mathbf{=}$) consisting of the Front Hall (3 bays with gable walls, 4 rows of concrete columns resembling wood) and the Rear Hall (3 bays running parallel, traditional tile roof, with a dragon sculpted in the center facing the sun).
+Lower Temple: The floor plan is in the shape of the Chinese character "二" (two), consisting of the main gate (a two-story structure with a curved roof and the Chinese characters "二一二"), the front hall (three bays and two side rooms built on a raised foundation, with trusses in the style of "gong-shaped beams and purlins"), and the rear hall (three bays built of ancient brick without plastering, housing the altar and dragon throne).
+
+Mother Goddess Temple: The floor plan is in the shape of the Chinese character "二" (one), consisting of one bay running lengthwise. The front facade is decorated with a raised eaves depicting a scroll, sword, and brush, and the Chinese characters "Tối linh từ" (Most Sacred Temple). The entrance features statues of two warriors guarding the temple, Vũ Đinh and Thiên Ất.
+
+4. System of Representative Artifacts and Relics
+According to the statistics of artifacts (see photo collection_2.pdf), the relics at the complex are rich in materials and possess high artistic value from the Le Trung Hung period to the Nguyen period:
+Ancient documents: 01 book of Chinese-language genealogical records compiled by the Grand Scholar Nguyen Binh in the Hong Phuc year (1572) along with a system of 40 original imperial decrees (32 from the Le period and 8 from the Nguyen period). The oldest imperial decree bears the inscription of the 6th year of Sung Khang (1586) and the imperial decree at the Lower Temple bears the inscription of the 44th year of Canh Hung (1783).
+Artifacts at the Upper Temple: Wooden horizontal plaque inscribed with "Son Anh Hai Tu", gilded wooden door, 02 ancient Phu Lang ceramic incense burners (18th century), wooden offering tray, imperial decree box, dragon-headed throne and ancestral tablets from the Nguyen period, Duy Tan 3 imperial decree (1909) and Khai Dinh 9 imperial decree (1924).
+Artifacts at the Lower Temple: Ancient horizontal plaques "Trạch Kỳ Thiên Phối" and "Thánh cung vạn tuế", 2 ancient bronze incense burners (1 incense burner with Chinese characters cast in the year Tân Dậu), a wooden water stand, a sword stand, and notably, 2 wooden statues of kneeling figures in the artistic style of the 18th century and a Phù Lãng ceramic incense burner (18th century) with a broken rim.
+
+Artifacts at the Mother Goddess Temple: A system of Chinese couplets praising the Mother Goddess, a bronze incense burner, a tray, a pair of bronze candlesticks, and a wooden relief carving of the Holy Mother Goddess.
+
+5. Traditional Festivals and Beliefs
+Time of organization: The traditional festival of Tảo Khê village, responsible for worshipping the cluster of relics, takes place from the 7th to the 9th day of the first lunar month (the main festival is on the 10th).
+Festival Days: January 8th (birthday of the two deities), February 20th (Celebration Ceremony), August 15th (Conferment Ceremony), and November 12th (Death Ceremony).
+
+Rituals: On the morning of the 7th, a ceremony is held to cleanse the ancestral tablets and confer new hats and robes. The ceremonial committee consists of 16 members (the chief officiant wears a red robe and red shoes, the officials wear blue robes). The festival includes a procession of palanquins carrying the eight offerings, the sacred palanquin, the palanquin of the tutelary deity of the Upper and Lower temples, and the palanquin of the Mother Goddess, carried by 76 strong young men moving along the dike. The festival part includes folk games such as duck catching in the water, walking on a monkey bridge, tug-of-war, pot smashing, and traditional opera performances at night.
+
+6. Regulations and Boundaries of the Protection Zone
+According to the planning map (map of the relic cluster.pdf) and the inter-agency agreement minutes of 2016 (Minutes of boundary demarcation_3.pdf), the relic cluster is defined as follows:
+Protection Zone I (Inviolable Zone - illegal construction is strictly prohibited):
+Upper Temple: Area 1,164.0 m² (North bordering concrete road; South and East bordering Tao Khe Pagoda; West bordering concrete road and Mother Goddess Temple).
+
+Lower Temple: Area 1,047.2 m² (North bordering concrete alley and garden; South bordering concrete road and cultivated land; East bordering cultivated land; West bordering concrete road and residential land).
+
+Mother Goddess Temple (Area I): Area 460.6 m² (North bordering concrete road and Upper Temple; South bordering cultivated land; East bordering concrete road and garden; West bordering pond area).
+Protection Zone II (Area for construction adjustment and landscape enhancement): Applies only to the pond area of ​​the Mother Goddess Temple (Survey Area II) with an area of ​​1,307 square meters.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1522', N'xã Vân Đình', N'/api/qr/heritage/h5e5909c5', N'https://maps.app.goo.gl/gUnYeXjE5tgsEQsm8', 0, NULL, 3, '2026-07-11T08:54:52.3732854', '2026-07-11T08:55:10.9802889');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (17, N'h7a1afc09', N'VĐHN-DT-017', 1, N'ĐÌNH DƯƠNG KHÊ', N'ĐÌNH DƯƠNG KHÊ', N'đình-dương-khê', N'national', N'active', N'PQHR+9P9, Vân Đình, Hà Nội, Việt Nam', N'PQHR+9P9, Vân Đình, Hà Nội, Việt Nam', 20.72840280, 105.78926890, N'1. Thông tin chung
+Tên di tích: Đình Dương Khê.
+Địa điểm: Thôn Dương Khê, xã Phương Tú, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội).
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin ra Quyết định số 1811/1998-QĐ-BVHTT ngày 31/08/1998 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the monument: Duong Khe Communal House.
+Location: Duong Khe Hamlet, Phuong Tu Commune, Ung Hoa District, Ha Tay Province (now part of Hanoi City).
+
+Type and Classification: An architectural and artistic monument. Recognized and classified as a National Monument by Decision No. 1811/1998-QD-BVHTT dated August 31, 1998, issued by the Minister of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ Thiên Cương lĩnh ứng Đại vương (tên thật là Vương Ngôn), một vị Lạc tướng kiệt xuất thời Hùng Vương thứ 17 (Hùng Duệ Vương).
+Thần tích: Ngài là người văn võ song toàn, thông thạo thiên văn địa lý. Khi quân Thục xâm lược, ngài được vua giao thống lĩnh đại binh thủy bộ, cùng Tản Viên Sơn Thánh đánh tan giặc bảo vệ nước Văn Lang.
+Sự kiện gắn với địa phương: Trong quá trình dẹp giặc, ngài đã chọn vùng đất địa linh Dương Khê làm nơi đóng quân và lập hành cung. Sau khi ngài hóa (mất) vào ngày 10/11 (âm lịch), ngài được vua truy phong Phúc thần và nhân dân lập miếu phụng thờ, tôn làm Thành hoàng làng.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Lịch sử xây dựng: Công trình được khởi dựng vào thời Lê Trung Hưng và tiếp tục được tu bổ, mở rộng vào thời Nguyễn (bổ sung nhà củng và hậu cung).
+Bố cục: Di tích quay hướng hồ bán nguyệt, bao gồm các hạng mục: Cổng trụ đèn lồng, Nhà củng (có chức năng như cổng tam quan), Đại bái và Hậu cung.
+Đại bái: Có quy mô lớn với 5 gian, sử dụng hệ thống 4 hàng chân cột gỗ to (đường kính tới 60cm). Các bộ vì được làm theo kiểu "chồng rường cốn" vững chắc.
+Nghệ thuật điêu khắc: Đây là giá trị nổi bật nhất của đình. Các mê cốn chạm khắc sinh động mang đậm phong cách thời Lê Trung Hưng với các hình tượng: nàng tiên cưỡi rồng, mẫu tử long (mẹ con rồng vui đùa), long mã, và con nghê lặc lè gánh mái đình với tinh thần lạc quan. Đặc biệt, đình còn lưu giữ được tàn tích của bức cửa võng 9 tầng thời Lê được chạm lộng tinh xảo các họa tiết tiên, rồng, loan phượng.
+Hậu cung: Thiết kế kiểu chữ Đinh gồm 3 gian, vì kèo kiểu "chồng rường kẻ truyền" thời Nguyễn. Nơi đây đặt khám thờ, cỗ ngai bài vị thời Lê và chiếc hương án đồ sộ 3 tầng hoa văn thời Nguyễn.
+4. Hệ thống Di vật, Cổ vật
+Đình lưu giữ một hệ thống cổ vật rất đa dạng và quý hiếm.
+Tài liệu cổ: 01 cuốn thần phả (soạn năm Vĩnh Hựu III) và 13 đạo sắc phong.
+Đồ gỗ và thờ tự: Tàn tích cửa võng 9 tầng thời Lê, khám thờ, ngai bài vị, 01 sập thờ, 02 cỗ kiệu, bộ bát bửu, xà mâu, long đình, 03 tấm hoành phi, 02 đôi câu đối, giá văn, cây quán tẩy.
+Hiện vật khác: 01 bộ tam sự đồng, 02 chiếc lọng, 02 bát hương đồng và nhiều đồ tế khí khác.
+5. Lễ nghi phụng sự
+Hàng năm, dân làng tổ chức lễ hội truyền thống nhằm tôn vinh tinh thần yêu nước, thượng võ và tưởng nhớ công lao của vị Lạc tướng thời Hùng Vương.
+Thường nhật, đình là trung tâm sinh hoạt văn hóa, nơi hội họp của các đoàn thể và nhân dân địa phương để bàn bạc công việc xây dựng quê hương.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản ngày 17/03/1998 và bản đồ địa chính (tờ số 02 năm 1985), di tích được xác định ranh giới bảo vệ chặt chẽ:
+Khu vực bảo vệ I (Bất khả xâm phạm): Bao gồm 2 thửa đất số 142 và 216 với tổng diện tích 2.248 m2 (trong đó thửa 142 rộng 1.328 m2, thửa 216 rộng 920 m2).
+Ranh giới: Phía Đông giáp đường làng và các thửa 190, 235; phía Tây giáp thửa 123, 124 và đường; phía Nam giáp thửa 217; phía Bắc giáp thửa 144.
+Mọi hoạt động xây dựng, khai thác làm tổn hại đến khu vực di tích đã khoanh vùng đều bị nghiêm cấm theo quy định của pháp luật.', N'2. Figures of Worship and Historical Value
+Figure of Worship: The temple is dedicated to Thien Cuong Linh Ung Dai Vuong (real name Vuong Ngon), an outstanding Lac general during the reign of the 17th Hung King (Hung Due Vuong).
+Legend: He was a man of both literary and martial talents, knowledgeable in astronomy and geography. When the Shu army invaded, he was entrusted by the king to command a large army of land and sea forces, and together with Tan Vien Son Thanh, defeated the invaders and protected the country of Van Lang.
+
+Local Events: During the campaign against the invaders, he chose the sacred land of Duong Khe as his base and established a royal palace. After his death on the 10th day of the 11th lunar month, he was posthumously honored as a benevolent deity, and the people erected a temple to worship him, venerating him as the village''s tutelary deity.
+
+3. Architectural and Artistic Features
+Construction History: The structure was started during the Le Trung Hung period and continued to be renovated and expanded during the Nguyen dynasty (adding a main hall and a rear palace).
+
+Layout: The monument faces a crescent-shaped lake and includes the following elements: Lantern-post gate, the main hall (functioning as a triple-arched gate), the main hall, and the rear hall.
+
+The main hall: Large in scale with 5 bays, using a system of 4 rows of large wooden columns (up to 60cm in diameter). The trusses are made in a sturdy "stacked beam and bracket" style.
+
+Sculptural art: This is the most outstanding value of the temple. The brackets are vividly carved in the style of the Le Trung Hung period with images such as: fairies riding dragons, mother and child dragons playing, dragon-horses, and mythical creatures carrying the temple roof with an optimistic spirit. In particular, the temple still preserves the remains of a 9-tiered arched doorway from the Le dynasty, intricately carved with motifs of fairies, dragons, and phoenixes.
+
+Rear hall: Designed in the shape of the letter "Đinh," consisting of 3 bays, with trusses in the "stacked beam and bracket" style of the Nguyen dynasty. Here lies the ancestral shrine, the throne and ancestral tablets from the Le Dynasty, and a massive three-tiered altar with ornate patterns from the Nguyen Dynasty.
+
+4. System of Artifacts and Antiquities
+The temple preserves a very diverse and rare system of antiquities.
+Ancient documents: 01 book of divine genealogies (compiled in the third year of Vinh Huu) and 13 royal decrees.
+Wooden objects and worship items: Remnants of a nine-tiered arched gateway from the Le Dynasty, an ancestral shrine, throne and ancestral tablets, 01 altar table, 02 palanquins, a set of eight treasures, spears, a dragon pavilion, 03 horizontal plaques, 02 pairs of couplets, a literary stand, and a washing stand.
+
+Other artifacts: 01 set of three bronze ritual objects, 02 parasols, 02 bronze incense burners, and many other ceremonial objects.
+
+5. Rituals and Worship
+Every year, the villagers organize a traditional festival to honor the patriotic spirit, martial prowess, and to commemorate the contributions of the Lac General from the Hung Dynasty.
+Normally, the communal house is the center of cultural activities, a meeting place for local organizations and people to discuss matters related to the development of their homeland.
+6. Protection and Demarcation of the Monument
+According to the minutes dated March 17, 1998 and the cadastral map (sheet No. 02, 1985), the monument is defined by a strict protection boundary:
+Protection Area I (Inviolable): Includes two plots of land, numbers 142 and 216, with a total area of ​​2,248 m2 (of which plot 142 is 1,328 m2, plot 216 is 920 m2).
+
+Boundaries: East: bordering the village road and plots 190, 235; West: bordering plots 123, 124 and the road; South: bordering plot 217; To the north, it borders plot 144.
+All construction and exploitation activities that harm the demarcated historical site area are strictly prohibited according to the law.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1463', N'xã Vân Đình', N'/api/qr/heritage/h7a1afc09', N'https://maps.app.goo.gl/FzeKcP4Qdwzx8pbEA', 0, NULL, 3, '2026-07-11T09:00:01.5732478', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (18, N'h15eb0cf8', N'VĐHN-DT-018', 1, N'ĐÌNH ĐOÀN XÁ', N'ĐÌNH ĐOÀN XÁ', N'đình-đoàn-xá', N'national', N'active', N'PPMW+66M, Đoàn Xá, Vân Đình, Hà Nội, Việt Nam', N'PPMW+66M, Đoàn Xá, Vân Đình, Hà Nội, Việt Nam', 20.73307930, 105.74296130, N'1. Thông tin chung
+Tên di tích: Đình Đoàn Xá (bao gồm Đình Thượng và Đình Hạ).
+Địa điểm: Thôn Đoàn Xá, xã Đồng Tiến, huyện Ứng Hòa, thành phố Hà Nội (xưa thuộc tổng Phương Đình, huyện Sơn Lãng, phủ Ứng Hòa).
+Loại hình và Xếp hạng: Là di tích Lịch sử - Kiến trúc - Nghệ thuật. Được Bộ trưởng Bộ Văn hóa, Thể thao và Du lịch ra Quyết định số 2277/QĐ-BVHTTDL ngày 28/06/2016 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the monument: Doan Xa Communal House (including the Upper and Lower Communal Houses).
+
+Location: Doan Xa village, Dong Tien commune, Ung Hoa district, Hanoi city (formerly part of Phuong Dinh commune, Son Lang district, Ung Hoa prefecture).
+
+Type and Classification: A historical, architectural, and artistic monument. Recognized and classified as a National Monument by Decision No. 2277/QD-BVHTTDL dated June 28, 2016, issued by the Minister of Culture, Sports and Tourism.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Di tích thờ hai vị Đương cảnh Thành hoàng thượng đẳng thần thời Hùng Vương. Đình Thượng thờ Báo Đức Đại vương (Thống chế thượng tướng đại thần); Đình Hạ thờ Huệ An Đại vương (Tổng thống ngũ quân đại tướng/Hành ngũ đạo đại tướng quân).
+Thần tích: Hai vị thần là anh em sinh đôi, con của Cao Minh Vương và Lê Thị Đồng. Dưới thời Hùng Vương thứ 6, hai ngài đã vâng mệnh vua đi dẹp giặc Ân. Sau khi đánh thắng giặc, hai ngài đóng quân và hóa tại trang Đoàn Xá. Ngoài ra, địa phương còn thờ hai vị nữ thần là Quốc mẫu Vua Bà (Đệ nhất tiên cung công chúa) và Quế Hoa đệ nhị công chúa.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Quy mô và Bố cục: Đình tọa lạc độc lập trên khu đất rộng, quay hướng Nam, có ao đình phía trước. Hai ngôi đình Thượng và Hạ chung một lối vào, kiến trúc giống nhau (kiểu chữ Đinh gồm Tiền tế và Hậu cung), mái đao cong của Đình Thượng ghé sát mái Đình Hạ như biểu tượng tình anh em gắn kết.
+Đình Thượng:
+Đại đình (Tiền tế): Gồm 3 gian 2 chái, 4 mái đao cong uốn lượn như mũi thuyền. Kết cấu 6 hàng chân cột lim, cột cái đường kính 70cm, trên thân cột còn khắc niên đại "Chính Hòa thứ 17 (1696)" và có dấu vết ván sàn (đặc trưng đình sàn thời Lê).
+Nghệ thuật điêu khắc: Vì kèo kiểu "thượng vì kèo trụ nọc, hạ chồng rường cốn, bẩy hiên". Các đầu dư chạm đầu rồng với đao mác chải ngược mang đậm phong cách thời Lê Trung Hưng. Gian giữa có các bức cốn chạm hình rồng ổ (rồng mẹ và đàn rồng con), cốn các gian bên chạm tứ linh, hổ phù.
+Đình Hạ:
+Tiền tế và Hậu cung: Gồm 3 gian Tiền tế và 2 gian Hậu cung nối tiếp kiểu chuôi vồ. Điêu khắc tập trung ở cốn mê phần hiên với các đề tài tứ linh, tứ quý mang phong cách thời Nguyễn.
+4. Hệ thống Di vật, Cổ vật
+Hai đình bảo lưu được hệ thống di vật phong phú, chủ yếu từ thế kỷ XIX (thời Nguyễn).
+Đình Thượng: 02 bức hoành phi ("Duy nhạc giáng thần", "Cảnh phúc hật hưởng"), hương án sơn son thếp vàng chạm tứ linh, câu đối lòng máng, kiệu tay bành chạm rồng tinh xảo, ngai thờ, bát hương, hòm sắc, đài nước. Đặc biệt có hệ thống sắc phong (như sắc năm Duy Tân 3, Khải Định 9, Thành Thái 1).
+Đình Hạ: Ngai thờ, hạc thờ bằng gỗ và đồng, mâm bồng, bát hương sứ, hòm sắc.
+5. Lễ nghi phụng sự
+Thời gian: Lễ hội làng diễn ra từ mùng 9 đến 11 tháng Giêng âm lịch (chính hội là mùng 10). Ngoài ra có các ngày lễ: mùng 1-2 tháng 5 (ngày sinh của thần), 20 tháng 9 (ngày hóa), 10 tháng 3 (tiên giáng).
+Nghi thức: Lễ hội bao gồm lễ Mộc dục, dâng lễ vật (xôi, thủ lợn), đọc văn tế ca ngợi công đức tiên tổ và các tuần tế (thượng hương, dâng rượu).
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản ngày 31/08/2012 và bản đồ (tờ số XN5-12-931 năm 2012), do di tích nằm trong khu dân cư đã quy hoạch, cơ quan chức năng thống nhất chỉ khoanh vùng Khu vực bảo vệ I.
+Tổng diện tích bảo vệ I (Bất khả xâm phạm): 2.094,3 m2.
+Ranh giới: Phía Bắc giáp đê sông Đáy; phía Nam giáp ao làng; phía Đông giáp đường bê tông và thổ cư; phía Tây giáp đường đất.
+Mọi hoạt động xây dựng, khai thác trong khu vực đã khoanh vùng đều bị nghiêm cấm nếu không được phép của cơ quan có thẩm quyền.', N'2. Worshipped Figures and Historical Value
+Worshipped Figures: The site is dedicated to two local tutelary deities from the Hung Dynasty. The Upper Temple is dedicated to Bao Duc Dai Vuong (Commander-in-Chief and Grand General); the Lower Temple is dedicated to Hue An Dai Vuong (Commander-in-Chief of the Five Armies/General of the Five Routes).
+Legend: The two deities were twin brothers, sons of Cao Minh Vuong and Le Thi Dong. During the reign of the 6th Hung King, they obeyed the king''s command to suppress the Yin invaders. After defeating the invaders, they encamped and passed away in Doan Xa village. In addition, the locality also worships two female deities: the Queen Mother (First Princess of the Immortal Palace) and Que Hoa, the Second Princess.
+
+3. Architectural and Artistic Characteristics
+Scale and Layout: The temple is located independently on a large plot of land, facing south, with a pond in front. The Upper and Lower communal houses share a common entrance and have similar architecture (a "Dinh" shaped structure consisting of a front hall and a rear hall). The curved eaves of the Upper communal house lean against the roof of the Lower communal house, symbolizing brotherly bonds.
+Upper Communal House:
+The main hall (Front Hall): Consists of 3 bays and 2 wings, with 4 curved eaves resembling the bow of a boat. The structure has 6 rows of lim wood columns, the main columns have a diameter of 70cm, and the column shafts still bear the inscription "Chinh Hoa 17th year (1696)" and traces of floorboards (typical of stilt houses during the Le Dynasty).
+
+Sculptural art: The truss system is of the "upper truss with supporting pillars, lower truss with overlapping brackets, and eaves beams." The corbels are carved with dragon heads and inverted swords, reflecting the style of the Le Trung Hung period. The central bay has brackets carved with dragon nests (mother dragon and baby dragons), while the brackets of the side bays are carved with the four mythical creatures and tiger motifs.
+
+Lower Temple:
+Front Hall and Rear Hall: Consists of 3 front halls and 2 rear halls connected in a hammer-handle style. Sculptures are concentrated on the eaves with themes of the four mythical creatures and four auspicious symbols in the Nguyen Dynasty style.
+4. System of Artifacts and Antiquities
+The two temples preserve a rich system of artifacts, mainly from the 19th century (Nguyen Dynasty).
+Upper Temple: 2 horizontal plaques ("Duy Nhac Giang Than", "Canh Phuc Hat Huong"), gilded and lacquered incense altars carved with the four mythical creatures, trough-shaped couplets, palanquins with intricately carved dragons, throne, incense burner, imperial chest, water fountain. Notably, there is a system of imperial decrees (such as decrees from the 3rd year of Duy Tan, the 9th year of Khai Dinh, and the 1st year of Thanh Thai).
+Lower Temple: Altar, wooden and bronze cranes, offering tray, porcelain incense burner, imperial chest.
+5. Rituals and Service
+Time: The village festival takes place from the 9th to the 11th of the first lunar month (the main festival is on the 10th). In addition, there are other holidays: May 1st-2nd (the god''s birthday), September 20th (the god''s passing), and March 10th (the god''s descent).
+
+Rituals: The festival includes the bathing ceremony, offering of gifts (sticky rice, pig''s head), reciting eulogies praising the merits of ancestors, and weekly rituals (offering incense, offering wine).
+
+6. Protection and Demarcation of the Monument
+According to the minutes dated August 31, 2012 and the map (sheet number XN5-12-931, 2012), because the monument is located within a planned residential area, the authorities have agreed to demarcate only Protection Zone I.
+Total area of ​​Protection Zone I (Inviolable): 2,094.3 m2.
+
+Boundaries: North bordering the Day River dike; The area is bordered to the south by a village pond; to the east by a concrete road and residential land; and to the west by a dirt road.
+All construction and exploitation activities within the designated area are strictly prohibited without permission from the competent authority.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1696', N'xã Vân', N'/api/qr/heritage/h15eb0cf8', N'https://maps.app.goo.gl/5jQyE6yDL6VCEjbn6', 0, NULL, 3, '2026-07-11T09:04:11.3301219', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (19, N'h2a2caf37', N'VĐHN-DT-019', 1, N'ĐÌNH ĐỘNG PHÍ', N'ĐÌNH ĐỘNG PHÍ', N'đình-động-phí', N'city', N'active', N'PRH2+FQV, Vân Đình, Hà Nội, Việt Nam', N'PRH2+FQV, Vân Đình, Hà Nội, Việt Nam', 20.72874930, 105.79932690, N'1. Thông tin chung
+Tên di tích: Đình Động Phí.
+Địa điểm: Thôn Động Phí, xã Phương Tú, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tổng Đạo Tú, huyện Sơn Minh, phủ Ứng Hòa, tỉnh Hà Đông/Hà Tây).
+Loại hình và Xếp hạng: Là di tích Kiến trúc - Nghệ thuật. Được Bộ trưởng Bộ Văn hóa - Thông tin ra Quyết định số 985-QĐ/VH ngày 07/05/1997 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the monument: Dong Phi Communal House.
+Location: Dong Phi Hamlet, Phuong Tu Commune, Ung Hoa District, Hanoi City (formerly part of Dao Tu Township, Son Minh District, Ung Hoa Prefecture, Ha Dong/Ha Tay Province).
+
+Type and Classification: Architectural and Artistic Monument. Recognized and classified as a National Monument by Decision No. 985-QD/VH dated May 7, 1997, issued by the Minister of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ Thành hoàng làng là Huynh Viết Tượng Công đại vương (Bạch Tượng đại vương).
+Thần tích: Ngài cùng em trai (Đệ Viết Địa Công) và người em họ (Đô Đài) là những danh tướng có công lớn giúp Đinh Tiên Hoàng (Đinh Bộ Lĩnh) dẹp loạn 12 sứ quân, thống nhất đất nước vào thế kỷ thứ X. Ngài được Đinh Tiên Hoàng phong chức "Trưởng quản quân sự đài" và thống lĩnh thủy bộ ở Sơn Tây.
+Công lao với địa phương: Ba anh em ngài được vua ban thực ấp tại xã Động Phí. Các ngài có công lập ra 3 làng (Động Phí, Nguyễn Xá, Ngọc Động), dạy nhân dân cày cấy, ươm tơ dệt vải, luyện binh đao bảo vệ xóm làng và xây dựng tình đoàn kết.
+Sự kiện lịch sử: Động Phí nằm trên đường chiến lược 75 (Khu Cháy xưa), là cơ sở kháng chiến nên khu di tích từng bị thực dân Pháp bắn phá tàn khốc. Sau hòa bình, nhân dân đã góp công sức tôn tạo, phục hồi lại ngôi đình.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Lịch sử xây dựng: Ban đầu đình có quy mô nhỏ bằng gỗ lợp lá. Đến cuối thời Lê được mở rộng thành hình chữ Nhất. Thời Nguyễn, đình tiếp tục được mở rộng quy mô đồ sộ (thêm Tam quan, Đại đình, Quyển bồng) nhưng đã bị Pháp phá hủy. Ngôi đình hiện tại là công trình được nhân dân phục hồi lại.
+Bố cục hiện tại: Bao gồm Tam quan, Đại bái và Hậu cung (Đình dọc).
+Tam quan và Đại bái: Tam quan gồm 3 gian, Đại bái gồm 3 gian lợp ngói ri, bờ nóc đắp mặt nguyệt và rồng. Cột gỗ kê trên chân tảng đá cổ bồng, vì kèo chạm khắc các họa tiết hoa lá, chữ triện.
+Hậu cung (Đình dọc): Kéo dài về phía sau, kết cấu chồng rường kẻ bẩy. Tại phần Tiền tế của đình dọc còn lưu giữ 2 bức cốn giá trị chạm khắc đề tài "Tứ linh" (Long, Ly, Quy, Phượng) và 4 bức chạm nổi "Mai hóa rồng, phượng".
+4. Hệ thống Di vật, Cổ vật Đình Động Phí lưu giữ một kho tàng di sản rất quý hiếm từ thời Lê Trung Hưng và thời Nguyễn:
+Tài liệu cổ: 01 cuốn Thần phả do Hàn Lâm viện đông các đại học sĩ Nguyễn Bính soạn năm Hồng Đức nguyên niên (1572) và 26 đạo sắc phong (đạo cổ nhất mang niên hiệu Đức Long thứ 4 - 1632).
+Di vật bằng đá (Cực kỳ quý hiếm):
+01 Cây hương đá làm năm Chính Hòa thứ 10 (1689), trên đỉnh đặt một tòa tháp "Hữu phật hộ trì" bằng đất nung sành gồm 3 tầng 12 mái đao cong.
+02 tấm đá khắc vạch chìm hình rồng mang đậm nét nghệ thuật thời Lê.
+Đồ thờ tự khác: 03 hương án, 01 khám thờ, 01 kiệu bát cống, 01 long đình (đều sơn son thếp vàng), bộ bát bửu 6 chiếc, 04 bức hoành phi, 04 đôi câu đối, cùng nhiều đồ đồng, gốm sành (đỉnh, bát hương, lộc bình...).
+5. Lễ nghi phụng sự
+Các ngài hóa vào ngày 09 tháng 12 âm lịch. Vua Đinh Tiên Hoàng từng đích thân đến nơi hóa lập đàn quốc tế và ban mỹ tự "Vạn cổ huyết thực".
+Đình là trung tâm sinh hoạt văn hóa của làng, nơi giáo dục tinh thần yêu nước, đoàn kết, là nơi hội họp của Hội người cao tuổi, Hội nông dân, Thanh niên và tổ chức các lễ hội truyền thống uống nước nhớ nguồn.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản đề nghị xếp hạng và bản đồ khoanh vùng (lập năm 1995), di tích được xác định ranh giới bảo vệ như sau:
+Khu vực bảo vệ I (Bất khả xâm phạm): Gồm các thửa đất số 156, 157 (Diện tích riêng thửa 157 theo bản đồ là 3.333 m2).
+Ranh giới: Phía Đông giáp thửa 154, 155; Phía Tây giáp đường đi và ngõ xóm; Phía Nam giáp ngõ xóm; Phía Bắc giáp đường 75.
+Khu vực này nghiêm cấm tuyệt đối mọi hành vi tháo dỡ, thay đổi vị trí, xây dựng khai thác trái phép. Mọi hoạt động đặc biệt phải có sự cho phép của Bộ Văn hóa - Thông tin.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The village''s tutelary deity is Huynh Viet Tuong Cong Dai Vuong (Bach Tuong Dai Vuong).
+Legend: He, along with his younger brother (De Viet Dia Cong) and cousin (Do Dai), were renowned generals who greatly assisted Dinh Tien Hoang (Dinh Bo Linh) in suppressing the rebellion of the 12 warlords and unifying the country in the 10th century. Dinh Tien Hoang appointed him "Chief Military Officer" and commander of the land and naval forces in Son Tay.
+Contributions to the Local Area: The three brothers were granted land in Dong Phi commune by the king. They established three villages (Dong Phi, Nguyen Xa, and Ngoc Dong), taught the people farming, silkworm breeding and weaving, trained soldiers to protect their villages, and fostered solidarity.
+Historical Events: Dong Phi is located on strategic Highway 75 (formerly Khu Chay), and was a resistance base, so the historical site was severely bombarded by the French colonialists. After the peace treaty, the people contributed their efforts to restore and renovate the temple.
+3. Architectural and Artistic Characteristics
+Construction History: Initially, the temple was small, made of wood and thatched with leaves. Towards the end of the Le Dynasty, it was expanded into a rectangular shape. During the Nguyen Dynasty, the temple was further expanded to a massive scale (adding the Three-Gate entrance, the Main Hall, and the Scroll Hall), but it was destroyed by the French. The current temple is a structure restored by the people.
+
+Current Layout: Includes the Three-Gate entrance, the Main Hall, and the Rear Sanctuary (Long Hall).
+
+Three-Gate entrance and Main Hall: The Three-Gate entrance consists of three bays, the Main Hall consists of three bays covered with tiles, the ridge is decorated with moon and dragon motifs. Wooden columns rest on ancient stone bases, and the rafters are carved with floral and seal script motifs.
+
+Rear Sanctuary (Long Hall): Extends towards the back, with a superimposed beam and purlin structure. In the front section of the communal house, there are still 2 valuable brackets carved with the theme of "Four Sacred Animals" (Dragon,麒麟, Turtle, Phoenix) and 4 bas-relief carvings of "Plum blossoms transforming into dragons and phoenixes".
+
+4. The system of relics and artifacts of Dong Phi Communal House preserves a treasure trove of very rare heritage from the Le Trung Hung and Nguyen dynasties:
+Ancient documents: 01 book of divine genealogies compiled by the Han Lam Academy''s Grand Scholar Nguyen Binh in the first year of Hong Duc (1572) and 26 imperial decrees (the oldest bearing the year of Duc Long, 4th year - 1632).
+Stone relics (Extremely rare):
+01 stone incense burner made in the 10th year of Chinh Hoa (1689), with a terracotta tower of "Protected by Buddha" on top, consisting of 3 floors and 12 curved roofs.
+
+02 stone slabs with carved dragon motifs, reflecting the artistic style of the Le dynasty.
+Other religious artifacts: 3 altars, 1 shrine, 1 palanquin, 1 dragon pavilion (all gilded and lacquered), a set of 6 precious objects, 4 horizontal plaques, 4 pairs of couplets, and many bronze and ceramic items (censels, incense burners, vases...).
+
+5. Rituals and Service
+The deities passed away on the 9th day of the 12th lunar month. King Dinh Tien Hoang personally came to the site of their passing to establish a national altar and bestowed the honorary title "Eternal Blood Offering".
+
+The communal house is the cultural center of the village, a place for educating patriotism and solidarity, a meeting place for the Elderly Association, the Farmers'' Association, the Youth Union, and for organizing traditional festivals to remember the ancestors.
+
+6. Protection and Demarcation of the Monument
+According to the ranking proposal and demarcation map (prepared in 1995), the monument''s protection boundaries are defined as follows:
+Protection Zone I (Inviolable): Includes land parcels No. 156 and 157 (The area of ​​parcel 157 alone, according to the map, is 3,333 m2).
+
+Boundaries: East: bordering parcels 154 and 155; West: bordering the road and alley; South: bordering the alley; North: bordering Road 75.
+This area is strictly prohibited from any acts of dismantling, changing location, or illegal construction and exploitation. Any special activities must have the permission of the Ministry of Culture and Information.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1634', NULL, N'/api/qr/heritage/h2a2caf37', N'https://maps.app.goo.gl/VxU8JkiK8qpBDhML6', 0, NULL, 3, '2026-07-11T09:06:47.0527973', '2026-07-11T09:20:24.4397206');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (20, N'hdc3bad4e', N'VĐHN-DT-020', 1, N'ĐÌNH GIANG ĐƯỜNG', N'ĐÌNH GIANG ĐƯỜNG', N'đình-giang-đường', N'city', N'active', N'PPRR+6M7, Giang Đường, Vân Đình, Hà Nội, Việt Nam', N'PPRR+6M7, Giang Đường, Vân Đình, Hà Nội, Việt Nam', 20.74052950, 105.73910630, N'1. Thông tin chung
+Tên di tích: Đình Giang Đường.
+Địa điểm: Thôn Giang Đường, xã Đồng Tiến, huyện Ứng Hòa, thành phố Hà Nội (trước năm 1945 thuộc xã Thanh Dương, tổng Bạch Sam, huyện Sơn Minh, phủ Ứng Hòa).
+Loại hình và Xếp hạng: Là di tích Lịch sử - Nghệ thuật. Được UBND Thành phố Hà Nội xếp hạng là Di tích cấp Thành phố theo Quyết định số 4904/QĐ-UBND tháng 9/2018.', N'1. General Information
+Name of the monument: Giang Duong Temple.
+Location: Giang Duong Hamlet, Dong Tien Commune, Ung Hoa District, Hanoi City (before 1945, it belonged to Thanh Duong Commune, Bach Sam Township, Son Minh District, Ung Hoa Prefecture).
+
+Type and Classification: A historical and artistic monument. Classified as a City-level monument by the Hanoi City People''s Committee according to Decision No. 4904/QD-UBND dated September 2018.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ Thành hoàng làng là vua Lê Đại Hành (Lê Hoàn) - vị vua đầu tiên của nhà Tiền Lê.
+Thần tích và Lịch sử: Vua Lê Hoàn sinh năm Tân Sửu (941), vốn là Thập đạo tướng quân của nhà Đinh, được quân sĩ và triều đình suy tôn lên ngôi vua khi nhà Tống lăm le xâm lược. Ngài đã đích thân cầm quân đánh bại giặc Tống ở phía Bắc (năm 981) và dẹp yên quân Chiêm Pa ở phía Nam (năm 982), bảo vệ vững chắc cương giới quốc gia. Ngài cũng là người đầu tiên tổ chức lễ cày tịch điền để khuyến khích nông nghiệp. Việc nhân dân Giang Đường lập đình phụng thờ là để ghi nhớ công ơn dựng nước, giữ nước của ngài.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Lịch sử xây dựng: Được khởi dựng vào khoảng thời Lê và trải qua ba đợt trùng tu sửa chữa lớn vào các năm 1935, 1980, và 1998.
+Bố cục: Đình tọa lạc sát chân đê sông Đáy, quay hướng Tây. Trong thời kỳ kháng chiến, đình từng bị đánh phá mất 2 gian bên nhưng nay đã được phục hồi. Kiến trúc hiện tại theo kiểu chữ "Đinh" gồm Đại bái và Hậu cung.
+Đại bái: Gồm 3 gian 2 dĩ, xây tường hồi bít đốc, mái lợp ngói ta, giữa bờ nóc đắp "Lưỡng long chầu nguyệt". Hai bộ vì giữa làm theo kiểu "thượng chồng rường giá chiêng hạ cốn", hai bộ vì hồi làm kiểu "thượng giá chiêng chồng rường, hạ kẻ bẩy". Trang trí điêu khắc nổi bật trên các bức cốn, đầu dư với hình tượng hoa lá tứ quý (tùng, trúc, cúc, mai), "lão mai hóa long", và rồng chạm theo phong cách thời Lê, thời Nguyễn.
+Hậu cung: Gồm 2 gian, chia làm phần ngoài (bài trí kiệu bành, giá kiếm) và phần trong thâm nghiêm (nơi đặt long ngai bài vị). Ngăn cách bởi hai cửa nách và chữ "Thọ" cách điệu.
+4. Hệ thống Di vật, Cổ vật
+Sắc phong: Đình lưu giữ 06 đạo sắc phong của các triều đại, bao gồm Cảnh Hưng 28 (1767), Thiệu Trị 06 (1846), và 04 đạo niên hiệu Khải Định 09 (1924).
+Đồ thờ tự tiêu biểu: Bức cửa võng sơn son thếp vàng chạm "Lưỡng long chầu nguyệt", hoành phi "Lâm hạ hữu hách", 02 biển thờ, 02 câu đối chữ Hán, bộ bát bửu bằng đá, đôi voi đá, và kiệu bành.
+Đặc biệt, đình lưu giữ hệ thống bát hương đa dạng: 01 bát hương gốm Thổ Hà thời Lê, 04 bát hương sứ men lam thời Nguyễn và 01 bát hương đá thời Nguyễn.
+5. Lễ nghi phụng sự
+Lễ hội chính: Được tổ chức 3 năm một lần, từ ngày 10 đến ngày 12 tháng Giêng âm lịch.
+Nghi thức: Lễ mộc dục (tắm kiệu, bát hương, hộp sắc) diễn ra lúc 21h ngày 9 tháng Giêng. Lễ vật dâng cúng là lễ chay (xôi). Ban tế gồm 20 quan viên mặc quần trắng, áo tế màu xanh.
+Lễ rước kiệu: Là hoạt động nổi bật, rước kiệu nhà Ông, kiệu bát hương và sắc phong từ đình thôn Giang Làng đến thôn Giang Đường và Giang Soi dọc theo đê sông Đáy, kèm múa rồng, múa nước.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Theo biên bản ngày 11/06/2018 và bản đồ quy hoạch, cơ quan chức năng thống nhất chỉ khoanh vùng Khu vực bảo vệ I với tổng diện tích 1.275,1 m2.
+Phân bổ diện tích:
+Diện tích trong chỉ giới bảo vệ đê: 333,7 m2.
+Diện tích ngoài chỉ giới bảo vệ đê: 941,4 m2.
+Ranh giới: Phía Bắc giáp ngõ bê tông và thổ cư; Nam giáp thổ canh và đê tả Sông Đáy; Tây giáp vườn và đê tả Sông Đáy; Đông giáp vườn và chùa Lạc Cảnh. Mọi hoạt động xây dựng, khai thác trong khu vực này đều bị nghiêm cấm theo quy định.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The village''s tutelary deity is King Le Dai Hanh (Le Hoan) - the first king of the Early Le Dynasty.
+Legends and History: King Le Hoan was born in the year Tan Suu (941), originally a Ten-Commandment General of the Dinh Dynasty. He was enthroned by the soldiers and the court when the Song Dynasty threatened to invade. He personally led the army to defeat the Song invaders in the North (981) and pacified the Champa army in the South (982), firmly protecting the national borders. He was also the first to organize the plowing ceremony to encourage agriculture. The people of Giang Duong built a temple to worship him in remembrance of his contributions to nation-building and national defense.
+
+3. Architectural and Artistic Features
+Construction History: Built during the Le Dynasty and underwent three major renovations in 1935, 1980, and 1998.
+Layout: The temple is located at the foot of the Day River dike, facing west. During the resistance war, two side sections of the temple were destroyed but have since been restored. The current architecture is in the shape of the letter "Đinh," consisting of the main hall and the rear hall.
+
+Main hall: Consists of 3 bays and 2 side sections, with gable walls, tiled roof, and a "Two dragons worshipping the moon" sculpted in the middle of the ridge. The two central trusses are built in the "upper beam and lower bracket" style, while the two end trusses are in the "upper bracket and upper beam" style. The prominent sculptural decorations on the brackets and gable ends feature images of the four auspicious plants (pine, bamboo, chrysanthemum, and plum blossom), "an old plum blossom transforming into a dragon," and dragons carved in the style of the Le and Nguyen Dynasties.
+
+The rear chamber: Consists of two sections, divided into an outer part (with palanquin and sword stand) and a solemn inner part (where the dragon throne and ancestral tablets are placed). Separated by two side doors and a stylized "Longevity" character.
+
+4. System of Relics and Antiquities
+Royal Decrees: The temple preserves 6 royal decrees from various dynasties, including the 28th year of Canh Hung (1767), the 6th year of Thieu Tri (1846), and 4 decrees from the 9th year of Khai Dinh (1924).
+
+Typical worship items: A gilded and lacquered archway carved with "Two Dragons Worshipping the Moon," a horizontal plaque with the inscription "Lin Xia You Ha," 2 altar plaques, 2 couplets in Chinese characters, a set of eight precious objects made of stone, a pair of stone elephants, and a palanquin.
+
+Notably, the temple preserves a diverse system of incense burners: 1 ceramic incense burner from Tho Ha during the Le Dynasty, 4 blue glazed porcelain incense burners during the Nguyen Dynasty, and 1 stone incense burner during the Nguyen Dynasty.
+5. Rituals and Service
+Main Festival: Held every three years, from the 10th to the 12th day of the first lunar month.
+
+Rituals: The ritual bathing (washing the palanquin, incense burner, and imperial decree box) takes place at 9 PM on the 9th day of the first lunar month. The offerings are vegetarian (sticky rice). The ceremonial committee consists of 20 officials wearing white trousers and blue ceremonial robes.
+
+Palley Procession: This is a prominent activity, carrying the palanquin of the Ancestor, the incense burner, and the imperial decree from Giang Lang village temple to Giang Duong and Giang Soi villages along the Day River dike, accompanied by dragon dances and water dances.
+
+6. Protection and Demarcation of the Monument
+Demarcation: According to the minutes dated June 11, 2018, and the planning map, the authorities agreed to demarcate only Protection Area I with a total area of ​​1,275.1 m2.
+
+Area Allocation:
+
+Area within the dike protection boundary: 333.7 m2.
+
+Area outside the dike protection boundary: 941.4 m2.
+
+Boundaries: North: bordered by a concrete alley and residential land; South: bordered by agricultural land and the left bank dike of the Day River; West: bordered by a garden and the left bank dike of the Day River; East: bordered by a garden and Lac Canh Pagoda. All construction and exploitation activities in this area are strictly prohibited according to regulations.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1860', N'xã Vân Đình', N'/api/qr/heritage/hdc3bad4e', N'https://maps.app.goo.gl/CRAFkQ4q4YSGquv97', 0, NULL, 3, '2026-07-11T09:20:15.0555740', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (21, N'h58d574a2', N'VĐHN-DT-021', 1, N'ĐÌNH PHÍ TRẠCH', N'ĐÌNH PHÍ TRẠCH', N'đình-phí-trạch', N'national', N'active', N'PQMX+5WQ, Xóm ĐÌnh, Vân Đình, Hà Nội, Việt Nam', N'PQMX+5WQ, Xóm ĐÌnh, Vân Đình, Hà Nội, Việt Nam', 20.73357280, 105.79990650, N'1. Thông tin chung
+Tên di tích: Đình Phí Trạch.
+Địa điểm: Thôn Phí Trạch, xã Phương Tú, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tỉnh Hà Tây).
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật. Được Bộ trưởng Bộ Văn hóa - Thông tin ra Quyết định số 06/2004/QĐ-BVHTT ngày 18/02/2004 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the monument: Phi Trach Communal House.
+Location: Phi Trach Hamlet, Phuong Tu Commune, Ung Hoa District, Hanoi City (formerly part of Ha Tay Province).
+
+Type and Classification: An architectural and artistic monument. Recognized and classified as a National Monument by Decision No. 06/2004/QD-BVHTT dated February 18, 2004, issued by the Minister of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ Thành hoàng làng là Ngài Ngô Xương Xí, cháu ba đời của Ngô Vương Quyền (con trai của Ngô Xương Ngập).
+Thần tích: Ngài Ngô Xương Xí là một trong 12 sứ quân, đóng tại Bình Kiều. Khi Đinh Bộ Lĩnh thống nhất đất nước và mời ngài về Hoa Lư nhường ngôi, ngài đã khước từ với lý do giữ trọn đạo lý và mệnh trời. Sau khi ngài mất, Đinh Tiên Hoàng đã ra sắc chỉ cho lập đền thờ phụng; các triều đại từ thời Lê đến thời Nguyễn đều ban sắc phong tôn thờ Ngài.
+Sự kiện cách mạng:
+Trong kháng chiến chống Pháp, đình là nơi hoạt động bí mật của cán bộ, du kích Khu Cháy.
+Năm 1964 - 1965, đình là nơi tổ chức hội nghị hợp tác hóa nông nghiệp điển hình toàn miền Bắc do Đại tướng Nguyễn Chí Thanh trực tiếp chỉ đạo.
+Thời kỳ chống Mỹ, đình là nơi sơ tán của đoàn Xiếc Trung ương, huyện đội và nhà thương Vân Đình.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Bố cục: Đình tọa lạc trên khu đất rộng 1.100 m2, được thiết kế theo kiểu "chữ Đinh", bao gồm tòa Đại bái và Hậu cung.
+Tòa Đại bái: Gồm 3 gian 2 đĩ (chái), kết cấu 4 hàng chân cột bằng gỗ lim to, khỏe. Bộ vì giữa làm theo kiểu "chồng rường con nhị, cốn mê, bẩy hiên". Điêu khắc nổi bật với bức chạm rồng "Ngư long hý thủy", hình tượng hổ phù, chim phượng, hoa sen và 4 đầu dư chạm rồng mang phong cách thời Nguyễn (nhưng vẫn giữ được một số họa tiết đao mác, tia lửa của thời Lê). Mái đình giữ nguyên vẹn 4 đầu đao cong vút, lợp ngói ri cổ, bờ nóc đắp hai con kìm.
+Hậu cung: Gồm 3 gian, xây bít đốc, là không gian thâm nghiêm nhất. Tại đây đặt các cỗ long ngai bài vị sơn son thếp vàng, chạm trổ tinh xảo mang đậm phong cách nghệ thuật thời Lê.
+4. Hệ thống Di vật, Cổ vật
+Tài liệu cổ: 01 quyển thần phả chữ Hán (bản sao năm Bảo Đại thứ 19) và 09 đạo sắc phong từ thời Lê đến thời Nguyễn (Thịnh Đức, Tự Đức, Đồng Khánh, Duy Tân, Khải Định).
+Đồ thờ tự: 03 cỗ ngai thờ (thánh phụ, thánh mẫu và Thành hoàng làng), 01 bộ cửa võng chạm "Lưỡng long chầu nguyệt", 02 bức hoành phi ("Tối linh từ" và "Tướng Hựu Lê Dân"), 01 đôi câu đối khảm trai, 03 bát hương sứ.
+Hiện vật khác: 01 kiệu bát cống (phong cách Lê, tu sửa thời Nguyễn), 01 kiệu mui luyện, 01 bộ gươm trường bát bửu, khám thờ, mâm bồng, đại đao, hạc thờ.
+5. Lễ nghi phụng sự
+Thời gian: Lễ hội làng Phí Trạch được tổ chức vào ngày 10 tháng 2 âm lịch (ngày sinh của Đức Thánh). Ngoài ra còn có ngày 4 tháng 8 âm lịch là ngày hóa của Ngài, và lễ "Hội xuân" vào ngày 10 tháng Giêng (làm bánh dày).
+Nghi thức và Hội: Làng chia làm 4 giáp (Đông, Đình, Chùa, Bắc) luân phiên đăng cai việc làng. Lễ vật bao gồm xôi, chuối, trầu cau; đặc biệt có lệ "Lễ khám vật phẩm" (cau khám ruột, chuối khám vỏ) để đảm bảo sự tinh khiết. Phần hội có nhiều trò chơi thượng võ như múa gậy, đấu gậy, đấu vật thu hút đông đảo trai tráng trong và ngoài làng.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản khoanh vùng ngày 10/10/2003 và bản đồ địa chính, di tích được phân định ranh giới rõ ràng:
+Khu vực bảo vệ 1 (Bất khả xâm phạm): Nằm trên thửa đất số 426 với diện tích 1079,5 m2. Tiếp giáp đường làng và nhà trẻ ở phía Đông, Tây và Bắc; giáp thửa 459 ở phía Nam.
+Khu vực bảo vệ 2 (Điều chỉnh xây dựng): Bao gồm các thửa đất số 459, 636, 398 với tổng diện tích 1968,5 m2.
+Mọi hoạt động xây dựng, khai thác trong khu vực đã khoanh vùng đều bị nghiêm cấm, trường hợp đặc biệt phải được phép của Bộ trưởng Bộ Văn hóa - Thông tin.', N'2. Worshipped Figures and Historical Value
+Worshiped Figures: The village''s tutelary deity is Ngo Xuong Xi, the great-grandson of Ngo Vuong Quyen (son of Ngo Xuong Ngap).
+Legend: Ngo Xuong Xi was one of the 12 warlords, based in Binh Kieu. When Dinh Bo Linh unified the country and invited him to Hoa Lu to abdicate, he refused, citing his adherence to moral principles and the will of Heaven. After his death, Dinh Tien Hoang issued a decree to build a temple to worship him; dynasties from the Le to the Nguyen periods all bestowed imperial decrees honoring him.
+
+Revolutionary Events:
+During the resistance against the French, the temple served as a secret operational base for cadres and guerrillas in Khu Chay.
+
+In 1964-1965, the temple hosted a conference on exemplary agricultural collectivization throughout the North, directly led by General Nguyen Chi Thanh.
+
+During the war against the Americans, the temple served as an evacuation site for the Central Circus Troupe, the district military command, and the Van Dinh hospital.
+
+3. Architectural and Artistic Features
+Layout: The temple is situated on a 1,100 m2 plot of land, designed in the shape of the Chinese character "Đinh," comprising the main hall and the rear hall.
+
+The main hall: Consists of 3 bays and 2 side wings, with a structure of 4 rows of large, sturdy ironwood columns. The central truss is built in the style of "stacked beams and brackets, eaves." The sculptures are prominent, featuring a dragon carving of "Fish and Dragon Playing in Water," tiger figures, phoenixes, lotus flowers, and 4 dragon-carved beams in the Nguyen dynasty style (but still retaining some sword and flame motifs from the Le dynasty). The temple roof retains its original 4 curved eaves, covered with ancient tiles, and the ridge is decorated with two finials.
+
+The rear hall: Consists of 3 bays, built with gable ends, and is the most solemn space. Here are the gilded and lacquered dragon thrones and ancestral tablets, exquisitely carved in the artistic style of the Le dynasty.
+4. Artifacts and Relics
+Ancient documents: 1 book of Chinese-language genealogical records (copy from the 19th year of Bao Dai''s reign) and 9 royal decrees from the Le Dynasty to the Nguyen Dynasty (Thinh Duc, Tu Duc, Dong Khanh, Duy Tan, Khai Dinh).
+Religious artifacts: 3 altars (for the patron saint, patron saint mother, and village tutelary deity), 1 set of ornate archways carved with "Two dragons worshipping the moon", 2 horizontal plaques ("Most Sacred Temple" and "General Le Dan"), 1 pair of mother-of-pearl inlaid couplets, 3 porcelain incense burners.
+
+Other artifacts: 1 eight-sided palanquin (Le Dynasty style, renovated during the Nguyen Dynasty), 1 covered palanquin, 1 set of eight-treasure long swords, altar, offering tray, large saber, and crane statues.
+
+5. Rituals and Worship
+Time: The Phi Trach village festival is held on the 10th day of the 2nd lunar month (the birthday of the patron saint). In addition, there is the 4th day of the 8th lunar month, the anniversary of his passing, and the "Spring Festival" on the 10th day of the 1st lunar month (making sticky rice cakes).
+
+Rituals and Festivals: The village is divided into 4 hamlets (East, Temple, Pagoda, North) that take turns hosting village affairs. Offerings include sticky rice, bananas, betel nuts and leaves; especially, there is the "Offering Examination Ceremony" (betel nuts are examined, bananas are examined) to ensure purity. The festival includes many martial arts games such as stick dancing, stick fighting, and wrestling, attracting many young men from within and outside the village.
+6. Protection and Demarcation of the Monument
+According to the demarcation record dated October 10, 2003, and the cadastral map, the monument is clearly demarcated:
+Protection Area 1 (Inviolable): Located on plot number 426 with an area of ​​1079.5 m2. Adjacent to the village road and kindergarten to the East, West, and North; adjacent to plot 459 to the South.
+Protected Area 2 (Construction Adjustment): Includes land parcels No. 459, 636, and 398 with a total area of ​​1968.5 m2.
+All construction and exploitation activities within the designated area are strictly prohibited; exceptional cases require permission from the Minister of Culture and Information.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1788', N'xã Vân Đình', N'/api/qr/heritage/h58d574a2', N'https://maps.app.goo.gl/KpmLB6gr9vwc7oEL7', 0, NULL, 3, '2026-07-11T09:23:04.4273724', '2026-07-11T09:23:19.0537758');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (22, N'h1c6be40c', N'VĐHN-DT-022', 1, N'ĐÌNH TẢO KHÊ', N'ĐÌNH TẢO KHÊ', N'đình-tảo-khê', N'national', N'active', N'PQ5J+9JP, Vân Đình, Hà Nội, Việt Nam', N'PQ5J+9JP, Vân Đình, Hà Nội, Việt Nam', 20.70846150, 105.77899610, N'1. Thông tin chung
+Tên di tích: Đình Tảo Khê.
+Địa điểm: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tỉnh Hà Tây).
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin ra Quyết định số 1811/1998-QĐ-BVHTT ngày 25/08/1998 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the monument: Tao Khe Temple.
+Location: Tao Khe village, Tao Duong Van commune, Ung Hoa district, Hanoi city (formerly part of Ha Tay province).
+
+Type and Classification: An architectural and artistic monument. Recognized and classified as a National Monument by Decision No. 1811/1998-QD-BVHTT dated August 25, 1998, issued by the Minister of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ hai vị Thượng đẳng phúc thần là anh em sinh đôi: Trần Võ (Thượng sĩ đại tướng quân) và Trần Thông (Thái tể tướng quân).
+Thần tích: Hai ngài là những bậc anh hùng xuất chúng, có công lớn phò tá vua Trần Thái Tông đánh phá và đẩy lùi 10 vạn quân Mông Cổ xâm lược. Sau khi thái bình, hai ngài xin về hưu trí tại đất Tảo Khê, dạy bảo nhân dân thuần phong mỹ tục, hai ngài cùng hóa vào ngày 12 tháng Giêng.
+Sự kiện cách mạng: Đình Tảo Khê là nơi ghi dấu sự kiện lịch sử quan trọng: Chiều ngày 17/8/1945, đồng chí Đỗ Mười đã trực tiếp phát lệnh khởi nghĩa giành chính quyền phủ Ứng Hòa tại chính ngôi đình này.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Bố cục: Đình tọa lạc trên thế đất đẹp, thoáng mát, hướng Tây Nam nhìn ra mặt hồ rộng (dòng Khê Thủy cũ). Đình xây dựng theo kiểu chữ Tam (hoặc chữ Đinh khép kín) bao gồm tòa Đại bái, Tiền tế và Hậu cung.
+Đại bái: Được tạo dựng từ thời Lê và tu bổ lớn vào thời Nguyễn, gồm 5 gian 2 dĩ với 4 đầu đao cong vút đắp nổi rồng, hoa lá. Nội thất lộng lẫy với hệ thống cột lim lớn, vì nóc kiểu "chồng rường con nhị". Điêu khắc nổi bật với bức cửa võng chạm trổ công phu nhiều tầng, các đầu dư giữ nguyên phong cách thời Lê, và các bức cốn chạm nổi điển tích "Ngư long hý thủy" (rồng uốn lượn phun nước, cá chép, rùa, nghê...).
+Hậu cung: Khu vực thâm nghiêm nhất, được chia làm hai phần (Tiền tế và Hậu cung), phía trước có hệ thống tường gạch xây cuốn vòm 3 cửa.
+4. Hệ thống Di vật, Cổ vật
+Đình lưu giữ bộ sưu tập di vật rất phong phú và quý giá.
+Tài liệu cổ: 01 quyển thần phả chữ Hán (niên hiệu Hồng Phúc) và 23 đạo sắc phong của các triều đại phong kiến, trong đó đạo sớm nhất từ năm Hoằng Định (1603).
+Đồ gỗ và thờ tự: 02 cỗ long ngai bài vị sơn son thếp vàng, 01 cây quán tẩy bằng gỗ chạm rồng, 01 bức cửa võng, 02 đôi câu đối, bộ gươm bát bửu, giá gương.
+Đồ đá, kim loại: 01 bia đá ghi chép việc con cháu xây đình, 01 khánh đá, cùng nhiều đồ đồng như đỉnh, lư hương, hạc, nến.
+5. Lễ nghi phụng sự
+Theo thần tích, hai vị thần đản sinh vào ngày 8 tháng Giêng và cùng hóa vào ngày 12 tháng Giêng âm lịch.
+Đình làng là trung tâm sinh hoạt văn hóa tín ngưỡng của cộng đồng, nơi tổ chức hội làng truyền thống, tưởng nhớ công ơn của các vị anh hùng giữ nước và giáo dục truyền thống yêu nước cho các thế hệ.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản đề nghị xếp hạng năm 1998 và bản đồ khoanh vùng, di tích được phân định như sau:
+Khu vực bảo vệ I (Bất khả xâm phạm): Nằm trên thửa đất số 1082 với diện tích 824 m2. Phía Đông giáp đường làng và khu dân cư; Phía Tây giáp cơ quan HTX; Phía Nam và Bắc giáp đường làng và ao.
+Khu vực bảo vệ II (Điều chỉnh xây dựng): Gồm thửa đất số 1082 và 1085 (phần lớn là Ao đình), tổng diện tích 17.456 m2.
+Nghiêm cấm mọi hoạt động xây dựng, khai thác làm ảnh hưởng đến khu vực di tích đã khoanh vùng nếu chưa được phép của cơ quan có thẩm quyền.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The temple is dedicated to two high-ranking benevolent deities, twin brothers: Tran Vo (Senior General) and Tran Thong (Grand Chancellor).
+Legend: The two were outstanding heroes who greatly assisted King Tran Thai Tong in defeating and repelling 100,000 invading Mongol troops. After peace was restored, they retired to Tao Khe, teaching the people about traditional customs and values. They both passed away on the 12th day of the first lunar month.
+
+Revolutionary Event: Tao Khe Temple marks an important historical event: On the afternoon of August 17, 1945, Comrade Do Muoi personally issued the order to launch the uprising to seize power in Ung Hoa district at this very temple.
+
+3. Architectural and Artistic Features
+Layout: The temple is situated on beautiful, airy land, facing southwest towards a wide lake (the old Khe Thuy stream). The temple is built in the shape of the Chinese character "Tam" (or "Dinh"), comprising the main hall, the front hall, and the rear hall.
+
+The main hall: Built during the Le Dynasty and extensively renovated during the Nguyen Dynasty, it consists of 5 bays and 2 side wings with 4 curved eaves adorned with embossed dragons, flowers, and leaves. The interior is magnificent with a system of large lim wood columns and a "stacked beam and rafter" roof structure. The sculptures are outstanding, featuring an elaborately carved multi-tiered arched doorway, the original Le Dynasty style corbels, and the brackets carved with the "Fish and Dragon Playing in Water" motif (dragons writhing and spouting water, carp, turtles, and mythical creatures...).
+
+The rear hall: The most solemn area, divided into two parts (front hall and rear hall), with a system of brick walls and arched doorways at the front.
+
+4. Artifacts and Antiquities
+
+The temple preserves a very rich and valuable collection of artifacts. Ancient documents: 1 volume of Chinese-language genealogical records (Hong Phuc era) and 23 imperial decrees from feudal dynasties, the earliest dating from the Hoang Dinh era (1603).
+
+Wooden and religious artifacts: 2 gilded and lacquered dragon thrones and ancestral tablets, 1 wooden washbasin carved with dragons, 1 ornate archway, 2 pairs of couplets, a set of eight precious swords, and a mirror stand.
+
+Stone and metal artifacts: 1 stone stele recording the construction of the communal house by descendants, 1 stone bell, and many bronze items such as incense burners, cranes, and candlesticks.
+
+5. Rituals and worship
+According to the legend, the two deities were born on the 8th day of the first lunar month and passed away on the 12th day of the first lunar month.
+The village communal house is the center of cultural and religious activities for the community, where traditional village festivals are held, commemorating the contributions of national heroes and educating future generations about patriotic traditions.
+6. Protection and Demarcation of the Monument
+According to the 1998 proposal for ranking and the demarcation map, the monument is defined as follows:
+Protection Zone I (Inviolable): Located on plot number 1082 with an area of ​​824 m2. To the East, it borders the village road and residential area; to the West, it borders the Cooperative''s office; to the South and North, it borders the village road and the pond.
+Protection Zone II (Construction Adjustment): Includes plots number 1082 and 1085 (mostly the communal pond), with a total area of ​​17,456 m2.
+All construction and exploitation activities that affect the demarcated monument area are strictly prohibited without permission from the competent authority.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1603', N'xã Vân Đình', N'/api/qr/heritage/h1c6be40c', N'https://maps.app.goo.gl/Ma93jWijNy8akTAN9', 0, NULL, 3, '2026-07-11T09:25:10.2409435', '2026-07-11T09:26:25.8889420');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (23, N'h3bb13f5d', N'VĐHN-DT-023', 1, N'ĐÌNH VÀ CHÙA TỬ DƯƠNG', N'ĐÌNH VÀ CHÙA TỬ DƯƠNG', N'đình-và-chùa-tử-dương', N'national', N'active', N'QP9J+X3C, Tử Dương, Vân Đình, Hà Nội, Việt Nam', N'QP9J+X3C, Tử Dương, Vân Đình, Hà Nội, Việt Nam', 20.77035630, 105.72947220, N'1. Thông tin chung
+Tên di tích: Đình Tử Dương và Chùa Tử Dương (Long Khánh tự).
+Địa điểm: Thôn Tử Dương, xã Cao Thành, huyện Ứng Hòa, tỉnh Hà Tây (nay là thành phố Hà Nội).
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật cổ. Được Bộ trưởng Bộ Văn hóa, Thông tin và Thể thao ký Quyết định số 138/QĐ công nhận và xếp hạng là Di tích cấp Quốc gia vào ngày 31/01/1992.', N'1. General Information
+Name of the monument: Tu Duong Temple and Tu Duong Pagoda (Long Khanh Temple).
+
+Location: Tu Duong Village, Cao Thanh Commune, Ung Hoa District, Ha Tay Province (now Hanoi City).
+
+Type and Classification: An ancient architectural and artistic monument. Recognized and classified as a National Monument by Decision No. 138/QD signed by the Minister of Culture, Information and Sports on January 31, 1992.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng tại Đình: Đình thờ "Đại long quốc vương đệ tam Hoàng tử" – một trong 100 người con của Lạc Long Quân và Âu Cơ.
+Thần tích (Anh hùng văn hóa thời Hùng Vương): Sự tích gắn liền với công cuộc trị thủy, chinh phục thiên nhiên buổi đầu dựng nước. Truyền thuyết kể rằng, ngài đã vâng lệnh vua cha chỉ huy 50 thủy thần, 50 sơn thần đánh lùi "giặc nước" (thủy tai) đang đe dọa vùng đất Sơn Minh, qua đó lập nên làng xã Tử Dương trên khu đất đắc địa có hình "chuồn chuồn lượn", đầu ôm lấy đầm nước.
+Thờ phụng tại Chùa: Chùa Long Khánh là nơi thờ Phật theo truyền thống Đại thừa Bắc tông, với hệ thống tượng Phật khá đầy đủ và sắp xếp khoa học (Phật Tam thế, A Di Đà, Thích Ca sơ sinh, Thích Ca nhập Niết bàn, Quan Âm, Ngọc Hoàng...).
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Đình Tử Dương: Nằm ở vị trí trung tâm, cao nhất làng (thế đất hình đầu rồng), cửa hướng Nam nhìn ra đầm Thủy trong xanh.
+Bố cục: Gồm Cổng đồng trụ, Đại bái và Hậu cung.
+Kiến trúc & Điêu khắc: Tòa Đại bái đồ sộ với 7 gian 2 chái, xây bít đốc, bờ nóc đắp hai đầu rồng. Kết cấu gồm 8 vì kèo, 4 hàng cột (cột tứ trụ đường kính 0,4m kê trên tảng đá chạm trổ tứ linh, bát quái và hình trống đồng). Điêu khắc gỗ tập trung ở các cốn, đầu dư, bẩy hiên với các đề tài "long cuốn thủy", rồng, ngựa, hoa lá, tùng mai và các loài thú (hổ, nai, mèo, chim phượng) phản ánh đậm nét đời sống nông nghiệp. Cuốn thư chạm thủng "lưỡng long chầu nguyệt" khắc 3 chữ "Ngự đường cù".
+Chùa Long Khánh: Nằm chung khu đất, phía sau đình, cổng mở hướng Tây.
+Bố cục: Đại bái và Tam bảo kết cấu chữ Công (I), Điện Mẫu kết cấu chữ Đinh (J), cùng nhà tổ, nhà khách tạo thành hình chữ U.
+Kiến trúc: Đại bái 7 gian, vì kèo kiểu "quá giang trốn trụ", bào trơn đóng bén, chạm khắc hoa lá cách điệu, chữ triện mang phong cách thời Nguyễn muộn, vật liệu gỗ lim, sến, táu bền vững.
+4. Hệ thống Di vật, Cổ vật
+Tại Đình: Lưu giữ 01 cuốn Thần phả (Hồng Phúc nguyên niên - 1572); 40 đạo sắc phong (32 đạo thời Lê, sớm nhất là Sùng Khang năm thứ 6 - 1586, và 8 đạo thời Nguyễn). Ngoài ra còn có 5 ngai thờ (1 ngai Đại long vương, 4 ngai thổ địa), kiệu bát cống, hương án, khám thờ, 3 cuốn thư, gươm trường bát bửu. Đáng chú ý là bài vị chạm khắc hình nhân đầu đội mũ miện đặt trong ngai lớn sơn son thếp vàng.
+Tại Chùa: Hệ thống 42 pho tượng (có 3 pho tượng gỗ đắp tạc thời Nguyễn: Thích Ca nhập Niết bàn, A Di Đà, Tuyết Sơn). Di vật đặc biệt quý giá là chiếc Nhang án gian (chấp tải) làm năm Cảnh Hưng 22 (1761) chạm trổ "lưỡng long tranh châu" tinh xảo mang mô-típ thời Lê - Mạc, và Quả chuông đồng đúc năm Cảnh Thịnh thứ 2 (1794) đời Tây Sơn.
+5. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản ngày 28/12/1991 và bản đồ địa chính, toàn bộ cụm di tích Đình và Chùa Tử Dương được khoanh vùng bảo vệ nghiêm ngặt:
+Khu vực bảo vệ (Khu vực I - Bất khả xâm phạm): Gồm toàn bộ các thửa đất số 444, 445, 446, 441, 440, 439, 436, 435. Ranh giới: Đông giáp các thửa 448, 437, 438, 433; Tây giáp đường ngõ cổng đá và một phần các thửa 449, 450, 491, 490; Nam giáp ngõ ba đường làng và thửa 492; Bắc giáp đường ngõ chùa và các thửa 355, 361, 362, 365.
+Khu vực điều chỉnh xây dựng (Khu vực II): Gồm các thửa 444, 445, 446, 441, 440, 439, 435, 449, 450, 491, 490, 355, 361, 362, 365. Bất cứ hoạt động xây dựng nào tại đây đều phải xin phép UBND tỉnh và có ý kiến của Bộ/Sở Văn hóa.
+Việc quản lý, tu bổ và sử dụng di tích phải tuân thủ nghiêm ngặt theo Pháp lệnh bảo vệ và sử dụng di tích lịch sử văn hóa.', N'2. Figures of Worship and Historical Value
+Figures of Worship at the Temple: The temple is dedicated to "Great Dragon King, Third Prince" – one of the 100 children of Lac Long Quan and Au Co.
+Legend of the Divine (Cultural Hero of the Hung Dynasty): The legend is associated with the early days of water management and conquering nature. Legend says that he obeyed his father''s command, leading 50 water gods and 50 mountain gods to repel the "water invaders" (flood disasters) threatening the Son Minh area, thereby establishing Tu Duong village on a strategically located piece of land shaped like a "dragonfly," with its head embracing a pond.
+
+Worship at the Pagoda: Long Khanh Pagoda is a place of worship following the Mahayana Northern tradition, with a fairly complete and scientifically arranged system of Buddha statues (Three Buddhas, Amitabha, the infant Buddha, the Buddha entering Nirvana, Avalokiteśvara, the Jade Emperor...).
+3. Architectural and Artistic Features
+Tu Duong Temple: Located in the center, at the highest point of the village (on land shaped like a dragon''s head), with its south-facing entrance overlooking the clear blue Thuy Pond.
+
+Layout: Consists of a bronze-pillar gate, the main hall, and the rear sanctuary.
+
+Architecture & Sculpture: The massive main hall has 7 bays and 2 wings, built with solid gables, and the roof ridge is sculpted with two dragon heads. The structure consists of 8 trusses and 4 rows of columns (four-pillar columns with a diameter of 0.4m resting on carved stone bases depicting the four mythical creatures, the eight trigrams, and bronze drums). Wood carvings are concentrated on the brackets, eaves, and porch beams with themes of "dragons coiled around water," dragons, horses, flowers, pine and plum blossoms, and animals (tiger, deer, cat, phoenix) reflecting the agricultural life. A perforated scroll depicts "two dragons worshipping the moon" and bears the three characters "Ngự đường cù" (Imperial Hall Cù).
+
+Long Khanh Pagoda: Located in the same area, behind the temple, with its gate facing west.
+
+Layout: The main hall and the Three Treasures hall are structured in the shape of the character "Công" (I), the Mother Goddess hall is structured in the shape of the character "Đinh" (J), and together with the ancestral house and guest house, they form a U shape.
+Architecture: The main hall has 7 bays, with a "cross-beam hidden pillar" truss system, smooth and finely crafted, with stylized floral carvings and seal script in the style of the late Nguyen dynasty, using durable ironwood, rosewood, and teak.
+
+4. System of Relics and Antiquities
+At the communal house: Preserves 1 book of divine genealogies (Hong Phuc first year - 1572); 40 imperial decrees (32 from the Le dynasty, the earliest from Sung Khang year 6 - 1586, and 8 from the Nguyen dynasty). In addition, there are 5 altars (1 Great Dragon King altar, 4 Earth God altars), an eight-sided palanquin, an incense altar, a shrine, 3 scrolls, and a long eight-treasure sword. Notably, there is a carved human figure wearing a crown placed in a large gilded and red-lacquered throne.
+
+At the Pagoda: A system of 42 statues (including 3 wooden statues carved during the Nguyen Dynasty: Shakyamuni entering Nirvana, Amitabha, and Tuyet Son). Particularly valuable artifacts include an incense burner (chấp tải) made in the 22nd year of Canh Hung (1761) with an exquisitely carved "two dragons fighting for a pearl" motif from the Le-Mac period, and a bronze bell cast in the 2nd year of Canh Thinh (1794) during the Tay Son Dynasty.
+
+5. Protection and Demarcation of the Monument
+According to the minutes dated December 28, 1991, and the cadastral map, the entire complex of Tu Duong Temple and Pagoda is strictly demarcated for protection:
+Protected Area (Area I - Inviolable): Includes all land parcels numbered 444, 445, 446, 441, 440, 439, 436, 435. Boundaries: East bordering parcels 448, 437, 438, 433; West bordering the stone gate alley and parts of parcels 449, 450, 491, 490; South bordering the three village roads and parcel 492; The northern boundary adjoins the temple alley and plots 355, 361, 362, and 365.
+The construction adjustment area (Area II): Includes plots 444, 445, 446, 441, 440, 439, 435, 449, 450, 491, 490, 355, 361, 362, and 365. Any construction activity here requires permission from the Provincial People''s Committee and the opinion of the Ministry/Department of Culture.
+
+The management, restoration, and use of the relic must strictly comply with the Ordinance on the Protection and Use of Historical and Cultural Relics.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1570', N'xã Vân đình', N'/api/qr/heritage/h3bb13f5d', N'https://maps.app.goo.gl/KB1iKHGaYdpxxrwM9', 0, NULL, 3, '2026-07-11T09:29:37.3038569', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (24, N'h688c4f07', N'VĐHN-DT-024', 5, N'PHỦ ỨNG THIÊN', N'PHỦ ỨNG THIÊN', N'phủ-ứng-thiên', N'unranked', N'active', N'PQMM+J7, Vân Đình, Hà Nội, Việt Nam', N'PQMM+J7, Vân Đình, Hà Nội, Việt Nam', 20.73405400, 105.78059870, N'1. Thông tin chung
+Tên di tích: Phủ Ứng Thiên.
+Tên gọi khác: Khánh Hòa Linh từ hay Đền Khánh Hòa.
+Địa điểm: Phố Nguyễn Thượng Hiền, thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.
+Loại hình di tích: Lịch sử - Nghệ thuật.', N'1. General Information
+Name of the monument: Ung Thien Palace.
+Other names: Khanh Hoa Linh Tu or Khanh Hoa Temple.
+
+Location: Nguyen Thuong Hien Street, Van Dinh town, Ung Hoa district, Hanoi city.
+
+Type of monument: Historical - Artistic.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Di tích phụng thờ Thánh Mẫu Liễu Hạnh (vị thần chủ trong Tứ bất tử của người Việt), Tam tòa Thánh Mẫu cùng Ngọc Nữ Thủy Tinh phu nhân tôn thần.
+Thần tích & Truyền thuyết:
+Mẫu Liễu Hạnh: Tương truyền là công chúa Quỳnh Nương ở Thiên đình lỡ tay làm rơi chén ngọc, bị đày xuống trần đầu thai làm con gái ông Lê Thái Công (xã Vân Cát, huyện Thiên Bản, nay là Vụ Bản, Nam Định) mang tên Giáng Tiên. Sau khi về trời, nàng được Ngọc Hoàng đổi tên thành Liễu Hạnh và cho giáng trần lần hai, lần ba để cứu khốn phò nguy, giúp dân trừ tà, hiển linh phò trợ triều đình tiễu trừ giặc dã và được phong Chế Thắng Hóa diệu Đại Vương.
+Ngọc Nữ Thủy Tinh phu nhân: Vị tôn thần có công phù trợ đất nước, bảo vệ và che chở cho nhân dân khang kiện, hanh thuận. Ngài đã được triều đình ban tặng nhiều đạo sắc phong, tước phong đến bậc Thượng đẳng thần.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Không gian & Bố cục: Di tích tọa lạc trên vùng đất đắc địa, quang đãng, quay mặt về hướng Tây - Nam. Mặt bằng tổng thể phân bố theo kết cấu chữ "Đinh" ($J$) liên hoàn bao gồm: Cổng phủ ngoài, Cổng tam quan, Tiền tế, Trung cung, Hậu cung và Nhà thờ Phật.
+Chi tiết các hạng mục:
+Cổng Phủ ngoài: Là công trình cổ bằng gạch rêu phong mang dấu ấn kiến trúc thời Nguyễn, phía trên đắp hình bia đá đề ba chữ Hán.
+Cổng tam quan: Công trình trùng tu năm 2010 với kết cấu ba lối đi khép kín. Lối chính giữa bề thế làm theo kiểu hai tầng tám mái đao cong đắp hình tượng mặt trời và rồng chầu, phía dưới đắp cuốn thư đề chữ Hán.
+Tiền tế & Trung cung: Ngôi nhà ngang 3 gian 2 dĩ, xây tường hồi bít đốc, bờ nóc đắp nổi "Lưỡng long chầu nguyệt" cùng hai con kìm lá cách điệu. Bộ khung làm theo kiểu vì kèo quá giang gối tường vững chắc.
+Hậu cung: Gồm 1 gian làm theo lối hai tầng tám mái đao cong giả ngói ống, kết cấu bên trong làm kiểu cuốn vòm bằng bê tông thâm nghiêm, là nơi đặt ban thờ chính đặt khám thờ và tượng Mẫu.
+Nhà thờ Phật: Nằm phía bên trái tiền sảnh, kết cấu chữ "Đinh" gồm Tiền đường (3 gian) và Thượng điện (1 gian cuốn vòm) bài trí tượng Quan Âm Chuẩn Đề.
+4. Hệ thống Di vật, Cổ vật
+Hệ thống di vật tại Phủ rất phong phú, đa dạng về thể loại và chất liệu, được bảo quản tốt. Các hiện vật nổi bật bao gồm:
+02 đạo sắc phong cổ thời Nguyễn ban tặng cho Ngọc Nữ Thủy Tinh phu nhân: 01 sắc niên hiệu Duy Tân thứ 5 (1911) phong Trung đẳng thần và 01 sắc niên hiệu Khải Định thứ 9 (1924) gia tặng Trang Huy Thượng đẳng thần.
+Đồ gỗ: Khám thờ cổ, cuốn thư treo ở Trung cung chạm rồng chầu mặt trời đề ba chữ Hán "Ngự đường cù", hoành phi "Duy nhạc giáng thần", "Cảnh phúc hật hưởng", đôi câu đối khảm trai, tượng Tam tòa Thánh Mẫu, tượng Ngũ vị tôn ông, tượng Tam vị ông hoàng, và tượng mẫu Sơn Trang.
+Đồ đồng & Sứ: 01 quả chuông đồng cổ niên đại thời Nguyễn, đỉnh đồng chạm khắc hoa văn tinh xảo, chân đèn đồng, khánh đồng và các bộ bát hương sứ men lam vẽ hình rồng chầu.
+5. Lễ hội truyền thống và Sinh hoạt tín ngưỡng
+Thời gian: Lễ hội chính của Phủ được tổ chức long trọng từ ngày mùng 3 tháng 3 âm lịch (ngày mẫu tịch/về trời) và ngày 22 tháng 8 âm lịch (tiệc Cha).
+Các ngày tuần tiết khác: Kỷ niệm ngày mẫu giáng trần (18 tháng 10 âm lịch), ngày mẫu tịch (28 tháng 11 âm lịch), cùng các ngày sóc, vọng (mùng một, rằm) và các dịp lễ Tết Nguyên Đán, Tết Thượng Nguyên, Đoan Ngọ, Trung Nguyên. Đây là dịp nhân dân và du khách thập phương đến chiêm bái, thực hiện nghi thức dâng hương, cầu mong phước lành, quốc thái dân an, mùa màng bội thu.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Theo biên bản hiện trạng năm 2025, do di tích nằm trong khu dân cư hiện hữu có ranh giới rõ ràng và sử dụng ổn định, các cơ quan chức năng thống nhất chỉ khoanh vùng Khu vực bảo vệ I (Không khoanh vùng khu vực bảo vệ II).
+Diện tích: Khu vực bảo vệ I có tổng diện tích là 8.821,0 m², giới hạn từ điểm mốc 1 đến mốc 41 trên bản đồ hiện trạng tỷ lệ 1/500.
+Ranh giới tiếp giáp: Phía Đông giáp đường liên khu phố và ao công; phía Tây giáp ao công và đường liên khu phố; phía Bắc giáp ao công; phía Nam giáp đường liên khu phố và đất nông nghiệp. Mọi hoạt động xây dựng, khai thác trái phép trong chỉ giới đã khoanh vùng đều bị nghiêm cấm nghiêm ngặt', N'2. Worshipped Figures and Historical Value
+Worshipped Figures: The relics dedicated to the worship of Saint Mother Lieu Hanh (the principal deity among the Four Immortals of the Vietnamese people), the Three Holy Mothers, and Lady Thuy Tinh.
+Legends & Legends:
+Lady Lieu Hanh: Legend says she was Princess Quynh Nuong from Heaven who accidentally dropped a jade cup, was banished to Earth and reincarnated as the daughter of Mr. Le Thai Cong (Van Cat commune, Thien Ban district, now Vu Ban, Nam Dinh province) named Giang Tien. After returning to Heaven, she was renamed Lieu Hanh by the Jade Emperor and sent to Earth a second and third time to save the distressed and the people from danger, help the people ward off evil spirits, and manifest herself to assist the court in suppressing bandits and was bestowed the title of Che Thang Hoa Dieu Dai Vuong.
+Lady Thuy Tinh: A revered deity who contributed to the country, protecting and sheltering the people for health and prosperity. She was granted many imperial decrees and titles, reaching the rank of High-Ranking Deity.
+3. Architectural and Artistic Features
+Space & Layout: The monument is located on a prime, open piece of land, facing southwest. The overall layout follows a continuous "J" shape, including: the outer gate, the triple-arched gate, the front hall, the central hall, the rear hall, and the Buddhist temple.
+
+Details of the elements:
+Outer Gate: An ancient structure made of moss-covered brick, bearing the architectural imprint of the Nguyen Dynasty. Above it is a stone stele inscribed with three Chinese characters.
+
+Triple-arched Gate: A structure restored in 2010 with a three-entrance enclosed structure. The central entrance is imposing, built in a two-tiered, eight-roofed style with curved eaves, featuring images of the sun and dragons, and below it a scroll inscribed with Chinese characters.
+
+Front Hall & Central Hall: A three-bay, two-aisle building with solid gable walls. The ridge is decorated with a relief of "Two dragons worshipping the moon" and two stylized leaf-shaped finials. The frame is built in a sturdy truss-style with crossbeams resting on the walls.
+The rear hall: Consists of a single chamber built in the style of a two-story, eight-roofed structure with curved eaves resembling tile pipes. The interior structure is a solemn vaulted concrete structure, housing the main altar, shrine, and statue of the Mother Goddess.
+
+The Buddhist temple: Located to the left of the front hall, the structure is in the shape of the letter "Đinh," consisting of a front hall (3 bays) and an upper hall (1 bay with a vaulted arch) displaying a statue of Avalokiteshvara Cundi.
+
+4. System of Artifacts and Antiquities
+The system of artifacts at the temple is rich and diverse in type and material, and well-preserved. Notable artifacts include:
+Two ancient Nguyen Dynasty imperial decrees bestowing titles upon Lady Ngoc Nu Thuy Tinh: one decree from the 5th year of the Duy Tan reign (1911) conferring the title of Trung Dang Than (Middle-ranking deity) and one decree from the 9th year of the Khai Dinh reign (1924) conferring the title of Trang Huy Thuong Dang Than (Upper-ranking deity).
+
+Wooden artifacts: Ancient altar, a scroll hanging in the central hall carved with dragons bowing to the sun bearing the three Chinese characters "Ngự đường cù", horizontal plaques "Duy nhạc giáng thần", "Cảnh phúc hật hưởng", a pair of mother-of-pearl inlaid couplets, statues of the Three Holy Mothers, statues of the Five Venerable Elders, statues of the Three Emperors, and a statue of Mother Son Trang.
+
+Bronze & Porcelain artifacts: 01 ancient bronze bell dating back to the Nguyen Dynasty, a bronze incense burner with exquisitely carved patterns, bronze candlesticks, bronze chimes, and sets of blue glazed porcelain incense burners with dragon motifs.
+
+5. Traditional Festivals and Religious Activities
+Time: The main festivals of the temple are solemnly celebrated from the 3rd day of the 3rd lunar month (the day the Mother ascended to heaven) and the 22nd day of the 8th lunar month (Father''s Feast).
+
+Other commemorative days: Commemoration of the Mother Goddess''s descent to earth (October 18th of the lunar calendar), the Mother Goddess''s passing (November 28th of the lunar calendar), as well as the first and fifteenth days of the lunar month, and other festivals such as Lunar New Year, Upper Nguyên Festival, Dragon Boat Festival, and Mid-Autumn Festival. These are occasions when people and visitors from all over come to worship, perform incense offerings, and pray for blessings, national peace and prosperity, and a bountiful harvest.
+
+6. Protection and Demarcation of the Monument
+Demarcation: According to the 2025 status report, because the monument is located within an existing residential area with clear boundaries and stable use, the relevant authorities have agreed to demarcate only Protection Zone I (Protection Zone II will not be demarcated).
+
+Area: Protection Zone I has a total area of ​​8,821.0 m², limited from marker 1 to marker 41 on the current status map at a scale of 1/500.
+
+Boundaries: East: bordered by a neighborhood road and a public pond; West: bordered by a public pond and a neighborhood road; North: bordered by a public pond; South: bordered by a neighborhood road and agricultural land. All illegal construction and exploitation activities within the demarcated boundaries are strictly prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1910', N'xã Vân Đình', N'/api/qr/heritage/h688c4f07', N'https://maps.app.goo.gl/pECtJth8qXct8MyD9', 0, NULL, 3, '2026-07-11T09:32:35.7911615', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (25, N'hdca739c5', N'VĐHN-DT-025', 6, N'QUÁN HOÀNG XÁ', N'QUÁN HOÀNG XÁ', N'quán-hoàng-xá', N'city', N'active', N'PQPG+763, Vân Đình, Hà Nội, Việt Nam', N'PQPG+763, Vân Đình, Hà Nội, Việt Nam', 20.73563140, 105.77295310, N'1. Thông tin chung
+Tên di tích: Quán Hoàng Xá (các tên gọi khác: quán làng Hoa Đình, quán Văn chỉ, miếu Hoàng Xá).
+Địa điểm: Thôn Hoàng Xá, thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.
+Xếp hạng: Được UBND Thành phố Hà Nội xếp hạng là Di tích Lịch sử - Kiến trúc nghệ thuật cấp Thành phố theo Quyết định số 1758/QĐ-UBND ngày 02/04/2014.', N'1. General Information
+Name of the monument: Hoang Xa Temple (other names: Hoa Dinh Village Temple, Van Chi Temple, Hoang Xa Shrine).
+
+Location: Hoang Xa Village, Van Dinh Town, Ung Hoa District, Hanoi City.
+
+Classification: Classified as a City-level Historical and Architectural Art Monument by the Hanoi City People''s Committee according to Decision No. 1758/QD-UBND dated April 2, 2014.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Thần tích: Quán là nơi thờ Thành hoàng làng Quý Minh đại vương - một trong ba vị thượng đẳng thần Tản Viên Sơn Thánh (Sơn Tinh) thời Hùng Vương, người có công giúp vua đánh tan quân Thục, giữ yên bờ cõi.
+Sự kiện cách mạng: Trước năm 1945, sân và vườn quán là nơi tập luyện quân sự của đội tự vệ; Hậu cung là nơi cất giấu tài liệu và hội họp của Việt Minh. Tháng 7/1945, đây là trụ sở Ban chỉ huy quân sự lâm thời Việt Minh do đồng chí Đỗ Mười trực tiếp chỉ huy.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Niên đại: Công trình mang đậm phong cách kiến trúc thời Nguyễn muộn (thế kỷ XIX) và trải qua một đợt trùng tu lớn vào năm 1909.
+Hạng mục chính: Bao gồm Nghi môn (cổng), Đại bái - Thiêu hương và Hậu cung.
+Điểm nhấn kiến trúc: Tòa Đại bái - Thiêu hương là công trình nổi trội nhất, làm theo kiểu đình vuông hai tầng tám mái với 12 đao cong thắt cổ diêm. Di tích lưu giữ các bức cốn chạm bong kênh hình hổ phù, tứ linh, vân mây tinh xảo. Đặc biệt, trên các cột cái có khắc chìm trực tiếp đôi câu đối do các nhà khoa bảng, danh nhân văn hóa Dương Lâm và Dương Khuê sáng tác.
+4. Hệ thống Di vật, Cổ vật
+Di tích hiện còn lưu giữ số lượng lớn các hiện vật có giá trị từ thời Nguyễn (thế kỷ XIX - XX).
+Các hiện vật tiêu biểu bao gồm: Hương án, mâm bồng, bát hương (sứ và đồng), khám thờ, long ngai, bia đá. Nổi bật có các bức hoành phi "Tối linh từ", "Thánh cung vạn tuế" và một chiếc Quán tẩy (chậu rửa) tạc từ nguyên khối gỗ chạm hình tứ linh.
+5. Lễ hội truyền thống
+Lễ hội Quán Hoàng Xá được tổ chức 2 lần trong năm để tưởng nhớ Thành hoàng làng:
+Lễ hội mùa xuân: Từ ngày 14 đến 16 tháng Giêng âm lịch (kỷ niệm ngày sinh).
+Lễ hội mùa thu: Từ ngày 19 đến 21 tháng 8 âm lịch (kỷ niệm ngày hóa).
+Nghi thức và Hội: Bao gồm lễ Mộc dục (tắm tượng), dâng lễ vật (xôi nếp cái hoa vàng, lợn đen), đọc văn tế, và rước kiệu. Phần hội diễn ra các trò chơi dân gian như đánh đu, kéo co, múa sư tử, hát ca trù, hát tuồng, chèo.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Theo biên bản ngày 01/11/2013, do quán nằm trong khu vực dân cư đã quy hoạch, cơ quan chức năng thống nhất chỉ khoanh vùng Khu vực bảo vệ I với tổng diện tích 1.116,6m2 (bao gồm Nghi môn, Đại bái, Hậu cung).
+Bảo vệ và Tôn tạo: Khu vực này nghiêm cấm mọi hoạt động xây dựng, khai thác làm ảnh hưởng đến di tích. Chính quyền đề xuất dỡ bỏ hoặc di dời một nhà kho cũ của HTX trong khuôn viên để trả lại cảnh quan và phục dựng lại hai dãy Tả/Hữu mạc.', N'2. Worshiped Figures and Historical Value
+Legend: The temple is dedicated to the village''s tutelary deity, Quy Minh Dai Vuong, one of the three supreme deities of Tan Vien Son Thanh (Son Tinh) during the Hung Dynasty, who helped the king defeat the Shu army and secure the borders.
+
+Revolutionary Events: Before 1945, the temple''s courtyard and garden served as a military training ground for the self-defense force; the rear hall was used to store documents and hold meetings of the Viet Minh. In July 1945, it was the headquarters of the Viet Minh''s provisional military command, directly led by Comrade Do Muoi.
+
+3. Architectural and Artistic Characteristics
+Period: The structure reflects the architectural style of the late Nguyen Dynasty (19th century) and underwent a major restoration in 1909.
+
+Main components: Including the ceremonial gate, the main hall - incense burning area, and the rear hall.
+
+Architectural Highlights: The main hall - incense burning hall is the most prominent structure, built in the style of a two-story, eight-roofed square pavilion with 12 curved eaves. The site preserves intricately carved brackets depicting tigers, the four mythical creatures, and cloud patterns. Notably, the main columns are directly engraved with couplets composed by the scholars and cultural figures Duong Lam and Duong Khue.
+
+4. System of Artifacts and Antiquities
+The site still preserves a large number of valuable artifacts from the Nguyen Dynasty (19th - 20th centuries).
+
+Typical artifacts include: altars, offering trays, incense burners (porcelain and bronze), shrines, dragon thrones, and stone steles. Notable are the horizontal plaques "Toi Linh Tu" (Most Sacred Temple), "Thanh Cung Van Tue" (Long Live the Holy Palace), and a washbasin carved from a single block of wood depicting the four mythical creatures.
+
+5. Traditional Festivals
+The Quan Hoang Xa Festival is held twice a year to commemorate the village''s tutelary deity:
+Spring Festival: From the 14th to the 16th of the first lunar month (commemorating the deity''s birth).
+
+Autumn Festival: From the 19th to the 21st of the eighth lunar month (commemorating the deity''s passing).
+
+Rituals and Celebrations: Including the bathing of the statue, offering of gifts (sticky rice, black pig), recitation of eulogies, and procession of the palanquin. The festival includes folk games such as swinging, tug-of-war, lion dance, Ca Tru singing, Tuong opera, and Cheo opera.
+
+6. Protection and Demarcation of the Monument
+Demarcation: According to the minutes dated November 1, 2013, because the temple is located in a planned residential area, the authorities agreed to demarcate only Protection Zone I with a total area of ​​1,116.6 m2 (including the main gate, main hall, and rear hall).
+
+Protection and Preservation: This area strictly prohibits all construction and exploitation activities that affect the historical site. The authorities propose demolishing or relocating an old cooperative warehouse within the premises to restore the landscape and reconstruct the two rows of left and right ramparts.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1909', N'xã Vân Đình', N'/api/qr/heritage/hdca739c5', N'https://maps.app.goo.gl/tS44g2swGYFBH6QY6', 0, NULL, 3, '2026-07-11T14:59:57.3350682', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (26, N'h16c4f495', N'VĐHN-DT-026', 8, N'NHÀ THỜ TIẾN SĨ MAI DANH TÔNG', N'NHÀ THỜ TIẾN SĨ MAI DANH TÔNG', N'nhà-thờ-tiến-sĩ-mai-danh-tông', N'city', N'active', N'QP5Q+FJ6, Thôn, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', N'QP5Q+FJ6, Thôn, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', 20.75863490, 105.73910680, N'1. Thông tin chung
+Tên di tích: Nhà thờ Tiến sĩ Mai Danh Tông.
+Địa điểm: Thôn Cao Lãm, xã Cao Thành, huyện Ứng Hoà, tỉnh Hà Tây (trước năm 1945 gọi là thôn Khả Lãm, xã Cao Lãm, tổng Bạch Sam, huyện Ứng Hòa, tỉnh Hà Đông).
+Loại hình: Di tích lịch sử - văn hóa dạng lưu niệm danh nhân.
+Xếp hạng: Được UBND tỉnh Hà Tây xếp hạng là Di tích Lịch sử - Văn hóa cấp tỉnh theo Quyết định số 169/QĐ-UBND ngày 22/01/2008.', N'1. General Information
+Name of the monument: Mai Danh Tong Doctor''s Memorial Church.
+Location: Cao Lam village, Cao Thanh commune, Ung Hoa district, Ha Tay province (before 1945 known as Kha Lam village, Cao Lam commune, Bach Sam district, Ung Hoa district, Ha Dong province).
+
+Type: Historical and cultural monument commemorating a famous person.
+
+Classification: Classified as a provincial-level historical and cultural monument by the People''s Committee of Ha Tay province according to Decision No. 169/QD-UBND dated January 22, 2008.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Di tích thờ Tiến sĩ Mai Danh Tông (sinh ngày 27/07 năm Bính Tí - 1696, mất ngày 10/10 năm Bính Thân, thọ 81 tuổi), tên thụy là Thừa Hòa, tự Thanh Khê tiên sinh. Ông là đấng khai khoa phát giáp của dòng họ, đỗ Đồng Tiến sĩ xuất thân năm Tân Hợi (1731). Trong sự nghiệp, ông từng đảm nhiệm nhiều chức vụ quan trọng thời Lê Trung Hưng như Giám sát ngự sử đạo Kinh Bắc, Đốc trấn Lạng Sơn và Cao Bằng, khi về hưu được phong tước Lãm sơn hầu, Công bộ tả thị lang.
+Giá trị lịch sử: Nhà thờ là nơi thờ tự, tưởng nhớ đấng khai khoa đã thành danh và hội tụ các bậc khoa bảng của dòng họ Mai. Công trình đóng vai trò là trung tâm sinh hoạt văn hóa, giáo dục tinh thần hiếu học và tình yêu quê hương cho các thế hệ con cháu.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Định hướng và Bố cục: Di tích quay về hướng Đông Nam, bao gồm các hạng mục: Cổng, Đại bái và Hậu cung. Nhà thờ chính có kết cấu kiểu chữ Đinh.
+Cổng nhà thờ: Được tu sửa vào năm 1939 với phong cách giao thoa văn hóa Đông - Tây, xây bằng chất liệu nề ngõa và mang họa tiết hoa chanh kiểu Gô-tích.
+Đại bái: Gồm 3 gian, kết cấu theo kiểu "kèo kẻ quá giang" (quá giang vượt tường) mang đậm nét kiến trúc dân gian bình dân. Điểm nhấn đặc biệt là trên câu đầu và thượng lương có khắc các đôi câu đối biến tấu từ thơ của danh tướng Đặng Dung, gợi nhớ các điển tích Nho học.
+Hậu cung: Được tu sửa vào triều Nguyễn, là không gian thờ tự chính. Tường hậu trang trí cuốn thư đề 6 chữ Hán "Khâm tứ Nghĩa phương giáo huấn" do nhà vua ban tặng để tôn phong dòng họ.
+4. Hệ thống Di vật, Cổ vật
+Di tích hiện bảo lưu được nhiều di vật quý giá minh chứng cho bề dày lịch sử của dòng họ.
+Các hiện vật tiêu biểu bao gồm: 04 biển hiệu (ghi tước hiệu và chức quan của Tiến sĩ Mai Danh Tông), 01 đôi câu đối gỗ, 02 long ngai, đài nước, các đạo sắc phong, gia phả và bài vị tổ tiên. Di tích còn lưu giữ đặc biệt 02 bức Trướng văn bằng lụa từ thời Lê do Nguyễn Quý Kính tặng.
+5. Lễ nghi phụng sự
+Ngày đại kỵ: Ngày 10 tháng 10 âm lịch hàng năm là ngày đại kỵ, quy tụ đông đảo con cháu họ Mai từ nhiều chi, ngành các nơi về dự lễ tế tổ.
+Nghi thức: Ngày 9/10, dòng họ làm lễ cáo yết gia tiên và tổ chức đi tảo mộ. Sáng 10/10 tiến hành lễ chính với vật phẩm dâng cúng gồm trầu cau, rượu, thịt, xôi, gà. Buổi tế được cử hành trang nghiêm cùng phường bát âm, bao gồm nghi thức dâng hương, dâng rượu, dâng trà và đọc chúc văn (chúc văn sau khi đọc xong phải được hóa/đốt đi). Các quan viên tế lễ bắt buộc phải rửa tay ở bàn quán tẩy để biểu trưng cho sự tinh khiết trước khi hành lễ.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Theo biên bản ngày 20/12/2007, di tích được phân định thành hai khu vực bảo vệ cụ thể dựa trên bản đồ địa chính xã Cao Thành (tờ số 8, bản đồ 299).
+Khu vực 1: Là khu vực bất khả xâm phạm, bao gồm thửa đất số 184A với diện tích 50m2, nơi mọi yếu tố gốc của di tích phải được bảo vệ nguyên vẹn.
+Khu vực 2: Là khu vực điều chỉnh xây dựng tiếp giáp di tích, bao gồm thửa đất số 184B với tổng diện tích 56,25m2, chỉ cho phép xây dựng công trình văn hóa nhằm mục đích tôn tạo cảnh quan.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The temple is dedicated to Doctor Mai Danh Tong (born July 27, 1696, died October 10, 1696, at the age of 81), posthumously named Thua Hoa, with the courtesy name Thanh Khe. He was the first scholar of the family, having passed the Dong Tien Si examination in the year Tan Hoi (1731). During his career, he held many important positions during the Le Trung Hung period, such as Supervising Censor of Kinh Bac, Governor of Lang Son and Cao Bang, and upon retirement was granted the title of Lam Son Hou and Left Vice Minister of the Ministry of Public Works.
+
+Historical Value: The temple serves as a place of worship and remembrance for the first scholar of the Mai family, and is a gathering place for the family''s scholars. The structure plays a central role in cultural activities and instills a spirit of learning and love for the homeland in future generations.
+3. Architectural and Artistic Features
+Orientation and Layout: The monument faces southeast and includes the following components: Gate, Main Hall, and Rear Hall. The main temple has a T-shaped structure.
+
+Temple Gate: Renovated in 1939 in a style that blends Eastern and Western cultures, built with masonry and featuring Gothic-style lime blossom motifs.
+
+Main Hall: Consists of three bays, constructed in the "trellis crossing the wall" style, reflecting the distinctive features of folk architecture. A special highlight is the inscription on the main beam and ridge beam, featuring couplets adapted from the poems of the famous general Dang Dung, recalling Confucian literary allusions.
+
+Rear Hall: Renovated during the Nguyen Dynasty, it is the main worship space. The rear wall is decorated with a scroll bearing the six Chinese characters "Kham tu Nghia phuong giao huan" (Imperial bestowed by the Emperor to honor the family lineage).
+4. Artifacts and Relics
+The site preserves many valuable artifacts that bear witness to the rich history of the family.
+Typical artifacts include: 4 plaques (recording the titles and official positions of Doctor Mai Danh Tong), 1 pair of wooden couplets, 2 dragon thrones, a water fountain, imperial decrees, family genealogies, and ancestral tablets. The site also preserves two silk banners from the Le Dynasty, donated by Nguyen Quy Kinh.
+
+5. Rituals and Service
+The Great Commemoration Day: The 10th day of the 10th lunar month each year is the great commemoration day, bringing together numerous descendants of the Mai family from various branches and locations to attend the ancestral worship ceremony.
+
+Ritual: On the 9th day of the 10th lunar month, the family performs a ceremony to inform the ancestors and organize a visit to the graves. On the morning of the 10th day of the 10th lunar month, the main ceremony is held with offerings including betel nuts, wine, meat, sticky rice, and chicken. The ceremony was conducted solemnly with the participation of a traditional eight-instrument orchestra, including the rituals of offering incense, wine, and tea, and reading the congratulatory address (the congratulatory address had to be burned after reading). Officials performing the ceremony were required to wash their hands at the purification table to symbolize purity before the ceremony.
+
+6. Protection and Demarcation of the Monument
+Demarcation: According to the minutes dated December 20, 2007, the monument was divided into two specific protection zones based on the cadastral map of Cao Thanh commune (sheet 8, map 299).
+
+Zone 1: This is an inviolable area, encompassing plot 184A with an area of ​​50m2, where all original elements of the monument must be protected intact.
+Zone 2: This is a construction adjustment zone adjacent to the historical site, including plot number 184B with a total area of ​​56.25m2, where only cultural structures intended to enhance the landscape are permitted.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1939', N'xã Vân Đình', N'/api/qr/heritage/h16c4f495', N'https://maps.app.goo.gl/9EFp7q442TbJsYHFA', 0, NULL, 3, '2026-07-11T15:06:30.0535957', '2026-07-11T15:06:46.0066564');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (27, N'h42dc5c25', N'VĐHN-DT-027', 8, N'NHÀ THỜ HỌ DƯƠNG VÀ LĂNG MỘ DƯƠNG LÂM', N'NHÀ THỜ HỌ DƯƠNG VÀ LĂNG MỘ DƯƠNG LÂM', N'nhà-thờ-họ-dương-và-lăng-mộ-dương-lâm', N'city', N'active', N'PQ5Q+J27, Đường, đi, Vân Đình, Hà Nội, Việt Nam', N'PQ5Q+J27, Đường, đi, Vân Đình, Hà Nội, Việt Nam', 20.70902900, 105.78496100, N'1. Thông tin chung
+Tên di tích: Nhà thờ họ Dương (Chi Ất hạ) và Lăng mộ danh nhân văn hóa Dương Lâm (1851-1920).
+Địa điểm: Nhà thờ tọa lạc tại xóm 4, thôn Vân Đình, thị trấn Vân Đình; Lăng mộ tọa lạc tại thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, tỉnh Hà Tây (nay là Hà Nội).
+Xếp hạng: Cả hai công trình đều được UBND tỉnh Hà Tây xếp hạng là Di tích Lịch sử - Văn hóa cấp tỉnh theo Quyết định số 2064/QĐ-UBND ngày 07/11/2007.', N'1. General Information
+Name of the relics: Duong Family Ancestral Temple (Half Branch) and the Mausoleum of the cultural figure Duong Lam (1851-1920).
+
+Location: The temple is located in Hamlet 4, Van Dinh Village, Van Dinh Town; the mausoleum is located in Tao Khe Village, Tao Duong Van Commune, Ung Hoa District, Ha Tay Province (now Hanoi).
+
+Classification: Both structures were classified as Provincial-level Historical and Cultural Relics by the People''s Committee of Ha Tay Province according to Decision No. 2064/QD-UBND dated November 7, 2007.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Truyền thống dòng họ: Gia tộc họ Dương nổi tiếng với truyền thống hiếu học, được truyền tụng qua câu "Thanh bạch môn phong/ Thế xuất khoa bảng".
+Danh nhân Dương Lâm (1851 - 1920): Là người con ưu tú của dòng họ, đỗ Giải nguyên năm 1878. Cụ từng giữ nhiều trọng trách của triều đình nhà Nguyễn như: Tổng đốc Bình - Phú, Phó tổng tài Quốc sử quán, Thái tử thiếu bảo, Hiệp tá Đại học sĩ.
+Công lao và sự nghiệp: Cụ có lòng yêu nước, thương dân, từng cùng cha tổ chức "Kế đoàn luyện" chống Pháp bảo vệ quê hương. Cụ còn là nhà giáo, tác gia lớn và là chủ bút của "Đồng Văn Nhật Báo" - tờ báo chữ Hán đầu tiên của người Việt ở Bắc Kỳ. Sau khi mất, vua Khải Định đã ban chiếu truy phong cho cụ tước "Khánh Vân nam tước".
+3. Đặc điểm Kiến trúc - Nghệ thuật (Lăng mộ Dương Lâm)
+Bố cục phong thủy: Lăng mộ tuân theo quy luật đăng đối với đường thần đạo làm trục chính. Phía trước có hồ bán nguyệt mang ý nghĩa "tụ thủy, tụ linh và tụ phúc".
+Nghệ thuật điêu khắc đá: Lối lên lăng là bậc thất cấp, hai bên có đôi nghê đá mang xoáy âm dương biểu tượng cho sự uy nghiêm, cùng đôi voi đá quỳ phục cõng kiệu bành thể hiện uy quyền của bậc đại quan.
+Nhà bia và Hậu bành: Nhà che bia dán ngói ống, đỉnh đắp nụ sen. Hậu bành xây cao, đắp nổi chữ Hán "Ngã hữu vạn cổ trạch" (Ta có ngôi nhà muôn đời).
+4. Hệ thống Di vật, Cổ vật (Tại Lăng mộ)
+Tại khu lăng mộ hiện còn lưu giữ các di vật bằng đá và đồng có giá trị lịch sử cao.
+Các hiện vật bao gồm: 01 đôi voi đá, 01 đôi nghê đá, 01 tấm bia ghi chiếu chỉ truy phong của vua Khải Định, 01 tấm bia lớn trên gò đồi (đã vỡ một nửa) và 01 bát hương.
+5. Lễ nghi phụng sự
+Ngày lễ chính: Giỗ cụ Dương Lâm được tổ chức đông đúc vào ngày mùng 6 tháng 9 âm lịch hàng năm.
+Nghi thức: Lễ tế diễn ra trang nghiêm với đầy đủ các thành viên ban tế (chủ tế, bồi tế, độc chúc...) mặc áo thụng xanh lam, hia mũ quan văn. Các tuần tế bao gồm: thượng hương, dâng rượu (sơ hiến, á hiến), đọc chúc văn ca ngợi công trạng vì dân vì nước của tiên tổ, sau đó hóa văn tạ lễ.
+Sau khi làm lễ tại nhà thờ, con cháu dòng họ sẽ tiếp tục đến hành lễ tại khu lăng mộ.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khu vực Nhà thờ họ Dương:
+Khu vực 1 (bất khả xâm phạm): Thửa đất 224A, diện tích 102,4 m2 (Khu xây dựng nhà thờ).
+Khu vực 2 (điều chỉnh xây dựng): Thửa đất 224 và 224B, diện tích 725 m2 (gồm sân, vườn và vườn hoa cây cảnh).
+Khu vực Lăng mộ Dương Lâm: Bao gồm thửa đất số 842 có diện tích 810 m2 (khu lăng mộ) và thửa 835 có diện tích 127 m2 (giếng và ngõ đi).
+Các khu vực này được pháp luật bảo vệ nghiêm ngặt, cấm mọi hoạt động làm hư hại đến di tích.', N'2. Figures of Worship and Historical Value
+Family Tradition: The Dương family is renowned for its tradition of scholarship, exemplified by the saying "A family of pure and upright character / Produced by generations of scholars."
+The distinguished figure Dương Lâm (1851 - 1920): A distinguished son of the family, he passed the imperial examination in 1878. He held many important positions in the Nguyễn dynasty court, such as: Governor-General of Bình-Phú, Deputy Director of the National History Institute, Crown Prince''s Tutor, and Associate Grand Scholar.
+
+Merits and Career: He was patriotic and compassionate towards the people, and together with his father, he organized the "Training Plan" to fight against the French and protect his homeland. He was also a great teacher, author, and editor-in-chief of "Đồng Văn Nhật Báo" - the first Chinese-language newspaper of the Vietnamese in Northern Vietnam. After his death, Emperor Khải Định posthumously bestowed upon him the title of "Khánh Vân Baron."
+
+3. Architectural and Artistic Features (Duong Lam Tomb)
+Feng Shui Layout: The tomb follows the principle of symmetry with the sacred path as the main axis. In front is a crescent-shaped lake, signifying "gathering water, gathering spirits, and gathering blessings."
+Stone Sculpture Art: The path leading to the tomb is a seven-tiered staircase, flanked by a pair of stone mythical creatures with yin-yang swirling patterns, symbolizing majesty, along with a pair of kneeling stone elephants carrying a palanquin, representing the authority of a high-ranking official.
+
+Stone Stele House and Rear Pavilion: The stele house is covered with tubular tiles, topped with lotus buds. The rear pavilion is built high, with the Chinese characters "Ngã hữu vạn cổ trạch" (I have a house for eternity) embossed on it.
+
+4. Artifacts and Antiquities (At the Tomb)
+The tomb complex still preserves stone and bronze artifacts of high historical value.
+The artifacts include: 1 pair of stone elephants, 1 pair of stone mythical creatures, 1 stele inscribed with the royal decree of posthumous conferment by King Khai Dinh, 1 large stele on a hill (half broken), and 1 incense burner.
+
+5. Rituals and Service
+Main Day: The anniversary of the death of Mr. Duong Lam is celebrated with large crowds on the 6th day of the 9th lunar month every year.
+
+Ritual: The ceremony is solemn with all members of the ceremonial committee (chief officiant, assistant officiants, reciter of the eulogy, etc.) wearing blue robes and official''s hats. The rituals include: offering incense, offering wine (initial and secondary offerings), reading the eulogy praising the merits of the ancestors for the people and the country, and then burning the offerings as a thanksgiving ceremony.
+
+After the ceremony at the ancestral temple, the descendants of the family will continue to perform rituals at the mausoleum.
+
+6. Protection and Demarcation of the Monument
+Duong Family Ancestral Temple Area:
+Area 1 (inviolable): Plot 224A, area 102.4 m2 (Church construction area).
+
+Area 2 (construction adjustment): Plots 224 and 224B, area 725 m2 (including courtyard, garden and ornamental plant garden).
+Duong Lam Mausoleum Area: Includes plot 842 with an area of ​​810 m2 (mausoleum area) and plot 835 with an area of ​​127 m2 (well and pathway).
+
+These areas are strictly protected by law, prohibiting any activities that could damage the monument.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1921', N'xã Vân Đình', N'/api/qr/heritage/h42dc5c25', N'https://maps.app.goo.gl/dbkCks1LbkSd5MMp8', 0, NULL, 3, '2026-07-11T15:22:09.7904106', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (28, N'hf9efe579', N'VĐHN-DT-028', 1, N'ĐÌNH VĨNH LỘC HẠ', N'ĐÌNH VĨNH LỘC HẠ', N'đình-vĩnh-lộc-hạ', N'national', N'active', N'PPRF+X64, Vĩnh Hạ, Vân Đình, Hà Nội, Việt Nam', N'PPRF+X64, Vĩnh Hạ, Vân Đình, Hà Nội, Việt Nam', 20.74350250, 105.72137650, N'1. Thông tin chung
+Tên di tích: Đình Vĩnh Lộc Hạ.
+Địa điểm: Thôn Vĩnh Hạ (trước đây là thôn Vĩnh Lộc Hạ), xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội.
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật (Lịch sử - Nghệ thuật). Được Bộ Văn hóa, Thể thao và Du lịch quyết định xếp hạng là Di tích Quốc gia theo Quyết định số 3436/QĐ-BVHTTDL ngày 12/10/2015.', N'1. General Information
+Name of the monument: Vinh Loc Ha Communal House.
+Location: Vinh Ha village (formerly Vinh Loc Ha village), Son Cong commune, Ung Hoa district, Hanoi city.
+
+Type and Classification: An Architectural and Artistic Monument (Historical - Artistic). Classified as a National Monument by the Ministry of Culture, Sports and Tourism according to Decision No. 3436/QD-BVHTTDL dated October 12, 2015.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Thần tích: Đình thờ Nhị vị Đại vương là anh em sinh đôi: Đương Cảnh Thành hoàng Bảo Dân Khuông Tiến Đại vương (ông Tiến) và Đương cảnh Thành hoàng Đô Hồ Đại tướng quân (ông Hồ). Hai ngài là những người tinh thông võ nghệ, có công lớn giúp Đinh Bộ Lĩnh dẹp loạn 12 sứ quân, thống nhất đất nước ở thế kỷ thứ X.
+Sự kiện lịch sử: Trong kháng chiến chống Pháp, đình là nơi chở che cho bộ đội du kích địa phương và là điểm tập kết của chiến sĩ cách mạng chuẩn bị vượt sông Đáy sang vùng Mỹ Đức. Năm 1946, đình từng được sử dụng làm lớp học bình dân học vụ.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Niên đại: Được khởi dựng vào thời Lê Trung Hưng (thế kỷ XVII - XVIII). Quá trình tồn tại, đình bị cắt bỏ tòa Hậu cung khi đắp đê sông Đáy, và bị cắt 4 góc đao vào năm 1961-1962.
+Bố cục: Tọa lạc hướng Đông Nam, tựa lưng vào đê sông Đáy. Tổng thể gồm: Ao đình, Nghi môn (dạng tứ trụ), sân, tả - hữu mạc (mỗi dãy 5 gian) và tòa Đại bái.
+Nghệ thuật điêu khắc: Tòa Đại bái (bên trong gồm 3 gian 2 chái) giữ được bộ khung gỗ to khỏe kiểu "thượng thu hạ thách" mang đậm phong cách kiến trúc thời Lê Trung Hưng. Điêu khắc vô cùng sinh động với các mảng chạm bong kênh, chạm nổi hình "rồng ổ", "long nghê quần tụ". Đặc biệt và độc đáo nhất là bức chạm nổi hình người đóng khố, đầu vấn khăn đang leo cây túm đuôi con chuột trên kèo cổ ngỗng, mang đậm tính dân dã, hóm hỉnh của vùng châu thổ Bắc Bộ.
+4. Hệ thống Di vật, Cổ vật
+Sắc phong: Di tích tự hào lưu giữ được 12 đạo sắc phong từ thời Lê Trung Hưng đến thời Nguyễn, trong đó sớm nhất là 2 đạo sắc niên hiệu Long Đức thứ 4 (1735).
+Hiện vật khác: Bao gồm 02 Long ngai bài vị, 02 mũ thờ, 02 hia thờ, hoành phi "Hộ quốc tỷ dân", câu đối hình lòng máng, giá văn, bộ bát bửu, đôi hạc thờ bằng gỗ đứng trên lưng rùa, bát hương sứ men lam và bộ đài nước.
+5. Lễ nghi phụng sự
+Thời gian: Lễ hội long trọng được tổ chức vào ngày mùng 9 tháng Giêng (ngày sinh của thần) và ngày mùng 10 tháng 2 âm lịch (ngày hóa của thần).
+Nghi thức: Lễ vật dâng cúng đặc trưng bắt buộc phải có bánh dày, thịt lợn đen, thịt trâu đen, cá chép. Ban tế gồm 17 người, chủ tế mặc áo thụng đỏ, các thành viên khác mặc áo quan văn màu xanh. Trong quá trình đọc văn tế và hành lễ, tuyệt đối phải kiêng húy hai chữ "Tiến" và "Hồ". Xưa có lệ rước long ngai bài vị lên các quán trong thôn nhưng đã bị bãi bỏ trong thời kỳ chống Mỹ.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Theo biên bản ngày 17/10/2013 và bản đồ chỉnh sửa năm 2014, do đình nằm trong khu dân cư và quy hoạch đê điều, hội nghị thống nhất chỉ khoanh Khu vực bảo vệ I với tổng diện tích 3.522,7 m2.
+Phân bổ diện tích: Khu vực bảo vệ gồm toàn bộ ao đình, nghi môn, sân, đại bái và tả hữu mạc; được chia làm hai phần: Diện tích trong chỉ giới bảo vệ đê là 930,0 m2 và diện tích ngoài chỉ giới bảo vệ đê là 2.592,7 m2.
+Thực trạng: Di tích đang có dấu hiệu xuống cấp nghiêm trọng ở các cấu kiện gỗ (mối mọt, mái xô, dột), cần được các cơ quan chức năng lập kế hoạch tu bổ, tôn tạo kịp thời và bổ sung một số đồ thờ tự. Mọi hoạt động quản lý, tu bổ phải tuân thủ nghiêm ngặt Luật Di sản văn hóa.', N'2. Figures of Worship and Historical Value
+Legend: The temple is dedicated to two twin brothers: Duong Canh Thanh Hoang Bao Dan Khuong Tien Dai Vuong (Mr. Tien) and Duong Canh Thanh Hoang Do Ho Dai Tuong Quan (Mr. Ho). Both were skilled in martial arts and played a significant role in helping Dinh Bo Linh quell the rebellion of the 12 warlords and unify the country in the 10th century.
+Historical Events: During the resistance against the French, the temple provided shelter for local guerrilla fighters and served as a gathering point for revolutionary soldiers preparing to cross the Day River to the My Duc area. In 1946, the temple was used as a literacy class for the general public.
+
+3. Architectural and Artistic Characteristics
+Date: Built during the Le Trung Hung period (17th-18th centuries). During its existence, the temple''s rear hall was removed during the construction of the Day River dike, and four corners of the roof were cut off in 1961-1962.
+
+Layout: Located facing southeast, backing onto the Day River dike. The overall structure includes: a communal pond, a ceremonial gate (four-pillar type), a courtyard, left and right wings (each with 5 bays), and the main hall.
+
+Sculptural Art: The main hall (with 3 bays and 2 wings inside) retains a sturdy wooden frame in the "upper narrow, lower wide" style, reflecting the architectural style of the Le Trung Hung period. The sculptures are extremely lively, with relief carvings of "dragon nests" and "gathering dragons and mythical creatures." Most unique and special is the relief carving of a person wearing a loincloth and a headscarf climbing a tree and grabbing a mouse''s tail on a goose-neck beam, embodying the rustic and humorous spirit of the Northern Delta region.
+
+4. System of Artifacts and Antiquities
+Royal Decrees: The site proudly preserves 12 royal decrees from the Le Trung Hung period to the Nguyen dynasty, the earliest of which are two decrees from the 4th year of the Long Duc reign (1735).
+
+Other artifacts: Including 2 dragon thrones and ancestral tablets, 2 ceremonial hats, 2 ceremonial shoes, a horizontal plaque inscribed "Protecting the Nation and the People," trough-shaped couplets, a ceremonial stand, a set of eight treasures, a pair of wooden cranes standing on the backs of turtles, a blue glazed porcelain incense burner, and a water basin.
+
+5. Rituals and Sacrifices
+Time: The solemn festival is held on the 9th day of the first lunar month (the god''s birthday) and the 10th day of the second lunar month (the god''s death anniversary).
+
+Rituals: The characteristic offerings must include sticky rice cakes, black pork, black buffalo meat, and carp. The ceremonial committee consists of 17 people, the chief officiant wears a red robe, and the other members wear blue robes. During the reading of the ceremonial text and the performance of the ritual, the words "Tiến" and "Hồ" must be strictly avoided. In the past, there was a custom of carrying the dragon throne and ancestral tablets to the village shrines, but this was abolished during the anti-American war period.
+
+6. Protection and Demarcation of the Monument
+Demarcation: According to the minutes dated October 17, 2013, and the revised map of 2014, because the temple is located within a residential area and dike planning zone, the conference unanimously agreed to demarcate only Protection Zone I with a total area of ​​3,522.7 m2.
+
+Area Allocation: The protection zone includes the entire temple pond, ceremonial gate, courtyard, main hall, and left and right wings; it is divided into two parts: the area within the dike protection boundary is 930.0 m2 and the area outside the dike protection boundary is 2,592.7 m2.
+
+Current Status: The monument is showing serious signs of deterioration in the wooden components (termites, roof damage, leaks), requiring relevant authorities to develop a plan for timely restoration and renovation, and to add some religious artifacts. All management and restoration activities must strictly comply with the Law on Cultural Heritage.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1817', N'xã Vân Đình', N'/api/qr/heritage/hf9efe579', N'https://maps.app.goo.gl/PyzL5cMeUR7y3gCq9', 0, NULL, 3, '2026-07-11T15:33:12.5837942', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (29, N'h0e029eb3', N'VĐHN-DT-029', 1, N'ĐÌNH HẬU XÁ', N'ĐÌNH HẬU XÁ', N'đình-hậu-xá', N'unranked', N'active', N'PQHM+538, Thôn, Hậu Xá, Vân Đình, Hà Nội, Việt Nam', N'PQHM+538, Thôn, Hậu Xá, Vân Đình, Hà Nội, Việt Nam', 20.72690620, 105.78298500, N'1. Thông tin chung
+Tên di tích: Đình Hậu Xá.
+Địa điểm: Thôn Hậu Xá, xã Phương Tú, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội).
+Loại hình: Di tích Lịch sử Kiến trúc Nghệ thuật (dạng đình).', N'1. General Information
+Name of the monument: Hau Xa Communal House.
+Location: Hau Xa village, Phuong Tu commune, Ung Hoa district, Ha Tay province (now part of Hanoi city).
+
+Type: Historical and Architectural Artistic Monument (communal house).', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ Thành hoàng làng là Thuận Thế Chiêu ứng sắc sinh thần đại vương (tên thật là Vũ Danh Phục) - một vị nhân thần thời vua Lý Nhân Tông, Lý Anh Tông.
+Thần tích: Sinh thời, ngài thông tuệ kinh sử, được vua Lý Anh Tông phong chức Tiết chế chỉ huy Sơn lam sứ phụ trách việc thuế khóa phủ Ứng Thiên. Ngài có công giúp dân lập trường học, tậu ruộng ao, khuyến khích sản xuất tại làng Hậu Xá. Truyền thuyết kể rằng, thời giặc Minh xâm lược, ngài đã báo mộng giúp Lê Thái Tổ (Lê Lợi) dẹp giặc cứu nước nên được phong "Thượng đẳng phúc thần".
+Sự kiện cách mạng: Đình là nơi tiễn đưa những người con của làng Hậu Xá lên đường tòng quân đánh Mỹ. Xã Phương Tú đã có nhiều đóng góp lớn lao trong hai cuộc kháng chiến với 25 liệt sĩ và 06 Bà mẹ Việt Nam anh hùng.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Quy mô và Bố cục: Quần thể di tích tọa lạc trên khu đất rộng rãi ở đầu làng, hướng Tây, phía trước có ao đình. Các hạng mục bao gồm: Giếng đình, Nghi môn, Đại bái và Hậu cung (kết cấu chữ Đinh - J).
+Nghi môn: Làm theo kiểu trụ biểu với mặt sập hổ phù, đỉnh đắp nghê chầu, dưới là ô lồng đèn trang trí tứ linh (long - ly - quy - phượng).
+Đại bái: Quy mô đồ sộ gồm 3 gian 2 chái, 4 mái đao cong vút lợp ngói ri cổ. Hệ thống vì kèo kết hợp giữa kiểu "thượng chồng rường giá chiêng, hạ cốn, bẩy hiên" (ở gian giữa) và "thượng ván mê chạm hổ phù, hạ chồng rường, bẩy" (ở gian bên). Điêu khắc gỗ tập trung vào hình tượng rồng ("Ngư long hý thủy"), nghê, hổ phù ngậm chữ thọ, hoa sen, chim phượng. Đặc trưng là 4 đầu dư chạm đầu rồng lộng lẫy và các mảng chạm đao mác, mây cụm mang đậm phong cách nghệ thuật thời Nguyễn (thế kỷ XIX).
+Hậu cung: Gồm 3 gian kiểu nhà dọc (chuôi vồ), xây bít đốc, vì kèo kiểu "kèo kẻ quá giang". Trong cùng là bệ thờ đặt long ngai bài vị sơn son thếp vàng.
+4. Hệ thống Di vật, Cổ vật
+Tài liệu giấy: 01 Ngọc phả, 01 Thần tích và 10 đạo sắc phong từ thời Hậu Lê, Tây Sơn đến thời Nguyễn (Chiêu Thống, Cảnh Hưng, Cảnh Thịnh, Gia Long, Tự Đức, Đồng Khánh, Duy Tân, Khải Định).
+Đồ gỗ: 01 cỗ long ngai bài vị mang phong cách thế kỷ XVII (cao 117cm), 01 kiệu bát cống (phong cách đầu thế kỷ XVIII), 05 bức hoành phi cổ (có bức "Nam Quốc Lương Hàn"), 06 đôi câu đối cuối thế kỷ XIX - đầu thế kỷ XX, 01 bộ cửa võng chạm lộng, 01 khám thờ kép.
+Hiện vật khác: Đồ đồng (đôi hạc, chiêng, bộ tam sự), đồ sứ (03 lọ lục bình) và các đồ tế tự khác.
+5. Lễ nghi phụng sự
+Lễ hội chính: Diễn ra hàng năm vào ngày mùng 3 tháng 2 Âm lịch.
+Nghi thức: Có lễ Mộc dục (bao sái tượng/ngai bằng nước mưa tịnh khiết), lễ rước kiệu từ Đình xuống Miếu Cò rồi rước về yên vị. Ban tế gồm 12 người do Lý trưởng hoặc Chánh hương hội làm Chủ tế (mặc áo đỏ, hia đỏ). Tế lễ kéo dài 2-3 tiếng với 8 tuần tế.
+Phần hội: Tổ chức các trò chơi dân gian như đánh đu, leo cầu, bắt vịt, đập niêu nhằm thắt chặt tình đoàn kết cộng đồng.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản ngày 23/10/2004 và trích lục bản đồ (tờ số 01 năm 2003), di tích được khoanh vùng như sau:
+Khu vực 1 (Bất khả xâm phạm): Bao gồm thửa đất số 158 với diện tích 857,8 m2 (Phía Đông giáp đường vào thôn, Tây giáp ao đình - thửa 210, Nam giáp ao chùa - thửa 534, Bắc giáp đường Tỉnh lộ 428).
+Khu vực 2 (Điều chỉnh xây dựng, bảo vệ cảnh quan): Bao gồm thửa đất số 210 (diện tích 1154,3 m2 - giáp ruộng, thửa 533) và thửa 534 (diện tích 268 m2 - giáp đường thôn, thửa 210, thửa 158).
+Mọi hoạt động vi phạm, xây dựng làm ảnh hưởng tới khu vực 1 và khu vực 2 đã khoanh vùng đều bị nghiêm cấm.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The village''s tutelary deity is Thuan The Chieu Ung Sac Sinh Than Dai Vuong (real name Vu Danh Phuc) - a benevolent figure during the reigns of King Ly Nhan Tong and King Ly Anh Tong.
+Legend: During his lifetime, he was knowledgeable in classical literature and history, and was appointed by King Ly Anh Tong as the Commander-in-Chief of Son Lam, in charge of taxation in Ung Thien Prefecture. He contributed to establishing schools, acquiring land and ponds, and encouraging production in Hau Xa village. Legend says that during the Ming invasion, he appeared in a dream to help Le Thai To (Le Loi) defeat the invaders and save the country, thus earning him the title of "Upper-Class Blessed Deity".
+
+Revolutionary Events: The temple is where the sons of Hau Xa village were sent off to fight the Americans. Phuong Tu commune made significant contributions to the two resistance wars with 25 martyrs and 6 Heroic Vietnamese Mothers.
+
+3. Architectural and Artistic Features
+Scale and Layout: The complex of relics is located on a spacious plot of land at the beginning of the village, facing west, with a pond in front. The components include: the village well, the ceremonial gate, the main hall, and the rear hall (J-shaped structure).
+
+The ceremonial gate: Built in the style of a pillar with a tiger-shaped pedestal, a sculpted mythical creature (Nghê) at the top, and a lantern-shaped panel below decorated with the four mythical creatures (dragon, lion, turtle, phoenix).
+
+The main hall: A massive structure consisting of 3 bays and 2 wings, with 4 curved eaves covered with ancient tiles. The truss system combines the "upper beam and bracket, lower bracket, and eaves" style (in the central bay) and the "upper panel carved with tiger-shaped motifs, lower beam and bracket" style (in the side bays). Wood carvings focus on the image of dragons ("Fish and dragon playing in water"), mythical creatures (Nghê), tigers holding the character for longevity, lotus flowers, and phoenixes. The main features include four ornate dragon-headed finials and carvings of swords, spears, and cloud clusters, reflecting the artistic style of the Nguyen Dynasty (19th century).
+
+The rear chamber: Consists of three bays in the longhouse style (like a mallet handle), built with solid gables and a truss system. At the very back is the altar with a gilded and lacquered dragon throne and ancestral tablets.
+
+4. Artifacts and Relics
+Paper documents: 1 genealogical record, 1 divine legend, and 10 royal decrees from the Later Le, Tay Son, and Nguyen Dynasties (Chieu Thong, Canh Hung, Canh Thinh, Gia Long, Tu Duc, Dong Khanh, Duy Tan, Khai Dinh).
+Wooden items: 1 dragon throne and ancestral tablets in the 17th century style (117cm high), 1 eight-sided palanquin (early 18th century style), 5 ancient horizontal plaques (including one with "Nam Quoc Luong Han"), 6 pairs of couplets from the late 19th - early 20th centuries, 1 set of ornate carved wooden doors, and 1 double altar. Other artifacts: Bronze objects (a pair of cranes, a gong, a set of three ritual objects), porcelain objects (three vases), and other ceremonial items.
+
+5. Rituals and Service
+Main Festival: Held annually on the 3rd day of the 2nd lunar month.
+
+Rituals: Includes the ritual of bathing the statue/throne with pure rainwater, a procession of the palanquin from the communal house down to the Crane Shrine, and then back to its place. The ceremonial committee consists of 12 people led by the village head or the head of the village council as the chief officiant (wearing red robes and red shoes). The ceremony lasts 2-3 hours with 8 rounds of rituals.
+
+Festival Activities: Organizing folk games such as swinging, climbing bridges, catching ducks, and breaking clay pots to strengthen community solidarity.
+6. Protection and Demarcation of the Monument
+According to the minutes dated October 23, 2004 and the map extract (sheet No. 01, 2003), the monument is demarcated as follows:
+Area 1 (Inviolable): Includes plot No. 158 with an area of ​​857.8 m2 (East bordering the village road, West bordering the communal pond - plot 210, South bordering the temple pond - plot 534, North bordering Provincial Road 428).
+
+Area 2 (Construction adjustment, landscape protection): Includes plot No. 210 (area 1154.3 m2 - bordering the rice field, plot 533) and plot 534 (area 268 m2 - bordering the village road, plots 210 and 158).
+All activities that violate or affect the designated zones 1 and 2 are strictly prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1810', N'xã Vân Đình', N'/api/qr/heritage/h0e029eb3', N'https://maps.app.goo.gl/tbNHH1yzXgdYyH4Q6', 0, NULL, 3, '2026-07-11T15:36:38.5052034', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (30, N'hf2fd9fe9', N'VĐHN-DT-030', 1, N'ĐÌNH VÀ QUÁN NGHI LỘC', N'ĐÌNH VÀ QUÁN NGHI LỘC', N'đình-và-quán-nghi-lộc', N'national', N'active', N'PPXF+J8R, Nghi Lộc, Vân Đình, Hà Nội, Việt Nam', N'PPXF+J8R, Nghi Lộc, Vân Đình, Hà Nội, Việt Nam', 20.74973930, 105.72211600, N'1. Thông tin chung
+Tên di tích: Đình Nghi Lộc và Quán Nghi Lộc (bao gồm Quán Bà, Quán Đông, Quán Tây).
+Địa điểm: Thôn Nghi Lộc, xã Sơn Công, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội).
+Loại hình và Xếp hạng: Là di tích Kiến trúc - Nghệ thuật. Được Bộ Văn hóa Thông tin ra Quyết định số 03/2000-QĐ-BVHTT ngày 01/02/2000 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the monument: Nghi Loc Temple and Nghi Loc Shrine (including Ba Shrine, Dong Shrine, and Tay Shrine).
+
+Location: Nghi Loc Hamlet, Son Cong Commune, Ung Hoa District, Ha Tay Province (now part of Hanoi City).
+
+Type and Classification: Architectural and Artistic Monument. Recognized and classified as a National Monument by Decision No. 03/2000-QD-BVHTT dated February 1, 2000, issued by the Ministry of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình và Quán thờ các vị Thành hoàng là những anh hùng có công với nước.
+Thần tích nổi bật: Đặc biệt, bản thần phả của di tích có ghi chép về bà Triệu Lã Nương - một vị phu nhân của vua Lý Thái Tông (1028 - 1054). Bà là người có công lớn trong việc đánh giặc, bảo vệ vững chắc bờ cõi phía Nam của đất nước.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Kiến trúc: Đình và Quán Nghi Lộc là quần thể kiến trúc cổ kính được xây dựng từ lâu đời. Trong đó, ngôi Đình có quy mô to lớn, là một công trình văn hóa thời Tây Sơn hiếm hoi còn giữ được đến ngày nay.
+Bố cục (Theo bản vẽ thiết kế): Quần thể Đình bao gồm các hạng mục: Hậu cung, Tiền đường, Sân, Nhà ngang, Cổng đình, Vườn cây, Bia liệt sỹ và Bia danh sỹ. Đường vào đình cũng dẫn đến Quán Bà (nằm cạnh ao cá HTX). Cấu trúc ngôi đình gồm 5 gian 2 chái, mái lợp ngói cong vút, hệ thống cột gỗ lớn với nhiều mảng chạm khắc rồng và hoa lá tinh xảo trên vì kèo, đầu đao.
+4. Công tác bảo vệ và Khoanh vùng di tích
+Theo bản đồ và biên bản ngày 20/05/1998, quần thể di tích được khoanh vùng bảo vệ nghiêm ngặt (Khu vực I - Bất khả xâm phạm) dựa trên bản đồ địa chính tờ số 2 và 8 năm 1986.
+Tổng diện tích khu vực bảo vệ I: 4.405 m2.
+Phân bổ cụ thể:
+Đình (Thửa số 187 - 1584 m2): Đông giáp đường làng và ao (thửa 186); Tây giáp Chùa (thửa 188); Nam giáp ao (thửa 188) và giếng (thửa 190); Bắc giáp đường làng và sân kho.
+Quán Bà (Thửa số 63A - 1227 m2): Đông giáp thửa 63B và giếng; Tây giáp cánh đồng cây pháo; Nam giáp ruộng lúa; Bắc giáp mương.
+Quán Đông (Thửa số 17A - 550 m2): Đông giáp thửa 17B; Tây giáp cánh đồng; Nam giáp ao (thửa 189) và ruộng; Bắc giáp đường làng và ruộng.
+Quán Tây (Thửa số 94A - 1044 m2): Đông giáp đường đi; Tây giáp thửa 94B, 94C; Nam giáp đường làng; Bắc giáp thửa 94D.
+Mọi hoạt động xây dựng, khai thác trái phép trong khu vực này đều bị nghiêm cấm theo quy định của pháp luật.', N'2. Worshipped Figures and Historical Value
+Worshipped Figures: The temple and shrine are dedicated to the tutelary deities, who are national heroes.
+Notable Legends: Notably, the historical records of the site mention Lady Trieu La Nuong, a wife of King Ly Thai Tong (1028-1054). She played a significant role in fighting invaders and firmly defending the southern border of the country.
+
+3. Architectural and Artistic Features
+Architecture: The Nghi Loc Temple and Shrine is an ancient architectural complex built a long time ago. The temple itself is large in scale and a rare cultural work from the Tay Son period that has survived to this day.
+
+Layout (According to the design drawings): The temple complex includes the following components: the rear hall, the front hall, the courtyard, the side building, the temple gate, the garden, the memorial to fallen soldiers, and the memorial to famous scholars. The road leading to the temple also leads to the Lady''s Shrine (located next to the cooperative''s fish pond). The temple structure consists of 5 bays and 2 wings, with a curved tiled roof, and a system of large wooden columns with many intricately carved dragons and floral motifs on the rafters and eaves.
+4. Protection and Demarcation of the Monument
+According to the map and minutes dated May 20, 1998, the monument complex is strictly protected (Area I - Inviolable) based on cadastral maps No. 2 and 8 of 1986.
+Total area of ​​Protection Area I: 4,405 m2.
+Specific distribution:
+Temple (Plot No. 187 - 1584 m2): East borders the village road and pond (plot 186); West borders the Pagoda (plot 188); South borders the pond (plot 188) and well (plot 190); North borders the village road and storage yard.
+Quán Bà (Plot 63A - 1227 m2): East borders plot 63B and a well; West borders a field of firecrackers; South borders a rice field; North borders a ditch.
+
+Quán Đông (Plot 17A - 550 m2): East borders plot 17B; West borders a field; South borders a pond (plot 189) and a rice field; North borders a village road and a rice field.
+Quán Tây (Plot 94A - 1044 m2): East borders a road; West borders plots 94B and 94C; South borders a village road; North borders plot 94D.
+
+All illegal construction and exploitation activities in this area are strictly prohibited by law.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1803', N'xã Vân Đình', N'/api/qr/heritage/hf2fd9fe9', N'https://maps.app.goo.gl/fZqwwiLfYMeSXAFV9', 0, NULL, 3, '2026-07-11T15:40:06.5777962', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (31, N'h15e40533', N'VĐHN-DT-031', 1, N'ĐÌNH NGỌ XÁ (ĐÌNH THƯỢNG VÀ ĐÌNH TRUNG)', N'ĐÌNH NGỌ XÁ (ĐÌNH THƯỢNG VÀ ĐÌNH TRUNG)', N'đình-ngọ-xá-đình-thượng-và-đình-trung', N'national', N'active', N'https://maps.app.goo.gl/dVNdN6RmrvwngXfa7', N'https://maps.app.goo.gl/dVNdN6RmrvwngXfa7', 20.73312870, 105.75719070, N'1. Thông tin chung
+Tên di tích: Đình Ngọ Xá (gồm hai ngôi đình là Đình Thượng và Đình Trung).
+Địa điểm: Thôn Ngọ Xá, xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội). Di tích nằm trải dài theo chân đê tả ngạn sông Đáy, cách thị trấn Vân Đình khoảng 2km về phía Bắc.
+Loại hình và Xếp hạng: Là di tích Lịch sử và Kiến trúc - Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin xếp hạng là Di tích cấp Quốc gia theo Quyết định số 65 QĐ/BT ngày 16/01/1995.', N'1. General Information
+Name of the site: Ngo Xa Temple (comprising two temples: Thuong Temple and Trung Temple).
+
+Location: Ngo Xa village, Tan Phuong commune, Ung Hoa district, Ha Tay province (now part of Hanoi city). The site stretches along the left bank dike of the Day River, about 2km north of Van Dinh town.
+
+Type and Classification: A historical and architectural-artistic monument. Classified as a National Monument by the Minister of Culture and Information according to Decision No. 65 QD/BT dated January 16, 1995.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ Đương cảnh phổ đồng đại vương - Minh Hiển đại vương (tên thật là Phan Hoằng Quang), một Lạc tướng thời Hùng Duệ Vương (Hùng Vương thứ 18). Ngoài ra, Quán của làng thờ Mẫu (Quốc Mẫu vua bà) và Thủy Tinh Hoằng phi Lân nữ công chúa.
+Thần tích: Ngài Phan Hoằng Quang là người khai sơn lập địa, dựng lên làng Ngọ Xá ngày nay. Khi quân Thục xâm lược nước Văn Lang, Ngài được Tản Viên Sơn Thánh giao chỉ huy cánh thủy quân hướng Châu Hoan, đánh thắng trận lớn chém 2000 đầu giặc, giúp bảo vệ bờ cõi.
+Sự kiện lịch sử: Trong thời kỳ kháng chiến chống Pháp, khu vực đình từng bị địch chiếm đóng, đào hầm hào làm ảnh hưởng đến cảnh quan và gây mất mát một số hiện vật.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Đình Thượng (Đình Sắc): Là nơi lưu giữ sắc phong, bài vị và là nơi "ngự" của Thần. Đình được xây dựng vào thời Nguyễn, có mặt bằng chữ Công (gồm Tiền đường, Đại bái, Trung cung và Hậu cung). Điểm độc đáo là kiến trúc kết hợp hài hòa Đông - Tây: bên ngoài mang dáng dấp truyền thống với mái đao cong, mái lợp ngói ri; bên trong sử dụng kiến trúc cuốn vòm mai cua (kiểu Gô-tích) bằng gạch, vôi vữa thay thế cho hệ thống vì kèo gỗ.
+Đình Trung: Là nơi tổ chức hội hè, sinh hoạt văn hóa cộng đồng. Đình Trung xưa có quy mô đồ sộ bằng gỗ lim nhưng bị tàn phá trong chiến tranh, sau này được dựng lại trên nền đất cũ với vật liệu mới (bê tông) cho phù hợp với vùng ven sông Đáy. Đình Trung có mặt bằng chữ Vương, nổi bật với hệ thống Hậu cung giữ được kiến trúc cổ thời Khải Định, kết hợp vòm cuốn với trang trí hoa lá, chùm nho.
+4. Hệ thống Di vật, Cổ vật
+Tài liệu cổ: 01 cuốn ngọc phả chữ Hán do Nguyễn Bính soạn năm Hồng Phúc nguyên niên (1557), 01 cuốn văn tế, và 07 đạo sắc phong từ thời Tây Sơn đến thời Nguyễn (Quang Trung, Cảnh Thịnh, Thiệu Trị, Thành Thái, Duy Tân, Khải Định).
+Đồ thờ tự: Ngai đầu rồng và bài vị thờ Thành hoàng ở hai đình mang phong cách nghệ thuật thời Nguyễn.
+Hiện vật khác: 02 voi gỗ, 03 chiếc kiệu, bộ bát bửu, 03 biển gỗ, 01 cửa võng, 02 phỗng Chàm (đều thuộc nghệ thuật thời Nguyễn), cùng 03 bát hương gốm Thổ Hà men nâu và 04 đôi câu đối chữ Hán ca ngợi công đức thần.
+5. Lễ nghi phụng sự
+Thời gian: Lễ hội làng Ngọ Xá được tổ chức trong 3 ngày vào tiết xuân nông nhàn (ngày 12 tháng Giêng là ngày sinh của thần).
+Nghi thức: Trước khi vào hội chính có lễ bao sái và rước kiệu đón thần sắc từ Đình Thượng (Đình Sắc) về Đình Trung để tế hội đồng theo nghi lễ cung đình.
+Phần hội: Lễ rước kiệu diễn ra tưng bừng với múa sư tử, múa rồng, múa sinh tiền, múa gậy. Các hoạt động thể thao dân gian bao gồm bơi, bắt vịt trên sông Đáy, bịt mắt bắt dê; buổi tối có hát chèo, hát cửa đình.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo bản đồ và biên bản khoanh vùng lập năm 1999, cả hai ngôi đình đều có khu vực bảo vệ nghiêm ngặt:
+Khu vực bảo vệ I của Đình Thượng: Bao gồm thửa đất số 62A với diện tích 2.094 m2. (Phía Đông giáp thửa 63 và 62B, Tây giáp thửa 42, Nam giáp thửa 61, Bắc giáp bờ đê sông Đáy).
+Khu vực bảo vệ I của Đình Trung: Bao gồm thửa đất số 268A với diện tích 1.615 m2. (Phía Đông giáp đường làng/vườn ươm, Tây và Nam giáp thửa 268B, Bắc giáp bờ đê sông Đáy).
+Nghiêm cấm mọi hoạt động xây dựng, khai thác trong các khu vực đã khoanh vùng bảo vệ. Trường hợp đặc biệt phải được sự cho phép của Bộ trưởng Bộ Văn hóa Thông tin.', N'2. Worshipped Figures and Historical Value
+Worshipped Figures: The communal house is dedicated to the Great King Minh Hien (real name Phan Hoang Quang), a Lac General during the reign of Hung Due Vuong (the 18th Hung King). In addition, the village shrine is dedicated to the Mother Goddess (Quoc Mau Queen) and Thuy Tinh Hoang Phi Lan Princess.
+Legend: Phan Hoang Quang was the founder of Ngo Xa village. When the Shu army invaded Van Lang, he was entrusted by Tan Vien Son Thanh to command the naval forces towards Chau Hoan, winning a great battle, beheading 2000 enemy soldiers, and helping to protect the border.
+Historical Events: During the resistance against the French, the area around the communal house was occupied by the enemy, who dug trenches and tunnels, affecting the landscape and causing the loss of some artifacts.
+
+3. Architectural and Artistic Features
+Upper Communal House (Sac Communal House): This is where the royal decrees, ancestral tablets, and the "residence" of the deity are kept. The temple was built during the Nguyen Dynasty, with a "Công" shaped floor plan (comprising the Front Hall, Main Hall, Central Hall, and Rear Hall). Its unique feature is the harmonious blend of Eastern and Western architecture: the exterior retains a traditional appearance with curved eaves and tiled roofs; the interior utilizes a Gothic-style vaulted roof made of brick and mortar instead of the traditional wooden truss system.
+
+Trung Temple: This is where festivals and community cultural activities are held. Originally a massive structure made of ironwood, Trung Temple was destroyed during wartime and later rebuilt on the same site using new materials (concrete) to suit the area along the Day River. Trung Temple has a "Vương" shaped floor plan, notable for its Rear Hall which retains the ancient architecture of the Khai Dinh era, combining vaulted ceilings with floral and grape cluster decorations.
+
+4. Artifacts and Relics
+Ancient documents: 1 book of Chinese-language genealogical records compiled by Nguyen Binh in the first year of Hong Phuc (1557), 1 book of funeral orations, and 7 royal decrees from the Tay Son dynasty to the Nguyen dynasty (Quang Trung, Canh Thinh, Thieu Tri, Thanh Thai, Duy Tan, Khai Dinh).
+Religious artifacts: Dragon-headed thrones and ancestral tablets for the tutelary deity in the two communal houses, reflecting the artistic style of the Nguyen dynasty.
+
+Other artifacts: 2 wooden elephants, 3 palanquins, a set of eight treasures, 3 wooden plaques, 1 archway, 2 Cham statues (all belonging to the art of the Nguyen dynasty), along with 3 brown-glazed Tho Ha ceramic incense burners and 4 pairs of Chinese-language couplets praising the deity''s virtues.
+
+5. Rituals and Worship
+Time: The Ngo Xa village festival is held for 3 days during the spring agricultural leisure period (the 12th day of the first lunar month is the deity''s birthday).
+
+Rituals: Before the main festival, there is a cleaning ceremony and a procession to bring the deity''s image from the Upper Temple (Sac Temple) to the Middle Temple for a communal worship ceremony according to court rituals.
+
+Festival Part: The procession is lively with lion dances, dragon dances, coin dances, and stick dances. Folk sports activities include swimming, duck catching on the Day River, and blindfolded goat catching; in the evening, there are traditional opera performances and temple gate singing.
+
+6. Protection and Demarcation of the Monument
+According to the map and demarcation record compiled in 1999, both temples have strictly protected areas:
+Protection Area I of the Upper Temple: Includes plot number 62A with an area of ​​2,094 m2. (East bordering plots 63 and 62B, West bordering plot 42, South bordering plot 61, North bordering the Day River dike).
+Protection Zone I of Dinh Trung: Includes plot number 268A with an area of ​​1,615 m2. (East bordering the village road/nursery, West and South bordering plot 268B, North bordering the Day River dike).
+All construction and exploitation activities are strictly prohibited in the demarcated protection zones. Exceptional cases require permission from the Minister of Culture and Information.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1916', N'xã Vân Đình', N'/api/qr/heritage/h15e40533', N'https://maps.app.goo.gl/dVNdN6RmrvwngXfa7', 0, NULL, 3, '2026-07-11T15:44:05.7411193', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (32, N'hdbaf0829', N'VĐHN-DT-032', 1, N'ĐÌNH THANH DƯƠNG', N'ĐÌNH THANH DƯƠNG', N'đình-thanh-dương', N'national', N'active', N'QP2Q+H7C, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', N'QP2Q+H7C, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', 20.75215320, 105.73776460, N'1. Thông tin chung
+Tên di tích: Đình Thanh Dương (trước đây dân gian quen gọi là đình Giang Làng).
+Địa điểm: Thôn Thanh Dương (Giang Làng), xã Đồng Tiến, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tỉnh Hà Sơn Bình).
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật. Được Bộ Văn hóa Thông tin, Thể thao và Du lịch ra Quyết định số 680 QĐ/BT ngày 19/04/1990 công nhận và xếp hạng là Di tích Kiến trúc - Nghệ thuật cấp Quốc gia.', N'1. General Information
+Name of the monument: Thanh Duong Temple (formerly known as Giang Lang Temple).
+
+Location: Thanh Duong (Giang Lang) village, Dong Tien commune, Ung Hoa district, Hanoi city (formerly part of Ha Son Binh province).
+
+Type and Classification: An architectural and artistic monument. Recognized and classified as a National Architectural and Artistic Monument by Decision No. 680 QD/BT dated April 19, 1990, issued by the Ministry of Culture, Information, Sports and Tourism.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình thờ Thành hoàng làng là vị anh hùng dân tộc - Hoàng đế Lê Hoàn (Lê Đại Hành). Ông có công lớn trong việc thay nhà Đinh lập nên triều Tiền Lê, lãnh đạo quân dân đánh tan quân Tống ở phía Bắc và dẹp quân Chiêm Thành ở phía Nam, bảo vệ vững chắc bờ cõi và đẩy mạnh công cuộc xây dựng đất nước.
+Sự kiện lịch sử: Truyền thuyết địa phương kể lại rằng, trên đường hành quân đánh Chiêm Pa, vua Lê Hoàn đã dừng chân tại khu đền Thượng gần sông Đáy thuộc Thanh Dương. Sau khi vua băng hà, nước ta lập 17 đền thờ, trong đó có đình Thanh Dương.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Vị trí và Bố cục: Đình tọa lạc ở phía Tây Nam của làng, hướng Tây Nam, phía trước có ao đình và đê sông Đáy, gần đó có cây đa cổ thụ hàng nghìn năm tuổi. Đình có kết cấu kiến trúc kiểu chữ Đinh, gồm tòa Đại bái và Hậu cung.
+Kiến trúc Đại bái: Gồm 3 gian 2 dĩ, giữ được 4 đầu đao cong vút, mái lợp ngói ri cổ. Bờ nóc đắp 2 con kìm và bầu rượu, bờ dải đắp nghê và xô. Hệ thống cột cái rất lớn (chu vi 1,70m), vì nóc kiểu chồng rường. Mặc dù khởi dựng từ thời Lê nhưng qua kiến trúc và dòng chữ trên câu đầu, có thể khẳng định đình được tu bổ lớn vào thời Nguyễn (năm Giáp Tuất 1814 hoặc 1874).
+Nghệ thuật điêu khắc: Đại bái được trang trí lộng lẫy bằng các bức cốn, đầu dư, cửa võng, hoành phi, câu đối. Nổi bật là bức cốn chạm tích "Ngư long hí thủy" (rồng lượn trong mây, cá chép, cua, hoa sen) và bức cốn "Tứ linh truyền bát" (Long, ly, quy, phượng, cá chép, nghê, sấu). Bức cửa võng sơn son thếp vàng chạm "Lưỡng long chầu nguyệt", "Tứ linh", "Tứ quý". Hậu cung lưu giữ 2 bức cốn chạm rồng mang phong cách điêu khắc thời Lê đậm nét nhất.
+4. Hệ thống Di vật, Cổ vật
+Tài liệu giấy: Đình giữ được Bản thần phả chữ Hán và 20 đạo sắc phong từ thời Lê Trung Hưng đến thời Nguyễn (sớm nhất là các sắc năm Hoằng Định thứ 2 - 1601, Vĩnh Tộ thứ 2 - 1620).
+Đồ gỗ: Đặc biệt có bộ Long ngai bài vị thời Lê với dòng chữ "Liệt Hoàn linh ứng Thượng đẳng tối linh Đại quốc Vương thần vị". Ngoài ra còn có hòm sắc, 1 cỗ kiệu bát cống, 1 hương án, 12 gươm trường bát bửu, 2 hoành phi, 4 đôi câu đối.
+Đồ đá, sứ, đồng: Gồm 2 bát hương đá, 2 bia hậu, 4 bát hương sứ, 2 lọ hoa, 2 hạc đồng.
+5. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản ngày 29/01/1991, di tích được phân định thành 2 khu vực bảo vệ:
+Khu vực bảo vệ (Khu vực I - Bất khả xâm phạm): Là khu vực có các di tích trên thửa đất 195B và hai ao đình (thửa 230 và 88). Ranh giới: Đông giáp ao đình (thửa 230), Tây giáp ao đình (thửa 88), Nam giáp ao (thửa 88, 230), Bắc giáp thửa 195B. Tuyệt đối cấm xây dựng, tháo dỡ, vi phạm trong khu vực này.
+Khu vực điều chỉnh xây dựng (Khu vực II): Gồm đoạn đường đi sau lưng giếng và ao số 230. Ranh giới: Đông, Tây, Nam giáp ruộng canh tác; Bắc giáp thửa 147, 195A, 146. Mọi hoạt động xây dựng tại đây phải xin phép UBND tỉnh và có ý kiến của Sở/Bộ Văn hóa.', N'2. Figures of Worship and Historical Value
+Figures of Worship: The village''s tutelary deity is the national hero, Emperor Lê Hoàn (Lê Đại Hành). He played a major role in replacing the Đinh dynasty and establishing the Early Lê dynasty, leading the army and people to defeat the Song army in the North and suppress the Champa army in the South, firmly protecting the borders and promoting national development.
+Historical Events: Local legends recount that, on his way to fight Champa, King Lê Hoàn stopped at the Thượng Temple near the Đáy River in Thanh Dương. After the king''s death, Vietnam established 17 temples, including the Thanh Dương temple.
+
+3. Architectural and Artistic Characteristics
+Location and Layout: The temple is located in the southwest of the village, facing southwest. In front is a pond and the Đáy River dike, near a thousand-year-old banyan tree. The temple has a "Đinh" shaped architectural structure, consisting of the main hall and the rear hall.
+
+The main hall''s architecture consists of three bays and two side aisles, retaining four soaring curved eaves, and a roof covered with ancient tiles. The ridge is decorated with two mythical creatures and a wine gourd, while the eaves are adorned with mythical lions and gourds. The main columns are very large (circumference 1.70m), and the roof is of the stacked beam type. Although originally built during the Le Dynasty, the architecture and the inscription on the main beam suggest that the temple underwent major renovations during the Nguyen Dynasty (in the year of Giap Tuat, 1814 or 1874).
+
+Sculptural art: The main hall is lavishly decorated with brackets, corbels, arched doorways, horizontal plaques, and couplets. Particularly noteworthy are the brackets depicting "Fish and Dragon Playing in Water" (dragon soaring in clouds, carp, crab, lotus) and "Four Mythical Creatures" (dragon, unicorn, tortoise, phoenix, carp, mythical creature, crocodile). The gilded arched doorways are carved with "Two Dragons Worshipping the Moon," "Four Mythical Creatures," and "Four Seasons." The inner sanctuary houses two dragon-carved brackets, showcasing the most distinctive sculptural style of the Le Dynasty.
+
+4. Artifacts and Relics
+Paper documents: The temple preserves a genealogical record in Chinese characters and 20 royal decrees from the Le Trung Hung period to the Nguyen Dynasty (the earliest being decrees from the 2nd year of Hoang Dinh - 1601 and the 2nd year of Vinh To - 1620).
+Wooden objects: Notably, there is a set of dragon throne and ancestral tablets from the Le Dynasty with the inscription "Liệt Hoàn linh ứng Thượng đẳng tối linh Đại quốc Vương thần vị". In addition, there is a royal decree chest, an eight-sided palanquin, an incense altar, 12 long swords, two horizontal plaques, and four pairs of couplets.
+
+Stone, porcelain, and bronze objects: Including two stone incense burners, two memorial steles, four porcelain incense burners, two vases, and two bronze cranes.
+5. Protection and Demarcation of the Monument
+According to the minutes dated January 29, 1991, the monument was divided into two protection zones:
+Protection Zone (Zone I - Inviolable): This zone contains the monuments on plot 195B and the two ponds (plots 230 and 88). Boundaries: East bordering the pond (plot 230), West bordering the pond (plot 88), South bordering the ponds (plots 88 and 230), North bordering plot 195B. Construction, demolition, and violations are strictly prohibited in this area.
+Construction Adjustment Zone (Zone II): This zone includes the road behind the well and pond 230. Boundaries: East, West, and South bordering cultivated fields; To the north, it borders plots 147, 195A, and 146. All construction activities here require permission from the Provincial People''s Committee and the opinion of the Department/Ministry of Culture.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1620', N'xã Vân Đình', N'/api/qr/heritage/hdbaf0829', N'https://maps.app.goo.gl/PovsM6DVq8ekHpMC6', 0, NULL, 3, '2026-07-11T15:50:13.0262789', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (33, N'hf7b476ab', N'VĐHN-DT-033', 1, N'ĐÌNH THÀNH VẬT', N'ĐÌNH THÀNH VẬT', N'đình-thành-vật', N'city', N'active', N'PPMQ+837, Thành Vật, Vân Đình, Hà Nội, Việt Nam', N'PPMQ+837, Thành Vật, Vân Đình, Hà Nội, Việt Nam', 20.73329950, 105.73510570, N'1. Thông tin chung
+Tên di tích: Đình Thành Vật.
+Địa điểm: Xã Đồng Tiến, huyện Ứng Hòa, tỉnh Hà Sơn Bình (theo hồ sơ năm 1989-1990, nay thuộc thành phố Hà Nội).
+Xếp hạng: Được UBND tỉnh Hà Sơn Bình ra Quyết định số 64 QĐ/UB ngày 08/03/1990 công nhận và xếp hạng là Di tích Lịch sử - Văn hóa.', N'1. General Information
+Name of the monument: Thanh Vat Communal House.
+Location: Dong Tien Commune, Ung Hoa District, Ha Son Binh Province (according to records from 1989-1990, now part of Hanoi City).
+
+Classification: Recognized and classified as a Historical and Cultural Monument by Decision No. 64 QD/UB dated March 8, 1990, issued by the People''s Committee of Ha Son Binh Province.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Đình Thành Vật thờ chung nhân vật với đình Hoàng Xá (Thị trấn Vân Đình). Các tư liệu Thần phả và sắc phong lưu giữ tại đình có nhắc đến Đức Thánh Tản Viên và Vua Hùng đời thứ 11.
+Giá trị lịch sử: Đình Thành Vật có lịch sử xây dựng đồng đại với đình Hoàng Xá. Đây là một di tích kiến trúc được xác định có từ thời Lê, được đánh giá là quý hiếm và cần được bảo vệ nghiêm ngặt trước pháp luật.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Bố cục kiến trúc: Công trình bao gồm các hạng mục chính như Đại bái, Hậu cung và Nhà khách.
+Nghệ thuật điêu khắc: Đình mang đậm dấu ấn kiến trúc, nghệ thuật thời Lê. Hệ thống vì kèo, xà nách sử dụng kết cấu chồng rường, hệ thống đấu vuông đặc trưng của thời Lê. Các mảng điêu khắc gỗ tinh xảo, trên bờ nóc và bờ dải của mái đình có đắp nổi hình tượng rồng và nghê.
+4. Hệ thống Di vật, Cổ vật
+Di tích hiện còn bảo lưu được nhiều hiện vật và đồ thờ tự có giá trị như: tượng thờ, bát hương, bia đá, kiệu thờ, đỉnh đồng.
+Đặc biệt, đình còn lưu giữ được các tài liệu Hán Nôm quan trọng bao gồm Cuốn Thần phả và các Đạo sắc phong của triều đại phong kiến.
+5. Công tác bảo vệ và Khoanh vùng di tích
+Quy mô khoanh vùng: Theo biên bản ngày 08/08/1989 và bản đồ khoanh vùng, khu vực bảo vệ (khu vực bất khả xâm phạm) nằm toàn bộ trên thửa đất số 187 với diện tích 3.076 $m^2$ (bao gồm diện tích đình và sân đình).
+Nằm kề bên là thửa đất số 188 (khu sân vận động) với diện tích 3.996 $m^2$, đây là công trình văn hóa không làm ảnh hưởng đến di tích.
+Ranh giới khu vực bảo vệ (Thửa 187):
+Phía Đông: Giáp các thửa 204, 203, 202, 201, 198 (toàn bộ là khu dân cư).
+Phía Tây: Giáp đường làng và cánh đồng bờ lũy.
+Phía Nam: Giáp thửa 189.
+Phía Bắc: Giáp các thửa 163, 164, 165, 166, 167 (toàn bộ là khu dân cư).
+Khu vực này bị nghiêm cấm mọi sự xây dựng, cấm tự ý tháo dỡ, thay đổi vị trí hoặc làm hư hỏng, giảm giá trị vốn có của di tích.', N'2. Worshipped Figures and Historical Value
+Worshiped Figures: Thanh Vat Temple shares the same worshipped figure with Hoang Xa Temple (Van Dinh Town). Historical documents and royal decrees preserved at the temple mention Saint Tan Vien and King Hung of the 11th generation.
+Historical Value: Thanh Vat Temple was built contemporaneously with Hoang Xa Temple. It is an architectural relic identified as dating back to the Le Dynasty, considered rare and requiring strict legal protection.
+
+3. Architectural and Artistic Characteristics
+Architectural Layout: The structure includes main components such as the Main Hall, the Rear Hall, and the Guest House.
+
+Sculptural Art: The temple bears the strong imprint of Le Dynasty architecture and art. The truss and purlin system uses a layered beam structure and a square bracket system characteristic of the Le Dynasty. The wood carvings are exquisite, with relief sculptures of dragons and mythical creatures on the ridge and eaves of the temple roof.
+
+4. Artifacts and Relics
+The site still preserves many valuable artifacts and religious objects such as: statues, incense burners, stone steles, palanquins, and bronze cauldrons.
+
+In particular, the temple also preserves important Han Nom documents including the Genealogy of the Gods and the Imperial Decrees of the feudal dynasty.
+
+5. Protection and Demarcation of the Monument
+Scope of demarcation: According to the minutes dated August 8, 1989 and the demarcation map, the protected area (inviolable area) is located entirely on plot number 187 with an area of ​​3,076 m² (including the temple and courtyard).
+Adjacent to it is plot number 188 (the stadium area) with an area of ​​3,996 m², which is a cultural structure that does not affect the monument.
+Boundaries of the protected area (Plot 187):
+East: Bordering plots 204, 203, 202, 201, and 198 (all residential areas).
+
+West: Bordering the village road and the embankment field.
+
+South: Bordering plot 189.
+
+North: Bordering plots 163, 164, 165, 166, and 167 (all residential areas).
+Construction is strictly prohibited in this area. Unauthorized demolition, relocation, or damage to the monument, resulting in a reduction of its inherent value, is also prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1716', N'xã Vân Đình', N'/api/qr/heritage/hf7b476ab', N'https://maps.app.goo.gl/gkB5F8qYmFNjAhi27', 0, NULL, 3, '2026-07-11T15:52:38.3688906', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (34, N'h99944079', N'VĐHN-DT-034', 1, N'ĐÌNH VÀ MIẾU ĐÔNG DƯƠNG', N'ĐÌNH VÀ MIẾU ĐÔNG DƯƠNG', N'đình-và-miếu-đông-dương', N'national', N'active', N'PQ6V+CJW, Đông Dương, Vân Đình, Hà Nội, Việt Nam', N'PQ6V+CJW, Đông Dương, Vân Đình, Hà Nội, Việt Nam', 20.71046900, 105.78858200, N'1. Thông tin chung
+Tên di tích: Đình và Miếu Đông Dương.
+Địa điểm: Thôn Đông Dương, xã Tảo Dương Văn, huyện Ứng Hòa, tỉnh Hà Tây (nay là thành phố Hà Nội).
+Loại hình và Xếp hạng: Là di tích Kiến trúc Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin ký Quyết định số 188 QĐ/BT xếp hạng là Di tích Nghệ thuật cấp Quốc gia vào ngày 13/02/1995.', N'1. General Information
+Name of the monument: Dong Duong Temple and Shrine.
+Location: Dong Duong Village, Tao Duong Van Commune, Ung Hoa District, Ha Tay Province (now Hanoi City).
+
+Type and Classification: An architectural and artistic monument. It was classified as a National Artistic Monument by Decision No. 188 QD/BT signed by the Minister of Culture and Information on February 13, 1995.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Di tích thờ hai vị Đương cảnh Thành hoàng sống vào thời Hùng Vương thứ 18 là Long Cung uy quang kiêm tri thông quốc đại vương và Nguyên Súy, hùng lược sùng phúc trụ quốc đại vương.
+Thần tích: Hai vị thần có công lớn giúp vua Hùng đánh tan giặc Thục Phán bảo vệ nước Văn Lang và được ban thực ấp tại trang Đông Dương. Sau này, khi Đinh Tiên Hoàng đi dẹp loạn 12 sứ quân qua đây cũng được hai thần âm phù, nên nhà vua đã liệt vào quốc lệ và ban sắc phong. Ngày đản của thần là 12/3 và ngày hóa là 6/6 âm lịch.
+Sự kiện cách mạng: Trong thời kỳ kháng chiến chống Pháp, làng Đông Dương và khu di tích là cơ sở hoạt động, nuôi giấu nhiều đồng chí lãnh đạo cấp cao của Đảng như Hoàng Quốc Việt, Đỗ Mười, Văn Tiến Dũng.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Kiến trúc Đình: Đình tọa lạc trên khu đất rộng 4410m2, quay hướng Tây Nam, bao gồm Bái đường và Hậu cung làm theo kiểu chữ Nhị (=). Tòa Đại bái làm kiểu chữ Nhất (-) dài 14m, rộng 7,5m với bộ khung gồm 5 vì kèo và 4 hàng cột. Cấu trúc vì kèo kiểu "thượng chồng rường giá chiêng, hạ chồng rường con nhị" mang đậm phong cách thời Nguyễn. Nghệ thuật điêu khắc gỗ tinh xảo với các mảng chạm đầu dư hình rồng, tứ linh, tứ quý và hoa văn hình học. Tại khu vực đình còn phát hiện nhiều viên gạch hòm sớ cổ mang hoa văn thời Lê, Mạc.
+Kiến trúc Miếu (Miếu Hạ): Nằm trên thế đất hình con rùa vàng (Kim Quy), phía trước có chuôm nước là tàn tích của dòng sông Kim Ngưu cổ. Miếu xây theo kiểu chữ Đinh (J) gồm 3 gian tiền tế và 2 gian hậu điện. Đầu hồi bít đốc tay ngai, trên đỉnh trụ biểu đắp nghê chầu, lồng đèn và có các đôi câu đối chữ Hán.
+4. Hệ thống Di vật, Cổ vật
+Di tích lưu giữ 1 cuốn thần phả viết bằng chữ Hán biên soạn năm Hồng Đức nguyên niên (1470) và hơn chục đạo sắc phong của các triều đại phong kiến.
+Hệ thống đồ thờ tự đa dạng với 4 cỗ ngai (3 gỗ, 1 đồng), trong đó ngai gỗ chạm lưỡng long chầu nguyệt sơn son thếp vàng lộng lẫy.
+Ngoài ra còn có sập thờ sơn mài vẽ tứ linh, đỉnh đồng, lộc bình, chuông đồng, giá văn, quán tẩy và cây nến.
+5. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản khoanh vùng lập năm 1993, khu vực I (khu vực bất khả xâm phạm) có tổng diện tích 3185m2, bao gồm thửa đất số 526 (đất Miếu) và thửa 378.
+Ranh giới bảo vệ phía Đông giáp đường làng và các thửa 377, 389, 388. Phía Tây giáp thửa 505 (thùng vũng). Phía Nam giáp đường làng và các thửa 374, 381, 385. Phía Bắc giáp thửa 575 và cánh đồng. Mọi hoạt động xây dựng, khai thác trong khu vực này đều bị nghiêm cấm nếu không có sự cho phép của Bộ trưởng Bộ Văn hóa Thông tin.', N'2. Worshipped Figures and Historical Value
+Worshiped Figures: The site is dedicated to two local tutelary deities who lived during the reign of the 18th Hung King: Long Cung Uy Quang Kiem Tri Thong Quoc Dai Vuong and Nguyen Suy, Hung Luoc Sung Phuc Tru Quoc Dai Vuong.
+Legend: The two deities rendered great service to King Hung in defeating the Thuc Phan rebels and protecting the country of Van Lang. They were granted land in Dong Duong village. Later, when Dinh Tien Hoang passed through here to quell the rebellion of the 12 warlords, he received divine assistance from the two deities, so the king included them in the national tradition and bestowed a royal decree. The deities'' birthdays are on March 12th and their death anniversaries are on June 6th of the lunar calendar.
+
+Revolutionary Events: During the resistance war against the French, Dong Duong village and the historical site served as a base for activities and sheltered many high-ranking Party leaders such as Hoang Quoc Viet, Do Muoi, and Van Tien Dung.
+
+3. Architectural and Artistic Features
+Temple Architecture: The temple is located on a 4410m2 plot of land, facing southwest, and includes a main hall and a rear hall built in the shape of the Chinese character "二" (=). The main hall is built in the shape of the Chinese character "一" (-), 14m long and 7.5m wide, with a frame consisting of 5 trusses and 4 rows of columns. The truss structure is of the "upper beam and lower beam" style, strongly reflecting the Nguyen Dynasty style. The wood carvings are exquisite, with carved finials depicting dragons, mythical creatures, the four seasons, and geometric patterns. Many ancient bricks with patterns from the Le and Mac Dynasties have also been discovered in the temple area.
+
+Shrine Architecture (Lower Shrine): Situated on land shaped like a golden turtle (Kim Quy), with a pond in front, a remnant of the ancient Kim Ngưu River. The shrine is built in the shape of the Chinese character "丁" (J), consisting of 3 front halls and 2 rear halls. The gable ends are enclosed with ornate thrones, topped with sculpted mythical creatures, lanterns, and pairs of couplets in Chinese characters.
+
+4. System of Artifacts and Antiquities
+The site preserves a genealogical record written in Chinese characters, compiled in the first year of Hong Duc (1470), and more than a dozen imperial decrees from various feudal dynasties.
+The diverse system of religious artifacts includes four thrones (three wooden, one bronze), among which the wooden throne is carved with two dragons flanking the moon, resplendent in red lacquer and gold leaf.
+
+In addition, there are lacquered altars painted with the four mythical creatures, bronze incense burners, vases, bronze bells, writing implements, washing bowls, and candlesticks.
+
+5. Protection and Demarcation of the Monument
+According to the demarcation record established in 1993, Area I (the inviolable area) has a total area of ​​3185m2, including plot number 526 (the temple land) and plot 378.
+The eastern boundary of the protected area borders the village road and plots 377, 389, and 388. The western boundary borders plot 505 (the pond). The southern boundary borders the village road and plots 374, 381, and 385. The northern boundary borders plot 575 and the field. All construction and exploitation activities in this area are strictly prohibited without the permission of the Minister of Culture and Information.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1647', N'xã Vân Đình', N'/api/qr/heritage/h99944079', N'https://maps.app.goo.gl/e6YECkD2ng88oK249', 0, NULL, 3, '2026-07-11T15:55:11.9805210', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (35, N'h60390c9c', N'VĐHN-DT-035', 8, N'NHÀ THỜ HỌ TRƯƠNG ĐỖ', N'NHÀ THỜ HỌ TRƯƠNG ĐỖ', N'nhà-thờ-họ-trương-đỗ', N'city', N'active', N'PQ6J+6PX, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', N'PQ6J+6PX, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', 20.71064380, 105.78131910, N'1. Thông tin chung
+Tên di tích: Nhà thờ họ Trương Đỗ.
+Địa điểm: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, Thành phố Hà Nội (trước năm 1945 thuộc tổng Phương Đình, huyện Sơn Lãng, phủ Ứng Hòa).
+Loại hình: Di tích Lịch sử cấp Thành phố.', N'1. General Information
+Name of the monument: Truong Do Family Ancestral Temple.
+Location: Tao Khe Hamlet, Tao Duong Van Commune, Ung Hoa District, Hanoi City (before 1945, it belonged to Phuong Dinh Commune, Son Lang District, Ung Hoa Prefecture).
+
+Type: City-level Historical Monument.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Nhà thờ là nơi thờ các vị tiên tổ của dòng họ Trương Đỗ. Thủy tổ của dòng họ là cụ Trương Huyền Thông (quê gốc Hà Tĩnh), người từng đỗ Hương Cống thời Hậu Lê và giữ chức Tri phủ phủ Ứng Thiên. Do kết duyên với một người phụ nữ họ Đỗ tại địa phương, con cháu sau này đã ghép họ hai người thành họ Trương Đỗ để ghi nhớ công ơn "Cha sinh không bằng Mẹ dưỡng".
+Giá trị lịch sử:
+Trong thời kỳ tiền khởi nghĩa, khu nhà thờ là một trong những địa điểm nằm trong hệ thống An Toàn Khu (ATK) bí mật của Xứ ủy Bắc kỳ. Nơi đây từng nuôi dưỡng, che giấu nhiều cán bộ cách mạng tiền bối như Hoàng Quốc Việt, Hoàng Văn Thụ, Đỗ Mười.
+Gia đình cụ bà Nguyễn Thị Thự (con dâu trưởng đời thứ 12) được Nhà nước tặng Bằng "Có công với nước" do những đóng góp trong việc bảo vệ cán bộ.
+Dòng họ có nhiều người thành danh, đóng góp lớn cho đất nước, tiêu biểu như cụ Trương Đỗ Uông (Nguyễn Văn Lộc) - nguyên Xứ ủy viên Bắc kỳ, nguyên Bộ trưởng Bộ Nông nghiệp, được truy tặng Huân chương Hồ Chí Minh và Huân chương Sao Vàng.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Kiến trúc: Công trình xây dựng theo hình chữ "Nhất", gồm nhà thờ chính (tiền tế).
+Đặc điểm nổi bật: Tòa tiền tế gồm 3 gian, xây kiểu tường hồi bít đốc, hai tầng ba mái chảy lợp ngói ta. Hệ thống cửa bức bàn bằng gỗ lim cổ kính, trang trí chấn song con tiện và chạm khắc tinh xảo. Các bộ vì hiên và vì trong nhà được làm theo kiểu "thượng chồng rường giá chiêng, hạ kẻ ngồi, bẩy hiên", bào trơn đóng bén, vững chắc.
+4. Hệ thống Di vật, Cổ vật
+Nhà thờ bảo lưu được hệ thống di vật phong phú, đa dạng, chủ yếu mang phong cách nghệ thuật thời Nguyễn (thế kỷ XIX).
+Các hiện vật tiêu biểu: Bức hoành phi "Trương Đỗ Từ đường", y môn gỗ chạm khắc hoa văn, hương án, nhiều long ngai, bài vị, bát hương sứ men lam, bộ đài nước, chân đèn đồng và gỗ, hòm sắc, giá văn....
+5. Lễ nghi phụng sự
+Ngày đại kỵ: Ngày 15 tháng 3 Âm lịch hàng năm được coi là ngày giỗ chung của họ (kỷ niệm ngày Thủy tổ lai kinh nhậm chức mà không trở về).
+Nghi thức: Lễ mộc dục (bao sái đồ thờ tự bằng nước gừng hoặc ngũ vị hương) được tổ chức cẩn thận. Vật phẩm dâng cúng gồm lễ chay và lễ mặn (xôi thủ, hoa quả). Ban tế gồm 15 trai đinh từ 50 tuổi trở lên thực hiện các nghi thức truyền thống như Đông xướng, Tây xướng, Trình hương, Trình trà... kéo dài khoảng 1,5 giờ. Bản văn tế bằng chữ Nho được sử dụng trong dịp này.
+Ngoài ra, nhà thờ còn tổ chức giỗ Tổ tỷ (ngày 4/5 âm lịch), lễ đầu xuân, rằm hàng tháng và các hoạt động khuyến học, khuyến tài.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Theo biên bản lập năm 2024, do di tích nằm trong khu dân cư với ranh giới ổn định, cơ quan chức năng thống nhất chỉ khoanh vùng Khu vực bảo vệ I với tổng diện tích 119,4 m2, bao gồm toàn bộ công trình kiến trúc nhà thờ chính, sân và tường bao.
+Quản lý và Bảo tồn: Di tích hiện do dòng họ Trương Đỗ trực tiếp cử người trông nom, hương khói, giữ gìn được sự phong quang, sạch đẹp. Chính quyền địa phương hướng dẫn việc thành lập Ban bảo vệ di tích để xây dựng quy hoạch tổng thể và có phương án bảo vệ, phát huy giá trị di sản theo đúng Luật Di sản Văn hóa', N'2. Worshiped Figures and Historical Value
+Worshiped Figures: The ancestral temple is dedicated to the ancestors of the Truong Do family. The founding ancestor of the family was Mr. Truong Huyen Thong (originally from Ha Tinh), who passed the Huong Cong examination during the Later Le Dynasty and held the position of Prefect of Ung Thien Prefecture. Due to his marriage to a local woman surnamed Do, his descendants later combined their surnames into Truong Do to commemorate the gratitude owed to their parents, as the saying goes, "A father''s love is not equal to a mother''s nurturing."
+
+Historical Value:
+During the pre-revolutionary period, the temple complex was one of the locations within the secret Safe Zone (ATK) system of the Northern Regional Party Committee. It sheltered and hid many revolutionary cadres such as Hoang Quoc Viet, Hoang Van Thu, and Do Muoi.
+
+The family of Mrs. Nguyen Thi Thu (the eldest daughter-in-law of the 12th generation) was awarded the "Meritorious Service to the Nation" certificate by the State for their contributions in protecting cadres.
+The family has produced many successful individuals who have made significant contributions to the country, notably Mr. Truong Do Uong (Nguyen Van Loc) - former member of the Northern Regional Party Committee, former Minister of Agriculture, posthumously awarded the Ho Chi Minh Order and the Gold Star Order.
+
+3. Architectural and Artistic Features
+Architecture: The building is constructed in the shape of the Chinese character "一" (one), consisting of the main temple (front hall).
+
+Outstanding features: The front hall has three bays, built in the style of gable walls, two stories, three sloping roofs covered with traditional tiles. The system of folding doors is made of ancient lim wood, decorated with balusters and intricate carvings. The roof trusses and interior trusses are made in the style of "upper beams supporting the gong, lower beams supporting the porch," smoothly planed and securely fastened.
+
+4. Artifacts and Antiquities System
+The temple preserves a rich and diverse system of artifacts, mainly reflecting the artistic style of the Nguyen Dynasty (19th century).
+Typical artifacts: The horizontal plaque "Truong Do Ancestral Hall", carved wooden screen, incense altar, many dragon thrones, ancestral tablets, blue-glazed porcelain incense burners, water fountain set, bronze and wooden candlesticks, ceremonial chest, document stand, etc.
+5. Rituals and Service
+Main Commemoration Day: The 15th day of the 3rd lunar month each year is considered the family''s collective death anniversary (commemorating the day the founding ancestor went to the capital to take up his post but did not return).
+Rituals: The ritual of cleansing the ancestral altar with ginger water or five-spice incense is carefully organized. Offerings include vegetarian and non-vegetarian offerings (sticky rice, fruits). The ceremonial committee consists of 15 young men aged 50 and above who perform traditional rituals such as East chanting, West chanting, incense offering, tea offering... lasting about 1.5 hours. A ceremonial text in Chinese characters is used on this occasion.
+In addition, the church also organizes the Ancestor Commemoration Day (4th day of the 5th lunar month), the Spring Festival, monthly full moon ceremonies, and activities promoting education and talent.
+6. Protection and Demarcation of the Monument
+Demarcation: According to the minutes compiled in 2024, because the monument is located in a residential area with stable boundaries, the authorities agreed to demarcate only Protection Zone I with a total area of ​​119.4 m2, including the entire main church building, courtyard, and surrounding wall.
+Management and Preservation: The monument is currently directly looked after by people appointed by the Truong Do family, maintaining its cleanliness and beauty. The local government is guiding the establishment of a Monument Protection Committee to develop a comprehensive plan and a plan for protecting and promoting the value of the heritage in accordance with the Law on Cultural Heritage.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1855', N'xã Vân Đình', N'/api/qr/heritage/h60390c9c', N'https://maps.app.goo.gl/J5p3dPrYrdGmqpdt6', 0, NULL, 3, '2026-07-11T16:04:10.8614482', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (36, N'h6c6098e7', N'VĐHN-DT-036', 8, N'NHÀ THỜ HỌ DƯƠNG (CHI ẤT HẠ)', N'NHÀ THỜ HỌ DƯƠNG (CHI ẤT HẠ)', N'nhà-thờ-họ-dương-chi-ất-hạ', N'city', N'active', N'18 Xóm 4, Vân Đình, Hà Nội, Việt Nam', N'18 Xóm 4, Vân Đình, Hà Nội, Việt Nam', 20.73322490, 105.76372540, N'1. Thông tin chung
+Tên di tích: Nhà thờ họ Dương - Chi Ất Hạ.
+Địa điểm: Xóm 4, thôn Vân Đình, thị trấn Vân Đình, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc Hà Nội). Thôn Vân Đình xưa kia được gọi là trang Hoa Âm, một địa danh cổ từ thời Trần.
+Loại hình: Di tích Lịch sử - Văn hóa cấp tỉnh (loại hình kiến trúc nghệ thuật dạng lưu niệm danh nhân).
+Xếp hạng: Được UBND tỉnh Hà Tây xếp hạng theo Quyết định số 2064/QĐ-UBND ngày 07/11/2007.', N'1. General Information
+Name of the monument: Duong Family Ancestral Temple - At Ha Branch.
+Location: Hamlet 4, Van Dinh Village, Van Dinh Town, Ung Hoa District, Ha Tay Province (now part of Hanoi). Van Dinh Village was formerly known as Hoa Am Village, an ancient place name from the Tran Dynasty.
+
+Type: Provincial-level Historical and Cultural Monument (architectural monument commemorating a famous person).
+
+Classification: Classified by the People''s Committee of Ha Tay Province according to Decision No. 2064/QD-UBND dated November 7, 2007.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nguồn gốc: Dòng họ Dương ở Vân Đình có gốc từ huyện Quỳnh Đôi, Nghệ An. Thủy tổ là một vị quan thanh liêm, từng được vua ban 6 chữ "Dương công tứ thế thanh đức". Dòng họ Dương tại đây có 5 chi, trong đó di tích thuộc Chi Ất Hạ.
+Danh nhân tiêu biểu: Dòng họ nổi tiếng với truyền thống "Thanh bạch môn phong/ Thế xuất khoa bảng". Tiêu biểu có:
+Dương Khuê (1839 - 1902): Đỗ Tiến sĩ triều Tự Đức, từng làm Tổng đốc Định Ninh, Thượng thư. Cụ là một nhà thơ, nhà văn hóa nổi tiếng, đặc biệt đóng góp lớn cho nghệ thuật ca trù.
+Dương Lâm (1851 - 1920): Em trai Dương Khuê, đỗ Giải nguyên, từng làm Phó tổng tài Quốc sử quán, Tổng đốc Bình Phú. Cụ được phong hàm Thái tử thiếu bảo, Hiệp tá Đại học sĩ. Sau khi mất, vua Khải Định truy phong cụ là Khánh Vân nam tước. Lăng mộ danh nhân Dương Lâm (cũng được xếp hạng di tích năm 2007) nằm tại thôn Tảo Khê, xã Tảo Dương Văn.
+Sự kiện lịch sử: Dòng họ có truyền thống chống ngoại xâm từ kháng Pháp (Dương Lâm tổ chức "Kế đoàn luyện") đến các cuộc kháng chiến sau này, đóng góp nhiều trí thức, nhà khoa học, liệt sĩ cho đất nước.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Bố cục: Nhà thờ quay hướng Tây, kết cấu kiểu chữ "Nhất" với nguyên tắc "nội tự ngoại khách", gồm Tiền tế và Hậu cung, được che chắn bởi Nghi môn và Bình phong.
+Nghi môn và Bình phong: Nghi môn xây kiểu cuốn vòm, trang trí mặt trời 13 tia sáng và nghê chầu, đắp 5 chữ Hán "Học Sỹ Công Cố Trạch". Bình phong phía trước có cuốn thư đắp chữ "Bản Cố Chi Trường" cùng hòn non bộ, hồ nước giúp "tụ linh tụ phúc".
+Tiền tế: Gồm 3 gian 2 chái, thiết kế 2 tầng 3 mái lợp ngói ri cổ, góc mái vút đao cong. Các bộ vì làm theo kiểu "chồng rường quá giang trốn cột", vững chắc. Gian giữa treo bức đại tự "Thế Hữu Thanh Đức".
+Hậu cung: Không gian thâm nghiêm nhất, xây kín ở mái sau. Có 3 ban thờ: Gian giữa thờ tiên tổ, gian tả thờ vị Thiền sư đã chỉ ngôi mộ phát phúc, gian hữu thờ bà cô tổ.
+4. Hệ thống Di vật, Cổ vật
+Nhà thờ lưu giữ hệ thống di vật phong phú: 01 bộ Bát bửu, 04 bộ Long ngai, 01 Giá văn, 03 bộ Tam sự, 12 bài vị, 01 Trống và 04 đôi lộc bình....
+Nổi bật nhất là bộ Long ngai kép (ngai nhỏ lồng trong ngai lớn) ở ban giữa Hậu cung. Ngai được chạm khắc cực kỳ tinh xảo với các đề tài rồng cuốn mây, cá chép vượt vũ môn, mang đậm phong cách nghệ thuật thời Nguyễn muộn.
+Bức cuốn thư "Bắc Kỳ Lão Thành" do vua Khải Định truy tặng cụ Dương Lâm.
+5. Lễ nghi phụng sự
+Nghi thức: Việc tế lễ tổ tiên và hai cụ Dương Khuê, Dương Lâm diễn ra rất trang nghiêm, thành kính. Ngày "tiền nhật", con cháu đến bao sái đồ thờ, phân công công việc. Ban tế gồm đầy đủ các vị trí (chủ tế, bồi tế, độc chúc...) mặc lễ phục truyền thống (quần trắng, áo thụng xanh lam, hia mũ quan văn).
+Buổi tế bao gồm các nghi thức dâng hương, dâng rượu (sơ hiến, á hiến), đọc văn tế ngợi ca công đức tiên tổ và hóa văn tạ lễ. Sau lễ tại nhà thờ, con cháu tiếp tục đi hành lễ tại lăng mộ cụ Dương Lâm và Dương Khuê.
+Ngoài ra, dòng họ còn làm lễ vào các dịp Thượng điền, Hạ điền, Cơm mới, Tết Nguyên đán....
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản ngày 20/09/2007 (dựa trên bản đồ địa chính thị trấn Vân Đình, đo vẽ năm 2003, tờ số 3), di tích được khoanh thành hai khu vực bảo vệ:
+Khu vực bảo vệ 1: Bao gồm thửa đất số 224A với diện tích 102,4m2 (khu xây dựng nhà thờ). Đây là khu vực bất khả xâm phạm.
+Khu vực bảo vệ 2: Bao gồm thửa đất số 224 (sân, vườn) và 224B (vườn hoa cây cảnh) với tổng diện tích 725m2. Đây là khu vực điều chỉnh xây dựng để bảo vệ cảnh quan.
+(Riêng khu Lăng mộ cụ Dương Lâm tại xã Tảo Dương Văn cũng được khoanh vùng độc lập gồm thửa 842 diện tích 810m2 và phần ngõ đi/giếng 127m2).', N'2. Figures of Worship and Historical Value
+Origin: The Dương family in Vân Đình originates from Quỳnh Đôi district, Nghệ An province. Their ancestor was an upright official, once bestowed with the six-character inscription "Dương công tứ thế thanh đức" (Dương Công, four generations of virtuous family). The Dương family here has five branches, with the historical site belonging to the Ất Hạ branch.
+
+Notable Figures: The family is famous for its tradition of "Integrity and integrity/Generation of scholars." Notable figures include:
+Dương Khuê (1839 - 1902): He passed the Tiến sĩ (Doctorate) examination during the reign of Emperor Tự Đức, served as Governor-General of Định Ninh, and held the position of Minister. He was a renowned poet and cultural figure, making significant contributions to the art of ca trù (traditional Vietnamese singing).
+
+Dương Lâm (1851 - 1920): Dương Khuê''s younger brother, he passed the Giải nguyên (first place in the imperial examination), served as Deputy Director of the National Historical Institute, and Governor-General of Bình Phú. He was granted the title of Thái tử thiếu bảo (Crown Prince''s Tutor) and Hiệp tá Đại học sĩ (Assistant Grand Scholar). After his death, Emperor Khải Định posthumously bestowed upon him the title of Khánh Vân baron. The tomb of the renowned figure Duong Lam (also classified as a historical site in 2007) is located in Tao Khe village, Tao Duong Van commune.
+
+Historical events: The family has a tradition of resisting foreign invaders, from the resistance against the French (Duong Lam organized the "Training Unit") to later resistance wars, contributing many intellectuals, scientists, and martyrs to the country.
+
+3. Architectural and Artistic Features
+Layout: The temple faces west, with a "One" shaped structure following the principle of "inner temple, outer guest," consisting of a front hall and a rear hall, shielded by a ceremonial gate and a screen.
+
+Ceremonial Gate and Screen: The ceremonial gate is built in an arched style, decorated with a sun with 13 rays and kneeling mythical creatures, and inscribed with five Chinese characters "Scholar''s House of Merit." The screen in front has a scroll inscribed with the words "The Old House of Merit" along with a miniature landscape and a pond to "gather blessings and good fortune."
+
+Front Hall: Consisting of 3 bays and 2 wings, designed with 2 levels and 3 roofs covered with ancient-style tiles, the roof corners are curved and pointed. The trusses are built in the "stacked beams and crossbeams without columns" style, making them sturdy. The central bay displays a large inscription "The World Has Pure Virtues".
+
+Rear Hall: The most solemn space, enclosed at the back roof. There are 3 altars: The central bay is for the ancestors, the left bay is for the Zen master who pointed out the auspicious tomb, and the right bay is for the female ancestor.
+
+4. System of Artifacts and Antiquities
+The temple preserves a rich system of artifacts: 1 set of Eight Treasures, 4 sets of Dragon Throne, 1 ceremonial stand, 3 sets of Three Offerings, 12 ancestral tablets, 1 drum, and 4 pairs of vases...
+The most prominent is the double Dragon Throne (small throne inside a large throne) in the central altar of the Rear Hall. The throne is exquisitely carved with motifs of dragons entwined in clouds and carp leaping over the dragon gate, reflecting the artistic style of the late Nguyen Dynasty.
+The scroll "Elderly People of Northern Vietnam" was posthumously presented to Mr. Duong Lam by King Khai Dinh.
+
+5. Rituals of Service
+Ritual: The ancestral worship ceremony for Mr. Duong Khue and Mr. Duong Lam was conducted with great solemnity and reverence. On the "pre-ceremony" day, descendants cleaned the altar and assigned tasks. The ceremonial committee included all positions (chief officiant, assistant officiant, reader of prayers, etc.) wearing traditional ceremonial attire (white trousers, blue robe, official''s hat and shoes).
+
+The ceremony included rituals of offering incense and wine (initial and secondary offerings), reading a eulogy praising the virtues of the ancestors, and burning a thank-you offering. After the ceremony at the ancestral temple, the descendants continued their rituals at the tombs of Mr. Duong Lam and Mr. Duong Khue.
+
+In addition, the family also holds ceremonies on occasions such as the Upper Field Ceremony, Lower Field Ceremony, New Rice Ceremony, Lunar New Year, etc.
+6. Protection and Demarcation of the Monument
+According to the minutes dated September 20, 2007 (based on the cadastral map of Van Dinh town, surveyed in 2003, sheet number 3), the monument is demarcated into two protection areas:
+Protection Area 1: Includes plot number 224A with an area of ​​102.4m2 (the church construction area). This is an inviolable area.
+Protection Area 2: Includes plot number 224 (courtyard, garden) and 224B (flower garden) with a total area of ​​725m2. This is an area where construction is adjusted to protect the landscape.
+(Specifically, the tomb of Mr. Duong Lam in Tao Duong Van commune is also demarcated independently, comprising plot 842 with an area of ​​810m2 and a passageway/well of 127m2).', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1839', N'xã Vân Đình', N'/api/qr/heritage/h6c6098e7', N'https://maps.app.goo.gl/YrkRnY9ebmbCE3aV9', 0, NULL, 3, '2026-07-11T16:07:25.2053796', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (37, N'hcf142f3f', N'VĐHN-DT-037', 9, N'LĂNG MỘ DANH NHÂN DƯƠNG KHUÊ', N'LĂNG MỘ DANH NHÂN DƯƠNG KHUÊ', N'lăng-mộ-danh-nhân-dương-khuê', N'city', N'active', N'QP2R+X5, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', N'QP2R+X5, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', 20.75256580, 105.73789980, N'1. Thông tin chung
+Tên di tích: Lăng mộ danh nhân Dương Khuê.
+Địa điểm: Khu vực cánh đồng thuộc xã Đồng Tiến, huyện Ứng Hòa, thành phố Hà Nội.
+Loại hình: Di tích Lịch sử (Lưu niệm danh nhân).
+Xếp hạng: Được UBND Thành phố Hà Nội xếp hạng là Di tích Lịch sử cấp Thành phố theo Quyết định số 6850/QĐ-UBND ngày 18/12/2018.', N'1. General Information
+Name of the monument: The tomb of the renowned figure Duong Khue.
+Location: Field area in Dong Tien commune, Ung Hoa district, Hanoi city.
+Type: Historical monument (Memorial to a renowned figure).
+
+Classification: Classified as a City-level Historical Monument by the People''s Committee of Hanoi City according to Decision No. 6850/QD-UBND dated December 18, 2018.', N'2. Nhân vật và Giá trị lịch sử
+Danh nhân Dương Khuê (1839 - 1902): Tự là Giới Nhu, hiệu Vân Trì, người làng Vân Đình, xuất thân trong một gia đình nhà Nho truyền thống. Ông đỗ Tiến sĩ khoa Mậu Thìn (1868) và từng giữ các chức vụ quan trọng như Tri phủ Bình Giang, Án sát Hải Phòng, Tổng đốc Định Ninh, hàm Thượng thư.
+Tinh thần yêu nước: Ông nằm trong số những sĩ phu chủ chiến, từng dâng sớ xin triều đình quyết liệt đánh Pháp nhưng bị vua Tự Đức phê là "bất thức thời vụ" và bị giáng chức. Bất mãn với thời cuộc, ông cáo quan về trí sĩ năm 1897.
+Đóng góp văn hóa: Ông có công lớn trong việc nâng tầm nghệ thuật ca trù (hát nói) lên trình độ khuôn mẫu, bác học. Các sáng tác của ông, tiêu biểu như bài "Hồng Hồng, Tuyết Tuyết", chứa đựng triết lý sống thanh cao, gửi gắm tâm sự thế thời và sự uyển chuyển trong ngôn từ. Tên của ông đã được đặt cho các tuyến đường tại TP. Hồ Chí Minh và Thủ đô Hà Nội.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Quy mô và cảnh quan: Lăng mộ được xây dựng từ khi ông qua đời (năm 1902) và vẫn giữ nguyên vẹn như ngày đầu khởi dựng. Công trình có quy mô khiêm tốn nhưng trang nghiêm, nằm giữa không gian đồng ruộng, xung quanh cây cối mọc xanh tốt.
+Tính chất: Lăng mộ cùng với Nhà thờ họ Dương (chi Ất Hạ) tạo thành một quần thể di tích lưu niệm danh nhân, giáo dục tinh thần hiếu học và lòng yêu nước cho thế hệ sau.
+4. Hệ thống Di vật, Cổ vật
+Tại khu vực lăng mộ lưu giữ các hiện vật tiêu biểu từ thế kỷ XX, bao gồm:
+Bia chân dung: Làm bằng đá xanh, gắn vào phần tay ngai phía trên mộ. Bia tạc hình ảnh chân dung cụ Dương Khuê với đường nét mềm mại và khắc dòng chữ "Dương Khuê (1839-1902)".
+Bia mộ: Bằng đá xanh, gắn vào tường bao phía trước. Giữa bia khắc chữ Hán "Vân Trì Dương công chi mộ", hai bên khắc đôi câu đối chữ Nôm ca ngợi đức độ: "Sáng đức hiếu trung muôn thuở Dương công ngời vinh hiển / Rọi nhân trí nghĩa ngàn năm con cháu mãi nhớ ghi" (hiện bia đã có vết nứt).
+Bát hương sứ: Men trắng vẽ lam, họa tiết "Lưỡng long chầu vòng tròn thái cực" và rồng cách điệu ở chân đế.
+5. Lễ nghi phụng sự
+Hoạt động tế lễ: Việc thờ cúng danh nhân Dương Khuê gắn liền với các hoạt động tín ngưỡng tại Nhà thờ họ Dương (thị trấn Vân Đình).
+Vào các dịp lễ, Tết, đặc biệt là ngày giỗ, con cháu dòng họ tiến hành các nghi thức tế lễ trang nghiêm (thượng hương, dâng rượu, độc chúc văn) tại nhà thờ. Sau khi hoàn tất lễ tại nhà thờ, con cháu sẽ tiếp tục đến hành lễ và thăm viếng tại khu lăng mộ ở xã Đồng Tiến.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Theo bản đồ hiện trạng đo vẽ tháng 9/2018 và biên bản khoanh vùng ngày 25/9/2018, các cơ quan chức năng thống nhất chỉ khoanh vùng Khu vực bảo vệ I (do di tích nằm kề thổ canh, các yếu tố gốc được bảo vệ nguyên trạng).
+Diện tích: Khu vực bảo vệ I có tổng diện tích 26,4 m2, giới hạn bởi các điểm mốc từ 1 đến 7, 1 trên bản đồ.
+Ranh giới: Cả bốn phía (Đông, Tây, Nam, Bắc) đều tiếp giáp với đường bê tông và đất thổ canh của xã Đồng Tiến. Mọi hoạt động xây dựng, khai thác trái phép trong khu vực này đều bị nghiêm cấm.', N'2. Historical Figures and Values
+The renowned figure Duong Khue (1839 - 1902): His courtesy name was Gioi Nhu, his pen name was Van Tri, he was from Van Dinh village, and came from a traditional Confucian family. He passed the doctoral examination in the Mau Thin year (1868) and held important positions such as Prefect of Binh Giang, Judge of Hai Phong, Governor-General of Dinh Ninh, and Minister.
+
+Patriotic spirit: He was among the pro-war scholars, having submitted a petition to the court urging a fierce fight against the French, but was criticized by Emperor Tu Duc as "out of touch with the times" and demoted. Dissatisfied with the situation, he resigned from his position and retired in 1897.
+Cultural contributions: He made significant contributions to elevating the art of Ca Tru (spoken singing) to a scholarly and exemplary level. His compositions, such as "Hong Hong, Tuyet Tuyet," contain a noble philosophy of life, conveying the sentiments of the times and demonstrating fluidity in language. His name has been given to streets in Ho Chi Minh City and Hanoi.
+
+3. Architectural and Artistic Features
+Scale and Landscape: The tomb was built after his death (in 1902) and remains intact as it was originally constructed. The structure is modest in scale but solemn, situated amidst rice fields, surrounded by lush greenery.
+
+Nature: The tomb, along with the Duong family church (At Ha branch), forms a complex of historical relics commemorating a famous figure, educating future generations about the spirit of learning and patriotism.
+
+4. System of Artifacts and Antiquities
+The tomb area preserves typical artifacts from the 20th century, including:
+Portrait stele: Made of green stone, attached to the armrest above the tomb. The stele depicts the portrait of Mr. Duong Khue with soft lines and inscribed with the words "Duong Khue (1839-1902)".
+
+Tombstone: Made of blue stone, attached to the front wall. The inscription in Chinese characters reads "Van Tri Duong Cong''s Tomb," and on either side are couplets in Nom script praising his virtues: "The bright virtue of filial piety and loyalty shines brightly for all eternity / The illuminating wisdom and righteousness will be remembered by descendants for a thousand years" (the tombstone currently has cracks).
+
+Porcelain incense burner: White glaze with blue painted design, featuring a "Two dragons encircling a Tai Chi circle" motif and a stylized dragon at the base.
+
+5. Rituals and Service
+Ritual Activities: The worship of the renowned figure Duong Khue is closely linked to religious activities at the Duong family ancestral temple (Van Dinh town).
+
+On holidays and festivals, especially on the anniversary of his death, descendants of the family perform solemn rituals (offering incense, wine, and reciting prayers) at the temple. After completing the ceremony at the temple, descendants will continue to perform rituals and visit the mausoleum in Dong Tien commune.
+6. Protection and Demarcation of the Monument
+Demarcation: According to the current status map surveyed in September 2018 and the demarcation record dated September 25, 2018, the relevant authorities agreed to demarcate only Protection Zone I (because the monument is adjacent to cultivated land, and the original elements are protected in their original state).
+
+Area: Protection Zone I has a total area of ​​26.4 m2, bounded by markers 1 to 7, 1 on the map.
+
+Boundaries: All four sides (East, West, South, North) are adjacent to the concrete road and cultivated land of Dong Tien commune. All construction and illegal exploitation activities in this area are strictly prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1903', N'xã Vân Đình', N'/api/qr/heritage/hcf142f3f', N'https://maps.app.goo.gl/iC89oTEZdNLRcRxv7', 0, NULL, 3, '2026-07-11T16:10:37.1694985', NULL);
 SET IDENTITY_INSERT [Heritage] OFF;
 GO
-DBCC CHECKIDENT ([Heritage], RESEED, 9);
+DBCC CHECKIDENT ([Heritage], RESEED, 37);
 GO
 
 -- [HeritageDocuments]: 6 rows
@@ -1250,7 +2931,7 @@ GO
 DBCC CHECKIDENT ([HeritageDocuments], RESEED, 6);
 GO
 
--- [HeritageImages]: 71 rows
+-- [HeritageImages]: 99 rows
 SET IDENTITY_INSERT [HeritageImages] ON;
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (1, 1, N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', NULL, 1, '2026-07-09T13:35:05.3147378');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (2, 1, N'/uploads/images/532b8cf854bf4208ab48161ce7439a60.jpg', NULL, 2, '2026-07-09T13:35:05.4034413');
@@ -1321,11 +3002,39 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (67, 6, N'/uploads/images/31cad23b91c3457d81873fdb885f3e9d.jpg', NULL, 6, '2026-07-10T09:12:03.6239044');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (68, 6, N'/uploads/images/2196c0824eaf48048394e970efc55c92.jpg', NULL, 7, '2026-07-10T09:12:03.6265323');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (69, 7, N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', NULL, 1, '2026-07-10T10:22:10.9088243');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (71, 8, N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', NULL, 1, '2026-07-10T13:17:57.3297938');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (72, 9, N'/uploads/images/26204d13f5e1490fa1265d182b1ed08f.jpg', NULL, 1, '2026-07-10T13:30:03.5812226');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (73, 8, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T06:17:20.2211366');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (74, 9, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T06:17:31.5749014');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (75, 10, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T06:21:47.2377116');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (76, 11, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T06:27:38.2422458');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (77, 12, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T06:32:02.7308751');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (78, 13, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T08:36:50.5680415');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (79, 14, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T08:39:34.3871681');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (80, 15, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T08:49:55.0256838');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (81, 16, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T08:54:52.3870487');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (82, 17, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:00:01.5858449');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (83, 18, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:04:11.3432058');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (84, 19, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:06:47.0679329');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (85, 20, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:20:15.0679590');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (86, 21, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:23:04.4438159');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (87, 22, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:25:10.2597751');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (88, 23, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:29:37.3175287');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (89, 24, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:32:35.8057206');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (90, 25, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T14:59:57.3547271');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (91, 26, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:06:30.0659454');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (92, 27, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:22:09.8059313');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (93, 28, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:33:12.6036838');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (94, 29, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:36:38.5195448');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (95, 30, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:40:06.5898926');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (96, 31, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:44:05.7557295');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (97, 32, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:50:13.0387379');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (98, 33, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:52:38.3813540');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (99, 34, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:55:11.9983085');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (100, 35, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T16:04:10.8739838');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (101, 36, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T16:07:25.2225713');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (102, 37, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T16:10:37.1807065');
 SET IDENTITY_INSERT [HeritageImages] OFF;
 GO
-DBCC CHECKIDENT ([HeritageImages], RESEED, 72);
+DBCC CHECKIDENT ([HeritageImages], RESEED, 102);
 GO
 
 -- [HeritageVideos]: 0 rows

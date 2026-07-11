@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { fetchStatisticsOverview } from '../services/statisticsService';
-import { classificationColors } from '../constants';
+import { classificationColors, heritageTypeIcons } from '../constants';
 import { getImageUrl } from '../utils/url';
 import {
   Building2, BookOpen, ImageIcon, Film, FileText, Star, Award, LayoutGrid,
   ArrowRight, Eye, MapPin
 } from 'lucide-react';
-import type { StatisticsOverview } from '../../core/types';
+import type { StatisticsOverview, HeritageType } from '../../core/types';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const classificationLabels: Record<string, { vi: string; en: string }> = {
@@ -26,11 +26,6 @@ const statusColors: Record<string, string> = {
   active: '#27AE60',
   maintenance: '#F39C12',
   closed: '#E74C3C',
-};
-
-const typeEmoji: Record<string, string> = {
-  dinh: '🏛️', chua: '🛕', den: '⛩️', mieu: '🏚️',
-  phu: '🏯', quan: '🕌', nhacu: '🏘️', nhatho: '⛪', lang: '🪦',
 };
 
 interface StatisticsPageProps {
@@ -269,10 +264,10 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
                       <span>{site.code}</span>
                       <span>·</span>
                       <span>{classificationLabels[site.classification]?.[lang] || site.classification}</span>
-                      {site.type && typeEmoji[site.type] && (
+                      {site.type && heritageTypeIcons[site.type as HeritageType] && (
                         <>
                           <span>·</span>
-                          <span>{typeEmoji[site.type]}</span>
+                          <span>{heritageTypeIcons[site.type as HeritageType]}</span>
                         </>
                       )}
                     </div>

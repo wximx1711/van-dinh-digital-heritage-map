@@ -56,6 +56,7 @@ function deduplicate(sites: (HeritageSite & { lat: number; lon: number })[]): Ma
       id: site.id,
       position: { lat: site.lat, lng: site.lon },
       type: site.type,
+      classification: site.classification,
     });
   }
 

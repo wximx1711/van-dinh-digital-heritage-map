@@ -8,6 +8,11 @@ export const intangibleCategoryIcons = {
   story: '📜',
 };
 
+export const heritageTypeIcons: Record<HeritageType, string> = {
+  dinh: '🏛️', chua: '🛕', den: '⛩️', mieu: '🏚️',
+  phu: '🏯', quan: '🕌', nhacu: '🏘️', nhatho: '⛪', lang: '🪦',
+};
+
 export const classificationColors = {
   national: '#E74C3C',
   city: '#1A5276',

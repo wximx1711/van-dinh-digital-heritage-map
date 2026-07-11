@@ -6,7 +6,7 @@ import { haversineDistance, openGoogleMapsDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { CategoryLegend } from './CategoryLegend';
-import { HERITAGE_TYPES, classificationColors } from '../constants';
+import { HERITAGE_TYPES, classificationColors, heritageTypeIcons } from '../constants';
 import type { HeritageSite, HeritageType, Classification, MapMarker } from '../../core/types';
 import {
   X, QrCode, Navigation, RotateCcw, Search,
@@ -17,10 +17,7 @@ interface MapPageProps {
   onNavigate: (page: string, id?: string) => void;
 }
 
-const typeEmoji: Record<HeritageType, string> = {
-  dinh: '🏛️', chua: '🛕', den: '⛩️', mieu: '🏚️',
-  phu: '🏯', quan: '🕌', nhacu: '🏘️', nhatho: '⛪', lang: '🪦',
-};
+
 
 const PLACEHOLDER_IMG = 'data:image/svg+xml,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="120" viewBox="0 0 200 120">' +
@@ -414,7 +411,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
                     style={{ accentColor: '#0F3D5E' }}
                   />
                   <span style={{ fontSize: 12, color: '#1a2332' }}>
-                    {typeEmoji[type]} {t(`map.type.${type}`)}
+                    {heritageTypeIcons[type]} {t(`map.type.${type}`)}
                   </span>
                 </label>
               ))}
@@ -443,16 +440,33 @@ export function MapPage({ onNavigate }: MapPageProps) {
               <div style={{ fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 8 }}>
                 {lang === 'vi' ? 'Chú giải' : 'Legend'}
               </div>
-              {classificationTypes.map(cls => (
-                <div key={cls} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-                  <div style={{
-                    width: 12, height: 12, borderRadius: '50% 50% 50% 0',
-                    transform: 'rotate(-45deg)', background: classificationColors[cls],
-                    flexShrink: 0,
-                  }} />
-                  <span style={{ fontSize: 11, color: '#5d7a8c' }}>{classificationLabels[cls][lang]}</span>
+              <div style={{ fontSize: 10, color: '#5d7a8c', fontWeight: 600, marginBottom: 6 }}>
+                {lang === 'vi' ? 'Loại hình' : 'Type'}
+              </div>
+              {heritageTypes.map((type) => {
+                const label = typeLabels[type]?.[lang] ?? type;
+                return (
+                  <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                    <span style={{ fontSize: 14, lineHeight: 1 }}>{heritageTypeIcons[type]}</span>
+                    <span style={{ fontSize: 11, color: '#1a2332' }}>{label}</span>
+                  </div>
+                );
+              })}
+              <div style={{ marginTop: 6, paddingTop: 6, borderTop: '1px solid rgba(0,0,0,0.08)' }}>
+                <div style={{ fontSize: 10, color: '#5d7a8c', fontWeight: 600, marginBottom: 4 }}>
+                  {lang === 'vi' ? 'Xếp hạng' : 'Ranking'}
                 </div>
-              ))}
+                {classificationTypes.map(cls => (
+                  <div key={cls} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                    <div style={{
+                      width: 14, height: 3, borderRadius: 1.5,
+                      background: classificationColors[cls],
+                      flexShrink: 0,
+                    }} />
+                    <span style={{ fontSize: 11, color: '#5d7a8c' }}>{classificationLabels[cls][lang]}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

@@ -290,16 +290,10 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                 {activeTab === 'history' && (
                   <div>
                     <h3 style={{ color: '#0F3D5E', fontSize: 16, fontWeight: 700, marginBottom: 12 }}>
-                      {lang === 'vi' ? 'Lịch sử (Tiếng Việt)' : 'History (Vietnamese)'}
+                      {lang === 'vi' ? 'Lịch sử' : 'History'}
                     </h3>
                     <p style={{ fontSize: 14, color: '#1a2332', lineHeight: 1.8, whiteSpace: 'pre-line', marginBottom: 24 }}>
-                      {site.historyVi || (lang === 'vi' ? 'Chưa có thông tin lịch sử.' : 'No history information available.')}
-                    </p>
-                    <h3 style={{ color: '#0F3D5E', fontSize: 16, fontWeight: 700, marginBottom: 12 }}>
-                      {lang === 'vi' ? 'Lịch sử (Tiếng Anh)' : 'History (English)'}
-                    </h3>
-                    <p style={{ fontSize: 14, color: '#1a2332', lineHeight: 1.8, whiteSpace: 'pre-line' }}>
-                      {site.historyEn || (lang === 'vi' ? 'Chưa có thông tin lịch sử.' : 'No history information available.')}
+                      {lang === 'vi' ? site.historyVi || 'Chưa có thông tin lịch sử.' : site.historyEn || 'No history information available.'}
                     </p>
                   </div>
                 )}

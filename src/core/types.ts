@@ -31,6 +31,7 @@ export interface MapMarker {
   position: google.maps.LatLngLiteral;
   label?: string;
   type?: HeritageType;
+  classification?: Classification;
 }
 
 export interface UserInfo {

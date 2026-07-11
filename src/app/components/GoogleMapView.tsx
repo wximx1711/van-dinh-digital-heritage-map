@@ -1,8 +1,8 @@
 import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
 import { useJsApiLoader, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { heritageMarkerColors } from '../constants';
-import type { MapMarker, HeritageType } from '../../core/types';
+import { classificationColors, heritageTypeIcons } from '../constants';
+import type { MapMarker, HeritageType, Classification } from '../../core/types';
 import type { ReactNode } from 'react';
 
 interface GoogleMapViewProps {
@@ -78,28 +78,28 @@ export function GoogleMapView({
     setMap(map);
   }, []);
 
+  function pinSvg(type: HeritageType, classificationColor: string, highlighted: boolean): string {
+    const emoji = heritageTypeIcons[type];
+    const body = highlighted
+      ? `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D4A017" stroke-width="2.5"/>`
+      : `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D0D0D0" stroke-width="1"/>`;
+    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 40">
+        ${body}
+        <text x="14" y="21" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="16">${emoji}</text>
+        <rect x="6" y="28" width="16" height="5" rx="2.5" fill="${classificationColor}"/>
+      </svg>`
+    )}`;
+  }
+
   // Called only after google.maps is available (inside guarded effects).
-  function getMarkerIcon(type?: HeritageType, highlighted?: boolean): google.maps.Symbol | undefined {
-    if (highlighted) {
-      return {
-        path: google.maps.SymbolPath.CIRCLE,
-        scale: 10,
-        fillColor: '#D4A017',
-        fillOpacity: 1,
-        strokeColor: '#ffffff',
-        strokeWeight: 3,
-      };
-    }
+  function getMarkerIcon(type?: HeritageType, classification?: Classification, highlighted?: boolean): google.maps.Icon | undefined {
     if (!type) return undefined;
-    const color = heritageMarkerColors[type];
-    if (!color) return undefined;
+    const c = classification ? classificationColors[classification] : '#999';
     return {
-      path: google.maps.SymbolPath.CIRCLE,
-      scale: 10,
-      fillColor: color,
-      fillOpacity: 1,
-      strokeColor: '#ffffff',
-      strokeWeight: 3,
+      url: pinSvg(type, c, !!highlighted),
+      scaledSize: new google.maps.Size(28, 40),
+      anchor: new google.maps.Point(14, 38),
     };
   }
 
@@ -142,7 +142,7 @@ export function GoogleMapView({
     for (const m of markers) {
       let marker = markerMap.get(m.id);
       const isHighlighted = curHighlighted === m.id;
-      const icon = getMarkerIcon(m.type, isHighlighted);
+      const icon = getMarkerIcon(m.type, m.classification, isHighlighted);
 
       if (marker) {
         marker.setPosition(m.position);
