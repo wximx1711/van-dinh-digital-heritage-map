@@ -1,7 +1,8 @@
 import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
 import { useJsApiLoader, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
-import { classificationColors, heritageTypeIcons } from '../constants';
+import { classificationColors } from '../constants';
+import { getIconDataUri, hasSvgIcon, emojiFallbacks } from '../heritageIcons';
 import type { MapMarker, HeritageType, Classification } from '../../core/types';
 import type { ReactNode } from 'react';
 
@@ -79,14 +80,16 @@ export function GoogleMapView({
   }, []);
 
   function pinSvg(type: HeritageType, classificationColor: string, highlighted: boolean): string {
-    const emoji = heritageTypeIcons[type];
     const body = highlighted
       ? `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D4A017" stroke-width="2.5"/>`
       : `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D0D0D0" stroke-width="1"/>`;
+    const iconContent = hasSvgIcon(type)
+      ? `<image href="${getIconDataUri(type)}" x="2" y="2" width="24" height="24" preserveAspectRatio="xMidYMid meet"/>`
+      : `<text x="14" y="21" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="16">${emojiFallbacks[type] ?? '?'}</text>`;
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 40">
         ${body}
-        <text x="14" y="21" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="16">${emoji}</text>
+        ${iconContent}
         <rect x="6" y="28" width="16" height="5" rx="2.5" fill="${classificationColor}"/>
       </svg>`
     )}`;

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { intangibleCategoryIcons } from '../constants';
 import { fetchIntangibleHeritageList, createIntangibleHeritage, updateIntangibleHeritage, deleteIntangibleHeritage } from '../services/intangibleService';
@@ -485,7 +485,6 @@ export function IntangibleManagement() {
 
             <div style={{ overflowY: 'auto', flex: 1, padding: '16px 20px' }}>
 
-<<<<<<< HEAD
               {/* Card 1: Basic Information */}
               {renderCard(t('im.section_basic'), (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
@@ -498,58 +497,6 @@ export function IntangibleManagement() {
                       {categories.map(cat => (<option key={cat} value={cat}>{intangibleCategoryIcons[cat as keyof typeof intangibleCategoryIcons]} {t(`intangible.${cat}`)}</option>))}
                     </select>
                     {formErrors.category && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.category}</span>}
-=======
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.category')} *</label>
-                  <select style={{ ...inputStyle, background: 'white', cursor: 'pointer', borderColor: formErrors.category ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} value={editItem.category}
-                    onChange={e => { setEditItem(s => s ? { ...s, category: e.target.value } : s); setFormErrors(prev => ({ ...prev, category: '' })); }}>
-                    {categories.map(cat => (<option key={cat} value={cat}>{intangibleCategoryIcons[cat as keyof typeof intangibleCategoryIcons]} {t(`intangible.${cat}`)}</option>))}
-                  </select>
-                  {formErrors.category && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.category}</span>}
-                </div>
-
-                <div>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.video_url')}</label>
-                  <input style={{ ...inputStyle, borderColor: formErrors.videoUrl ? '#E74C3C' : 'rgba(15,61,94,0.15)' }} type="url" placeholder="https://www.youtube.com/..." value={editItem.videoUrl || ''} onChange={e => { setEditItem(s => s ? { ...s, videoUrl: e.target.value } : s); setFormErrors(prev => ({ ...prev, videoUrl: '' })); }} />
-                  {formErrors.videoUrl && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.videoUrl}</span>}
-                </div>
-
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.description_vi')} *</label>
-                  <textarea style={{ ...inputStyle, resize: 'vertical', minHeight: 72, borderColor: formErrors.descriptionVi ? '#E74C3C' : 'rgba(15,61,94,0.15)' }}
-                    value={editItem.descriptionVi} onChange={e => { setEditItem(s => s ? { ...s, descriptionVi: e.target.value } : s); setFormErrors(prev => ({ ...prev, descriptionVi: '' })); }} />
-                  {formErrors.descriptionVi && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.descriptionVi}</span>}
-                </div>
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.description_en')} *</label>
-                  <textarea style={{ ...inputStyle, resize: 'vertical', minHeight: 72, borderColor: formErrors.descriptionEn ? '#E74C3C' : 'rgba(15,61,94,0.15)' }}
-                    value={editItem.descriptionEn} onChange={e => { setEditItem(s => s ? { ...s, descriptionEn: e.target.value } : s); setFormErrors(prev => ({ ...prev, descriptionEn: '' })); }} />
-                  {formErrors.descriptionEn && <span style={{ fontSize: 11, color: '#E74C3C', marginTop: 2, display: 'block' }}>{formErrors.descriptionEn}</span>}
-                </div>
-
-                {/* Cover Image */}
-                <div style={{ gridColumn: '1 / -1' }}>
-                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.image')} *</label>
-                  <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
-                    <div style={{ width: 120, height: 90, borderRadius: 8, overflow: 'hidden', background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {editItem.image ? <img src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        : <span style={{ fontSize: 11, color: '#5d7a8c' }}>{t('im.no_image')}</span>}
-                    </div>
-                    <div>
-                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
-                        <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1 }}>
-                          <Upload size={14} />
-                          {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (editItem.image ? t('im.replace_image') : t('im.upload_btn'))}
-                          <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
-                        </label>
-                        <div onClick={() => openMediaPicker('thumbnail')}
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                          <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
-                        </div>
-                      </div>
-                      <p style={{ fontSize: 10, color: '#cbced4', margin: 0 }}>{t('im.upload_hint')}</p>
-                    </div>
->>>>>>> 7c11b2203a13ed23870ba3f66ccb0e7c8fea6550
                   </div>
                   {renderField('videoUrl', t('im.video_url'))}
                 </div>

@@ -6,7 +6,8 @@ import { haversineDistance, openGoogleMapsDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { CategoryLegend } from './CategoryLegend';
-import { HERITAGE_TYPES, classificationColors, heritageTypeIcons } from '../constants';
+import { HERITAGE_TYPES, classificationColors } from '../constants';
+import { getIconUrl } from '../heritageIcons';
 import type { HeritageSite, HeritageType, Classification, MapMarker } from '../../core/types';
 import {
   X, QrCode, Navigation, RotateCcw, Search,
@@ -410,8 +411,11 @@ export function MapPage({ onNavigate }: MapPageProps) {
                     onChange={e => setFilterTypes(prev => ({ ...prev, [type]: e.target.checked }))}
                     style={{ accentColor: '#0F3D5E' }}
                   />
-                  <span style={{ fontSize: 12, color: '#1a2332' }}>
-                    {heritageTypeIcons[type]} {t(`map.type.${type}`)}
+                  <span style={{ fontSize: 12, color: '#1a2332', display: 'flex', alignItems: 'center', gap: 10 }}>
+                    <div style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <img src={getIconUrl(type)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                    </div>
+                    {t(`map.type.${type}`)}
                   </span>
                 </label>
               ))}
@@ -446,8 +450,10 @@ export function MapPage({ onNavigate }: MapPageProps) {
               {heritageTypes.map((type) => {
                 const label = typeLabels[type]?.[lang] ?? type;
                 return (
-                  <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
-                    <span style={{ fontSize: 14, lineHeight: 1 }}>{heritageTypeIcons[type]}</span>
+                  <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 3 }}>
+                    <div style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                      <img src={getIconUrl(type)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                    </div>
                     <span style={{ fontSize: 11, color: '#1a2332' }}>{label}</span>
                   </div>
                 );

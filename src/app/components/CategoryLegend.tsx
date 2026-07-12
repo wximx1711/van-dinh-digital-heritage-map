@@ -1,16 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
-import { HERITAGE_TYPES, classificationColors, heritageTypeIcons } from '../constants';
+import { HERITAGE_TYPES, classificationColors } from '../constants';
+import { getIconUrl } from '../heritageIcons';
 import { typeLabels, classificationLabels } from '../../data/labels';
 import type { Classification, HeritageType } from '../../core/types';
 
 function LegendPin({ type }: { type: HeritageType }) {
-  const emoji = heritageTypeIcons[type];
   return (
-    <svg width="14" height="20" viewBox="0 0 28 40" aria-hidden="true">
-      <path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D0D0D0" stroke-width="1"/>
-      <text x="14" y="21" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="16">{emoji}</text>
-    </svg>
+    <div style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+      <img
+        src={getIconUrl(type)}
+        alt=""
+        style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+      />
+    </div>
   );
 }
 
@@ -142,7 +145,7 @@ export function CategoryLegend() {
         {HERITAGE_TYPES.map((type) => {
           const label = typeLabels[type]?.[lang] ?? type;
           return (
-            <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <LegendPin type={type} />
               <span style={{ color: '#1a2332', lineHeight: 1.3 }}>{label}</span>
             </div>

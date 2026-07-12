@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { fetchStatisticsOverview } from '../services/statisticsService';
-import { classificationColors, heritageTypeIcons } from '../constants';
+import { classificationColors } from '../constants';
+import { getIconUrl } from '../heritageIcons';
 import { getImageUrl } from '../utils/url';
 import {
   Building2, BookOpen, ImageIcon, Film, FileText, Star, Award, LayoutGrid,
@@ -264,10 +265,10 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
                       <span>{site.code}</span>
                       <span>·</span>
                       <span>{classificationLabels[site.classification]?.[lang] || site.classification}</span>
-                      {site.type && heritageTypeIcons[site.type as HeritageType] && (
+                      {site.type && (
                         <>
                           <span>·</span>
-                          <span>{heritageTypeIcons[site.type as HeritageType]}</span>
+                          <img src={getIconUrl(site.type as HeritageType)} alt="" style={{ width: 14, height: 14, objectFit: 'contain', flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }} />
                         </>
                       )}
                     </div>
