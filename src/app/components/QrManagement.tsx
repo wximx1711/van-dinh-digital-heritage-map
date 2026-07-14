@@ -5,6 +5,7 @@ import { apiPost } from '../services/api';
 import {
   QrCode, Download, RefreshCw, Search, Check, AlertTriangle, Eye, X
 } from 'lucide-react';
+import { Skeleton } from './Skeleton';
 
 export function QrManagement() {
   const { lang, t } = useLanguage();
@@ -124,7 +125,10 @@ export function QrManagement() {
         {/* QR preview */}
         <div style={{ background: 'white', borderRadius: 10, padding: '24px', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
           {loading ? (
-            <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+            <div style={{ padding: '24px' }}>
+              <Skeleton width="60%" height={20} borderRadius={4} style={{ marginBottom: 16 }} />
+              <Skeleton height={260} borderRadius={8} />
+            </div>
           ) : selectedId && site ? (
             <>
               <div style={{ textAlign: 'center', marginBottom: 20 }}>

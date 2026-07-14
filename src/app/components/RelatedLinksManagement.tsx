@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPost, apiPut, apiDelete } from '../services/api';
 import { Plus, Save, Check, AlertTriangle, Pencil, Trash2, X, ArrowUp, ArrowDown, EyeOff, Eye } from 'lucide-react';
+import { FormSkeleton } from './Skeleton';
 
 interface RelatedLink {
   linkId: number;
@@ -129,7 +130,7 @@ export function RelatedLinksManagement() {
   };
 
   if (loading) {
-    return <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>;
+    return <FormSkeleton />;
   }
 
   const sortedLinks = [...links].sort((a, b) => a.displayOrder - b.displayOrder);

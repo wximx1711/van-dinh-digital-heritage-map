@@ -8,6 +8,7 @@ import { ImageGallery } from './ImageGallery';
 import { InfoCard } from './InfoCard';
 import { ShareSection } from './ShareSection';
 import { RelatedItems } from './RelatedItems';
+import { DetailPageSkeleton, Skeleton } from './Skeleton';
 import { openGoogleMapsDirections } from '../utils/geo';
 import {
   ArrowLeft, MapPin, Calendar, Download, FileText, Image, Info, Clock, User,
@@ -101,15 +102,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   };
 
   if (loading) {
-    return (
-      <div style={{ background: '#F0F4F8', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-          <div style={{ fontSize: 13 }}>{t('common.loading')}</div>
-        </div>
-      </div>
-    );
+    return <DetailPageSkeleton />;
   }
 
   if (error) {
@@ -333,7 +326,11 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                       {lang === 'vi' ? 'Tài liệu đính kèm' : 'Attached Documents'}
                     </h3>
                     {loadingMedia ? (
-                      <div style={{ padding: '24px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        {Array.from({ length: 3 }).map((_, i) => (
+                          <Skeleton key={i} height={48} borderRadius={8} />
+                        ))}
+                      </div>
                     ) : documents.length === 0 ? (
                       <div style={{ padding: '24px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>
                         {lang === 'vi' ? 'Chưa có tài liệu' : 'No documents available'}

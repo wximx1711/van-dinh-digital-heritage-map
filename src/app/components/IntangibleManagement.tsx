@@ -2,7 +2,8 @@
 import { useLanguage } from './LanguageContext';
 import { intangibleCategoryIcons } from '../constants';
 import { fetchIntangibleHeritageList, createIntangibleHeritage, updateIntangibleHeritage, deleteIntangibleHeritage } from '../services/intangibleService';
-import { apiPost, apiDelete } from '../services/api';
+import { apiDelete } from '../services/api';
+import { uploadFileWithProgress } from '../services/uploadService';
 import { getImageUrl } from '../utils/url';
 import { MediaPicker } from './MediaPicker';
 import {
@@ -10,6 +11,7 @@ import {
   ChevronLeft, ChevronRight,
   Image as ImageIcon, Eye
 } from 'lucide-react';
+import { AdminTableSkeleton } from './Skeleton';
 
 interface IntangibleItem {
   id: string;
@@ -92,6 +94,7 @@ export function IntangibleManagement() {
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
@@ -242,16 +245,22 @@ export function IntangibleManagement() {
     }
     if (file.size > 5 * 1024 * 1024) { showToast(lang === 'vi' ? 'Kích thước tối đa 5MB' : 'Maximum file size is 5MB', 'error'); return; }
     setUploading(true);
+    setUploadProgress(0);
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const result = await apiPost<{ url: string }>('/uploads/images', formData, true);
+      const result = await uploadFileWithProgress({
+        path: '/uploads/images',
+        formData,
+        onProgress: setUploadProgress,
+      });
       setEditItem(s => s ? { ...s, image: result.url } : s);
       setFormErrors(prev => ({ ...prev, image: '' }));
+      showToast(lang === 'vi' ? 'Tải ảnh thành công' : 'Upload successful');
     } catch (err) {
       const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Tải ảnh thất bại' : 'Upload failed');
       showToast(msg, 'error');
-    } finally { setUploading(false); }
+    } finally { setUploading(false); setUploadProgress(0); }
   };
 
   const openMediaPicker = (target: 'thumbnail' | 'gallery') => {
@@ -375,7 +384,7 @@ export function IntangibleManagement() {
 
       <div style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         {loading ? (
-          <div style={{ padding: '40px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+          <AdminTableSkeleton rowCount={5} columnCount={7} />
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>
@@ -586,9 +595,14 @@ export function IntangibleManagement() {
                         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 6 }}>
                           <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1 }}>
                             <Upload size={14} />
-                            {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (editItem.image ? t('im.replace_image') : t('im.upload_btn'))}
+                            {uploading ? `${uploadProgress}%` : (editItem.image ? t('im.replace_image') : t('im.upload_btn'))}
                             <input type="file" accept=".jpg,.jpeg,.png,.webp" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
                           </label>
+                          {uploading && (
+                            <div style={{ width: 200, height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+                              <div style={{ width: `${uploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+                            </div>
+                          )}
                           <div onClick={() => openMediaPicker('thumbnail')}
                             style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                             <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}

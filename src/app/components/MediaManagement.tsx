@@ -1,6 +1,7 @@
 ﻿import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPost, apiDelete } from '../services/api';
+import { uploadFileWithProgress } from '../services/uploadService';
 import type { MediaFile, PagedResult, MediaSearchRequest } from '../../core/types';
 import { getImageUrl } from '../utils/url';
 import {
@@ -8,6 +9,7 @@ import {
   Upload, Search, RefreshCw, Download, Maximize2, ChevronLeft, ChevronRight,
   SlidersHorizontal
 } from 'lucide-react';
+import { MediaGridSkeleton } from './Skeleton';
 
 type MediaTypeFilter = '' | 'image' | 'video' | 'document';
 type UsageFilter = '' | 'used' | 'unused';
@@ -35,6 +37,7 @@ export function MediaManagement() {
 
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [deleting, setDeleting] = useState(false);
   const [deleteFile, setDeleteFile] = useState<MediaFile | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -130,37 +133,25 @@ export function MediaManagement() {
       return;
     }
     setUploading(true);
+    setUploadProgress(0);
     try {
       const formData = new FormData();
       formData.append('file', file);
-
-      console.log('--- FRONTEND: starting fetch ---');
       const endpointUrl = `/uploads/${tab}`;
-      console.log('fetching URL:', `/api${endpointUrl}`);
-      const response = await fetch(`/api${endpointUrl}`, {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
+      await uploadFileWithProgress({
+        path: endpointUrl,
+        formData,
+        onProgress: setUploadProgress,
       });
-      console.log('--- NETWORK DEBUG ---');
-      console.log('Request URL:', `/api${endpointUrl}`);
-      console.log('Status Code:', response.status);
-      const responseText = await response.text();
-      console.log('Response Body:', responseText);
-      if (!response.ok) {
-        throw new Error(`Upload failed with status ${response.status}: ${responseText}`);
-      }
-      const json = JSON.parse(responseText);
-      if (!json.success) {
-        throw new Error(json.message || 'Upload failed');
-      }
       showToast(lang === 'vi' ? 'Tải lên thành công' : 'Upload successful');
+      setUploadProgress(100);
       fetchFiles();
     } catch (err) {
-      console.error('--- FRONTEND CATCH ---', err);
-      showToast(lang === 'vi' ? 'Tải lên thất bại' : 'Upload failed', 'error');
+      const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Tải lên thất bại' : 'Upload failed');
+      showToast(msg, 'error');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -399,13 +390,18 @@ export function MediaManagement() {
             cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1, whiteSpace: 'nowrap',
           }}>
             <Upload size={14} />
-            {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (lang === 'vi' ? 'Tải lên' : 'Upload')}
+            {uploading ? `${uploadProgress}%` : (lang === 'vi' ? 'Tải lên' : 'Upload')}
             <input type="file"
               accept={mediaType === ''
                 ? ([] as string[]).concat(allowedExtensions.images, allowedExtensions.videos, allowedExtensions.documents).join(',')
                 : allowedExtensions[mediaType === 'image' ? 'images' : mediaType === 'video' ? 'videos' : 'documents'].join(',')}
               style={{ display: 'none' }} onChange={handleUpload} disabled={uploading} />
           </label>
+          {uploading && (
+            <div style={{ width: 100, height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+              <div style={{ width: `${uploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+            </div>
+          )}
           <button onClick={fetchFiles} style={{
             padding: '8px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.15)',
             background: 'white', cursor: 'pointer', display: 'flex', color: '#5d7a8c',
@@ -483,7 +479,7 @@ export function MediaManagement() {
         {/* Content */}
         <div style={{ padding: '16px', minHeight: 200 }}>
           {loading ? (
-            <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+            <MediaGridSkeleton />
           ) : !result || result.data.length === 0 ? (
             <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>
               {mediaType === '' ? <SlidersHorizontal size={32} style={{ margin: '0 auto 8px', display: 'block', opacity: 0.4 }} /> :

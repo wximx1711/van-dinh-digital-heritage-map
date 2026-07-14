@@ -5,6 +5,7 @@ import { apiGet } from '../services/api';
 import {
   Map, BookOpen, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
 } from 'lucide-react';
+import { Skeleton } from './Skeleton';
 
 interface HeaderProps {
   currentPage: string;
@@ -175,7 +176,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
 
           {/* Auth button — only render after auth check completes */}
           {auth.isLoading ? (
-            <div style={{ width: 34, height: 34 }} />
+            <Skeleton width={34} height={34} borderRadius="50%" />
           ) : auth.isAuthenticated && (auth.isAdmin || auth.isManager) ? (
             <div style={{ position: 'relative' }}>
               <button

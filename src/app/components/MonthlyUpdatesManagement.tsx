@@ -6,6 +6,7 @@ import {
   Plus, Search, Pencil, Trash2, X, Check, AlertTriangle,
   ChevronLeft, ChevronRight, Calendar
 } from 'lucide-react';
+import { AdminTableSkeleton } from './Skeleton';
 
 type FormMode = 'add' | 'edit' | null;
 
@@ -167,7 +168,7 @@ export function MonthlyUpdatesManagement() {
 
       <div style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         {loading ? (
-          <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+          <AdminTableSkeleton rowCount={6} columnCount={5} />
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>

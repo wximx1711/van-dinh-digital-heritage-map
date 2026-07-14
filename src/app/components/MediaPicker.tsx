@@ -3,6 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
 import { X, Image as ImageIcon, Check, Upload } from 'lucide-react';
+import { MediaGridSkeleton } from './Skeleton';
 
 interface MediaFile {
   url: string;
@@ -110,7 +111,7 @@ export function MediaPicker({ open, onClose, onSelect, onSelectMultiple, multipl
 
         <div style={{ flex: 1, overflowY: 'auto', padding: '16px' }}>
           {loading ? (
-            <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+            <MediaGridSkeleton />
           ) : filtered.length === 0 ? (
             <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>
               <ImageIcon size={32} style={{ margin: '0 auto 8px', display: 'block', opacity: 0.4 }} />

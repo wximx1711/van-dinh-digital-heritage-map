@@ -1,8 +1,10 @@
 ﻿import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
-import { apiGet, apiPut, apiPost } from '../services/api';
+import { apiGet, apiPut } from '../services/api';
 import { Save, Check, AlertTriangle, Upload } from 'lucide-react';
 import { getImageUrl } from '../utils/url';
+import { FormSkeleton } from './Skeleton';
+import { uploadFileWithProgress } from '../services/uploadService';
 
 export function SystemSettingsManagement() {
   const { lang, t } = useLanguage();
@@ -15,6 +17,7 @@ export function SystemSettingsManagement() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
@@ -61,15 +64,22 @@ export function SystemSettingsManagement() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setUploadProgress(0);
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const result = await apiPost<{ url: string }>('/uploads/images', formData, true);
+      const result = await uploadFileWithProgress({
+        path: '/uploads/images',
+        formData,
+        onProgress: setUploadProgress,
+      });
       setForm(s => ({ ...s, logoUrl: result.url }));
+      showToast(lang === 'vi' ? 'Tải ảnh thành công' : 'Upload successful');
     } catch {
       showToast(lang === 'vi' ? 'Tải ảnh thất bại' : 'Upload failed', 'error');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -80,7 +90,7 @@ export function SystemSettingsManagement() {
   };
 
   if (loading) {
-    return <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>;
+    return <FormSkeleton />;
   }
 
   return (
@@ -116,12 +126,17 @@ export function SystemSettingsManagement() {
               {form.logoUrl && <img src={getImageUrl(form.logoUrl)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />}
               <label style={{
                 display: 'inline-flex', alignItems: 'center', gap: 4,
-                padding: '7px 14px', borderRadius: 6, background: '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600,
+                padding: '7px 14px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600,
                 cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1,
               }}>
-                <Upload size={13} /> {uploading ? '...' : (lang === 'vi' ? 'Chọn ảnh' : 'Choose')}
+                <Upload size={13} /> {uploading ? `${uploadProgress}%` : (lang === 'vi' ? 'Chọn ảnh' : 'Choose')}
                 <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleLogoUpload} disabled={uploading} />
               </label>
+              {uploading && (
+                <div style={{ width: 100, height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{ width: `${uploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+                </div>
+              )}
             </div>
           </div>
           <div style={{ gridColumn: '1 / -1' }}>

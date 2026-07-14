@@ -3,6 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { createHeritageSite, updateHeritageSite, deleteHeritageSite } from '../services/heritageService';
 import { apiPost, apiDelete, apiGet } from '../services/api';
+import { uploadFileWithProgress } from '../services/uploadService';
 import type { HeritageSite, Classification, HeritageType, HeritageStatus } from '../../core/types';
 import { classificationColors, statusColors } from '../constants';
 import { getImageUrl } from '../utils/url';
@@ -12,6 +13,7 @@ import {
   ChevronLeft, ChevronRight, MapPin, Check, AlertTriangle, GripVertical,
   Video, FileText, Image as ImageIcon, Download
 } from 'lucide-react';
+import { Skeleton } from './Skeleton';
 
 interface HeritageManagementProps {
   onNavigate?: (page: string, id?: string) => void;
@@ -66,6 +68,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const [page, setPage] = useState(1);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -289,16 +292,22 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
     }
     if (file.size > 5 * 1024 * 1024) { showToast(lang === 'vi' ? 'Kích thước tối đa 5MB' : 'Maximum file size is 5MB', 'error'); return; }
     setUploading(true);
+    setUploadProgress(0);
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const result = await apiPost<{ url: string }>('/uploads/images', formData, true);
+      const result = await uploadFileWithProgress({
+        path: '/uploads/images',
+        formData,
+        onProgress: setUploadProgress,
+      });
       setEditSite(s => s ? { ...s, image: result.url } : s);
       setFormErrors(prev => ({ ...prev, image: '' }));
+      showToast(lang === 'vi' ? 'Tải ảnh thành công' : 'Upload successful');
     } catch (err) {
       const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Tải ảnh thất bại' : 'Upload failed');
       showToast(msg, 'error');
-    } finally { setUploading(false); }
+    } finally { setUploading(false); setUploadProgress(0); }
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -399,16 +408,22 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
       showToast(lang === 'vi' ? 'Lưu di tích trước, sau đó thêm tài liệu' : 'Save the site first, then add documents', 'error');
       return;
     }
+    setUploading(true);
+    setUploadProgress(0);
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const result = await apiPost<any>('/heritage/' + encodeURIComponent(editSite!.id) + '/media/documents', formData, true);
+      const result = await uploadFileWithProgress({
+        path: '/heritage/' + encodeURIComponent(editSite!.id) + '/media/documents',
+        formData,
+        onProgress: setUploadProgress,
+      });
       setDocuments(prev => [...prev, { documentId: result.documentId, fileName: result.fileName || '', fileUrl: result.fileUrl || '', fileType: result.fileType || '', fileSize: result.fileSize || 0 }]);
       showToast(lang === 'vi' ? 'Đã thêm tài liệu' : 'Document added');
     } catch (err) {
       const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Lỗi khi tải tài liệu' : 'Failed to upload document');
       showToast(msg, 'error');
-    }
+    } finally { setUploading(false); setUploadProgress(0); }
     if (e.target) e.target.value = '';
   };
 
@@ -699,14 +714,19 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, opacity: uploading ? 0.7 : 1 }}>
                           <Upload size={14} />
-                          {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (lang === 'vi' ? 'Tải ảnh lên' : 'Upload Image')}
+                          {uploading ? `${uploadProgress}%` : (lang === 'vi' ? 'Tải ảnh lên' : 'Upload Image')}
                         </div>
                         <div onClick={(e) => { e.stopPropagation(); openMediaPicker('thumbnail'); }}
                           style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                           <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
                         </div>
                       </div>
-                      <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB. Kéo thả hoặc nhấp để chọn.' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB. Drag & drop or click to select.'}</p>
+                      {uploading && (
+                        <div style={{ marginTop: 8, width: '100%', height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+                          <div style={{ width: `${uploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+                        </div>
+                      )}
+                      <p style={{ fontSize: 10, color: '#cbced4', margin: uploading ? '4px 0 0' : '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB. Kéo thả hoặc nhấp để chọn.' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB. Drag & drop or click to select.'}</p>
                     </div>
                   </div>
                   <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleImageUpload} disabled={uploading} />
@@ -781,7 +801,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                         </button>
                       </div>
                     ))}
-                    {loadingVideos && <span style={{ fontSize: 11, color: '#5d7a8c' }}>{lang === 'vi' ? 'Đang tải...' : 'Loading...'}</span>}
+                    {loadingVideos && <Skeleton width={80} height={14} borderRadius={3} />}
                   </div>
                 </div>
 
@@ -800,9 +820,9 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
 
                   {showDocUpload && (
                     <div style={{ padding: '10px', background: '#F0F4F8', borderRadius: 8, marginBottom: 10 }}>
-                      <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
-                        <Upload size={14} /> {lang === 'vi' ? 'Chọn file PDF' : 'Select PDF file'}
-                        <input ref={docInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleDocUpload} />
+                      <label style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600, cursor: uploading ? 'wait' : 'pointer' }}>
+                        <Upload size={14} /> {uploading ? `${uploadProgress}%` : (lang === 'vi' ? 'Chọn file PDF' : 'Select PDF file')}
+                        <input ref={docInputRef} type="file" accept=".pdf" style={{ display: 'none' }} onChange={handleDocUpload} disabled={uploading} />
                       </label>
                       <p style={{ fontSize: 10, color: '#cbced4', margin: '4px 0 0' }}>{lang === 'vi' ? 'PDF — tối đa 20MB' : 'PDF — max 20MB'}</p>
                     </div>
@@ -820,7 +840,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                         </button>
                       </div>
                     ))}
-                    {loadingDocs && <span style={{ fontSize: 11, color: '#5d7a8c' }}>{lang === 'vi' ? 'Đang tải...' : 'Loading...'}</span>}
+                    {loadingDocs && <Skeleton width={80} height={14} borderRadius={3} />}
                   </div>
                 </div>
 

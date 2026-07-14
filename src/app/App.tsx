@@ -14,6 +14,7 @@ import { IntangiblePage } from './components/IntangiblePage';
 import { IntangibleHeritageDetail } from './components/IntangibleHeritageDetail';
 import { StatisticsPage } from './components/StatisticsPage';
 import { NotFoundPage } from './components/NotFoundPage';
+import { Skeleton } from './components/Skeleton';
 import { apiGet, apiPost } from './services/api';
 import { getImageUrl } from './utils/url';
 import type { UserInfo, AboutPageData } from '../core/types';
@@ -37,8 +38,16 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
 
   if (loading) {
     return (
-      <div style={{ background: '#F0F4F8', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5d7a8c', fontSize: 13 }}>
-        {lang === 'vi' ? 'Đang tải...' : 'Loading...'}
+      <div style={{ background: '#F0F4F8', minHeight: '100vh', padding: '48px 24px' }}>
+        <div style={{ maxWidth: 800, margin: '0 auto' }}>
+          <Skeleton width={200} height={28} borderRadius={4} style={{ marginBottom: 8 }} />
+          <Skeleton width="100%" height={16} borderRadius={3} style={{ marginBottom: 24 }} />
+          <Skeleton height={300} borderRadius={10} style={{ marginBottom: 24 }} />
+          <Skeleton height={14} borderRadius={3} style={{ marginBottom: 8 }} />
+          <Skeleton height={14} borderRadius={3} style={{ marginBottom: 8 }} />
+          <Skeleton height={14} borderRadius={3} style={{ marginBottom: 8 }} />
+          <Skeleton width="70%" height={14} borderRadius={3} />
+        </div>
       </div>
     );
   }
@@ -238,10 +247,7 @@ function AppInner() {
     return (
       <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#F0F4F8' }}>
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-          <div style={{ fontSize: 13 }}>Loading...</div>
-        </div>
+        <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite' }} />
       </div>
     );
   }

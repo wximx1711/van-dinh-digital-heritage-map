@@ -6,6 +6,7 @@ import { InfoCard } from './InfoCard';
 import { ShareSection } from './ShareSection';
 import { RelatedItems } from './RelatedItems';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
+import { DetailPageSkeleton } from './Skeleton';
 
 interface IntangibleHeritageDetailProps {
   itemId: string;
@@ -39,15 +40,7 @@ export function IntangibleHeritageDetail({ itemId, onNavigate }: IntangibleHerit
   const { data: allItems } = useIntangibleHeritage();
 
   if (loading) {
-    return (
-      <div style={{ background: '#F0F4F8', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
-          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite', margin: '0 auto 12px' }} />
-          <div style={{ fontSize: 13 }}>{t('common.loading')}</div>
-        </div>
-      </div>
-    );
+    return <DetailPageSkeleton />;
   }
 
   if (error) {

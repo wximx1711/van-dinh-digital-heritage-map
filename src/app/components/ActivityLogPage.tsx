@@ -4,6 +4,7 @@ import { apiGet } from '../services/api';
 import {
   Search, Filter, ChevronLeft, ChevronRight, LogIn, LogOut, Plus, Pencil, Trash2, Upload, X, RefreshCw, Clock
 } from 'lucide-react';
+import { AdminTableSkeleton } from './Skeleton';
 
 interface LogEntry {
   logId: number;
@@ -158,7 +159,7 @@ export function ActivityLogPage() {
 
       <div style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         {loading ? (
-          <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+          <AdminTableSkeleton rowCount={8} columnCount={6} />
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <thead>

@@ -1,10 +1,12 @@
 ﻿import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
-import { apiGet, apiPut, apiPost } from '../services/api';
+import { apiGet, apiPut } from '../services/api';
+import { uploadFileWithProgress } from '../services/uploadService';
 import { Upload, Save, Check, AlertTriangle, Image as ImageIcon, X, Eye, History } from 'lucide-react';
 import { getImageUrl } from '../utils/url';
 import { MediaPicker } from './MediaPicker';
 import type { AboutPageData, AboutPageHistoryItem } from '../../core/types';
+import { FormSkeleton, Skeleton } from './Skeleton';
 
 export function AboutPageManagement() {
   const { lang, t } = useLanguage();
@@ -22,6 +24,7 @@ export function AboutPageManagement() {
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showPreview, setShowPreview] = useState(false);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
@@ -124,16 +127,23 @@ export function AboutPageManagement() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
+    setUploadProgress(0);
     try {
       const formData = new FormData();
       formData.append('file', file);
-      const result = await apiPost<{ url: string }>('/uploads/images', formData, true);
+      const result = await uploadFileWithProgress({
+        path: '/uploads/images',
+        formData,
+        onProgress: setUploadProgress,
+      });
       setBannerImage(result.url);
       setFormErrors(prev => { const next = { ...prev }; delete next.bannerImage; return next; });
+      showToast(lang === 'vi' ? 'Tải ảnh thành công' : 'Upload successful');
     } catch {
       showToast(lang === 'vi' ? 'Tải ảnh thất bại' : 'Upload failed', 'error');
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -153,7 +163,7 @@ export function AboutPageManagement() {
   };
 
   if (loading) {
-    return <div style={{ padding: '48px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>;
+    return <FormSkeleton />;
   }
 
   return (
@@ -200,7 +210,7 @@ export function AboutPageManagement() {
                   cursor: uploading ? 'wait' : 'pointer', opacity: uploading ? 0.7 : 1,
                 }}>
                   <Upload size={14} />
-                  {uploading ? (lang === 'vi' ? 'Đang tải...' : 'Uploading...') : (lang === 'vi' ? 'Chọn ảnh' : 'Choose Image')}
+                  {uploading ? `${uploadProgress}%` : (lang === 'vi' ? 'Chọn ảnh' : 'Choose Image')}
                   <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={handleBannerUpload} disabled={uploading} />
                 </label>
                 <div onClick={openMediaPicker}
@@ -208,7 +218,12 @@ export function AboutPageManagement() {
                   <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
                 </div>
               </div>
-              <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB'}</p>
+              {uploading && (
+                <div style={{ marginTop: 8, width: 320, height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{ width: `${uploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+                </div>
+              )}
+              <p style={{ fontSize: 10, color: '#cbced4', margin: uploading ? '4px 0 0' : '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB'}</p>
               {bannerImage && (
                 <button onClick={() => setBannerImage('')} style={{
                   marginTop: 6, padding: '4px 10px', borderRadius: 4, border: '1px solid rgba(231,76,60,0.3)',
@@ -359,7 +374,15 @@ export function AboutPageManagement() {
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
               {loadingHistory ? (
-                <div style={{ textAlign: 'center', padding: 24, color: '#5d7a8c', fontSize: 13 }}>{t('common.loading')}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} style={{ background: 'white', borderRadius: 8, padding: 14, border: '1px solid rgba(15,61,94,0.1)' }}>
+                      <Skeleton width="40%" height={11} borderRadius={3} style={{ marginBottom: 8 }} />
+                      <Skeleton height={13} borderRadius={3} style={{ marginBottom: 4 }} />
+                      <Skeleton width="60%" height={13} borderRadius={3} />
+                    </div>
+                  ))}
+                </div>
               ) : historyList.length === 0 ? (
                 <div style={{ textAlign: 'center', padding: 24, color: '#5d7a8c', fontSize: 13 }}>
                   {lang === 'vi' ? 'Chưa có lịch sử chỉnh sửa' : 'No edit history available'}

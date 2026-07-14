@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useState } from 'react';
 
 export type Lang = 'vi' | 'en';
 
@@ -240,8 +240,28 @@ const LanguageContext = createContext<LanguageContextType>({
   t: (key) => key,
 });
 
+const STORAGE_KEY = 'van-dinh-language';
+
+function getInitialLang(): Lang {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === 'en' || stored === 'vi') return stored;
+  } catch {
+    // localStorage unavailable (e.g. private browsing in some browsers)
+  }
+  return 'vi';
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Lang>('vi');
+  const [lang, setLangState] = useState<Lang>(getInitialLang);
+  const setLang = useCallback((next: Lang) => {
+    setLangState(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      // silent
+    }
+  }, []);
   const t = (key: string) => translations[key]?.[lang] ?? key;
   return (
     <LanguageContext.Provider value={{ lang, setLang, t }}>

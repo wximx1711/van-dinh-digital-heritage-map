@@ -9,6 +9,7 @@ import {
   ArrowRight, Eye, MapPin
 } from 'lucide-react';
 import type { StatisticsOverview, HeritageType } from '../../core/types';
+import { StatsSkeleton } from './Skeleton';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const classificationLabels: Record<string, { vi: string; en: string }> = {
@@ -46,11 +47,7 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
   }, []);
 
   if (loading) {
-    return (
-      <div style={{ background: '#F0F4F8', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5d7a8c', fontSize: 13 }}>
-        {t('common.loading')}
-      </div>
-    );
+    return <StatsSkeleton />;
   }
 
   if (!data) {

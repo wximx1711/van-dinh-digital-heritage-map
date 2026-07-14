@@ -6,6 +6,7 @@ import { useHeritageMapMarkers } from '../../presentation/hooks/useHeritageMapMa
 import { haversineDistance, openGoogleMapsDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
+import { Skeleton } from './Skeleton';
 import { CategoryLegend } from './CategoryLegend';
 import { HERITAGE_TYPES } from '../constants';
 import type { MapMarker, HeritageType } from '../../core/types';
@@ -296,21 +297,11 @@ export function HeritageMapSection({ apiKey, onNavigate, className }: HeritageMa
               <div style={{ fontSize: 13, color: '#E74C3C', marginBottom: 8 }}>{error!.message}</div>
             </>
           ) : (
-            <>
-              <style>{`@keyframes hms-spin { to { transform: rotate(360deg); } }`}</style>
-              <div
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: '50%',
-                  border: '3px solid rgba(15,61,94,0.2)',
-                  borderTopColor: '#0F3D5E',
-                  animation: 'hms-spin 0.8s linear infinite',
-                  margin: '0 auto 12px',
-                }}
-              />
-              <div style={{ fontSize: 13 }}>{t('common.loading')}</div>
-            </>
+            <div style={{ width: '100%', height: '100%', padding: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Skeleton height={36} borderRadius={8} />
+              <Skeleton height={36} borderRadius={8} />
+              <Skeleton height="60%" borderRadius={10} style={{ flex: 1 }} />
+            </div>
           )}
         </div>
       </div>
