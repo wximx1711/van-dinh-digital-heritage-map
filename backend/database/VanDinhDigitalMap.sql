@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-15T12:46:01Z
+    GENERATED: 2026-07-15T13:40:02Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
