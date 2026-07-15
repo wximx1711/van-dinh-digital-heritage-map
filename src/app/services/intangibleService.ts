@@ -1,5 +1,8 @@
 import { apiGet, apiPost, apiPut, apiDelete } from './api';
+import { getCache, setCache, clearCache, dedupeFetch } from './cache';
 import type { IntangibleHeritage } from '../../core/types';
+
+const CACHE_KEY_INTANGIBLE = 'intangibleHeritage';
 
 interface IntangibleHeritageDto {
   id: string;
@@ -123,17 +126,26 @@ export async function fetchIntangibleHeritageList(q?: string, category?: string,
 }
 
 export async function fetchIntangibleHeritage(): Promise<IntangibleHeritage[]> {
-  const result = await apiGet<IntangibleSearchResult>('/intangible-heritage?pageSize=100');
-  return result.data.map(toIntangibleHeritage);
+  const cached = getCache<IntangibleHeritage[]>(CACHE_KEY_INTANGIBLE);
+  if (cached) return cached;
+
+  return dedupeFetch(CACHE_KEY_INTANGIBLE, async () => {
+    const result = await apiGet<IntangibleSearchResult>('/intangible-heritage?pageSize=100');
+    const items = result.data.map(toIntangibleHeritage);
+    setCache(CACHE_KEY_INTANGIBLE, items);
+    return items;
+  });
 }
 
 export async function createIntangibleHeritage(data: Record<string, unknown>): Promise<IntangibleHeritage> {
   const dto = await apiPost<IntangibleHeritageDto>('/intangible-heritage', data);
+  clearCache(CACHE_KEY_INTANGIBLE);
   return toIntangibleHeritage(dto);
 }
 
 export async function updateIntangibleHeritage(id: string, data: Record<string, unknown>): Promise<IntangibleHeritage> {
   const dto = await apiPut<IntangibleHeritageDto>(`/intangible-heritage/${encodeURIComponent(id)}`, data);
+  clearCache(CACHE_KEY_INTANGIBLE);
   return toIntangibleHeritage(dto);
 }
 
@@ -144,4 +156,5 @@ export async function fetchIntangibleHeritageById(id: string): Promise<Intangibl
 
 export async function deleteIntangibleHeritage(id: string): Promise<void> {
   await apiDelete(`/intangible-heritage/${encodeURIComponent(id)}`);
+  clearCache(CACHE_KEY_INTANGIBLE);
 }

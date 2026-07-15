@@ -1,4 +1,5 @@
 import type { Lang } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { getImageUrl } from '../utils/url';
 
 interface RelatedItem {
@@ -33,7 +34,7 @@ export function RelatedItems({ title, items, onItemClick, lang }: RelatedItemsPr
             }}
             onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = '#F0F4F8'; }}
             onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}>
-            <img src={getImageUrl(rs.image)} alt=""
+            <LazyImage src={getImageUrl(rs.image)} alt=""
               style={{ width: 52, height: 40, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }}
               onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
             <div>

@@ -6,6 +6,7 @@ import { haversineDistance, openGoogleMapsDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { CategoryLegend } from './CategoryLegend';
+import { LazyImage } from './LazyImage';
 import { HERITAGE_TYPES, classificationColors } from '../constants';
 import { getIconUrl } from '../heritageIcons';
 import type { HeritageSite, HeritageType, Classification, MapMarker } from '../../core/types';
@@ -94,7 +95,7 @@ function QrModal({ site, onClose, lang }: QrModalProps) {
 export function MapPage({ onNavigate }: MapPageProps) {
   const { lang, t } = useLanguage();
   const { data: heritageSites } = useHeritageSites();
-  const { markers } = useHeritageMapMarkers();
+  const { markers } = useHeritageMapMarkers(heritageSites);
   const typeLabels = useTypeLabels();
   const classificationLabels = useClassificationLabels();
 
@@ -263,7 +264,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
       return (
         <div style={{ maxWidth: 260, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
           <div style={{ width: '100%', height: 110, overflow: 'hidden', borderRadius: 8, marginBottom: 10, background: '#F0F4F8' }}>
-            <img
+            <LazyImage
               src={imgSrc}
               alt={lang === 'vi' ? site.nameVi : site.nameEn}
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
@@ -413,7 +414,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
                   />
                   <span style={{ fontSize: 12, color: '#1a2332', display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <img src={getIconUrl(type)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                      <LazyImage src={getIconUrl(type)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                     </div>
                     {t(`map.type.${type}`)}
                   </span>
@@ -452,7 +453,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
                 return (
                   <div key={type} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 3 }}>
                     <div style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      <img src={getIconUrl(type)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                      <LazyImage src={getIconUrl(type)} alt="" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                     </div>
                     <span style={{ fontSize: 11, color: '#1a2332' }}>{label}</span>
                   </div>

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPost, apiPut, apiDelete } from '../services/api';
 import {
@@ -6,6 +7,7 @@ import {
   ChevronLeft, ChevronRight, Users as UsersIcon, Eye, EyeOff
 } from 'lucide-react';
 import { AdminTableSkeleton } from './Skeleton';
+import { ConfirmDialog } from './ConfirmDialog';
 
 interface UserDto {
   userId: number;
@@ -19,7 +21,11 @@ interface UserDto {
 
 type FormMode = 'add' | 'edit' | null;
 
-export function UserManagement() {
+interface UserManagementProps {
+  onDirtyChange?: (dirty: boolean) => void;
+}
+
+export function UserManagement({ onDirtyChange }: UserManagementProps) {
   const { lang, t } = useLanguage();
   const [users, setUsers] = useState<UserDto[]>([]);
   const [loading, setLoading] = useState(true);
@@ -33,6 +39,36 @@ export function UserManagement() {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
   const [page, setPage] = useState(1);
+  const cleanSnapshotRef = useRef<string | null>(null);
+  const [showUnsavedConfirm, setShowUnsavedConfirm] = useState(false);
+  const pendingCloseRef = useRef<(() => void) | null>(null);
+
+  const isDirty = useMemo(() => {
+    if (!formMode || !editUser || !cleanSnapshotRef.current) return false;
+    const current = JSON.stringify({ editUser });
+    return current !== cleanSnapshotRef.current;
+  }, [formMode, editUser]);
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  const closeForm = useCallback(() => {
+    if (!formMode) return;
+    const doClose = () => {
+      setFormMode(null);
+      setEditUser(null);
+      setFormErrors({});
+      cleanSnapshotRef.current = null;
+    };
+    if (isDirty) {
+      pendingCloseRef.current = doClose;
+      setShowUnsavedConfirm(true);
+    } else {
+      doClose();
+    }
+  }, [formMode, isDirty]);
+
   const PER_PAGE = 8;
 
   const fetchUsers = async () => {
@@ -65,15 +101,19 @@ export function UserManagement() {
   };
 
   const openAdd = () => {
-    setEditUser({ username: '', password: '', fullName: '', email: '', roleName: 'MANAGER' });
+    const user = { username: '', password: '', fullName: '', email: '', roleName: 'MANAGER' };
+    setEditUser(user);
     setFormErrors({});
     setFormMode('add');
+    cleanSnapshotRef.current = JSON.stringify({ editUser: user });
   };
 
   const openEdit = (user: UserDto) => {
-    setEditUser({ userId: user.userId, username: user.username, fullName: user.fullName, email: user.email, roleName: user.roleName, status: user.status });
+    const userCopy = { userId: user.userId, username: user.username, fullName: user.fullName, email: user.email, roleName: user.roleName, status: user.status };
+    setEditUser(userCopy);
     setFormErrors({});
     setFormMode('edit');
+    cleanSnapshotRef.current = JSON.stringify({ editUser: userCopy });
   };
 
   const validateUserForm = (isCreate: boolean): boolean => {
@@ -109,6 +149,7 @@ export function UserManagement() {
       setFormMode(null);
       setEditUser(null);
       setFormErrors({});
+      cleanSnapshotRef.current = null;
       fetchUsers();
     } catch (e: any) {
       showToast(e.message || (lang === 'vi' ? 'Tạo người dùng thất bại' : 'Failed to create user'), 'error');
@@ -130,6 +171,7 @@ export function UserManagement() {
       setFormMode(null);
       setEditUser(null);
       setFormErrors({});
+      cleanSnapshotRef.current = null;
       fetchUsers();
     } catch (e: any) {
       showToast(e.message || (lang === 'vi' ? 'Cập nhật thất bại' : 'Failed to update user'), 'error');
@@ -355,13 +397,13 @@ export function UserManagement() {
       {/* Add/Edit Modal */}
       {formMode && editUser && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500 }}
-          onClick={() => { setFormMode(null); setEditUser(null); setFormErrors({}); }}>
+          onClick={closeForm}>
           <div style={{ background: 'white', borderRadius: 12, width: '90%', maxWidth: 480, boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }} onClick={e => e.stopPropagation()}>
             <div style={{ padding: '16px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>
                 {formMode === 'add' ? (lang === 'vi' ? 'Thêm người dùng' : 'Add User') : (lang === 'vi' ? 'Chỉnh sửa người dùng' : 'Edit User')}
               </span>
-              <button onClick={() => { setFormMode(null); setEditUser(null); setFormErrors({}); }}
+              <button onClick={closeForm}
                 style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}>
                 <X size={18} />
               </button>
@@ -440,7 +482,7 @@ export function UserManagement() {
               )}
             </div>
             <div style={{ padding: '14px 20px', borderTop: '1px solid rgba(15,61,94,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 10, background: '#F8FAFC' }}>
-              <button onClick={() => { setFormMode(null); setEditUser(null); setFormErrors({}); }}
+              <button onClick={closeForm}
                 style={{ padding: '9px 20px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#5d7a8c', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 {t('common.cancel')}
               </button>
@@ -476,6 +518,23 @@ export function UserManagement() {
             </div>
           </div>
         </div>
+      )}
+
+      {showUnsavedConfirm && (
+        <ConfirmDialog
+          message={lang === 'vi' ? 'Bạn có thay đổi chưa lưu. Hủy bỏ chúng?' : 'You have unsaved changes. Discard them?'}
+          onConfirm={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current?.();
+            pendingCloseRef.current = null;
+          }}
+          onCancel={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current = null;
+          }}
+          confirmLabel={lang === 'vi' ? 'Hủy bỏ' : 'Discard'}
+          cancelLabel={lang === 'vi' ? 'Tiếp tục' : 'Keep editing'}
+        />
       )}
 
       {/* Reset Password Modal */}

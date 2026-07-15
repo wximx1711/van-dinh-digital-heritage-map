@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
+import { ConfirmDialog } from './ConfirmDialog';
 
 import { getImageUrl } from '../utils/url';
 import {
@@ -22,6 +23,7 @@ import { QrManagement } from './QrManagement';
 import { SystemSettingsManagement } from './SystemSettingsManagement';
 import { RelatedLinksManagement } from './RelatedLinksManagement';
 import { ActivityLogPage } from './ActivityLogPage';
+import { LazyImage } from './LazyImage';
 
 interface AdminDashboardProps {
   onNavigate: (page: string) => void;
@@ -39,9 +41,39 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const typeLabels = useTypeLabels();
   const statusLabels = useStatusLabels();
   const [section, setSection] = useState<AdminSection>('dashboard');
+  const [formDirty, setFormDirty] = useState(false);
+  const [pendingSection, setPendingSection] = useState<AdminSection | null>(null);
+  const [showNavConfirm, setShowNavConfirm] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+
+  const handleDirtyChange = useCallback((dirty: boolean) => {
+    setFormDirty(dirty);
+  }, []);
+
+  const handleNavClick = useCallback((target: AdminSection) => {
+    if (formDirty && section !== target) {
+      setPendingSection(target);
+      setShowNavConfirm(true);
+    } else {
+      setSection(target);
+    }
+  }, [formDirty, section]);
+
+  const confirmNav = useCallback(() => {
+    setShowNavConfirm(false);
+    setFormDirty(false);
+    if (pendingSection) {
+      setSection(pendingSection);
+      setPendingSection(null);
+    }
+  }, [pendingSection]);
+
+  const cancelNav = useCallback(() => {
+    setShowNavConfirm(false);
+    setPendingSection(null);
+  }, []);
   const totalImages = heritageSites.reduce((s, h) => s + (h.images?.length || 0), 0);
   const totalVideos = 0;
   const totalDocuments = 0;
@@ -141,7 +173,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
           {navItems.map(item => (
             <button
               key={item.key}
-              onClick={() => setSection(item.key as AdminSection)}
+              onClick={() => handleNavClick(item.key as AdminSection)}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center',
                 gap: sidebarOpen ? 10 : 0, justifyContent: sidebarOpen ? 'flex-start' : 'center',
@@ -386,14 +418,14 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                 <div style={{ background: 'white', borderRadius: 10, boxShadow: '0 2px 8px rgba(15,61,94,0.06)', overflow: 'hidden' }}>
                   <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(15,61,94,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: 13, fontWeight: 700, color: '#0F3D5E' }}>{t('admin.recent_updates')}</span>
-                    <button onClick={() => setSection('heritage')} style={{ background: 'none', border: 'none', color: '#D4A017', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
+                    <button onClick={() => handleNavClick('heritage')} style={{ background: 'none', border: 'none', color: '#D4A017', fontSize: 12, cursor: 'pointer', fontWeight: 600 }}>
                       {lang === 'vi' ? 'Xem tất cả' : 'View all'}
                     </button>
                   </div>
                   <div>
                     {recentUpdates.map(site => (
                       <div key={site.id} style={{ padding: '10px 16px', borderBottom: '1px solid rgba(15,61,94,0.04)', display: 'flex', alignItems: 'center', gap: 10 }}>
-                        <img src={getImageUrl(site.image)} alt="" style={{ width: 40, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
+                        <LazyImage src={getImageUrl(site.image)} alt="" style={{ width: 40, height: 32, borderRadius: 6, objectFit: 'cover', flexShrink: 0 }} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 12, fontWeight: 600, color: '#0F3D5E', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {lang === 'vi' ? site.nameVi : site.nameEn}
@@ -433,7 +465,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
                       ]).map(a => (
                         <button
                           key={a.label}
-                          onClick={() => setSection(a.section)}
+                          onClick={() => handleNavClick(a.section)}
                           style={{
                             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             padding: '10px 12px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.1)',
@@ -458,7 +490,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
                     </div>
                     {['active', 'maintenance', 'closed'].map(status => {
                       const count = heritageSites.filter(s => s.status === status).length;
-                      const pct = Math.round((count / heritageSites.length) * 100);
+                      const pct = heritageSites.length > 0 ? Math.round((count / heritageSites.length) * 100) : 0;
                       return (
                         <div key={status} style={{ marginBottom: 10 }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
@@ -478,28 +510,38 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           )}
 
           {section === 'heritage' && (
-            <HeritageManagement onNavigate={onNavigate} />
+            <HeritageManagement onNavigate={onNavigate} onDirtyChange={handleDirtyChange} />
           )}
 
           {section === 'intangible' && (
-            <IntangibleManagement />
+            <IntangibleManagement onDirtyChange={handleDirtyChange} />
           )}
 
           {section === 'users' && (
-            <UserManagement />
+            <UserManagement onDirtyChange={handleDirtyChange} />
           )}
 
-          {section === 'categories' && <HeritageCategoriesManagement />}
-          {section === 'monthly-updates' && <MonthlyUpdatesManagement />}
-          {section === 'about' && <AboutPageManagement />}
+          {section === 'categories' && <HeritageCategoriesManagement onDirtyChange={handleDirtyChange} />}
+          {section === 'monthly-updates' && <MonthlyUpdatesManagement onDirtyChange={handleDirtyChange} />}
+          {section === 'about' && <AboutPageManagement onDirtyChange={handleDirtyChange} />}
           {section === 'media' && <MediaManagement />}
           {section === 'qr' && <QrManagement />}
-          {section === 'settings' && <SystemSettingsManagement />}
-          {section === 'related-links' && <RelatedLinksManagement />}
+          {section === 'settings' && <SystemSettingsManagement onDirtyChange={handleDirtyChange} />}
+          {section === 'related-links' && <RelatedLinksManagement onDirtyChange={handleDirtyChange} />}
 
           {section === 'activity-logs' && <ActivityLogPage />}
         </div>
       </div>
+
+      {showNavConfirm && (
+        <ConfirmDialog
+          message={lang === 'vi' ? 'Bạn có thay đổi chưa lưu. Hủy bỏ chúng?' : 'You have unsaved changes. Discard them?'}
+          onConfirm={confirmNav}
+          onCancel={cancelNav}
+          confirmLabel={lang === 'vi' ? 'Hủy bỏ' : 'Discard'}
+          cancelLabel={lang === 'vi' ? 'Tiếp tục' : 'Keep editing'}
+        />
+      )}
     </div>
   );
 }

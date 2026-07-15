@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { createHeritageSite, updateHeritageSite, deleteHeritageSite } from '../services/heritageService';
@@ -8,15 +9,18 @@ import type { HeritageSite, Classification, HeritageType, HeritageStatus } from 
 import { classificationColors, statusColors } from '../constants';
 import { getImageUrl } from '../utils/url';
 import { MediaPicker } from './MediaPicker';
+import { ConfirmDialog } from './ConfirmDialog';
 import {
   Plus, Search, Filter, Eye, Pencil, Trash2, X, Upload, QrCode,
   ChevronLeft, ChevronRight, MapPin, Check, AlertTriangle, GripVertical,
   Video, FileText, Image as ImageIcon, Download
 } from 'lucide-react';
 import { Skeleton } from './Skeleton';
+import { LazyImage } from './LazyImage';
 
 interface HeritageManagementProps {
   onNavigate?: (page: string, id?: string) => void;
+  onDirtyChange?: (dirty: boolean) => void;
 }
 
 type FormMode = 'add' | 'edit' | null;
@@ -51,7 +55,7 @@ function isValidGoogleMapsUrl(url: string): boolean {
   }
 }
 
-export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
+export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManagementProps) {
   const { lang, t } = useLanguage();
   const { data: apiSites, refetch } = useHeritageSites();
   const classificationLabels = useClassificationLabels();
@@ -86,6 +90,43 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const [loadingDocs, setLoadingDocs] = useState(false);
   const [showDocUpload, setShowDocUpload] = useState(false);
   const docInputRef = useRef<HTMLInputElement>(null);
+  const cleanSnapshotRef = useRef<string | null>(null);
+  const [showUnsavedConfirm, setShowUnsavedConfirm] = useState(false);
+  const pendingCloseRef = useRef<(() => void) | null>(null);
+
+  const isDirty = useMemo(() => {
+    if (!formMode || !editSite || !cleanSnapshotRef.current) return false;
+    const current = JSON.stringify({
+      editSite,
+      galleryImages,
+      videos,
+      documents,
+    });
+    return current !== cleanSnapshotRef.current;
+  }, [formMode, editSite, galleryImages, videos, documents]);
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  const closeForm = useCallback(() => {
+    if (!formMode) return;
+    const doClose = () => {
+      setFormMode(null);
+      setEditSite(null);
+      setFormErrors({});
+      setGalleryImages([]);
+      setVideos([]);
+      setDocuments([]);
+      cleanSnapshotRef.current = null;
+    };
+    if (isDirty) {
+      pendingCloseRef.current = doClose;
+      setShowUnsavedConfirm(true);
+    } else {
+      doClose();
+    }
+  }, [formMode, isDirty]);
 
   const PER_PAGE = 6;
 
@@ -124,28 +165,46 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
   const loadMedia = async (siteId: string) => {
     setLoadingVideos(true);
     setLoadingDocs(true);
+    let loadedVideos: VideoAttachment[] = [];
+    let loadedDocs: DocumentAttachment[] = [];
     try {
       const v = await apiGet<any[]>('/heritage/' + encodeURIComponent(siteId) + '/media/videos');
-      setVideos(Array.isArray(v) ? v.map((x: any) => ({ videoId: x.videoId, title: x.title || '', videoType: x.videoType || '', videoUrl: x.videoUrl || '' })) : []);
+      loadedVideos = Array.isArray(v) ? v.map((x: any) => ({ videoId: x.videoId, title: x.title || '', videoType: x.videoType || '', videoUrl: x.videoUrl || '' })) : [];
+      setVideos(loadedVideos);
     } catch { setVideos([]); }
     try {
       const d = await apiGet<any[]>('/heritage/' + encodeURIComponent(siteId) + '/media/documents');
-      setDocuments(Array.isArray(d) ? d.map((x: any) => ({ documentId: x.documentId, fileName: x.fileName || '', fileUrl: x.fileUrl || '', fileType: x.fileType || '', fileSize: x.fileSize || 0 })) : []);
+      loadedDocs = Array.isArray(d) ? d.map((x: any) => ({ documentId: x.documentId, fileName: x.fileName || '', fileUrl: x.fileUrl || '', fileType: x.fileType || '', fileSize: x.fileSize || 0 })) : [];
+      setDocuments(loadedDocs);
     } catch { setDocuments([]); }
     setLoadingVideos(false);
     setLoadingDocs(false);
+    cleanSnapshotRef.current = JSON.stringify({
+      editSite,
+      galleryImages,
+      videos: loadedVideos,
+      documents: loadedDocs,
+    });
   };
 
   const openEdit = async (site: HeritageSite) => {
-    setEditSite({ ...site });
-    setGalleryImages(site.images.length > 0 ? [...site.images] : []);
+    const siteCopy = { ...site };
+    setEditSite(siteCopy);
+    const initialGallery = site.images.length > 0 ? [...site.images] : [];
+    setGalleryImages(initialGallery);
     setFormErrors({});
     setFormMode('edit');
+    cleanSnapshotRef.current = JSON.stringify({
+      editSite: siteCopy,
+      galleryImages: initialGallery,
+      videos: [],
+      documents: [],
+    });
     await loadMedia(site.id);
   };
 
   const openAdd = () => {
-    setEditSite({
+    const newSite = {
       id: '',
       code: `VĐHN-DT-${String(sites.length + 1).padStart(3, '0')}`,
       nameVi: '', nameEn: '', type: '' as HeritageType, classification: 'unranked',
@@ -157,12 +216,19 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
       images: [],
       updatedAt: new Date().toISOString().slice(0, 10),
       yearBuilt: '', guardian: '',
-    });
+    };
+    setEditSite(newSite);
     setGalleryImages([]);
     setVideos([]);
     setDocuments([]);
     setFormErrors({});
     setFormMode('add');
+    cleanSnapshotRef.current = JSON.stringify({
+      editSite: newSite,
+      galleryImages: [],
+      videos: [],
+      documents: [],
+    });
   };
 
   const validateForm = (): boolean => {
@@ -267,6 +333,10 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
       setFormMode(null);
       setEditSite(null);
       setFormErrors({});
+      cleanSnapshotRef.current = null;
+      setGalleryImages([]);
+      setVideos([]);
+      setDocuments([]);
       refetch();
     } catch (err) {
       const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Lỗi khi lưu dữ liệu' : 'Failed to save data');
@@ -519,7 +589,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                 <td style={{ padding: '12px 14px', fontSize: 11, color: '#5d7a8c', fontWeight: 600 }}>{site.code}</td>
                 <td style={{ padding: '12px 14px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <img src={getImageUrl(site.image)} alt="" style={{ width: 36, height: 28, borderRadius: 4, objectFit: 'cover' }} />
+                    <LazyImage src={getImageUrl(site.image)} alt="" style={{ width: 36, height: 28, borderRadius: 4, objectFit: 'cover' }} />
                     <div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{lang === 'vi' ? site.nameVi : site.nameEn}</div>
                       <div style={{ fontSize: 10, color: '#5d7a8c', display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -590,12 +660,12 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
       {/* Add/Edit Modal */}
       {formMode && editSite && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500 }}
-          onClick={() => { setFormMode(null); setEditSite(null); setFormErrors({}); }}>
+          onClick={closeForm}>
           <div style={{ background: 'white', borderRadius: 12, width: '95%', maxWidth: 860, maxHeight: '92vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
             onClick={e => e.stopPropagation()}>
             <div style={{ padding: '14px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>{formMode === 'add' ? t('hm.add') : t('hm.edit')}</span>
-              <button onClick={() => { setFormMode(null); setEditSite(null); setFormErrors({}); }}
+              <button onClick={closeForm}
                 style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}>
                 <X size={18} />
               </button>
@@ -707,7 +777,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                     onClick={() => !uploading && fileInputRef.current?.click()}
                     style={{ display: 'flex', gap: 12, alignItems: 'flex-start', padding: '12px', borderRadius: 8, border: `2px dashed ${dragOver ? '#D4A017' : formErrors.image ? '#E74C3C' : 'rgba(15,61,94,0.15)'}`, background: dragOver ? '#FEF9E7' : '#F8FAFC', cursor: uploading ? 'wait' : 'pointer', transition: 'all 0.2s' }}>
                     <div style={{ width: 120, height: 90, borderRadius: 8, overflow: 'hidden', background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                      {editSite.image ? <img src={getImageUrl(editSite.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      {editSite.image ? <LazyImage src={getImageUrl(editSite.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         : <div style={{ textAlign: 'center', padding: 8 }}><Upload size={24} style={{ color: '#5d7a8c', opacity: 0.5, marginBottom: 4 }} /><span style={{ fontSize: 11, color: '#5d7a8c' }}>{lang === 'vi' ? 'Kéo ảnh vào đây' : 'Drop image here'}</span></div>}
                     </div>
                     <div>
@@ -749,7 +819,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                         <div style={{ position: 'absolute', top: 2, left: 2, width: 18, height: 18, borderRadius: 4, background: 'rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
                           <GripVertical size={10} />
                         </div>
-                        <img src={getImageUrl(url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        <LazyImage src={getImageUrl(url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                           onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
                         <button onClick={() => removeGalleryImage(i)}
                           style={{ position: 'absolute', top: 2, right: 2, width: 18, height: 18, borderRadius: '50%', background: 'rgba(231,76,60,0.85)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -868,7 +938,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                 style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 <Eye size={14} /> {lang === 'vi' ? 'Xem trước' : 'Preview'}
               </button>
-              <button onClick={() => { setFormMode(null); setEditSite(null); setFormErrors({}); }}
+              <button onClick={closeForm}
                 style={{ padding: '9px 20px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#5d7a8c', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 {t('common.cancel')}
               </button>
@@ -892,7 +962,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
               <button onClick={() => setShowPreview(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
-              {editSite.image && <img src={getImageUrl(editSite.image)} alt="" style={{ width: '100%', height: 180, objectFit: 'cover', borderRadius: 8, marginBottom: 12 }} />}
+              {editSite.image && <LazyImage src={getImageUrl(editSite.image)} alt="" style={{ width: '100%', height: 180, objectFit: 'cover', borderRadius: 8, marginBottom: 12 }} />}
               <h2 style={{ color: '#0F3D5E', fontSize: 18, fontFamily: 'Merriweather, serif', margin: '0 0 4px' }}>{editSite.nameVi}</h2>
               <p style={{ color: '#5d7a8c', fontSize: 12, margin: '0 0 8px' }}>{editSite.nameEn}</p>
               <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
@@ -905,7 +975,7 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E', marginBottom: 8 }}>{lang === 'vi' ? 'Thư viện ảnh' : 'Gallery'}</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6 }}>
                     {galleryImages.slice(0, 8).map((url, i) => (
-                      <img key={i} src={getImageUrl(url)} alt="" style={{ width: '100%', height: 60, objectFit: 'cover', borderRadius: 4 }} />
+                      <LazyImage key={i} src={getImageUrl(url)} alt="" style={{ width: '100%', height: 60, objectFit: 'cover', borderRadius: 4 }} />
                     ))}
                   </div>
                 </div>
@@ -928,6 +998,24 @@ export function HeritageManagement({ onNavigate }: HeritageManagementProps) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Unsaved changes confirm */}
+      {showUnsavedConfirm && (
+        <ConfirmDialog
+          message={lang === 'vi' ? 'Bạn có thay đổi chưa lưu. Hủy bỏ chúng?' : 'You have unsaved changes. Discard them?'}
+          onConfirm={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current?.();
+            pendingCloseRef.current = null;
+          }}
+          onCancel={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current = null;
+          }}
+          confirmLabel={lang === 'vi' ? 'Hủy bỏ' : 'Discard'}
+          cancelLabel={lang === 'vi' ? 'Tiếp tục' : 'Keep editing'}
+        />
       )}
 
       {/* Media Picker */}

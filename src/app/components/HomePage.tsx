@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
 import { classificationColors, classificationBackgrounds, intangibleCategoryIcons } from '../constants';
 import { getImageUrl } from '../utils/url';
@@ -221,7 +222,7 @@ const handleSearch = () => {
               background: '#c8d8c0',
             }}
           >
-            <img
+<LazyImage 
               src="https://images.unsplash.com/photo-1758298135151-e1283f571030?w=1200&h=400&fit=crop&auto=format"
               alt={lang === 'vi' ? 'Bản đồ khu vực Vân Đình' : 'Van Dinh area map'}
               style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.6 }}
@@ -308,7 +309,7 @@ const handleSearch = () => {
               >
                 {/* Image */}
                 <div style={{ position: 'relative', height: 180, overflow: 'hidden', background: '#dce8f0' }}>
-                  <img
+      <LazyImage 
                     src={getImageUrl(site.image)}
                     alt={lang === 'vi' ? site.nameVi : site.nameEn}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s' }}
@@ -425,7 +426,7 @@ const handleSearch = () => {
                 }}
               >
                 <div style={{ position: 'relative', height: 160, background: '#dce8f0', overflow: 'hidden' }}>
-                  <img
+      <LazyImage 
                     src={getImageUrl(item.image)}
                     alt={lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}

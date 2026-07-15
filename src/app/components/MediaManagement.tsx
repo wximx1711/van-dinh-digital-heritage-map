@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { apiGet, apiPost, apiDelete } from '../services/api';
 import { uploadFileWithProgress } from '../services/uploadService';
 import type { MediaFile, PagedResult, MediaSearchRequest } from '../../core/types';
@@ -263,7 +264,7 @@ export function MediaManagement() {
               <span style={{ fontSize: 10, opacity: 0.5 }}>{lang === 'vi' ? 'Lỗi tải' : 'Load error'}</span>
             </div>
           ) : (
-            <img
+            <LazyImage
               src={getImageUrl(file.url)}
               alt={file.fileName}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
@@ -615,7 +616,7 @@ export function MediaManagement() {
             <button onClick={() => setPreviewUrl(null)} style={{
               position: 'absolute', top: -40, right: 0, background: 'none', border: 'none', color: 'white', cursor: 'pointer',
             }}><X size={24} /></button>
-            <img src={getImageUrl(previewUrl)} alt="" style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: 8, objectFit: 'contain' }}
+            <LazyImage src={getImageUrl(previewUrl)} alt="" style={{ maxWidth: '90vw', maxHeight: '85vh', borderRadius: 8, objectFit: 'contain' }}
               onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }} />
           </div>
         </div>

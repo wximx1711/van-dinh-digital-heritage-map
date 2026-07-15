@@ -1,12 +1,18 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPut } from '../services/api';
 import { Save, Check, AlertTriangle, Upload } from 'lucide-react';
 import { getImageUrl } from '../utils/url';
 import { FormSkeleton } from './Skeleton';
+import { LazyImage } from './LazyImage';
 import { uploadFileWithProgress } from '../services/uploadService';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 
-export function SystemSettingsManagement() {
+interface SystemSettingsManagementProps {
+  onDirtyChange?: (dirty: boolean) => void;
+}
+
+export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManagementProps) {
   const { lang, t } = useLanguage();
   const [form, setForm] = useState({
     websiteName: '', logoUrl: '', footerText: '',
@@ -18,6 +24,22 @@ export function SystemSettingsManagement() {
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const initialSnapshotRef = useRef<string | null>(null);
+
+  const isDirty = useMemo(() => {
+    if (!initialSnapshotRef.current) return false;
+    return JSON.stringify(form) !== initialSnapshotRef.current;
+  }, [form]);
+
+  const unsaved = useUnsavedChanges(onDirtyChange);
+
+  useEffect(() => {
+    unsaved.setIsDirty(isDirty);
+  }, [isDirty]);
+
+  const saveSnapshot = useCallback(() => {
+    initialSnapshotRef.current = JSON.stringify(form);
+  }, [form]);
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
@@ -28,7 +50,7 @@ export function SystemSettingsManagement() {
     setLoading(true);
     try {
       const data = await apiGet<any>('/system-settings');
-      setForm({
+      const newForm = {
         websiteName: data.websiteName || '',
         logoUrl: data.logoUrl || '',
         footerText: data.footerText || '',
@@ -38,7 +60,9 @@ export function SystemSettingsManagement() {
         facebookUrl: data.facebookUrl || '',
         tiktokUrl: data.tiktokUrl || '',
         youtubeUrl: data.youtubeUrl || '',
-      });
+      };
+      setForm(newForm);
+      initialSnapshotRef.current = JSON.stringify(newForm);
     } catch {
       showToast(lang === 'vi' ? 'Không thể tải cài đặt' : 'Failed to load settings', 'error');
     } finally {
@@ -52,6 +76,8 @@ export function SystemSettingsManagement() {
     setSaving(true);
     try {
       await apiPut('/system-settings', form);
+      saveSnapshot();
+      unsaved.markClean();
       showToast(lang === 'vi' ? 'Đã lưu cài đặt' : 'Settings saved');
     } catch {
       showToast(lang === 'vi' ? 'Lưu thất bại' : 'Save failed', 'error');
@@ -123,7 +149,7 @@ export function SystemSettingsManagement() {
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Logo' : 'Logo'}</label>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              {form.logoUrl && <img src={getImageUrl(form.logoUrl)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />}
+              {form.logoUrl && <LazyImage src={getImageUrl(form.logoUrl)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />}
               <label style={{
                 display: 'inline-flex', alignItems: 'center', gap: 4,
                 padding: '7px 14px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600,

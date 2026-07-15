@@ -4,6 +4,7 @@ import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
 import { X, Image as ImageIcon, Check, Upload } from 'lucide-react';
 import { MediaGridSkeleton } from './Skeleton';
+import { LazyImage } from './LazyImage';
 
 interface MediaFile {
   url: string;
@@ -132,7 +133,7 @@ export function MediaPicker({ open, onClose, onSelect, onSelectMultiple, multipl
                       background: '#dce8f0', transition: 'border-color 0.15s',
                     }}
                   >
-                    <img
+<LazyImage 
                       src={getImageUrl(file.url)}
                       alt={file.fileName}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}

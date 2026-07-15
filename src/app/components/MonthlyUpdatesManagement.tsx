@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPost, apiPut, apiDelete } from '../services/api';
 import type { MonthlyUpdate } from '../../core/types';
@@ -7,10 +8,15 @@ import {
   ChevronLeft, ChevronRight, Calendar
 } from 'lucide-react';
 import { AdminTableSkeleton } from './Skeleton';
+import { ConfirmDialog } from './ConfirmDialog';
 
 type FormMode = 'add' | 'edit' | null;
 
-export function MonthlyUpdatesManagement() {
+interface MonthlyUpdatesManagementProps {
+  onDirtyChange?: (dirty: boolean) => void;
+}
+
+export function MonthlyUpdatesManagement({ onDirtyChange }: MonthlyUpdatesManagementProps) {
   const { lang, t } = useLanguage();
   const [items, setItems] = useState<MonthlyUpdate[]>([]);
   const [loading, setLoading] = useState(true);
@@ -22,6 +28,34 @@ export function MonthlyUpdatesManagement() {
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [sortField, setSortField] = useState<string>('monthLabel');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
+  const cleanSnapshotRef = useRef<string | null>(null);
+  const [showUnsavedConfirm, setShowUnsavedConfirm] = useState(false);
+  const pendingCloseRef = useRef<(() => void) | null>(null);
+
+  const isDirty = useMemo(() => {
+    if (!formMode || !editItem || !cleanSnapshotRef.current) return false;
+    const current = JSON.stringify({ editItem });
+    return current !== cleanSnapshotRef.current;
+  }, [formMode, editItem]);
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  const closeForm = useCallback(() => {
+    if (!formMode) return;
+    const doClose = () => {
+      setFormMode(null);
+      setEditItem(null);
+      cleanSnapshotRef.current = null;
+    };
+    if (isDirty) {
+      pendingCloseRef.current = doClose;
+      setShowUnsavedConfirm(true);
+    } else {
+      doClose();
+    }
+  }, [formMode, isDirty]);
 
   const PER_PAGE = 10;
 
@@ -67,13 +101,17 @@ export function MonthlyUpdatesManagement() {
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
   const openAdd = () => {
-    setEditItem({ monthLabel: '', displayVi: '', displayEn: '', updateCount: 0 });
+    const item = { monthLabel: '', displayVi: '', displayEn: '', updateCount: 0 };
+    setEditItem(item);
     setFormMode('add');
+    cleanSnapshotRef.current = JSON.stringify({ editItem: item });
   };
 
   const openEdit = (item: MonthlyUpdate) => {
-    setEditItem({ ...item });
+    const itemCopy = { ...item };
+    setEditItem(itemCopy);
     setFormMode('edit');
+    cleanSnapshotRef.current = JSON.stringify({ editItem: itemCopy });
   };
 
   const handleSave = async () => {
@@ -91,6 +129,7 @@ export function MonthlyUpdatesManagement() {
       }
       setFormMode(null);
       setEditItem(null);
+      cleanSnapshotRef.current = null;
       fetchData();
     } catch (e: any) {
       showToast(e.message || (lang === 'vi' ? 'Lỗi khi lưu' : 'Save failed'), 'error');
@@ -245,13 +284,13 @@ export function MonthlyUpdatesManagement() {
 
       {formMode && editItem && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500 }}
-          onClick={() => { setFormMode(null); setEditItem(null); }}>
+          onClick={closeForm}>
           <div style={{ background: 'white', borderRadius: 12, width: '90%', maxWidth: 480, boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }} onClick={e => e.stopPropagation()}>
             <div style={{ padding: '16px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>
                 {formMode === 'add' ? (lang === 'vi' ? 'Thêm bản ghi' : 'Add Record') : (lang === 'vi' ? 'Chỉnh sửa' : 'Edit Record')}
               </span>
-              <button onClick={() => { setFormMode(null); setEditItem(null); }}
+              <button onClick={closeForm}
                 style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
             <div style={{ padding: '20px' }}>
@@ -273,7 +312,7 @@ export function MonthlyUpdatesManagement() {
               </div>
             </div>
             <div style={{ padding: '14px 20px', borderTop: '1px solid rgba(15,61,94,0.1)', display: 'flex', justifyContent: 'flex-end', gap: 10, background: '#F8FAFC' }}>
-              <button onClick={() => { setFormMode(null); setEditItem(null); }}
+              <button onClick={closeForm}
                 style={{ padding: '9px 20px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#5d7a8c', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 {t('common.cancel')}</button>
               <button onClick={handleSave}
@@ -282,6 +321,23 @@ export function MonthlyUpdatesManagement() {
             </div>
           </div>
         </div>
+      )}
+
+      {showUnsavedConfirm && (
+        <ConfirmDialog
+          message={lang === 'vi' ? 'Bạn có thay đổi chưa lưu. Hủy bỏ chúng?' : 'You have unsaved changes. Discard them?'}
+          onConfirm={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current?.();
+            pendingCloseRef.current = null;
+          }}
+          onCancel={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current = null;
+          }}
+          confirmLabel={lang === 'vi' ? 'Hủy bỏ' : 'Discard'}
+          cancelLabel={lang === 'vi' ? 'Tiếp tục' : 'Keep editing'}
+        />
       )}
 
       {deleteId !== null && (

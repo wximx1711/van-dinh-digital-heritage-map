@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPost, apiPut, apiDelete } from '../services/api';
 import { Plus, Save, Check, AlertTriangle, Pencil, Trash2, X, ArrowUp, ArrowDown, EyeOff, Eye } from 'lucide-react';
 import { FormSkeleton } from './Skeleton';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 
 interface RelatedLink {
   linkId: number;
@@ -13,7 +14,11 @@ interface RelatedLink {
   createdAt: string;
 }
 
-export function RelatedLinksManagement() {
+interface RelatedLinksManagementProps {
+  onDirtyChange?: (dirty: boolean) => void;
+}
+
+export function RelatedLinksManagement({ onDirtyChange }: RelatedLinksManagementProps) {
   const { lang, t } = useLanguage();
   const [links, setLinks] = useState<RelatedLink[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,6 +26,22 @@ export function RelatedLinksManagement() {
   const [form, setForm] = useState({ title: '', url: '', displayOrder: 0, isEnabled: true });
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const initialSnapshotRef = useRef<string | null>(null);
+
+  const isDirty = useMemo(() => {
+    if (!initialSnapshotRef.current) return false;
+    return JSON.stringify(form) !== initialSnapshotRef.current;
+  }, [form]);
+
+  const unsaved = useUnsavedChanges(onDirtyChange);
+
+  useEffect(() => {
+    unsaved.setIsDirty(isDirty);
+  }, [isDirty]);
+
+  const saveSnapshot = useCallback(() => {
+    initialSnapshotRef.current = JSON.stringify(form);
+  }, [form]);
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
@@ -44,11 +65,15 @@ export function RelatedLinksManagement() {
   const resetForm = () => {
     setEditingId(null);
     setForm({ title: '', url: '', displayOrder: 0, isEnabled: true });
+    saveSnapshot();
+    unsaved.markClean();
   };
 
   const startEdit = (link: RelatedLink) => {
     setEditingId(link.linkId);
-    setForm({ title: link.title, url: link.url, displayOrder: link.displayOrder, isEnabled: link.isEnabled });
+    const values = { title: link.title, url: link.url, displayOrder: link.displayOrder, isEnabled: link.isEnabled };
+    setForm(values);
+    initialSnapshotRef.current = JSON.stringify(values);
   };
 
   const validate = (): string | null => {
@@ -72,6 +97,8 @@ export function RelatedLinksManagement() {
         showToast(lang === 'vi' ? 'Đã thêm' : 'Link created');
       }
       resetForm();
+      saveSnapshot();
+      unsaved.markClean();
       await fetchData();
     } catch {
       showToast(lang === 'vi' ? 'Lưu thất bại' : 'Save failed', 'error');

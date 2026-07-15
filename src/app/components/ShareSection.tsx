@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { QrCode, Share2, Download } from 'lucide-react';
 
 interface ShareSectionProps {
@@ -58,7 +59,7 @@ export function ShareSection({ qrImageUrl, title, shareUrl }: ShareSectionProps)
               border: '2px solid #0F3D5E', borderRadius: 8,
               display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
             }}>
-              <img src={qrImageUrl} alt="QR Code"
+              <LazyImage src={qrImageUrl} alt="QR Code"
                 style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                 onError={(e) => {
                   const el = e.currentTarget;

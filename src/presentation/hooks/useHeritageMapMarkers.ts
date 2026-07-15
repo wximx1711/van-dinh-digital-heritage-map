@@ -63,17 +63,21 @@ function deduplicate(sites: (HeritageSite & { lat: number; lon: number })[]): Ma
   return markers;
 }
 
-export function useHeritageMapMarkers(): UseHeritageMapMarkersResult {
+export function useHeritageMapMarkers(sites?: HeritageSite[]): UseHeritageMapMarkersResult {
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  const processSites = useCallback(async (input: HeritageSite[]) => {
+    const valid = input.filter(isValidCoordinate);
+    return deduplicate(valid);
+  }, []);
+
   const fetchMarkers = useCallback(async () => {
     try {
       setLoading(true);
-      const sites = await fetchHeritageSites();
-      const valid = sites.filter(isValidCoordinate);
-      const result = deduplicate(valid);
+      const input = sites ?? await fetchHeritageSites();
+      const result = await processSites(input);
       setMarkers(result);
       setError(null);
     } catch (err) {
@@ -81,7 +85,7 @@ export function useHeritageMapMarkers(): UseHeritageMapMarkersResult {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [sites, processSites]);
 
   useEffect(() => {
     fetchMarkers();

@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { intangibleCategoryIcons } from '../constants';
 import { fetchIntangibleHeritageList, createIntangibleHeritage, updateIntangibleHeritage, deleteIntangibleHeritage } from '../services/intangibleService';
@@ -6,12 +7,14 @@ import { apiDelete } from '../services/api';
 import { uploadFileWithProgress } from '../services/uploadService';
 import { getImageUrl } from '../utils/url';
 import { MediaPicker } from './MediaPicker';
+import { ConfirmDialog } from './ConfirmDialog';
 import {
   Plus, Search, Filter, Pencil, Trash2, X, Check, AlertTriangle, Upload,
   ChevronLeft, ChevronRight,
   Image as ImageIcon, Eye
 } from 'lucide-react';
 import { AdminTableSkeleton } from './Skeleton';
+import { LazyImage } from './LazyImage';
 
 interface IntangibleItem {
   id: string;
@@ -80,7 +83,11 @@ const emptyItem: IntangibleItem = {
   existingProtectionMeasures: '', proposedProtectionMeasures: '',
 };
 
-export function IntangibleManagement() {
+interface IntangibleManagementProps {
+  onDirtyChange?: (dirty: boolean) => void;
+}
+
+export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProps) {
   const { lang, t } = useLanguage();
   const [items, setItems] = useState<IntangibleItem[]>([]);
   const [search, setSearch] = useState('');
@@ -100,6 +107,36 @@ export function IntangibleManagement() {
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [mediaPickerTarget, setMediaPickerTarget] = useState<'thumbnail' | 'gallery' | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const cleanSnapshotRef = useRef<string | null>(null);
+  const [showUnsavedConfirm, setShowUnsavedConfirm] = useState(false);
+  const pendingCloseRef = useRef<(() => void) | null>(null);
+
+  const isDirty = useMemo(() => {
+    if (!formMode || !editItem || !cleanSnapshotRef.current) return false;
+    const current = JSON.stringify({ editItem, galleryImages });
+    return current !== cleanSnapshotRef.current;
+  }, [formMode, editItem, galleryImages]);
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty, onDirtyChange]);
+
+  const closeForm = useCallback(() => {
+    if (!formMode) return;
+    const doClose = () => {
+      setFormMode(null);
+      setEditItem(null);
+      setFormErrors({});
+      setGalleryImages([]);
+      cleanSnapshotRef.current = null;
+    };
+    if (isDirty) {
+      pendingCloseRef.current = doClose;
+      setShowUnsavedConfirm(true);
+    } else {
+      doClose();
+    }
+  }, [formMode, isDirty]);
 
   const PER_PAGE = 8;
 
@@ -126,17 +163,21 @@ export function IntangibleManagement() {
   useEffect(() => { loadData(); }, [search, filterCat, page]);
 
   const openAdd = () => {
-    setEditItem({ ...emptyItem });
+    const item = { ...emptyItem };
+    setEditItem(item);
     setGalleryImages([]);
     setFormErrors({});
     setFormMode('add');
+    cleanSnapshotRef.current = JSON.stringify({ editItem: item, galleryImages: [] });
   };
 
   const openEdit = (item: IntangibleItem) => {
-    setEditItem({ ...item });
+    const itemCopy = { ...item };
+    setEditItem(itemCopy);
     setGalleryImages([]);
     setFormErrors({});
     setFormMode('edit');
+    cleanSnapshotRef.current = JSON.stringify({ editItem: itemCopy, galleryImages: [] });
   };
 
   const validateForm = (): boolean => {
@@ -214,6 +255,8 @@ export function IntangibleManagement() {
       setFormMode(null);
       setEditItem(null);
       setFormErrors({});
+      setGalleryImages([]);
+      cleanSnapshotRef.current = null;
       loadData();
     } catch (err) {
       const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Lỗi khi lưu dữ liệu' : 'Failed to save data');
@@ -409,7 +452,7 @@ export function IntangibleManagement() {
                   onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? 'white' : '#FAFBFD'; }}>
                   <td style={{ padding: '10px 14px' }}>
                     <div style={{ width: 44, height: 34, borderRadius: 4, overflow: 'hidden', background: '#dce8f0' }}>
-                      {item.image ? <img src={getImageUrl(item.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      {item.image ? <LazyImage src={getImageUrl(item.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#5d7a8c' }}>-</div>}
                     </div>
                   </td>
@@ -483,12 +526,12 @@ export function IntangibleManagement() {
       {/* Add/Edit Modal */}
       {formMode && editItem && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 500 }}
-          onClick={() => { setFormMode(null); setEditItem(null); setFormErrors({}); }}>
+          onClick={closeForm}>
           <div style={{ background: '#F0F4F8', borderRadius: 12, width: '95%', maxWidth: 860, maxHeight: '94vh', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}
             onClick={e => e.stopPropagation()}>
             <div style={{ padding: '16px 20px', background: '#0F3D5E', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
               <span style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>{formMode === 'add' ? t('im.add') : t('im.edit')}</span>
-              <button onClick={() => { setFormMode(null); setEditItem(null); setFormErrors({}); }}
+              <button onClick={closeForm}
                 style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
 
@@ -588,7 +631,7 @@ export function IntangibleManagement() {
                     <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{t('im.image')} *</label>
                     <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
                       <div style={{ width: 120, height: 90, borderRadius: 8, overflow: 'hidden', background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                        {editItem.image ? <img src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        {editItem.image ? <LazyImage src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           : <span style={{ fontSize: 11, color: '#5d7a8c' }}>{t('im.no_image')}</span>}
                       </div>
                       <div>
@@ -622,7 +665,7 @@ export function IntangibleManagement() {
                     <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 8 }}>
                       {galleryImages.map((url, i) => (
                         <div key={i} style={{ position: 'relative', width: 90, height: 70, borderRadius: 6, overflow: 'hidden', border: '1px solid rgba(15,61,94,0.1)' }}>
-                          <img src={getImageUrl(url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                          <LazyImage src={getImageUrl(url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                           <button onClick={() => removeGalleryImage(i)} style={{ position: 'absolute', top: 2, right: 2, width: 18, height: 18, borderRadius: '50%', background: 'rgba(231,76,60,0.85)', border: 'none', color: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={10} /></button>
                         </div>
                       ))}
@@ -642,7 +685,7 @@ export function IntangibleManagement() {
                 style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '9px 16px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
                 <Eye size={14} /> {lang === 'vi' ? 'Xem trước' : 'Preview'}
               </button>
-              <button onClick={() => { setFormMode(null); setEditItem(null); setFormErrors({}); }}
+              <button onClick={closeForm}
                 style={{ padding: '9px 20px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#5d7a8c', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t('common.cancel')}</button>
               <button onClick={handleSave}
                 style={{ padding: '9px 20px', borderRadius: 8, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', boxShadow: '0 4px 12px rgba(15,61,94,0.3)' }}>{t('common.save')}</button>
@@ -662,7 +705,7 @@ export function IntangibleManagement() {
               <button onClick={() => setShowPreview(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer' }}><X size={18} /></button>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
-              {editItem.image && <img src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8, marginBottom: 12 }} />}
+              {editItem.image && <LazyImage src={getImageUrl(editItem.image)} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8, marginBottom: 12 }} />}
               <h2 style={{ color: '#0F3D5E', fontSize: 18, fontFamily: 'Merriweather, serif', margin: '0 0 4px' }}>{editItem.nameVi}</h2>
               <p style={{ color: '#5d7a8c', fontSize: 12, marginBottom: 8 }}>{editItem.nameEn}</p>
 
@@ -716,7 +759,7 @@ export function IntangibleManagement() {
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E', marginBottom: 8 }}>{t('im.gallery')}</div>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6 }}>
                     {galleryImages.slice(0, 6).map((url, i) => (
-                      <img key={i} src={getImageUrl(url)} alt="" style={{ width: '100%', height: 60, objectFit: 'cover', borderRadius: 4 }} />
+                      <LazyImage key={i} src={getImageUrl(url)} alt="" style={{ width: '100%', height: 60, objectFit: 'cover', borderRadius: 4 }} />
                     ))}
                   </div>
                 </div>
@@ -739,6 +782,23 @@ export function IntangibleManagement() {
             </div>
           </div>
         </div>
+      )}
+
+      {showUnsavedConfirm && (
+        <ConfirmDialog
+          message={lang === 'vi' ? 'Bạn có thay đổi chưa lưu. Hủy bỏ chúng?' : 'You have unsaved changes. Discard them?'}
+          onConfirm={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current?.();
+            pendingCloseRef.current = null;
+          }}
+          onCancel={() => {
+            setShowUnsavedConfirm(false);
+            pendingCloseRef.current = null;
+          }}
+          confirmLabel={lang === 'vi' ? 'Hủy bỏ' : 'Discard'}
+          cancelLabel={lang === 'vi' ? 'Tiếp tục' : 'Keep editing'}
+        />
       )}
 
       <MediaPicker

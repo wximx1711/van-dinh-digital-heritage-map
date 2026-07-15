@@ -8,6 +8,7 @@ import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { Skeleton } from './Skeleton';
 import { CategoryLegend } from './CategoryLegend';
+import { LazyImage } from './LazyImage';
 import { HERITAGE_TYPES } from '../constants';
 import type { MapMarker, HeritageType } from '../../core/types';
 
@@ -176,7 +177,7 @@ export function HeritageMapSection({ apiKey, onNavigate, className }: HeritageMa
       return (
         <div style={{ maxWidth: 260, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
           <div style={{ width: '100%', height: 110, overflow: 'hidden', borderRadius: 8, marginBottom: 10, background: '#F0F4F8' }}>
-            <img
+<LazyImage 
               src={imgSrc}
               alt={lang === 'vi' ? site.nameVi : site.nameEn}
               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}

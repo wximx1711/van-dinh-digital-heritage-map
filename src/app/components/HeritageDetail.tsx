@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { useHeritageSites, useHeritageSite, useTypeLabels, useClassificationLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { classificationColors, statusColors } from '../constants';
 import { apiGet } from '../services/api';
@@ -401,7 +402,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                             style={{ borderRadius: 8, overflow: 'hidden', height: 120, cursor: 'pointer', border: '2px solid transparent', transition: 'border-color 0.2s' }}
                             onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.borderColor = '#D4A017'; }}
                             onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.borderColor = 'transparent'; }}>
-                            <img src={getImageUrl(img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                            <LazyImage src={getImageUrl(img)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                           </div>
                         ))}
                       </div>

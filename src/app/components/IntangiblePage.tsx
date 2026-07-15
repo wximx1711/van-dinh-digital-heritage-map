@@ -1,4 +1,5 @@
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { useIntangibleHeritage } from '../../presentation/hooks/useHeritageData';
 import { Play, Eye } from 'lucide-react';
 import { intangibleCategoryIcons } from '../constants';
@@ -58,7 +59,7 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
               >
                 <div style={{ position: 'relative', height: 200, background: '#dce8f0', overflow: 'hidden' }}>
                   {item.image ? (
-                    <img
+<LazyImage 
                       src={getImageUrl(item.image)}
                       alt={lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}

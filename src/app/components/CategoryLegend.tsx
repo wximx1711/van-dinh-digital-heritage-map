@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { HERITAGE_TYPES, classificationColors } from '../constants';
 import { getIconUrl } from '../heritageIcons';
 import { typeLabels, classificationLabels } from '../../data/labels';
@@ -8,7 +9,7 @@ import type { Classification, HeritageType } from '../../core/types';
 function LegendPin({ type }: { type: HeritageType }) {
   return (
     <div style={{ width: 24, height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-      <img
+<LazyImage 
         src={getIconUrl(type)}
         alt=""
         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}

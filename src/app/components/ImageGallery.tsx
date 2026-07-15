@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { getImageUrl } from '../utils/url';
 import { ChevronLeft, ChevronRight, Expand, X } from 'lucide-react';
 
@@ -30,7 +31,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           position: 'relative', height: 400, background: '#dce8f0',
           display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
         }}>
-          <img
+          <LazyImage
             src={getImageUrl(images[active])}
             alt={alt}
             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
@@ -88,7 +89,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                   cursor: 'pointer', flexShrink: 0,
                   border: i === active ? '2px solid #D4A017' : '2px solid transparent',
                 }}>
-                <img src={getImageUrl(img)} alt=""
+                <LazyImage src={getImageUrl(img)} alt=""
                   style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
             ))}
@@ -134,7 +135,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           )}
           <div onClick={(e) => e.stopPropagation()}
             style={{ maxWidth: '90vw', maxHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <img src={getImageUrl(images[active])} alt={alt}
+            <LazyImage src={getImageUrl(images[active])} alt={alt}
               style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain' }} />
           </div>
           <div style={{

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
 import { Landmark, MapPin, Phone, Mail, Facebook, Youtube, Globe } from 'lucide-react';
@@ -68,7 +69,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 {s?.logoUrl ? (
-                  <img src={getImageUrl(s.logoUrl)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />
+                  <LazyImage src={getImageUrl(s.logoUrl)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />
                 ) : (
                   <Landmark size={20} color="white" />
                 )}
@@ -220,11 +221,9 @@ export function Footer({ onNavigate }: FooterProps) {
               lang === 'vi' ? 'Điều khoản sử dụng' : 'Terms of Use',
               lang === 'vi' ? 'Sitemap' : 'Sitemap',
             ].map((item) => (
-              <a key={item} href="#" style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', textDecoration: 'none' }}
-                onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#D4A017'; }}
-                onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'rgba(255,255,255,0.4)'; }}>
+              <span key={item} style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
                 {item}
-              </a>
+              </span>
             ))}
           </div>
         </div>

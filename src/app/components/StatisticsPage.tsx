@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { fetchStatisticsOverview } from '../services/statisticsService';
 import { classificationColors } from '../constants';
 import { getIconUrl } from '../heritageIcons';
@@ -249,7 +250,7 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
                   onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = '#F0F4F8'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}
                 >
-                  <img
+                  <LazyImage
                     src={getImageUrl(site.image)}
                     alt=""
                     style={{ width: 44, height: 36, borderRadius: 6, objectFit: 'cover', flexShrink: 0, background: '#dce8f0' }}
@@ -265,7 +266,7 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
                       {site.type && (
                         <>
                           <span>·</span>
-                          <img src={getIconUrl(site.type as HeritageType)} alt="" style={{ width: 14, height: 14, objectFit: 'contain', flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }} />
+                          <LazyImage src={getIconUrl(site.type as HeritageType)} alt="" style={{ width: 14, height: 14, objectFit: 'contain', flexShrink: 0, display: 'inline-block', verticalAlign: 'middle' }} />
                         </>
                       )}
                     </div>

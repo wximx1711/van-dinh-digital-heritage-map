@@ -223,6 +223,12 @@ function AppInner() {
     }
   }, []);
 
+  useEffect(() => {
+    if (page === 'admin' && auth.isAuthenticated && !auth.isAdmin && !auth.isManager) {
+      setPage('login');
+    }
+  }, [page, auth.isAuthenticated, auth.isAdmin, auth.isManager]);
+
   const navigate = (targetPage: string, id?: string) => {
     if (targetPage === 'heritage-detail' && id) setHeritageSiteId(id);
     if (targetPage === 'intangible-detail' && id) setIntangibleId(id);
@@ -263,7 +269,6 @@ function AppInner() {
       return <LoginPage onNavigate={navigate} onLoginSuccess={handleLoginSuccess} />;
     }
     if (!auth.isAdmin && !auth.isManager) {
-      navigate('login');
       return null;
     }
     return (

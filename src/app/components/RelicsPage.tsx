@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
+import { LazyImage } from './LazyImage';
 import { useHeritageSites, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
 import type { Classification, HeritageType } from '../../core/types';
 import { classificationColors, classificationBackgrounds, statusColors } from '../constants';
@@ -121,7 +122,7 @@ export function RelicsPage({ onNavigate }: RelicsPageProps) {
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 10px rgba(15,61,94,0.07)'; }}
               >
                 <div style={{ position: 'relative', height: 180, background: '#dce8f0' }}>
-                  <img src={getImageUrl(site.image)} alt={lang === 'vi' ? site.nameVi : site.nameEn} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <LazyImage src={getImageUrl(site.image)} alt={lang === 'vi' ? site.nameVi : site.nameEn} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   <div style={{ position: 'absolute', top: 10, left: 10, padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: classificationBackgrounds[site.classification], color: classificationColors[site.classification] }}>
                     {classificationLabels[site.classification][lang]}
                   </div>
@@ -164,7 +165,7 @@ export function RelicsPage({ onNavigate }: RelicsPageProps) {
                 onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 8px rgba(15,61,94,0.06)'; }}
               >
                 <div style={{ width: 120, height: 90, background: '#dce8f0', flexShrink: 0 }}>
-                  <img src={getImageUrl(site.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <LazyImage src={getImageUrl(site.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ flex: 1, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 16 }}>
                   <div style={{ flex: 1 }}>

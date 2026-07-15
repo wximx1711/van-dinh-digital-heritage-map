@@ -1,5 +1,8 @@
 import { apiGet, apiPost, apiPut, apiDelete } from './api';
+import { getCache, setCache, clearCache, dedupeFetch } from './cache';
 import type { HeritageSite } from '../../core/types';
+
+const CACHE_KEY_HERITAGE_SITES = 'heritageSites';
 
 interface HeritageDto {
   id: string;
@@ -61,8 +64,15 @@ function toHeritageSite(dto: HeritageDto): HeritageSite {
 }
 
 export async function fetchHeritageSites(): Promise<HeritageSite[]> {
-  const result = await apiGet<HeritageSearchResult>('/heritage?pageSize=100');
-  return result.data.map(toHeritageSite);
+  const cached = getCache<HeritageSite[]>(CACHE_KEY_HERITAGE_SITES);
+  if (cached) return cached;
+
+  return dedupeFetch(CACHE_KEY_HERITAGE_SITES, async () => {
+    const result = await apiGet<HeritageSearchResult>('/heritage?pageSize=100');
+    const sites = result.data.map(toHeritageSite);
+    setCache(CACHE_KEY_HERITAGE_SITES, sites);
+    return sites;
+  });
 }
 
 export async function fetchHeritageSite(id: string): Promise<HeritageSite | null> {
@@ -76,15 +86,18 @@ export async function fetchHeritageSite(id: string): Promise<HeritageSite | null
 
 export async function createHeritageSite(data: Record<string, unknown>): Promise<HeritageSite> {
   const dto = await apiPost<HeritageDto>('/heritage', data);
+  clearCache(CACHE_KEY_HERITAGE_SITES);
   return toHeritageSite(dto);
 }
 
 export async function updateHeritageSite(id: string, data: Record<string, unknown>): Promise<HeritageSite> {
   if (!id || !id.trim()) throw new Error('Cannot update: heritage ID is empty');
   const dto = await apiPut<HeritageDto>(`/heritage/${encodeURIComponent(id)}`, data);
+  clearCache(CACHE_KEY_HERITAGE_SITES);
   return toHeritageSite(dto);
 }
 
 export async function deleteHeritageSite(id: string): Promise<void> {
   await apiDelete(`/heritage/${encodeURIComponent(id)}`);
+  clearCache(CACHE_KEY_HERITAGE_SITES);
 }

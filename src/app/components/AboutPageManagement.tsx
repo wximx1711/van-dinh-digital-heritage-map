@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPut } from '../services/api';
 import { uploadFileWithProgress } from '../services/uploadService';
@@ -7,8 +7,14 @@ import { getImageUrl } from '../utils/url';
 import { MediaPicker } from './MediaPicker';
 import type { AboutPageData, AboutPageHistoryItem } from '../../core/types';
 import { FormSkeleton, Skeleton } from './Skeleton';
+import { LazyImage } from './LazyImage';
+import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 
-export function AboutPageManagement() {
+interface AboutPageManagementProps {
+  onDirtyChange?: (dirty: boolean) => void;
+}
+
+export function AboutPageManagement({ onDirtyChange }: AboutPageManagementProps) {
   const { lang, t } = useLanguage();
   const [aboutId, setAboutId] = useState<number>(0);
   const [bannerImage, setBannerImage] = useState('');
@@ -31,6 +37,23 @@ export function AboutPageManagement() {
   const [historyList, setHistoryList] = useState<AboutPageHistoryItem[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [loadingHistory, setLoadingHistory] = useState(false);
+  const initialSnapshotRef = useRef<string | null>(null);
+
+  const isDirty = useMemo(() => {
+    if (!initialSnapshotRef.current) return false;
+    const current = JSON.stringify({ bannerImage, titleVi, titleEn, introductionVi, introductionEn, mainContentVi, mainContentEn, contactInfo });
+    return current !== initialSnapshotRef.current;
+  }, [bannerImage, titleVi, titleEn, introductionVi, introductionEn, mainContentVi, mainContentEn, contactInfo]);
+
+  const unsaved = useUnsavedChanges(onDirtyChange);
+
+  useEffect(() => {
+    unsaved.setIsDirty(isDirty);
+  }, [isDirty]);
+
+  const saveSnapshot = useCallback(() => {
+    initialSnapshotRef.current = JSON.stringify({ bannerImage, titleVi, titleEn, introductionVi, introductionEn, mainContentVi, mainContentEn, contactInfo });
+  }, [bannerImage, titleVi, titleEn, introductionVi, introductionEn, mainContentVi, mainContentEn, contactInfo]);
 
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
@@ -51,6 +74,16 @@ export function AboutPageManagement() {
       setMainContentEn(data.mainContentEn || '');
       setContactInfo(data.contactInfo || '');
       setUpdatedAt(data.updatedAt || '');
+      initialSnapshotRef.current = JSON.stringify({
+        bannerImage: data.bannerImage || '',
+        titleVi: data.titleVi || '',
+        titleEn: data.titleEn || '',
+        introductionVi: data.introductionVi || '',
+        introductionEn: data.introductionEn || '',
+        mainContentVi: data.mainContentVi || '',
+        mainContentEn: data.mainContentEn || '',
+        contactInfo: data.contactInfo || '',
+      });
     } catch {
       showToast(lang === 'vi' ? 'Không thể tải dữ liệu' : 'Failed to load data', 'error');
     } finally {
@@ -115,6 +148,8 @@ export function AboutPageManagement() {
         contactInfo: contactInfo.trim() || null,
       });
       await fetchData();
+      saveSnapshot();
+      unsaved.markClean();
       showToast(lang === 'vi' ? 'Đã cập nhật trang giới thiệu' : 'About page updated');
     } catch (e: any) {
       showToast(e.message || (lang === 'vi' ? 'Lưu thất bại' : 'Save failed'), 'error');
@@ -198,7 +233,7 @@ export function AboutPageManagement() {
               background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
-              {bannerImage ? <img src={getImageUrl(bannerImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              {bannerImage ? <LazyImage src={getImageUrl(bannerImage)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 : <ImageIcon size={32} style={{ color: '#5d7a8c', opacity: 0.5 }} />}
             </div>
             <div>
@@ -349,7 +384,7 @@ export function AboutPageManagement() {
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: '20px' }}>
               {bannerImage && (
-                <img src={getImageUrl(bannerImage)} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8, marginBottom: 16 }} />
+                <LazyImage src={getImageUrl(bannerImage)} alt="" style={{ width: '100%', height: 160, objectFit: 'cover', borderRadius: 8, marginBottom: 16 }} />
               )}
               <h2 style={{ color: '#0F3D5E', fontFamily: 'Merriweather, serif', fontSize: 18, margin: '0 0 8px' }}>{titleVi}</h2>
               <div style={{ fontSize: 14, lineHeight: 1.7, color: '#1a2332', whiteSpace: 'pre-line' }}>{introductionVi}</div>
