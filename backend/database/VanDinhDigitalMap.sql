@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-15T13:49:10Z
+    GENERATED: 2026-07-15T14:10:32Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -33,15 +33,15 @@ GO
 -- ========================================
 
 CREATE TABLE [__EFMigrationsHistory] (
-    [MigrationId] nvarchar(1200) NOT NULL,
-    [ProductVersion] nvarchar(256) NOT NULL,
+    [MigrationId] nvarchar(600) NOT NULL,
+    [ProductVersion] nvarchar(128) NOT NULL,
     CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY CLUSTERED ([MigrationId])
 );
 GO
 
 CREATE TABLE [Roles] (
     [RoleId] int IDENTITY(1,1),
-    [RoleName] nvarchar(400) NOT NULL,
+    [RoleName] nvarchar(200) NOT NULL,
     CONSTRAINT [PK_Roles] PRIMARY KEY CLUSTERED ([RoleId])
 );
 GO
@@ -49,10 +49,10 @@ GO
 CREATE TABLE [Users] (
     [UserId] bigint IDENTITY(1,1),
     [RoleId] int NOT NULL,
-    [Username] nvarchar(400) NOT NULL,
-    [PasswordHash] nvarchar(2040) NOT NULL,
-    [FullName] nvarchar(800) NULL,
-    [Email] nvarchar(800) NULL,
+    [Username] nvarchar(200) NOT NULL,
+    [PasswordHash] nvarchar(1020) NOT NULL,
+    [FullName] nvarchar(400) NULL,
+    [Email] nvarchar(400) NULL,
     [Status] bit NOT NULL CONSTRAINT [DF_Users_Status] DEFAULT (CONVERT([bit],(1))),
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_Users_CreatedAt] DEFAULT (sysutcdatetime()),
     [UpdatedAt] datetime2(7) NULL,
@@ -63,7 +63,7 @@ GO
 
 CREATE TABLE [AboutPage] (
     [AboutId] int IDENTITY(1,1),
-    [BannerImage] nvarchar(4000) NULL,
+    [BannerImage] nvarchar(2000) NULL,
     [UpdatedBy] bigint NOT NULL,
     [UpdatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_AboutPage_UpdatedAt] DEFAULT (sysutcdatetime()),
     [ContactInfo] nvarchar(MAX) NULL,
@@ -71,8 +71,8 @@ CREATE TABLE [AboutPage] (
     [IntroductionVi] nvarchar(MAX) NOT NULL CONSTRAINT [DF_AboutPage_IntroductionVi] DEFAULT (N''),
     [MainContentEn] nvarchar(MAX) NOT NULL CONSTRAINT [DF_AboutPage_MainContentEn] DEFAULT (N''),
     [MainContentVi] nvarchar(MAX) NOT NULL CONSTRAINT [DF_AboutPage_MainContentVi] DEFAULT (N''),
-    [TitleEn] nvarchar(1600) NOT NULL CONSTRAINT [DF_AboutPage_TitleEn] DEFAULT (N''),
-    [TitleVi] nvarchar(1600) NOT NULL CONSTRAINT [DF_AboutPage_TitleVi] DEFAULT (N''),
+    [TitleEn] nvarchar(800) NOT NULL CONSTRAINT [DF_AboutPage_TitleEn] DEFAULT (N''),
+    [TitleVi] nvarchar(800) NOT NULL CONSTRAINT [DF_AboutPage_TitleVi] DEFAULT (N''),
     CONSTRAINT [PK_AboutPage] PRIMARY KEY CLUSTERED ([AboutId]),
     CONSTRAINT [FK_AboutPage_Users_UpdatedBy] FOREIGN KEY ([UpdatedBy]) REFERENCES [Users]([UserId])
 );
@@ -81,13 +81,13 @@ GO
 CREATE TABLE [AboutPageHistories] (
     [HistoryId] bigint IDENTITY(1,1),
     [AboutId] int NOT NULL,
-    [TitleVi] nvarchar(1600) NULL,
-    [TitleEn] nvarchar(1600) NULL,
+    [TitleVi] nvarchar(800) NULL,
+    [TitleEn] nvarchar(800) NULL,
     [IntroductionVi] nvarchar(MAX) NULL,
     [IntroductionEn] nvarchar(MAX) NULL,
     [MainContentVi] nvarchar(MAX) NULL,
     [MainContentEn] nvarchar(MAX) NULL,
-    [BannerImage] nvarchar(4000) NULL,
+    [BannerImage] nvarchar(2000) NULL,
     [ContactInfo] nvarchar(MAX) NULL,
     [UpdatedBy] bigint NOT NULL,
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_AboutPageHistories_CreatedAt] DEFAULT (sysutcdatetime()),
@@ -99,12 +99,12 @@ GO
 CREATE TABLE [ActivityLogs] (
     [LogId] bigint IDENTITY(1,1),
     [UserId] bigint NOT NULL,
-    [Action] nvarchar(400) NULL,
-    [EntityName] nvarchar(800) NULL,
+    [Action] nvarchar(200) NULL,
+    [EntityName] nvarchar(400) NULL,
     [EntityId] bigint NULL,
     [Description] nvarchar(MAX) NULL,
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_ActivityLogs_CreatedAt] DEFAULT (sysutcdatetime()),
-    [IpAddress] nvarchar(360) NULL,
+    [IpAddress] nvarchar(180) NULL,
     CONSTRAINT [PK_ActivityLogs] PRIMARY KEY CLUSTERED ([LogId]),
     CONSTRAINT [FK_ActivityLogs_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId])
 );
@@ -112,37 +112,37 @@ GO
 
 CREATE TABLE [HeritageCategories] (
     [CategoryId] int IDENTITY(1,1),
-    [Code] nvarchar(240) NOT NULL,
-    [NameVi] nvarchar(800) NOT NULL,
-    [NameEn] nvarchar(800) NOT NULL,
-    [IconUrl] nvarchar(2040) NULL,
+    [Code] nvarchar(120) NOT NULL,
+    [NameVi] nvarchar(400) NOT NULL,
+    [NameEn] nvarchar(400) NOT NULL,
+    [IconUrl] nvarchar(1020) NULL,
     CONSTRAINT [PK_HeritageCategories] PRIMARY KEY CLUSTERED ([CategoryId])
 );
 GO
 
 CREATE TABLE [Heritage] (
     [HeritageId] bigint IDENTITY(1,1),
-    [PublicId] nvarchar(160) NOT NULL,
-    [Code] nvarchar(400) NOT NULL,
+    [PublicId] nvarchar(80) NOT NULL,
+    [Code] nvarchar(200) NOT NULL,
     [CategoryId] int NOT NULL,
-    [NameVi] nvarchar(2040) NOT NULL,
-    [NameEn] nvarchar(2040) NOT NULL,
-    [Slug] nvarchar(2040) NOT NULL,
-    [Classification] nvarchar(160) NOT NULL,
-    [Status] nvarchar(160) NOT NULL,
-    [AddressVi] nvarchar(4000) NULL,
-    [AddressEn] nvarchar(4000) NULL,
+    [NameVi] nvarchar(1020) NOT NULL,
+    [NameEn] nvarchar(1020) NOT NULL,
+    [Slug] nvarchar(1020) NOT NULL,
+    [Classification] nvarchar(80) NOT NULL,
+    [Status] nvarchar(80) NOT NULL,
+    [AddressVi] nvarchar(2000) NULL,
+    [AddressEn] nvarchar(2000) NULL,
     [Latitude] decimal(10,8) NULL,
     [Longitude] decimal(11,8) NULL,
     [DescriptionVi] nvarchar(MAX) NULL,
     [DescriptionEn] nvarchar(MAX) NULL,
     [HistoryVi] nvarchar(MAX) NULL,
     [HistoryEn] nvarchar(MAX) NULL,
-    [ThumbnailUrl] nvarchar(4000) NULL,
-    [YearBuilt] nvarchar(800) NULL,
-    [Guardian] nvarchar(2040) NULL,
-    [QrCodeUrl] nvarchar(4000) NULL,
-    [GoogleMapUrl] nvarchar(8000) NULL,
+    [ThumbnailUrl] nvarchar(2000) NULL,
+    [YearBuilt] nvarchar(400) NULL,
+    [Guardian] nvarchar(1020) NULL,
+    [QrCodeUrl] nvarchar(2000) NULL,
+    [GoogleMapUrl] nvarchar(4000) NULL,
     [IsDeleted] bit NOT NULL CONSTRAINT [DF_Heritage_IsDeleted] DEFAULT (CONVERT([bit],(0))),
     [DeletedAt] datetime2(7) NULL,
     [CreatedBy] bigint NOT NULL,
@@ -159,9 +159,9 @@ GO
 CREATE TABLE [HeritageDocuments] (
     [DocumentId] bigint IDENTITY(1,1),
     [HeritageId] bigint NOT NULL,
-    [FileName] nvarchar(2040) NULL,
-    [FileUrl] nvarchar(4000) NULL,
-    [FileType] nvarchar(160) NULL,
+    [FileName] nvarchar(1020) NULL,
+    [FileUrl] nvarchar(2000) NULL,
+    [FileType] nvarchar(80) NULL,
     [FileSize] bigint NULL,
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_HeritageDocuments_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_HeritageDocuments] PRIMARY KEY CLUSTERED ([DocumentId]),
@@ -172,8 +172,8 @@ GO
 CREATE TABLE [HeritageImages] (
     [ImageId] bigint IDENTITY(1,1),
     [HeritageId] bigint NOT NULL,
-    [ImageUrl] nvarchar(4000) NOT NULL,
-    [Caption] nvarchar(2040) NULL,
+    [ImageUrl] nvarchar(2000) NOT NULL,
+    [Caption] nvarchar(1020) NULL,
     [SortOrder] int NOT NULL CONSTRAINT [DF_HeritageImages_SortOrder] DEFAULT ((0)),
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_HeritageImages_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_HeritageImages] PRIMARY KEY CLUSTERED ([ImageId]),
@@ -184,10 +184,10 @@ GO
 CREATE TABLE [HeritageVideos] (
     [VideoId] bigint IDENTITY(1,1),
     [HeritageId] bigint NOT NULL,
-    [Title] nvarchar(2040) NULL,
-    [VideoType] nvarchar(160) NULL,
-    [VideoUrl] nvarchar(4000) NULL,
-    [ThumbnailUrl] nvarchar(4000) NULL,
+    [Title] nvarchar(1020) NULL,
+    [VideoType] nvarchar(80) NULL,
+    [VideoUrl] nvarchar(2000) NULL,
+    [ThumbnailUrl] nvarchar(2000) NULL,
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_HeritageVideos_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_HeritageVideos] PRIMARY KEY CLUSTERED ([VideoId]),
     CONSTRAINT [FK_HeritageVideos_Heritage_HeritageId] FOREIGN KEY ([HeritageId]) REFERENCES [Heritage]([HeritageId])
@@ -196,48 +196,48 @@ GO
 
 CREATE TABLE [IntangibleHeritage] (
     [IntangibleId] bigint IDENTITY(1,1),
-    [PublicId] nvarchar(160) NOT NULL,
-    [NameVi] nvarchar(2040) NOT NULL,
-    [NameEn] nvarchar(2040) NOT NULL,
-    [Category] nvarchar(240) NOT NULL,
+    [PublicId] nvarchar(80) NOT NULL,
+    [NameVi] nvarchar(1020) NOT NULL,
+    [NameEn] nvarchar(1020) NOT NULL,
+    [Category] nvarchar(120) NOT NULL,
     [DescriptionVi] nvarchar(MAX) NULL,
     [DescriptionEn] nvarchar(MAX) NULL,
-    [ImageUrl] nvarchar(4000) NULL,
-    [VideoUrl] nvarchar(4000) NULL,
+    [ImageUrl] nvarchar(2000) NULL,
+    [VideoUrl] nvarchar(2000) NULL,
     [IsDeleted] bit NOT NULL CONSTRAINT [DF_IntangibleHeritage_IsDeleted] DEFAULT (CONVERT([bit],(0))),
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_IntangibleHeritage_CreatedAt] DEFAULT (sysutcdatetime()),
     [UpdatedAt] datetime2(7) NULL,
     [CreatedBy] bigint NOT NULL CONSTRAINT [DF_IntangibleHeritage_CreatedBy] DEFAULT (CONVERT([bigint],(1))),
     [UpdatedBy] bigint NULL,
-    [Community] nvarchar(2000) NULL,
+    [Community] nvarchar(1000) NULL,
     [CulturalSpace] nvarchar(MAX) NULL,
     [CurrentStatus] nvarchar(MAX) NULL,
     [CustomsAndOfferings] nvarchar(MAX) NULL,
     [ExistingArtisans] nvarchar(MAX) NULL,
     [ExistingProtectionMeasures] nvarchar(MAX) NULL,
-    [FestivalDuration] nvarchar(800) NULL,
-    [FestivalLocation] nvarchar(2000) NULL,
-    [FestivalTime] nvarchar(800) NULL,
+    [FestivalDuration] nvarchar(400) NULL,
+    [FestivalLocation] nvarchar(1000) NULL,
+    [FestivalTime] nvarchar(400) NULL,
     [FolkGames] nvarchar(MAX) NULL,
     [FormationHistory] nvarchar(MAX) NULL,
     [GalleryImages] nvarchar(MAX) NULL,
     [HeritageValue] nvarchar(MAX) NULL,
     [HistoricalDevelopment] nvarchar(MAX) NULL,
     [Learners] nvarchar(MAX) NULL,
-    [Location] nvarchar(2000) NULL,
+    [Location] nvarchar(1000) NULL,
     [Origin] nvarchar(MAX) NULL,
     [OtherHumanResources] nvarchar(MAX) NULL,
-    [OtherNames] nvarchar(2000) NULL,
+    [OtherNames] nvarchar(1000) NULL,
     [Practitioners] nvarchar(MAX) NULL,
     [ProposedProtectionMeasures] nvarchar(MAX) NULL,
     [RelatedDocuments] nvarchar(MAX) NULL,
-    [RepresentativePersons] nvarchar(2000) NULL,
+    [RepresentativePersons] nvarchar(1000) NULL,
     [RiskDescription] nvarchar(MAX) NULL,
     [RitualObjects] nvarchar(MAX) NULL,
     [RitualParticipants] nvarchar(MAX) NULL,
     [RitualProcess] nvarchar(MAX) NULL,
     [TeachingArtisans] nvarchar(MAX) NULL,
-    [ThreatLevel] nvarchar(400) NULL,
+    [ThreatLevel] nvarchar(200) NULL,
     [TraditionalPerformances] nvarchar(MAX) NULL,
     [TransmissionMethod] nvarchar(MAX) NULL,
     [WorshipObjects] nvarchar(MAX) NULL,
@@ -252,10 +252,10 @@ GO
 
 CREATE TABLE [MediaFiles] (
     [MediaFileId] bigint IDENTITY(1,1),
-    [Url] nvarchar(4000) NOT NULL,
-    [FileName] nvarchar(2040) NOT NULL,
+    [Url] nvarchar(2000) NOT NULL,
+    [FileName] nvarchar(1020) NOT NULL,
     [FileSize] bigint NOT NULL,
-    [MediaType] nvarchar(160) NOT NULL,
+    [MediaType] nvarchar(80) NOT NULL,
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_MediaFiles_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_MediaFiles] PRIMARY KEY CLUSTERED ([MediaFileId])
 );
@@ -263,9 +263,9 @@ GO
 
 CREATE TABLE [MonthlyUpdates] (
     [UpdateId] int IDENTITY(1,1),
-    [MonthLabel] nvarchar(160) NOT NULL,
-    [DisplayVi] nvarchar(400) NOT NULL,
-    [DisplayEn] nvarchar(400) NOT NULL,
+    [MonthLabel] nvarchar(80) NOT NULL,
+    [DisplayVi] nvarchar(200) NOT NULL,
+    [DisplayEn] nvarchar(200) NOT NULL,
     [UpdateCount] int NOT NULL CONSTRAINT [DF_MonthlyUpdates_UpdateCount] DEFAULT ((0)),
     CONSTRAINT [PK_MonthlyUpdates] PRIMARY KEY CLUSTERED ([UpdateId])
 );
@@ -273,8 +273,8 @@ GO
 
 CREATE TABLE [RelatedLinks] (
     [LinkId] int IDENTITY(1,1),
-    [Title] nvarchar(1600) NOT NULL,
-    [Url] nvarchar(4000) NOT NULL,
+    [Title] nvarchar(800) NOT NULL,
+    [Url] nvarchar(2000) NOT NULL,
     [DisplayOrder] int NOT NULL CONSTRAINT [DF_RelatedLinks_DisplayOrder] DEFAULT ((0)),
     [IsEnabled] bit NOT NULL CONSTRAINT [DF_RelatedLinks_IsEnabled] DEFAULT (CONVERT([bit],(1))),
     [CreatedBy] bigint NOT NULL,
@@ -289,17 +289,17 @@ GO
 
 CREATE TABLE [SystemSettings] (
     [SettingId] int IDENTITY(1,1),
-    [WebsiteName] nvarchar(2040) NULL,
-    [LogoUrl] nvarchar(4000) NULL,
-    [FooterText] nvarchar(4000) NULL,
-    [ContactEmail] nvarchar(2040) NULL,
-    [Phone] nvarchar(400) NULL,
-    [Address] nvarchar(2040) NULL,
-    [FacebookUrl] nvarchar(4000) NULL,
-    [TiktokUrl] nvarchar(4000) NULL,
+    [WebsiteName] nvarchar(1020) NULL,
+    [LogoUrl] nvarchar(2000) NULL,
+    [FooterText] nvarchar(2000) NULL,
+    [ContactEmail] nvarchar(1020) NULL,
+    [Phone] nvarchar(200) NULL,
+    [Address] nvarchar(1020) NULL,
+    [FacebookUrl] nvarchar(2000) NULL,
+    [TiktokUrl] nvarchar(2000) NULL,
     [UpdatedBy] bigint NULL,
     [UpdatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_SystemSettings_UpdatedAt] DEFAULT (sysutcdatetime()),
-    [YoutubeUrl] nvarchar(4000) NULL,
+    [YoutubeUrl] nvarchar(2000) NULL,
     CONSTRAINT [PK_SystemSettings] PRIMARY KEY CLUSTERED ([SettingId]),
     CONSTRAINT [FK_SystemSettings_Users_UpdatedBy] FOREIGN KEY ([UpdatedBy]) REFERENCES [Users]([UserId])
 );

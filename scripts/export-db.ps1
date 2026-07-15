@@ -162,7 +162,7 @@ foreach ($table in $orderedTables) {
     
     $cmd = $conn.CreateCommand()
     $cmd.CommandText = @"
-SELECT c.name, t.name AS type_name, c.max_length, c.precision, c.scale, c.is_nullable, c.is_identity, dc.definition
+SELECT c.name, t.name AS type_name, c.max_length, c.precision, c.scale, c.is_nullable, c.is_identity, c.is_computed, dc.definition
 FROM sys.columns c
 JOIN sys.types t ON c.user_type_id = t.user_type_id
 LEFT JOIN sys.default_constraints dc ON dc.parent_column_id = c.column_id AND dc.parent_object_id = c.object_id
@@ -180,7 +180,8 @@ ORDER BY c.column_id
             Scale = if ($reader.IsDBNull(4)) { $null } else { [byte]$reader.GetByte(4) }
             IsNullable = $reader.GetBoolean(5)
             IsIdentity = $reader.GetBoolean(6)
-            Default = if ($reader.IsDBNull(7)) { $null } else { $reader.GetString(7) }
+            IsComputed = $reader.GetBoolean(7)
+            Default = if ($reader.IsDBNull(8)) { $null } else { $reader.GetString(8) }
         })
     }
     $reader.Close()
@@ -206,7 +207,9 @@ ORDER BY ic.key_ordinal
     $cmd.CommandText = @"
 SELECT fk.name, COL_NAME(fkc.parent_object_id, fkc.parent_column_id) AS col,
        OBJECT_NAME(fk.referenced_object_id) AS ref_table,
-       COL_NAME(fkc.referenced_object_id, fkc.referenced_column_id) AS ref_col
+       COL_NAME(fkc.referenced_object_id, fkc.referenced_column_id) AS ref_col,
+       fk.delete_referential_action_desc,
+       fk.update_referential_action_desc
 FROM sys.foreign_keys fk
 JOIN sys.foreign_key_columns fkc ON fk.object_id = fkc.constraint_object_id
 WHERE fk.parent_object_id = OBJECT_ID('[$table]')
@@ -218,6 +221,8 @@ WHERE fk.parent_object_id = OBJECT_ID('[$table]')
             Col = $reader.GetString(1)
             RefTable = $reader.GetString(2)
             RefCol = $reader.GetString(3)
+            DeleteAction = $reader.GetString(4)
+            UpdateAction = $reader.GetString(5)
         })
     }
     $reader.Close()
@@ -258,17 +263,20 @@ ORDER BY i.index_id, ic.key_ordinal
     $lines = New-Object System.Collections.Generic.List[string]
     
     foreach ($col in $cols) {
+        if ($col.IsComputed) { continue }
         $line = "    [$($col.Name)] "
         $t = $col.TypeName.ToLower()
         
         if ($t -eq "nvarchar" -and ($null -eq $col.MaxLen -or $col.MaxLen -le -1)) { $line += "nvarchar(MAX)" }
-        elseif ($t -eq "nvarchar") { $line += "nvarchar($($col.MaxLen))" }
+        elseif ($t -eq "nvarchar") { $line += "nvarchar($($col.MaxLen / 2))" }
         elseif ($t -eq "varchar" -and ($null -eq $col.MaxLen -or $col.MaxLen -le -1)) { $line += "varchar(MAX)" }
         elseif ($t -eq "varchar") { $line += "varchar($($col.MaxLen))" }
-        elseif ($t -eq "nchar") { $line += "nchar($($col.MaxLen))" }
+        elseif ($t -eq "nchar") { $line += "nchar($($col.MaxLen / 2))" }
         elseif ($t -eq "char") { $line += "char($($col.MaxLen))" }
         elseif ($t -in @("decimal","numeric")) { $line += "decimal($($col.Precision),$($col.Scale))" }
-        elseif ($t -eq "datetime2") { $line += "datetime2(7)" }
+        elseif ($t -eq "datetime2") { $line += "datetime2($($col.Scale))" }
+        elseif ($t -eq "datetimeoffset") { $line += "datetimeoffset($($col.Scale))" }
+        elseif ($t -eq "time") { $line += "time($($col.Scale))" }
         elseif ($t -in @("varbinary")) {
             if ($null -eq $col.MaxLen -or $col.MaxLen -le -1) { $line += "varbinary(MAX)" }
             else { $line += "varbinary($($col.MaxLen))" }
@@ -294,8 +302,16 @@ ORDER BY i.index_id, ic.key_ordinal
         $lines.Add("    CONSTRAINT [PK_$($table)] PRIMARY KEY CLUSTERED ($pkStr)")
     }
     
+    $fkDone = @{}
     foreach ($fk in $fkList) {
-        $lines.Add("    CONSTRAINT [$($fk.Name)] FOREIGN KEY ([$($fk.Col)]) REFERENCES [$($fk.RefTable)]([$($fk.RefCol)])")
+        if ($fkDone.ContainsKey($fk.Name)) { continue }
+        $fkDone[$fk.Name] = $true
+        $fkCols = ($fkList | Where-Object { $_.Name -eq $fk.Name } | ForEach-Object { "[$($_.Col)]" }) -join ", "
+        $refCols = ($fkList | Where-Object { $_.Name -eq $fk.Name } | ForEach-Object { "[$($_.RefCol)]" }) -join ", "
+        $line = "    CONSTRAINT [$($fk.Name)] FOREIGN KEY ($fkCols) REFERENCES [$($fk.RefTable)]($refCols)"
+        if ($fk.DeleteAction -ne "NO_ACTION") { $line += " ON DELETE $($fk.DeleteAction -replace '_',' ')" }
+        if ($fk.UpdateAction -ne "NO_ACTION") { $line += " ON UPDATE $($fk.UpdateAction -replace '_',' ')" }
+        $lines.Add($line)
     }
     
     foreach ($ck in $ckList) {
@@ -399,27 +415,32 @@ foreach ($table in $orderedTables) {
     }
     
     $cmd = $conn.CreateCommand()
-    $cmd.CommandText = "SELECT * FROM [$table]"
-    $cmd.CommandTimeout = 120
-    $reader = $cmd.ExecuteReader()
+    $cmd.CommandText = "SELECT c.name FROM sys.columns c WHERE c.object_id = OBJECT_ID('[$table]') AND c.is_computed = 0 ORDER BY c.column_id"
+    $reader2 = $cmd.ExecuteReader()
+    $insertCols = New-Object System.Collections.Generic.List[string]
+    while ($reader2.Read()) { $insertCols.Add($reader2.GetString(0)) }
+    $reader2.Close()
     
-    $fieldCount = $reader.FieldCount
-    $fieldNames = New-Object System.Collections.Generic.List[string]
-    for ($i = 0; $i -lt $fieldCount; $i++) { $fieldNames.Add($reader.GetName($i)) }
-    $colListStr = "[" + ($fieldNames -join "],[") + "]"
+    $colListStr = "[" + ($insertCols -join "],[") + "]"
+    $selectColStr = ($insertCols | ForEach-Object { "[$_]" }) -join ","
     
-    while ($reader.Read()) {
+    $cmd2 = $conn.CreateCommand()
+    $cmd2.CommandText = "SELECT $selectColStr FROM [$table]"
+    $cmd2.CommandTimeout = 120
+    $reader2 = $cmd2.ExecuteReader()
+    
+    while ($reader2.Read()) {
         $null = $sb.Append("INSERT [$table] ($colListStr) VALUES (")
-        for ($i = 0; $i -lt $fieldCount; $i++) {
+        for ($i = 0; $i -lt $insertCols.Count; $i++) {
             if ($i -gt 0) { $null = $sb.Append(", ") }
-            $val = Get-FieldValue $reader $i
+            $val = Get-FieldValue $reader2 $i
             $fval = Format-Value $val
             $null = $sb.Append($fval)
         }
         $null = $sb.AppendLine(");")
         $allRowsExported++
     }
-    $reader.Close()
+    $reader2.Close()
     
     if ($hasIdentity) {
         $null = $sb.AppendLine("SET IDENTITY_INSERT [$table] OFF;")
