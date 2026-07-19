@@ -1,11 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
+using VanDinh.API.Models;
+using VanDinh.API.Repositories;
 using VanDinh.API.Responses;
 
 namespace VanDinh.API.Controllers;
 
 [ApiController]
 [Route("api/contact")]
-public sealed class ContactController : ControllerBase
+public sealed class ContactController(IAppRepository repository) : ControllerBase
 {
     [HttpPost]
     public IActionResult Send([FromBody] ContactRequest request)
@@ -15,6 +17,19 @@ public sealed class ContactController : ControllerBase
 
         if (!request.Email.Contains('@'))
             return ApiResponse.Error("Invalid email address.");
+
+        var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+        var userAgent = Request.Headers.UserAgent.ToString();
+
+        repository.AddContactMessage(new ContactMessage
+        {
+            FullName = request.Name.Trim(),
+            Email = request.Email.Trim(),
+            Subject = request.Subject?.Trim(),
+            Message = request.Message.Trim(),
+            IPAddress = ip,
+            UserAgent = userAgent
+        });
 
         return ApiResponse.Success(new { received = true }, "Message sent successfully.");
     }

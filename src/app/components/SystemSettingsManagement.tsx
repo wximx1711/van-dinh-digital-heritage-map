@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
-import { apiGet, apiPut } from '../services/api';
-import { Save, Check, AlertTriangle, Upload } from 'lucide-react';
+import { apiGet, apiPut, apiPost, apiDelete } from '../services/api';
+import { Save, Check, AlertTriangle, Upload, Plus, Pencil, Trash2, X, ArrowUp, ArrowDown, EyeOff, Eye } from 'lucide-react';
 import { getImageUrl } from '../utils/url';
 import { FormSkeleton } from './Skeleton';
 import { LazyImage } from './LazyImage';
@@ -10,6 +10,15 @@ import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 
 interface SystemSettingsManagementProps {
   onDirtyChange?: (dirty: boolean) => void;
+}
+
+interface RelatedLink {
+  linkId: number;
+  title: string;
+  url: string;
+  displayOrder: number;
+  isEnabled: boolean;
+  createdAt: string;
 }
 
 export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManagementProps) {
@@ -25,6 +34,13 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const initialSnapshotRef = useRef<string | null>(null);
+
+  // Related Links state
+  const [links, setLinks] = useState<RelatedLink[]>([]);
+  const [linksLoading, setLinksLoading] = useState(true);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [linkForm, setLinkForm] = useState({ title: '', url: '', displayOrder: 0, isEnabled: true });
+  const [linksSaving, setLinksSaving] = useState(false);
 
   const isDirty = useMemo(() => {
     if (!initialSnapshotRef.current) return false;
@@ -71,6 +87,100 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
   };
 
   useEffect(() => { fetchData(); }, []);
+
+  // Related Links data
+  const fetchLinks = async () => {
+    setLinksLoading(true);
+    try {
+      const data = await apiGet<RelatedLink[]>('/related-links');
+      setLinks(data || []);
+    } catch {
+      showToast(lang === 'vi' ? 'Không thể tải danh sách' : 'Failed to load links', 'error');
+    } finally {
+      setLinksLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchLinks(); }, []);
+
+  const resetLinkForm = () => {
+    setEditingId(null);
+    setLinkForm({ title: '', url: '', displayOrder: 0, isEnabled: true });
+  };
+
+  const startEdit = (link: RelatedLink) => {
+    setEditingId(link.linkId);
+    setLinkForm({ title: link.title, url: link.url, displayOrder: link.displayOrder, isEnabled: link.isEnabled });
+  };
+
+  const validateLink = (): string | null => {
+    if (!linkForm.title.trim()) return lang === 'vi' ? 'Vui lòng nhập tiêu đề' : 'Title is required';
+    if (!linkForm.url.trim()) return lang === 'vi' ? 'Vui lòng nhập URL' : 'URL is required';
+    try { new URL(linkForm.url); } catch { return lang === 'vi' ? 'URL không hợp lệ' : 'Invalid URL format'; }
+    return null;
+  };
+
+  const handleSaveLink = async () => {
+    const error = validateLink();
+    if (error) { showToast(error, 'error'); return; }
+    setLinksSaving(true);
+    try {
+      const payload = { title: linkForm.title.trim(), url: linkForm.url.trim(), displayOrder: linkForm.displayOrder, isEnabled: linkForm.isEnabled };
+      if (editingId) {
+        await apiPut(`/related-links/${editingId}`, payload);
+        showToast(lang === 'vi' ? 'Đã cập nhật' : 'Link updated');
+      } else {
+        await apiPost('/related-links', payload);
+        showToast(lang === 'vi' ? 'Đã thêm' : 'Link created');
+      }
+      resetLinkForm();
+      await fetchLinks();
+    } catch {
+      showToast(lang === 'vi' ? 'Lưu thất bại' : 'Save failed', 'error');
+    } finally {
+      setLinksSaving(false);
+    }
+  };
+
+  const handleDeleteLink = async (id: number) => {
+    if (!confirm(lang === 'vi' ? 'Xóa liên kết này?' : 'Delete this link?')) return;
+    try {
+      await apiDelete(`/related-links/${id}`);
+      showToast(lang === 'vi' ? 'Đã xóa' : 'Link deleted');
+      await fetchLinks();
+    } catch {
+      showToast(lang === 'vi' ? 'Xóa thất bại' : 'Delete failed', 'error');
+    }
+  };
+
+  const handleToggleEnabled = async (link: RelatedLink) => {
+    setLinksSaving(true);
+    try {
+      await apiPut(`/related-links/${link.linkId}`, {
+        title: link.title, url: link.url, displayOrder: link.displayOrder, isEnabled: !link.isEnabled,
+      });
+      await fetchLinks();
+    } catch {
+      showToast(lang === 'vi' ? 'Cập nhật thất bại' : 'Update failed', 'error');
+    } finally {
+      setLinksSaving(false);
+    }
+  };
+
+  const moveOrder = async (link: RelatedLink, direction: number) => {
+    const sorted = [...links].sort((a, b) => a.displayOrder - b.displayOrder);
+    const idx = sorted.findIndex(l => l.linkId === link.linkId);
+    const target = idx + direction;
+    if (target < 0 || target >= sorted.length) return;
+    const swap = sorted[target];
+    try {
+      await apiPut(`/related-links/${link.linkId}`, { ...link, displayOrder: swap.displayOrder });
+      await apiPut(`/related-links/${swap.linkId}`, { ...swap, displayOrder: link.displayOrder });
+      await fetchLinks();
+    } catch {
+      showToast(lang === 'vi' ? 'Sắp xếp thất bại' : 'Reorder failed', 'error');
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -119,6 +229,8 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
     return <FormSkeleton />;
   }
 
+  const sortedLinks = [...links].sort((a, b) => a.displayOrder - b.displayOrder);
+
   return (
     <div style={{ padding: '24px', position: 'relative' }}>
       {toast && (
@@ -140,7 +252,8 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
         {lang === 'vi' ? 'Cấu hình thông tin chung của hệ thống' : 'Configure general system information'}
       </p>
 
-      <div style={{ background: 'white', borderRadius: 10, padding: '24px', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
+      {/* Website Settings */}
+      <div style={{ background: 'white', borderRadius: 10, padding: '24px', boxShadow: '0 1px 6px rgba(15,61,94,0.06)', marginBottom: 24 }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Tên website' : 'Website Name'}</label>
@@ -206,6 +319,142 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
           </button>
         </div>
       </div>
+
+      {/* Footer Related Links Section */}
+      <div style={{ background: 'white', borderRadius: 10, padding: '24px', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
+        <h2 style={{ color: '#0F3D5E', margin: '0 0 4px', fontSize: 18, fontFamily: 'Merriweather, serif' }}>
+          {lang === 'vi' ? 'Liên kết liên quan (Footer)' : 'Footer Related Links'}
+        </h2>
+        <p style={{ color: '#5d7a8c', fontSize: 12, margin: '0 0 20px' }}>
+          {lang === 'vi' ? 'Quản lý các liên kết hiển thị trong Footer' : 'Manage links displayed in the Footer'}
+        </p>
+
+        {/* Add/Edit form */}
+        <div style={{ background: '#F8FAFC', borderRadius: 8, padding: '16px', marginBottom: 16, border: '1px solid rgba(15,61,94,0.08)' }}>
+          <h3 style={{ color: '#0F3D5E', fontSize: 13, fontWeight: 700, margin: '0 0 12px' }}>
+            {editingId
+              ? (lang === 'vi' ? 'Chỉnh sửa liên kết' : 'Edit Link')
+              : (lang === 'vi' ? 'Thêm liên kết mới' : 'Add New Link')}
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 2fr 80px auto', gap: 10, alignItems: 'end' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 700, color: '#5d7a8c', marginBottom: 3, textTransform: 'uppercase' }}>
+                {lang === 'vi' ? 'Tiêu đề' : 'Title'}
+              </label>
+              <input style={inputStyle} value={linkForm.title} onChange={e => setLinkForm(s => ({ ...s, title: e.target.value }))} placeholder={lang === 'vi' ? 'VD: Bộ Văn hóa' : 'e.g. Ministry of Culture'} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 700, color: '#5d7a8c', marginBottom: 3, textTransform: 'uppercase' }}>URL</label>
+              <input style={inputStyle} value={linkForm.url} onChange={e => setLinkForm(s => ({ ...s, url: e.target.value }))} placeholder="https://..." />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 700, color: '#5d7a8c', marginBottom: 3, textTransform: 'uppercase' }}>
+                {lang === 'vi' ? 'Thứ tự' : 'Order'}
+              </label>
+              <input type="number" min={0} style={inputStyle} value={linkForm.displayOrder} onChange={e => setLinkForm(s => ({ ...s, displayOrder: parseInt(e.target.value) || 0 }))} />
+            </div>
+            <div style={{ display: 'flex', gap: 6, paddingBottom: 1 }}>
+              <button onClick={handleSaveLink} disabled={linksSaving}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 4, padding: '9px 14px', borderRadius: 6,
+                  background: linksSaving ? '#5d7a8c' : '#0F3D5E', border: 'none', color: 'white',
+                  fontSize: 12, fontWeight: 600, cursor: linksSaving ? 'wait' : 'pointer',
+                }}>
+                <Plus size={14} /> {linksSaving ? '...' : t('common.save')}
+              </button>
+              {editingId && (
+                <button onClick={resetLinkForm}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 4, padding: '9px 14px', borderRadius: 6,
+                    background: 'transparent', border: '1px solid rgba(15,61,94,0.15)', color: '#5d7a8c',
+                    fontSize: 12, fontWeight: 600, cursor: 'pointer',
+                  }}>
+                  <X size={14} /> {lang === 'vi' ? 'Hủy' : 'Cancel'}
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Links table */}
+        {linksLoading ? (
+          <div style={{ padding: '24px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>
+            {lang === 'vi' ? 'Đang tải...' : 'Loading...'}
+          </div>
+        ) : sortedLinks.length === 0 ? (
+          <div style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>
+            {lang === 'vi' ? 'Chưa có liên kết nào' : 'No links yet'}
+          </div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 500 }}>
+              <thead>
+                <tr style={{ background: '#F8FAFC', borderBottom: '1px solid rgba(15,61,94,0.08)' }}>
+                  <th style={{ padding: '10px 14px', fontSize: 11, fontWeight: 700, color: '#5d7a8c', textTransform: 'uppercase', textAlign: 'left', width: 60 }}>
+                    {lang === 'vi' ? 'Thứ tự' : 'Order'}
+                  </th>
+                  <th style={{ padding: '10px 14px', fontSize: 11, fontWeight: 700, color: '#5d7a8c', textTransform: 'uppercase', textAlign: 'left' }}>
+                    {lang === 'vi' ? 'Tiêu đề' : 'Title'}
+                  </th>
+                  <th style={{ padding: '10px 14px', fontSize: 11, fontWeight: 700, color: '#5d7a8c', textTransform: 'uppercase', textAlign: 'left' }}>URL</th>
+                  <th style={{ padding: '10px 14px', fontSize: 11, fontWeight: 700, color: '#5d7a8c', textTransform: 'uppercase', textAlign: 'center', width: 160 }}>
+                    {lang === 'vi' ? 'Thao tác' : 'Actions'}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {sortedLinks.map((link, idx) => (
+                  <tr key={link.linkId} style={{ borderBottom: '1px solid rgba(15,61,94,0.05)' }}>
+                    <td style={{ padding: '10px 14px', fontSize: 12, color: '#5d7a8c' }}>{link.displayOrder}</td>
+                    <td style={{ padding: '10px 14px', fontSize: 13, color: '#0F3D5E', fontWeight: 600 }}>
+                      <span style={{ opacity: link.isEnabled ? 1 : 0.4 }}>{link.title}</span>
+                    </td>
+                    <td style={{ padding: '10px 14px', fontSize: 12, color: '#5d7a8c', maxWidth: 250, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      <a href={link.url} target="_blank" rel="noopener noreferrer" style={{ color: '#0F3D5E', textDecoration: 'none' }}
+                        onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#D4A017'; }}
+                        onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = '#0F3D5E'; }}>
+                        {link.url}
+                      </a>
+                    </td>
+                    <td style={{ padding: '10px 14px', textAlign: 'center' }}>
+                      <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                        <button onClick={() => moveOrder(link, -1)} disabled={idx === 0}
+                          style={{ ...actionBtnStyle, opacity: idx === 0 ? 0.3 : 1 }} title={lang === 'vi' ? 'Lên trên' : 'Move up'}>
+                          <ArrowUp size={14} />
+                        </button>
+                        <button onClick={() => moveOrder(link, 1)} disabled={idx === sortedLinks.length - 1}
+                          style={{ ...actionBtnStyle, opacity: idx === sortedLinks.length - 1 ? 0.3 : 1 }} title={lang === 'vi' ? 'Xuống dưới' : 'Move down'}>
+                          <ArrowDown size={14} />
+                        </button>
+                        <button onClick={() => handleToggleEnabled(link)}
+                          style={{ ...actionBtnStyle, color: link.isEnabled ? '#E67E22' : '#27AE60' }}
+                          title={link.isEnabled ? (lang === 'vi' ? 'Vô hiệu hóa' : 'Disable') : (lang === 'vi' ? 'Kích hoạt' : 'Enable')}>
+                          {link.isEnabled ? <EyeOff size={14} /> : <Eye size={14} />}
+                        </button>
+                        <button onClick={() => startEdit(link)}
+                          style={{ ...actionBtnStyle, color: '#0F3D5E' }} title={lang === 'vi' ? 'Sửa' : 'Edit'}>
+                          <Pencil size={14} />
+                        </button>
+                        <button onClick={() => handleDeleteLink(link.linkId)}
+                          style={{ ...actionBtnStyle, color: '#E74C3C' }} title={lang === 'vi' ? 'Xóa' : 'Delete'}>
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
+
+const actionBtnStyle = {
+  width: 30, height: 30, borderRadius: 6,
+  border: '1px solid rgba(15,61,94,0.1)', background: 'white',
+  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+  cursor: 'pointer', fontSize: 12, transition: 'all 0.15s',
+} as const;

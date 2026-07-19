@@ -603,6 +603,39 @@ public sealed class EfAppRepository : IAppRepository
         }
     }
 
+    public IQueryable<ContactMessage> ContactMessagesUntracked => _context.ContactMessages
+        .AsNoTracking()
+        .OrderByDescending(x => x.CreatedAt);
+
+    public ContactMessage? FindContactMessage(long id) => _context.ContactMessages
+        .AsNoTracking()
+        .FirstOrDefault(x => x.Id == id);
+
+    public ContactMessage AddContactMessage(ContactMessage item)
+    {
+        _context.ContactMessages.Add(item);
+        _context.SaveChanges();
+        return item;
+    }
+
+    public void UpdateContactMessage(ContactMessage item)
+    {
+        var existing = _context.ContactMessages.Find(item.Id);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(item);
+        _context.SaveChanges();
+    }
+
+    public void DeleteContactMessage(long id)
+    {
+        var item = _context.ContactMessages.Find(id);
+        if (item is not null)
+        {
+            _context.ContactMessages.Remove(item);
+            _context.SaveChanges();
+        }
+    }
+
     public ActivityLog AddLog(ActivityLog log)
     {
         _context.ActivityLogs.Add(log);

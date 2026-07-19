@@ -115,6 +115,10 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
       setError(lang === 'vi' ? 'Vui lòng điền đầy đủ thông tin bắt buộc' : 'Please fill in all required fields');
       return;
     }
+    if (!form.email.includes('@')) {
+      setError(lang === 'vi' ? 'Email không hợp lệ' : 'Invalid email address');
+      return;
+    }
     setSending(true);
     setError('');
     try {
@@ -149,7 +153,7 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
             <p style={{ color: '#5d7a8c' }}>
               {lang === 'vi' ? 'Chúng tôi sẽ phản hồi trong vòng 24–48 giờ làm việc.' : 'We will respond within 24–48 business hours.'}
             </p>
-            <button onClick={() => setSent(false)} style={{ padding: '10px 28px', borderRadius: 8, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>
+            <button onClick={() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }} style={{ padding: '10px 28px', borderRadius: 8, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>
               {lang === 'vi' ? 'Gửi tin nhắn khác' : 'Send Another Message'}
             </button>
           </div>

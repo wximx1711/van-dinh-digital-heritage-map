@@ -68,6 +68,12 @@ public interface IAppRepository
     RelatedLink AddRelatedLink(RelatedLink item);
     void UpdateRelatedLink(RelatedLink item);
     void DeleteRelatedLink(int id);
+    IQueryable<ContactMessage> ContactMessagesUntracked { get; }
+
+    ContactMessage? FindContactMessage(long id);
+    ContactMessage AddContactMessage(ContactMessage item);
+    void UpdateContactMessage(ContactMessage item);
+    void DeleteContactMessage(long id);
 
     ActivityLog AddLog(ActivityLog log);
     void SaveChanges();

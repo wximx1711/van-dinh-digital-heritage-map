@@ -302,6 +302,28 @@ public sealed record MediaSearchRequest(
     string? SortBy = "uploadedAt",
     string? SortDirection = "desc");
 
+/// <summary>Contact message data transfer object.</summary>
+public sealed record ContactMessageDto(
+    long Id, string FullName, string Email, string? Subject, string Message,
+    DateTime CreatedAt, bool IsRead, DateTime? ReadAt, string? IPAddress, string? UserAgent);
+
+/// <summary>Contact message list item (without full message body for performance).</summary>
+public sealed record ContactMessageListItem(
+    long Id, string FullName, string Email, string? Subject,
+    DateTime CreatedAt, bool IsRead, DateTime? ReadAt);
+
+/// <summary>Request to search/filter contact messages.</summary>
+public sealed record ContactMessageSearchRequest(
+    int Page = 1,
+    int PageSize = 10,
+    string? Search = null,
+    string? Status = null,
+    DateTime? DateFrom = null,
+    DateTime? DateTo = null);
+
+/// <summary>Bulk operation request.</summary>
+public sealed record ContactMessageBulkRequest(long[] Ids);
+
 /// <summary>Related link data transfer object.</summary>
 public sealed record RelatedLinkDto(int LinkId, string Title, string Url, int DisplayOrder, bool IsEnabled, DateTime CreatedAt);
 

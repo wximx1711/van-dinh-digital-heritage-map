@@ -20,7 +20,7 @@ import { AboutPageManagement } from './AboutPageManagement';
 import { MediaManagement } from './MediaManagement';
 import { QrManagement } from './QrManagement';
 import { SystemSettingsManagement } from './SystemSettingsManagement';
-import { RelatedLinksManagement } from './RelatedLinksManagement';
+import { ContactMessagesManagement } from './ContactMessagesManagement';
 import { ActivityLogPage } from './ActivityLogPage';
 import { LazyImage } from './LazyImage';
 
@@ -29,7 +29,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'related-links';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'contact-messages';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -93,7 +93,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} /> },
     { key: 'qr', label: lang === 'vi' ? 'QR Code' : 'QR Code', icon: <QrCodeIcon size={16} /> },
     { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} /> },
-    { key: 'related-links', label: t('admin.related_links'), icon: <List size={16} /> },
+    { key: 'contact-messages', label: t('admin.contact_messages'), icon: <List size={16} /> },
   ];
 
   const navItems = auth.isAdmin ? adminNavItems : managerNavItems;
@@ -553,7 +553,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           {section === 'media' && <MediaManagement />}
           {section === 'qr' && <QrManagement />}
           {section === 'settings' && <SystemSettingsManagement onDirtyChange={handleDirtyChange} />}
-          {section === 'related-links' && <RelatedLinksManagement onDirtyChange={handleDirtyChange} />}
+          {section === 'contact-messages' && <ContactMessagesManagement />}
 
           {section === 'activity-logs' && <ActivityLogPage />}
         </div>

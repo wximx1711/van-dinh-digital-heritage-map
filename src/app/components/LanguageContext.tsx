@@ -102,7 +102,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'admin.categories': { vi: 'Danh mục di tích', en: 'Heritage Categories' },
   'admin.about': { vi: 'Trang giới thiệu', en: 'About Page' },
   'admin.activity_logs': { vi: 'Nhật ký hoạt động', en: 'Activity Logs' },
-  'admin.related_links': { vi: 'Liên kết liên quan', en: 'Related Links' },
+  'admin.contact_messages': { vi: 'Tin nhắn liên hệ', en: 'Contact Messages' },
   'admin.recent_updates': { vi: 'Cập nhật gần đây', en: 'Recent Updates' },
   'admin.welcome': { vi: 'Xin chào, Quản trị viên', en: 'Welcome, Administrator' },
   // Heritage management table

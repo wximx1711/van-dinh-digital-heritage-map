@@ -279,6 +279,25 @@ public sealed class RelatedLink
     public DateTime? UpdatedAt { get; set; }
 }
 
+public sealed class ContactMessage
+{
+    public long Id { get; set; }
+    [Required, MaxLength(100)]
+    public string FullName { get; set; } = "";
+    [Required, MaxLength(200)]
+    public string Email { get; set; } = "";
+    [MaxLength(500)]
+    public string? Subject { get; set; }
+    [Required]
+    public string Message { get; set; } = "";
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public bool IsRead { get; set; }
+    public DateTime? ReadAt { get; set; }
+    [MaxLength(50)]
+    public string? IPAddress { get; set; }
+    public string? UserAgent { get; set; }
+}
+
 public sealed class MediaFile
 {
     public long MediaFileId { get; set; }

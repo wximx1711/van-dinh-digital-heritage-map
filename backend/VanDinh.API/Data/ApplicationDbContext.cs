@@ -21,6 +21,7 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<AboutPageHistory> AboutPageHistories => Set<AboutPageHistory>();
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
     public DbSet<RelatedLink> RelatedLinks => Set<RelatedLink>();
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
     public DbSet<MediaFile> MediaFiles => Set<MediaFile>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -38,6 +39,7 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
         modelBuilder.ApplyConfiguration(new SystemSettingConfiguration());
         modelBuilder.ApplyConfiguration(new RelatedLinkConfiguration());
+        modelBuilder.ApplyConfiguration(new ContactMessageConfiguration());
         modelBuilder.ApplyConfiguration(new MediaFileConfiguration());
     }
 }

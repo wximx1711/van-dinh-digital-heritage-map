@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-19T12:43:04Z
+    GENERATED: 2026-07-19T13:39:45Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -107,6 +107,21 @@ CREATE TABLE [ActivityLogs] (
     [IpAddress] nvarchar(180) NULL,
     CONSTRAINT [PK_ActivityLogs] PRIMARY KEY CLUSTERED ([LogId]),
     CONSTRAINT [FK_ActivityLogs_Users_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([UserId])
+);
+GO
+
+CREATE TABLE [ContactMessages] (
+    [Id] bigint IDENTITY(1,1),
+    [FullName] nvarchar(100) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [Subject] nvarchar(500) NULL,
+    [Message] nvarchar(MAX) NOT NULL,
+    [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_ContactMessages_CreatedAt] DEFAULT (sysutcdatetime()),
+    [IsRead] bit NOT NULL,
+    [ReadAt] datetime2(7) NULL,
+    [IPAddress] nvarchar(50) NULL,
+    [UserAgent] nvarchar(MAX) NULL,
+    CONSTRAINT [PK_ContactMessages] PRIMARY KEY CLUSTERED ([Id])
 );
 GO
 
@@ -320,6 +335,12 @@ GO
 CREATE NONCLUSTERED INDEX [IX_ActivityLogs_CreatedAt] ON [ActivityLogs]([CreatedAt]);
 GO
 
+CREATE NONCLUSTERED INDEX [IX_ContactMessages_IsRead] ON [ContactMessages]([IsRead]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_ContactMessages_CreatedAt] ON [ContactMessages]([CreatedAt]);
+GO
+
 CREATE NONCLUSTERED INDEX [IX_Heritage_Classification] ON [Heritage]([Classification]);
 GO
 
@@ -375,7 +396,7 @@ GO
 -- SEED AND CURRENT DATA
 -- ========================================
 
--- [__EFMigrationsHistory]: 17 rows
+-- [__EFMigrationsHistory]: 18 rows
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260701052754_InitialCreate', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260702054259_UpdateDatabaseSchema', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260703000000_AddAuditFieldsToIntangibleHeritage', N'10.0.9');
@@ -393,6 +414,7 @@ INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'202607
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260710000000_AddIntangibleHeritageEnglishFields', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260710110210_FixNullableMismatch', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260719111342_RemoveMonthlyUpdate', N'10.0.9');
+INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260719130410_AddContactMessages', N'10.0.9');
 GO
 
 -- [Roles]: 2 rows
@@ -454,7 +476,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 220 rows
+-- [ActivityLogs]: 224 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -676,9 +698,21 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10181, 3, N'CREATE', N'HeritageVideos', 2, N'heba4c83e', '2026-07-19T12:12:29.3770818', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10182, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-19T12:20:04.4367739', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10183, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-19T12:21:06.8285087', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10184, 3, N'LOGOUT', N'Users', NULL, N'User logged out.', '2026-07-19T13:10:55.8679115', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10185, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-19T13:11:34.6470363', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10186, 3, N'READ', N'ContactMessages', 1, NULL, '2026-07-19T13:11:38.8870348', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10187, 3, N'CREATE', N'RelatedLinks', 1, N'TRANG THÔNG TIN ĐIỆN TỬ', '2026-07-19T13:13:59.8415320', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10183);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10187);
+GO
+
+-- [ContactMessages]: 1 rows
+SET IDENTITY_INSERT [ContactMessages] ON;
+INSERT [ContactMessages] ([Id],[FullName],[Email],[Subject],[Message],[CreatedAt],[IsRead],[ReadAt],[IPAddress],[UserAgent]) VALUES (1, N'moi', N'moi@gmail.com', N'kikimely', N'test chức năng', '2026-07-19T13:11:22.9554694', 1, '2026-07-19T13:11:38.8559077', N'::1', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)');
+SET IDENTITY_INSERT [ContactMessages] OFF;
+GO
+DBCC CHECKIDENT ([ContactMessages], RESEED, 1);
 GO
 
 -- [HeritageCategories]: 9 rows
@@ -4698,7 +4732,12 @@ GO
 DBCC CHECKIDENT ([MediaFiles], RESEED, 293);
 GO
 
--- [RelatedLinks]: 0 rows
+-- [RelatedLinks]: 1 rows
+SET IDENTITY_INSERT [RelatedLinks] ON;
+INSERT [RelatedLinks] ([LinkId],[Title],[Url],[DisplayOrder],[IsEnabled],[CreatedBy],[CreatedAt],[UpdatedBy],[UpdatedAt]) VALUES (1, N'TRANG THÔNG TIN ĐIỆN TỬ', N'https://vandinh.hanoi.gov.vn/thong-bao', 0, 1, 3, '2026-07-19T13:13:59.8007973', NULL, NULL);
+SET IDENTITY_INSERT [RelatedLinks] OFF;
+GO
+DBCC CHECKIDENT ([RelatedLinks], RESEED, 1);
 GO
 
 -- [SystemSettings]: 1 rows
