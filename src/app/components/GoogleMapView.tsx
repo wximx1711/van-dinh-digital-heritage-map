@@ -1,10 +1,24 @@
 import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
-import { useJsApiLoader, GoogleMap, Marker, InfoWindow } from '@react-google-maps/api';
+import { useJsApiLoader, GoogleMap, Marker, InfoWindow, Polyline } from '@react-google-maps/api';
 import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import { classificationColors } from '../constants';
 import { getIconDataUri, hasSvgIcon, emojiFallbacks } from '../heritageIcons';
 import type { MapMarker, HeritageType, Classification } from '../../core/types';
 import type { ReactNode } from 'react';
+
+interface TripRouteMarker {
+  id: string;
+  position: google.maps.LatLngLiteral;
+  orderNumber: number;
+  dayIndex: number;
+  color: string;
+}
+
+interface TripPolyline {
+  dayIndex: number;
+  path: google.maps.LatLngLiteral[];
+  color: string;
+}
 
 interface GoogleMapViewProps {
   apiKey: string;
@@ -17,6 +31,12 @@ interface GoogleMapViewProps {
   userLocation?: google.maps.LatLngLiteral | null;
   highlightedMarkerId?: string | null;
   className?: string;
+  tripRouteMarkers?: TripRouteMarker[];
+  tripPolylines?: TripPolyline[];
+  visibleDay?: number | null;
+  onTripMarkerClick?: (id: string) => void;
+  focusPosition?: google.maps.LatLngLiteral | null;
+  fitTripBoundsKey?: number;
 }
 
 const VAN_DINH_CENTER: google.maps.LatLngLiteral = {
@@ -38,6 +58,8 @@ const mapOptions: google.maps.MapOptions = {
   clickableIcons: false,
 };
 
+const DAY_MARKER_SIZES = [32, 30, 28, 26, 24, 22, 20];
+
 export function GoogleMapView({
   apiKey,
   markers = [],
@@ -49,6 +71,12 @@ export function GoogleMapView({
   userLocation,
   highlightedMarkerId,
   className,
+  tripRouteMarkers = [],
+  tripPolylines = [],
+  visibleDay,
+  onTripMarkerClick,
+  focusPosition,
+  fitTripBoundsKey,
 }: GoogleMapViewProps) {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
@@ -61,14 +89,40 @@ export function GoogleMapView({
   const markerMapRef = useRef<Map<string, google.maps.Marker>>(new Map());
   const onMarkerClickRef = useRef(onMarkerClick);
   const onInfoWindowCloseRef = useRef(onInfoWindowClose);
+  const onTripMarkerClickRef = useRef(onTripMarkerClick);
   onMarkerClickRef.current = onMarkerClick;
   onInfoWindowCloseRef.current = onInfoWindowClose;
+  onTripMarkerClickRef.current = onTripMarkerClick;
 
   const mapCenter = useMemo(() => VAN_DINH_CENTER, []);
 
   const selectedMarker = useMemo(
-    () => markers.find((m) => m.id === selectedMarkerId) ?? null,
-    [markers, selectedMarkerId],
+    () => {
+      const fromMarkers = markers.find((m) => m.id === selectedMarkerId);
+      if (fromMarkers) return fromMarkers;
+      const fromTrip = tripRouteMarkers.find((m) => m.id === selectedMarkerId);
+      if (fromTrip) return { id: fromTrip.id, position: fromTrip.position };
+      return null;
+    },
+    [markers, tripRouteMarkers, selectedMarkerId],
+  );
+
+  const filteredTripMarkers = useMemo(
+    () => {
+      if (!tripRouteMarkers.length) return [];
+      if (visibleDay === null) return tripRouteMarkers;
+      return tripRouteMarkers.filter(m => m.dayIndex === visibleDay);
+    },
+    [tripRouteMarkers, visibleDay],
+  );
+
+  const filteredTripPolylines = useMemo(
+    () => {
+      if (!tripPolylines.length) return [];
+      if (visibleDay === null) return tripPolylines;
+      return tripPolylines.filter(p => p.dayIndex === visibleDay);
+    },
+    [tripPolylines, visibleDay],
   );
 
   const handleMapClick = useCallback(() => {
@@ -189,6 +243,40 @@ export function GoogleMapView({
       }
     };
   }, [markers, highlightedMarkerId, clustererVersion]);
+
+  // Focus on a specific position (from trip planner timeline click)
+  const focusPosRef = useRef<google.maps.LatLngLiteral | null>(null);
+  useEffect(() => {
+    if (!map || !focusPosition) return;
+    if (
+      focusPosRef.current &&
+      focusPosRef.current.lat === focusPosition.lat &&
+      focusPosRef.current.lng === focusPosition.lng
+    ) return;
+    focusPosRef.current = focusPosition;
+    map.panTo(focusPosition);
+    map.setZoom(17);
+  }, [map, focusPosition]);
+
+  // Fit bounds to trip route when day changes
+  const fitTripKeyRef = useRef<number>(0);
+  useEffect(() => {
+    if (!map) return;
+    if (fitTripBoundsKey === undefined || fitTripBoundsKey === fitTripKeyRef.current) return;
+    fitTripKeyRef.current = fitTripBoundsKey;
+
+    const dayPositions = filteredTripMarkers.map(m => m.position);
+    if (dayPositions.length === 0) return;
+
+    if (dayPositions.length === 1) {
+      map.panTo(dayPositions[0]);
+      map.setZoom(17);
+    } else {
+      const bounds = new google.maps.LatLngBounds();
+      dayPositions.forEach(p => bounds.extend(p));
+      map.fitBounds(bounds, 60);
+    }
+  }, [map, fitTripBoundsKey, filteredTripMarkers]);
 
   // Auto-fit viewport when the visible marker set changes
   const markersKeyRef = useRef<string>('');
@@ -313,6 +401,42 @@ export function GoogleMapView({
             zIndex={1000}
           />
         )}
+
+        {filteredTripPolylines.map((pl) => (
+          <Polyline
+            key={`trip-poly-${pl.dayIndex}`}
+            path={pl.path}
+            options={{
+              strokeColor: pl.color,
+              strokeWeight: 4,
+              strokeOpacity: 0.8,
+              zIndex: 5,
+            }}
+          />
+        ))}
+
+        {filteredTripMarkers.map((m) => (
+          <Marker
+            key={`trip-marker-${m.dayIndex}-${m.orderNumber}`}
+            position={m.position}
+            icon={{
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: DAY_MARKER_SIZES[m.dayIndex] ? DAY_MARKER_SIZES[m.dayIndex] / 2 : 14,
+              fillColor: m.color,
+              fillOpacity: 1,
+              strokeColor: '#FFFFFF',
+              strokeWeight: 3,
+            }}
+            label={{
+              text: String(m.orderNumber),
+              color: '#FFFFFF',
+              fontSize: '11px',
+              fontWeight: 'bold',
+            }}
+            zIndex={10}
+            onClick={() => onTripMarkerClickRef.current?.(m.id)}
+          />
+        ))}
 
         {selectedMarker && renderInfoWindow && (
           <InfoWindow

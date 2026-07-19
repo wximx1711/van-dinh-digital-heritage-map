@@ -7,9 +7,11 @@ import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { CategoryLegend } from './CategoryLegend';
 import { LazyImage } from './LazyImage';
+import { TripPlanner } from './TripPlanner';
 import { HERITAGE_TYPES, classificationColors } from '../constants';
 import { getIconUrl } from '../heritageIcons';
 import type { HeritageSite, HeritageType, Classification, MapMarker } from '../../core/types';
+import type { TripPlan } from '../services/tripPlannerService';
 import {
   X, QrCode, Navigation, RotateCcw, Search,
   Filter, ChevronDown, ChevronUp, Crosshair
@@ -115,6 +117,10 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
+  const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
+  const [tripVisibleDay, setTripVisibleDay] = useState<number | null>(null);
+  const [tripFocusPosition, setTripFocusPosition] = useState<google.maps.LatLngLiteral | null>(null);
+  const [tripFitBoundsKey, setTripFitBoundsKey] = useState(0);
   const mountedRef = useRef(true);
   const langRef = useRef(lang);
   langRef.current = lang;
@@ -172,6 +178,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
 
   const handleInfoWindowClose = useCallback(() => {
     setSelectedMarkerId(null);
+    setTripFocusPosition(null);
   }, []);
 
   const handleViewDetails = useCallback(
@@ -250,6 +257,81 @@ export function MapPage({ onNavigate }: MapPageProps) {
 
   const highlightedMarkerId = nearestHeritage?.id ?? null;
 
+  const tripRouteMarkers = useMemo(() => {
+    if (!tripPlan) return [];
+    const markers: Array<{
+      id: string;
+      position: google.maps.LatLngLiteral;
+      orderNumber: number;
+      dayIndex: number;
+      color: string;
+    }> = [];
+    for (const day of tripPlan.days) {
+      for (const dest of day.destinations) {
+        markers.push({
+          id: dest.siteId,
+          position: dest.position,
+          orderNumber: dest.order,
+          dayIndex: day.day,
+          color: day.color,
+        });
+      }
+    }
+    return markers;
+  }, [tripPlan]);
+
+  const tripPolylines = useMemo(() => {
+    if (!tripPlan) return [];
+    return tripPlan.days.map((day) => ({
+      dayIndex: day.day,
+      path: day.destinations.map((d) => d.position),
+      color: day.color,
+    }));
+  }, [tripPlan]);
+
+  const handleTripGenerate = useCallback((plan: TripPlan) => {
+    setTripPlan(plan);
+    if (plan.days.length > 0) {
+      setTripVisibleDay(plan.days[0].day);
+      setSelectedMarkerId(null);
+    }
+  }, []);
+
+  const handleTripReset = useCallback(() => {
+    setTripPlan(null);
+    setTripVisibleDay(null);
+    setSelectedMarkerId(null);
+  }, []);
+
+  const handleTripFocusSite = useCallback((siteId: string) => {
+    setSelectedMarkerId(siteId);
+    if (!tripPlan) return;
+    for (const day of tripPlan.days) {
+      for (const dest of day.destinations) {
+        if (dest.siteId === siteId) {
+          setTripFocusPosition(dest.position);
+          return;
+        }
+      }
+    }
+  }, [tripPlan]);
+
+  const tripContextMap = useMemo(() => {
+    const map = new Map<string, { day: number; stop: number; arrival: string }>();
+    if (!tripPlan) return map;
+    for (const day of tripPlan.days) {
+      for (const dest of day.destinations) {
+        map.set(dest.siteId, { day: day.day, stop: dest.order, arrival: dest.estimatedArrival });
+      }
+    }
+    return map;
+  }, [tripPlan]);
+
+  const handleTripDayChange = useCallback((day: number) => {
+    setTripVisibleDay(day);
+    setTripFitBoundsKey(k => k + 1);
+  }, []);
+
   const renderInfoWindow = useCallback(
     (marker: MapMarker) => {
       const site = siteMap.get(marker.id);
@@ -260,9 +342,28 @@ export function MapPage({ onNavigate }: MapPageProps) {
       const description = lang === 'vi' ? site.descriptionVi : site.descriptionEn;
       const truncated =
         description.length > 120 ? description.slice(0, 120).trimEnd() + '…' : description;
+      const tripCtx = tripContextMap.get(marker.id);
 
       return (
         <div style={{ maxWidth: 260, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
+          {tripCtx && (
+            <div style={{
+              display: 'flex', gap: 4, marginBottom: 6, flexWrap: 'wrap',
+            }}>
+              <span style={{
+                display: 'inline-block', padding: '2px 8px', borderRadius: 10,
+                fontSize: 10, fontWeight: 700, background: '#0F3D5E', color: 'white',
+              }}>
+                {lang === 'vi' ? `Ngày ${tripCtx.day}` : `Day ${tripCtx.day}`} #{tripCtx.stop}
+              </span>
+              <span style={{
+                display: 'inline-block', padding: '2px 8px', borderRadius: 10,
+                fontSize: 10, fontWeight: 600, background: '#F0F4F8', color: '#5d7a8c',
+              }}>
+                {tripCtx.arrival}
+              </span>
+            </div>
+          )}
           <div style={{ width: '100%', height: 110, overflow: 'hidden', borderRadius: 8, marginBottom: 10, background: '#F0F4F8' }}>
             <LazyImage
               src={imgSrc}
@@ -335,7 +436,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
         </div>
       );
     },
-    [siteMap, typeLabels, lang, t, handleViewDetails, handleGetDirections],
+    [siteMap, typeLabels, lang, t, handleViewDetails, handleGetDirections, tripContextMap],
   );
 
   return (
@@ -491,6 +592,12 @@ export function MapPage({ onNavigate }: MapPageProps) {
           mapTypeId={mapType}
           userLocation={userLocation}
           highlightedMarkerId={highlightedMarkerId}
+          tripRouteMarkers={tripRouteMarkers}
+          tripPolylines={tripPolylines}
+          visibleDay={tripVisibleDay}
+          onTripMarkerClick={handleMarkerClick}
+          focusPosition={tripFocusPosition}
+          fitTripBoundsKey={tripFitBoundsKey}
         />
 
         {visibleCount === 0 && (
@@ -525,6 +632,16 @@ export function MapPage({ onNavigate }: MapPageProps) {
         )}
 
 
+
+        <TripPlanner
+          heritageSites={heritageSites}
+          plan={tripPlan}
+          activeDay={tripVisibleDay ?? 1}
+          onGenerate={handleTripGenerate}
+          onReset={handleTripReset}
+          onFocusSite={handleTripFocusSite}
+          onDayChange={handleTripDayChange}
+        />
 
         <div role="radiogroup" aria-label={lang === 'vi' ? 'Loại bản đồ' : 'Map type'} style={{
           position: 'absolute', top: 12, right: 12, zIndex: 10,
