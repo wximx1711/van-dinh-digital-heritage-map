@@ -95,6 +95,13 @@ public sealed class HeritageMediaController(IAppRepository repository, IUploadSe
         return ApiResponse.Success(null, "Image deleted successfully.");
     }
 
+    [HttpGet("videos")]
+    public IActionResult Videos(string heritageId)
+    {
+        var heritage = repository.FindHeritage(heritageId);
+        return heritage is null ? ApiResponse.NotFound("Heritage not found.") : ApiResponse.Success(heritage.Videos.Select(x => x.ToDto()).ToList());
+    }
+
     [Authorize(Roles = "MANAGER")]
     [HttpPost("videos")]
     public async Task<IActionResult> AddVideo(string heritageId, [FromForm] string? title, [FromForm] string? youtubeUrl, [FromForm] string? videoUrl, IFormFile? file, CancellationToken cancellationToken)

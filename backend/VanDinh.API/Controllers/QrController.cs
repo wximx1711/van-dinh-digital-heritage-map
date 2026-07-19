@@ -18,4 +18,14 @@ public sealed class QrController(IAppRepository repository, IQrCodeService qrCod
         var svg = qrCodeService.CreateSvg(url);
         return Content(svg, "image/svg+xml");
     }
+
+    [HttpGet("intangible/{id}")]
+    public IActionResult Intangible(string id)
+    {
+        var item = repository.FindIntangible(id);
+        if (item is null) return ApiResponse.NotFound("Intangible heritage not found.");
+        var url = $"{Request.Scheme}://{Request.Host}/?page=intangible&id={item.PublicId}";
+        var svg = qrCodeService.CreateSvg(url);
+        return Content(svg, "image/svg+xml");
+    }
 }

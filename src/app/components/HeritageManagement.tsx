@@ -12,8 +12,8 @@ import { MediaPicker } from './MediaPicker';
 import { ConfirmDialog } from './ConfirmDialog';
 import {
   Plus, Search, Filter, Eye, Pencil, Trash2, X, Upload, QrCode,
-  ChevronLeft, ChevronRight, MapPin, Check, AlertTriangle, GripVertical,
-  Video, FileText, Image as ImageIcon, Download
+  ChevronLeft, ChevronRight, MapPin, Check, AlertTriangle,   GripVertical,
+  FileText, Image as ImageIcon, Download
 } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import { LazyImage } from './LazyImage';
@@ -24,13 +24,6 @@ interface HeritageManagementProps {
 }
 
 type FormMode = 'add' | 'edit' | null;
-
-interface VideoAttachment {
-  videoId: number;
-  title: string;
-  videoType: string;
-  videoUrl: string;
-}
 
 interface DocumentAttachment {
   documentId: number;
@@ -79,14 +72,11 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
   const [showPreview, setShowPreview] = useState(false);
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [mediaPickerTarget, setMediaPickerTarget] = useState<'thumbnail' | 'gallery' | null>(null);
-  const [videos, setVideos] = useState<VideoAttachment[]>([]);
   const [documents, setDocuments] = useState<DocumentAttachment[]>([]);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [dragIndex, setDragIndex] = useState<number | null>(null);
-  const [showVideoForm, setShowVideoForm] = useState(false);
-  const [videoTitle, setVideoTitle] = useState('');
-  const [videoUrl, setVideoUrl] = useState('');
-  const [loadingVideos, setLoadingVideos] = useState(false);
+  const [videoUrlInput, setVideoUrlInput] = useState('');
+  const [videoUrlMap, setVideoUrlMap] = useState<Record<string, string>>({});
   const [loadingDocs, setLoadingDocs] = useState(false);
   const [showDocUpload, setShowDocUpload] = useState(false);
   const docInputRef = useRef<HTMLInputElement>(null);
@@ -99,11 +89,11 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
     const current = JSON.stringify({
       editSite,
       galleryImages,
-      videos,
+      videoUrlInput,
       documents,
     });
     return current !== cleanSnapshotRef.current;
-  }, [formMode, editSite, galleryImages, videos, documents]);
+  }, [formMode, editSite, galleryImages, videoUrlInput, documents]);
 
   useEffect(() => {
     onDirtyChange?.(isDirty);
@@ -116,7 +106,6 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
       setEditSite(null);
       setFormErrors({});
       setGalleryImages([]);
-      setVideos([]);
       setDocuments([]);
       cleanSnapshotRef.current = null;
     };
@@ -145,6 +134,24 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
   const totalPages = Math.ceil(filtered.length / PER_PAGE);
   const paginated = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
+  useEffect(() => {
+    const ids = paginated.map(s => s.id);
+    if (ids.length === 0) return;
+    let cancelled = false;
+    Promise.all(ids.map(id =>
+      apiGet<any[]>('/heritage/' + encodeURIComponent(id) + '/media/videos')
+        .then(v => ({ id, url: Array.isArray(v) && v.length > 0 ? (v[0].videoUrl || '') : '' }))
+        .catch(() => ({ id, url: '' }))
+    )).then(results => {
+      if (!cancelled) {
+        const map: Record<string, string> = {};
+        for (const r of results) { if (r.url) map[r.id] = r.url; }
+        setVideoUrlMap(map);
+      }
+    });
+    return () => { cancelled = true; };
+  }, [paginated]);
+
   const showToast = (msg: string, type: 'success' | 'error' = 'success') => {
     setToast({ msg, type });
     setTimeout(() => setToast(null), 3000);
@@ -163,26 +170,26 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
   };
 
   const loadMedia = async (siteId: string) => {
-    setLoadingVideos(true);
     setLoadingDocs(true);
-    let loadedVideos: VideoAttachment[] = [];
     let loadedDocs: DocumentAttachment[] = [];
+    let loadedVideoUrl = '';
     try {
       const v = await apiGet<any[]>('/heritage/' + encodeURIComponent(siteId) + '/media/videos');
-      loadedVideos = Array.isArray(v) ? v.map((x: any) => ({ videoId: x.videoId, title: x.title || '', videoType: x.videoType || '', videoUrl: x.videoUrl || '' })) : [];
-      setVideos(loadedVideos);
-    } catch { setVideos([]); }
+      if (Array.isArray(v) && v.length > 0) {
+        loadedVideoUrl = v[0].videoUrl || '';
+      }
+      setVideoUrlInput(loadedVideoUrl);
+    } catch { setVideoUrlInput(''); }
     try {
       const d = await apiGet<any[]>('/heritage/' + encodeURIComponent(siteId) + '/media/documents');
       loadedDocs = Array.isArray(d) ? d.map((x: any) => ({ documentId: x.documentId, fileName: x.fileName || '', fileUrl: x.fileUrl || '', fileType: x.fileType || '', fileSize: x.fileSize || 0 })) : [];
       setDocuments(loadedDocs);
     } catch { setDocuments([]); }
-    setLoadingVideos(false);
     setLoadingDocs(false);
     cleanSnapshotRef.current = JSON.stringify({
       editSite,
       galleryImages,
-      videos: loadedVideos,
+      videoUrlInput: loadedVideoUrl,
       documents: loadedDocs,
     });
   };
@@ -192,14 +199,9 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
     setEditSite(siteCopy);
     const initialGallery = site.images.length > 0 ? [...site.images] : [];
     setGalleryImages(initialGallery);
+    setVideoUrlInput('');
     setFormErrors({});
     setFormMode('edit');
-    cleanSnapshotRef.current = JSON.stringify({
-      editSite: siteCopy,
-      galleryImages: initialGallery,
-      videos: [],
-      documents: [],
-    });
     await loadMedia(site.id);
   };
 
@@ -219,14 +221,14 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
     };
     setEditSite(newSite);
     setGalleryImages([]);
-    setVideos([]);
+    setVideoUrlInput('');
     setDocuments([]);
     setFormErrors({});
     setFormMode('add');
     cleanSnapshotRef.current = JSON.stringify({
       editSite: newSite,
       galleryImages: [],
-      videos: [],
+      videoUrlInput: '',
       documents: [],
     });
   };
@@ -316,18 +318,34 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
       };
       if (!editSite.id || !editSite.id.trim()) {
         const newSite = await createHeritageSite(payload);
-        // Persist videos added during add mode
-        for (const video of videos) {
+        if (videoUrlInput) {
           try {
             const formData = new FormData();
-            formData.append('title', video.title);
-            formData.append('youtubeUrl', video.videoUrl);
+            formData.append('title', editSite.nameVi || '');
+            formData.append('youtubeUrl', videoUrlInput);
             await apiPost('/heritage/' + encodeURIComponent(newSite.id) + '/media/videos', formData, true);
-          } catch { /* skip individual failures */ }
+          } catch { /* skip */ }
         }
         showToast(lang === 'vi' ? 'Đã thêm di tích mới thành công' : 'New heritage site added successfully');
       } else {
         await updateHeritageSite(editSite.id, payload);
+        try {
+          const existing = await apiGet<any[]>('/heritage/' + encodeURIComponent(editSite.id) + '/media/videos');
+          const existingVideos = Array.isArray(existing) ? existing : [];
+          const storedUrl = existingVideos.length > 0 ? (existingVideos[0].videoUrl || '') : '';
+          const currentUrl = videoUrlInput || '';
+          if (currentUrl !== storedUrl) {
+            for (const v of existingVideos) {
+              await apiDelete('/heritage/' + encodeURIComponent(editSite.id) + '/media/videos/' + v.videoId);
+            }
+            if (currentUrl) {
+              const formData = new FormData();
+              formData.append('title', editSite.nameVi || '');
+              formData.append('youtubeUrl', currentUrl);
+              await apiPost('/heritage/' + encodeURIComponent(editSite.id) + '/media/videos', formData, true);
+            }
+          }
+        } catch { /* skip */ }
         showToast(lang === 'vi' ? 'Đã cập nhật di tích thành công' : 'Heritage site updated successfully');
       }
       setFormMode(null);
@@ -335,7 +353,6 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
       setFormErrors({});
       cleanSnapshotRef.current = null;
       setGalleryImages([]);
-      setVideos([]);
       setDocuments([]);
       refetch();
     } catch (err) {
@@ -423,51 +440,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
     setGalleryImages(newImages);
   };
 
-  const handleAddVideo = async () => {
-    if (!editSite || !videoUrl.trim()) return;
-    const trimmedUrl = videoUrl.trim();
-    const isYouTube = trimmedUrl.includes('youtube.com') || trimmedUrl.includes('youtu.be');
-    if (!isYouTube && !trimmedUrl.endsWith('.mp4')) {
-      showToast(lang === 'vi' ? 'Chỉ chấp nhận URL YouTube hoặc file MP4' : 'Only YouTube URL or MP4 accepted', 'error');
-      return;
-    }
-    if (formMode === 'add') {
-      setVideos(prev => [...prev, { videoId: Date.now(), title: videoTitle, videoType: isYouTube ? 'youtube' : 'upload', videoUrl: trimmedUrl }]);
-      setVideoTitle(''); setVideoUrl(''); setShowVideoForm(false);
-      return;
-    }
-    try {
-      const formData = new FormData();
-      formData.append('title', videoTitle);
-      if (videoUrl.includes('youtube') || videoUrl.includes('youtu.be')) {
-        formData.append('youtubeUrl', videoUrl);
-      } else {
-        formData.append('videoUrl', videoUrl);
-      }
-      const result = await apiPost<any>('/heritage/' + encodeURIComponent(editSite.id) + '/media/videos', formData, true);
-      setVideos(prev => [...prev, { videoId: result.videoId, title: result.title || '', videoType: result.videoType || '', videoUrl: result.videoUrl || '' }]);
-      setVideoTitle(''); setVideoUrl(''); setShowVideoForm(false);
-      showToast(lang === 'vi' ? 'Đã thêm video' : 'Video added');
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Lỗi khi thêm video' : 'Failed to add video');
-      showToast(msg, 'error');
-    }
-  };
 
-  const handleDeleteVideo = async (videoId: number) => {
-    if (formMode === 'add') {
-      setVideos(prev => prev.filter(v => v.videoId !== videoId));
-      return;
-    }
-    try {
-      await apiDelete('/heritage/' + encodeURIComponent(editSite!.id) + '/media/videos/' + videoId);
-      setVideos(prev => prev.filter(v => v.videoId !== videoId));
-      showToast(lang === 'vi' ? 'Đã xóa video' : 'Video deleted');
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Lỗi khi xóa video' : 'Failed to delete video');
-      showToast(msg, 'error');
-    }
-  };
 
   const handleDocUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -576,7 +549,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr style={{ background: '#0F3D5E' }}>
-              {[t('hm.id'), t('hm.name'), t('hm.classification'), t('hm.type'), t('hm.status'), t('hm.updated'), t('hm.actions')].map(h => (
+              {[t('hm.id'), t('hm.name'), t('hm.classification'), t('hm.type'), t('hm.status'), lang === 'vi' ? 'Video' : 'Video', t('hm.updated'), t('hm.actions')].map(h => (
                 <th key={h} style={{ padding: '12px 14px', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.8)', textAlign: 'left', textTransform: 'uppercase', letterSpacing: 0.4, whiteSpace: 'nowrap' }}>{h}</th>
               ))}
             </tr>
@@ -610,6 +583,13 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
                     {statusLabels[site.status][lang]}
                   </span>
                 </td>
+                <td style={{ padding: '12px 14px', fontSize: 11, color: '#5d7a8c' }}>
+                  {videoUrlMap[site.id] ? (
+                    <a href={videoUrlMap[site.id]} target="_blank" rel="noreferrer" style={{ color: '#D4A017', textDecoration: 'underline', fontSize: 11 }}>
+                      {lang === 'vi' ? 'Xem' : 'Watch'}
+                    </a>
+                  ) : '-'}
+                </td>
                 <td style={{ padding: '12px 14px', fontSize: 11, color: '#5d7a8c' }}>{site.updatedAt}</td>
                 <td style={{ padding: '12px 14px' }}>
                   <div style={{ display: 'flex', gap: 4 }}>
@@ -627,7 +607,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
               </tr>
             ))}
             {paginated.length === 0 && (
-              <tr><td colSpan={7} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
+              <tr><td colSpan={8} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
             )}
           </tbody>
         </table>
@@ -835,44 +815,18 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
                   </div>
                 </div>
 
-                {/* Videos Section */}
+                {/* Video URL */}
                 <div style={{ gridColumn: '1 / -1' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
-                    <label style={{ fontSize: 11, fontWeight: 700, color: '#0F3D5E', textTransform: 'uppercase', letterSpacing: 0.3 }}>
-                      <Video size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />
-                      {lang === 'vi' ? 'Video' : 'Videos'} <span style={{ color: '#5d7a8c', fontWeight: 400 }}>({videos.length})</span>
-                    </label>
-                    <button onClick={() => setShowVideoForm(!showVideoForm)}
-                      style={{ padding: '4px 10px', borderRadius: 4, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 10, fontWeight: 600, cursor: 'pointer' }}>
-                      {showVideoForm ? (lang === 'vi' ? 'Đóng' : 'Close') : (lang === 'vi' ? 'Thêm video' : 'Add Video')}
-                    </button>
-                  </div>
-
-                  {showVideoForm && (
-                    <div style={{ display: 'flex', gap: 8, marginBottom: 10, padding: '10px', background: '#F0F4F8', borderRadius: 8 }}>
-                      <input placeholder={lang === 'vi' ? 'Tiêu đề' : 'Title'} value={videoTitle} onChange={e => setVideoTitle(e.target.value)}
-                        style={{ ...inputStyle, flex: 1, fontSize: 12 }} />
-                      <input placeholder={lang === 'vi' ? 'URL YouTube hoặc đường dẫn video' : 'YouTube URL or video URL'} value={videoUrl} onChange={e => setVideoUrl(e.target.value)}
-                        style={{ ...inputStyle, flex: 2, fontSize: 12 }} />
-                      <button onClick={handleAddVideo} disabled={!videoUrl.trim()}
-                        style={{ padding: '8px 14px', borderRadius: 6, background: videoUrl.trim() ? '#0F3D5E' : '#5d7a8c', border: 'none', color: 'white', fontSize: 12, fontWeight: 600, cursor: videoUrl.trim() ? 'pointer' : 'default', whiteSpace: 'nowrap' }}>
-                        {lang === 'vi' ? 'Thêm' : 'Add'}
-                      </button>
-                    </div>
-                  )}
-
-                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
-                    {videos.map(v => (
-                      <div key={v.videoId} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 6, background: '#F8FAFC', border: '1px solid rgba(15,61,94,0.08)' }}>
-                        <Video size={14} style={{ color: '#D4A017', flexShrink: 0 }} />
-                        <span style={{ fontSize: 11, color: '#0F3D5E', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.title || v.videoUrl}</span>
-                        <button onClick={() => handleDeleteVideo(v.videoId)} style={{ background: 'none', border: 'none', color: '#E74C3C', cursor: 'pointer', padding: 2 }}>
-                          <X size={12} />
-                        </button>
-                      </div>
-                    ))}
-                    {loadingVideos && <Skeleton width={80} height={14} borderRadius={3} />}
-                  </div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>
+                    {t('im.video_url')}
+                  </label>
+                  <input
+                    style={{ ...inputStyle }}
+                    type="url"
+                    placeholder={lang === 'vi' ? 'https://www.youtube.com/watch?v=...' : 'https://www.youtube.com/watch?v=...'}
+                    value={videoUrlInput}
+                    onChange={e => setVideoUrlInput(e.target.value)}
+                  />
                 </div>
 
                 {/* Documents Section */}

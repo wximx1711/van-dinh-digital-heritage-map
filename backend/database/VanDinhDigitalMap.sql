@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-19T11:16:52Z
+    GENERATED: 2026-07-19T12:43:04Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -416,16 +416,45 @@ GO
 
 -- [AboutPage]: 1 rows
 SET IDENTITY_INSERT [AboutPage] ON;
-INSERT [AboutPage] ([AboutId],[BannerImage],[UpdatedBy],[UpdatedAt],[ContactInfo],[IntroductionEn],[IntroductionVi],[MainContentEn],[MainContentVi],[TitleEn],[TitleVi]) VALUES (1, NULL, 1, '2026-07-09T05:55:06.5843869', NULL, N'The Van Dinh Digital Heritage Map System is a project for digitizing and preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi City.', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là dự án số hóa và bảo tồn di sản văn hóa của xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.', N'With over 10 tangible heritage sites and 5 intangible heritage items documented and digitized, the system provides comprehensive information on history, architecture, coordinates, and images of each heritage site.', N'Với tổng số hơn 10 di tích vật thể và 5 di sản phi vật thể được ghi nhận và số hóa, hệ thống cung cấp đầy đủ thông tin lịch sử, kiến trúc, tọa độ và hình ảnh của từng di sản.', N'About Van Dinh Commune', N'Giới thiệu xã Vân Đình');
+INSERT [AboutPage] ([AboutId],[BannerImage],[UpdatedBy],[UpdatedAt],[ContactInfo],[IntroductionEn],[IntroductionVi],[MainContentEn],[MainContentVi],[TitleEn],[TitleVi]) VALUES (1, N'/uploads/images/67e12a1aab18499ab100796a8f85e857.jpg', 3, '2026-07-19T11:30:09.7594939', N'Ban Quản lý Hệ thống Bản đồ số Di sản Văn hóa Vân Đình
+Địa chỉ: Xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội', N'The Van Dinh Digital Cultural Heritage Map is a digital platform designed to support the management, preservation, and promotion of cultural heritage in Van Dinh Commune, Ung Hoa District, Hanoi. The system provides a centralized database of tangible and intangible cultural heritage, integrating digital maps, photographs, historical documentation, and scientific information to facilitate digital transformation in the cultural sector while preserving and promoting local heritage values.', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là nền tảng số được xây dựng nhằm hỗ trợ công tác quản lý, bảo tồn và phát huy giá trị di sản văn hóa trên địa bàn xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội. Hệ thống cung cấp cơ sở dữ liệu tập trung về các di sản văn hóa vật thể và phi vật thể, tích hợp bản đồ số, hình ảnh, tư liệu và thông tin khoa học, góp phần thúc đẩy chuyển đổi số trong lĩnh vực văn hóa theo định hướng của Luật Di sản văn hóa và các chủ trương của Nhà nước về bảo tồn, phát huy giá trị di sản văn hóa.', N'The system provides comprehensive information on tangible and intangible cultural heritage that has been inventoried and digitized within Van Dinh Commune. Each heritage site is displayed on a digital map together with its geographic location, photographs, historical background, architectural and cultural values, preservation status, and related documentation.
+
+Key features include:
+
+Searching heritage information by name, category, and location.
+Displaying heritage locations on an interactive digital map with navigation support.
+Managing and updating heritage data through role-based access control.
+Storing photographs, digital archives, and scientific documentation for preservation purposes.
+Supporting cultural promotion, heritage education, and cultural tourism development.
+Building a centralized digital heritage database to assist government agencies, researchers, and the public.
+
+The platform contributes to the long-term preservation and promotion of cultural heritage in accordance with Vietnam''s Cultural Heritage Law while improving public access to reliable and comprehensive heritage information through digital technology.', N'Hệ thống cung cấp thông tin đầy đủ về các di sản văn hóa vật thể và phi vật thể đã được kiểm kê, số hóa trên địa bàn xã Vân Đình. Mỗi di sản được hiển thị trên bản đồ số với vị trí địa lý, hình ảnh, tư liệu, lịch sử hình thành, giá trị kiến trúc, nghệ thuật, văn hóa, hiện trạng bảo tồn và các thông tin liên quan.
+
+Các chức năng chính của hệ thống bao gồm:
+
+Tra cứu thông tin di sản theo tên, loại hình và vị trí.
+Hiển thị vị trí di sản trên bản đồ số với khả năng tìm đường.
+Quản lý và cập nhật dữ liệu di sản theo phân quyền.
+Lưu trữ hình ảnh, tư liệu và hồ sơ khoa học phục vụ công tác bảo tồn.
+Hỗ trợ quảng bá giá trị văn hóa địa phương, giáo dục truyền thống và phát triển du lịch văn hóa.
+Xây dựng cơ sở dữ liệu phục vụ công tác quản lý nhà nước, nghiên cứu và chuyển đổi số trong lĩnh vực di sản văn hóa.
+
+Hệ thống được phát triển nhằm góp phần bảo vệ, lưu giữ lâu dài và phát huy giá trị các di sản văn hóa theo quy định của Luật Di sản văn hóa năm 2024, đồng thời tạo điều kiện thuận lợi để người dân, nhà nghiên cứu, du khách và cơ quan quản lý tiếp cận thông tin một cách chính xác, minh bạch và thuận tiện.', N'Van Dinh Digital Cultural Heritage Map', N'Bản đồ số Di sản Văn hóa Vân Đình');
 SET IDENTITY_INSERT [AboutPage] OFF;
 GO
 DBCC CHECKIDENT ([AboutPage], RESEED, 1);
 GO
 
--- [AboutPageHistories]: 0 rows
+-- [AboutPageHistories]: 2 rows
+SET IDENTITY_INSERT [AboutPageHistories] ON;
+INSERT [AboutPageHistories] ([HistoryId],[AboutId],[TitleVi],[TitleEn],[IntroductionVi],[IntroductionEn],[MainContentVi],[MainContentEn],[BannerImage],[ContactInfo],[UpdatedBy],[CreatedAt]) VALUES (1, 1, N'Giới thiệu xã Vân Đình', N'About Van Dinh Commune', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là dự án số hóa và bảo tồn di sản văn hóa của xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.', N'The Van Dinh Digital Heritage Map System is a project for digitizing and preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi City.', N'Với tổng số hơn 10 di tích vật thể và 5 di sản phi vật thể được ghi nhận và số hóa, hệ thống cung cấp đầy đủ thông tin lịch sử, kiến trúc, tọa độ và hình ảnh của từng di sản.', N'With over 10 tangible heritage sites and 5 intangible heritage items documented and digitized, the system provides comprehensive information on history, architecture, coordinates, and images of each heritage site.', NULL, NULL, 1, '2026-07-19T11:26:11.7892823');
+INSERT [AboutPageHistories] ([HistoryId],[AboutId],[TitleVi],[TitleEn],[IntroductionVi],[IntroductionEn],[MainContentVi],[MainContentEn],[BannerImage],[ContactInfo],[UpdatedBy],[CreatedAt]) VALUES (2, 1, N'Giới thiệu xã Vân Đình', N'About Van Dinh Commune', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là dự án số hóa và bảo tồn di sản văn hóa của xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.', N'The Van Dinh Digital Heritage Map System is a project for digitizing and preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi City.', N'Với tổng số hơn 10 di tích vật thể và 5 di sản phi vật thể được ghi nhận và số hóa, hệ thống cung cấp đầy đủ thông tin lịch sử, kiến trúc, tọa độ và hình ảnh của từng di sản.', N'With over 10 tangible heritage sites and 5 intangible heritage items documented and digitized, the system provides comprehensive information on history, architecture, coordinates, and images of each heritage site.', N'/uploads/images/67e12a1aab18499ab100796a8f85e857.jpg', NULL, 3, '2026-07-19T11:30:09.7537719');
+SET IDENTITY_INSERT [AboutPageHistories] OFF;
+GO
+DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 203 rows
+-- [ActivityLogs]: 220 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -630,9 +659,26 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10164, 3, N'UPDATE', N'Heritage', 15, N'VĐHN-DT-015', '2026-07-19T10:26:43.2353552', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10165, 3, N'CREATE', N'HeritageDocuments', 17, N'ha1d5034e', '2026-07-19T10:26:58.6192222', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10166, 3, N'UPDATE', N'Heritage', 15, N'VĐHN-DT-015', '2026-07-19T10:27:00.1195104', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10167, 3, N'UPDATE', N'AboutPage', 1, NULL, '2026-07-19T11:26:11.8415826', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10168, 3, N'UPDATE', N'AboutPage', 1, NULL, '2026-07-19T11:30:09.7632289', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10169, 3, N'UPDATE', N'Heritage', 1, N'VĐHN-DT-001', '2026-07-19T11:40:31.6424543', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10170, 3, N'CREATE', N'HeritageVideos', 1, N'heba4c83e', '2026-07-19T11:41:25.9345177', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10171, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-19T11:41:28.7189779', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10172, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-19T11:41:57.5804063', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10173, 3, N'UPDATE', N'Heritage', 2, N'VĐHN-DT-002', '2026-07-19T11:42:16.0321868', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10174, 3, N'UPDATE', N'Heritage', 2, N'VĐHN-DT-002', '2026-07-19T11:42:16.0326041', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10175, 3, N'UPDATE', N'Heritage', 2, N'VĐHN-DT-002', '2026-07-19T11:42:16.0322367', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10176, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-19T12:01:27.9930252', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10177, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-19T12:02:03.7590341', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10178, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-19T12:12:29.1200357', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10179, 3, N'UPDATE', N'Heritage', 3, N'VĐHN-DT-003', '2026-07-19T12:12:29.1200414', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10180, 3, N'DELETE', N'HeritageVideos', 1, N'heba4c83e', '2026-07-19T12:12:29.3083300', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10181, 3, N'CREATE', N'HeritageVideos', 2, N'heba4c83e', '2026-07-19T12:12:29.3770818', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10182, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-19T12:20:04.4367739', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10183, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-19T12:21:06.8285087', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10166);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10183);
 GO
 
 -- [HeritageCategories]: 9 rows
@@ -747,7 +793,7 @@ Layer 6: The Nine Dragon Altar is carved from wood with dragons spraying water t
 Other rare artifacts:
 01 ancient bronze bell cast in the year Quy Ty (1953) with a finely engraved brocade seal.
 01 ancient stone stele composed by General Do (title of Nhan Hau) and containing philosophical and historical records of the temple''s restoration from the Vinh Huu era.
-02 blocks of ancient green stone reliefs depicting dragons and unicorns from the 15th century, along with 14 bricks from the Le-Mac period with embossed stylized flowers, mythical creatures, and dragons.', N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', N'1403', N'xã Vân Đình', N'/api/qr/heritage/heff617cc', N'https://maps.app.goo.gl/3ddEcNYLoH31G9DV8', 0, NULL, 3, '2026-07-09T13:35:05.1690537', '2026-07-09T13:55:38.2254948');
+02 blocks of ancient green stone reliefs depicting dragons and unicorns from the 15th century, along with 14 bricks from the Le-Mac period with embossed stylized flowers, mythical creatures, and dragons.', N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', N'1403', N'xã Vân Đình', N'/api/qr/heritage/heff617cc', N'https://maps.app.goo.gl/3ddEcNYLoH31G9DV8', 0, NULL, 3, '2026-07-09T13:35:05.1690537', '2026-07-19T11:40:31.6263252');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (2, N'h0d0c0cbc', N'VĐHN-DT-002', 2, N'CHÙA CAO LÃM (DIÊN KHÁNH TỰ)', N'CHÙA CAO LÃM (DIÊN KHÁNH TỰ)', N'chùa-cao-lãm-diên-khánh-tự', N'city', N'active', N'QP5Q+HHJ, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', N'QP5Q+HHJ, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', 20.75896640, 105.73630870, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Cao Lãm.
 Tên chữ: Diên Khánh Tự.
@@ -815,7 +861,7 @@ The boundaries of the protected area II of the temple land (Plot No. 164F): Cove
 
 The overall boundaries of the temple land are: East and West bordering the village road; South bordering plot 164B; North bordering the remaining vacant land of plot 164F.
 
-Any unauthorized excavation of ancient foundations, dismantling of carved wooden brackets or moving the ancient Thieu Tri bell or Tho Ha ceramic incense burner outside the designated corridor of the above plots is strictly prohibited and will be severely punished by law.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'1702', N'xã Vân Đình', N'/api/qr/heritage/h0d0c0cbc', N'https://maps.app.goo.gl/HmaBmvZU9Jpfp2Sk8', 0, NULL, 3, '2026-07-09T13:49:50.2184218', '2026-07-10T12:58:42.4051349');
+Any unauthorized excavation of ancient foundations, dismantling of carved wooden brackets or moving the ancient Thieu Tri bell or Tho Ha ceramic incense burner outside the designated corridor of the above plots is strictly prohibited and will be severely punished by law.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'1702', N'xã Vân Đình', N'/api/qr/heritage/h0d0c0cbc', N'https://maps.app.goo.gl/HmaBmvZU9Jpfp2Sk8', 0, NULL, 3, '2026-07-09T13:49:50.2184218', '2026-07-19T11:42:16.0213695');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (3, N'heba4c83e', N'VĐHN-DT-003', 2, N'CHÙA ĐÔNG DƯƠNG (Thiên Phúc Tự - Vĩnh Thọ Tự)', N'CHÙA ĐÔNG DƯƠNG', N'chùa-đông-dương', N'national', N'active', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', 20.70736230, 105.78912930, N'1. Thông tin hành chính và Xếp hạng di tích
 Tên di tích thống nhất: Chùa Đông Dương.
 Tên chữ qua các thời kỳ:
@@ -906,7 +952,7 @@ South: Bordered by plots 374, 381, 385 and the village road corridor.
 
 North: Bordered by plot 505 extending towards the field.
 
-Strict prohibitions: Absolutely no construction, expansion, or excavation that alters the original state of the lim wood load-bearing components of the structure is permitted; unauthorized removal of the 16th-century bronze statue of Shakyamuni Buddha and other artifacts, including ceramic bells, from the boundaries of the historical site is strictly prohibited.', N'/uploads/images/8ab46954327d4f8a900f512ed8890ca3.jpg', N'1470', N'xã Vân Đình', N'/api/qr/heritage/heba4c83e', N'https://maps.app.goo.gl/wHiFR4bWhg73M5vZ7', 0, NULL, 3, '2026-07-10T06:01:22.8000117', '2026-07-10T06:12:56.6217564');
+Strict prohibitions: Absolutely no construction, expansion, or excavation that alters the original state of the lim wood load-bearing components of the structure is permitted; unauthorized removal of the 16th-century bronze statue of Shakyamuni Buddha and other artifacts, including ceramic bells, from the boundaries of the historical site is strictly prohibited.', N'/uploads/images/8ab46954327d4f8a900f512ed8890ca3.jpg', N'1470', N'xã Vân Đình', N'/api/qr/heritage/heba4c83e', N'https://maps.app.goo.gl/wHiFR4bWhg73M5vZ7', 0, NULL, 3, '2026-07-10T06:01:22.8000117', '2026-07-19T12:12:29.0474973');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (4, N'h77221b53', N'VĐHN-DT-004', 2, N'CHÙA DƯƠNG KHÊ (Dương Phúc Tự)', N'CHÙA DƯƠNG KHÊ', N'chùa-dương-khê', N'national', N'active', N'PQGR+7MW, Vân Đình, Hà Nội, Việt Nam', N'PQGR+7MW, Vân Đình, Hà Nội, Việt Nam', 20.72866970, 105.79020250, N'1. Thông tin chung và Địa vị Pháp lý
 Tên di tích: Chùa Dương Khê.
 Tên chữ: Dương Phúc Tự.
@@ -4157,7 +4203,12 @@ GO
 DBCC CHECKIDENT ([HeritageImages], RESEED, 10223);
 GO
 
--- [HeritageVideos]: 0 rows
+-- [HeritageVideos]: 1 rows
+SET IDENTITY_INSERT [HeritageVideos] ON;
+INSERT [HeritageVideos] ([VideoId],[HeritageId],[Title],[VideoType],[VideoUrl],[ThumbnailUrl],[UploadedAt]) VALUES (2, 3, N'CHÙA ĐÔNG DƯƠNG (Thiên Phúc Tự - Vĩnh Thọ Tự)', N'youtube', N'https://www.youtube.com/watch?v=oCs3s56sNQY&t=568s', NULL, '2026-07-19T12:12:29.3474138');
+SET IDENTITY_INSERT [HeritageVideos] OFF;
+GO
+DBCC CHECKIDENT ([HeritageVideos], RESEED, 2);
 GO
 
 -- [IntangibleHeritage]: 26 rows
@@ -4386,7 +4437,7 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
--- [MediaFiles]: 250 rows
+-- [MediaFiles]: 254 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -4638,9 +4689,13 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (286, N'/uploads/images/d2eefff00e87450a900733ab199743e9.jpg', N'IMG_2907.jpg', 5012578, N'image', '2026-07-19T10:25:00.5779851');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (287, N'/uploads/images/69a151d5f5f144dd9f157225c66cd3fd.jpg', N'IMG_2912.jpg', 3590434, N'image', '2026-07-19T10:25:15.6290393');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (289, N'/uploads/documents/2bcac68b9ad647ebbd28b52461927405.pdf', N'bản đồ Vĩnh Thượng.pdf', 1953426, N'document', '2026-07-19T10:26:58.6155028');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (290, N'/uploads/images/67e12a1aab18499ab100796a8f85e857.jpg', N'van-dinh-o-dau-1.jpg', 167824, N'image', '2026-07-19T11:25:27.7543272');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (291, N'https://www.youtube.com/watch?v=oCs3s56sNQY', N'Chùa Đông Dương', 0, N'video', '2026-07-19T11:41:25.8889166');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (292, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-19T12:21:05.3399521');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (293, N'https://www.youtube.com/watch?v=oCs3s56sNQY&t=568s', N'CHÙA ĐÔNG DƯƠNG (Thiên Phúc Tự - Vĩnh Thọ Tự)', 0, N'video', '2026-07-19T12:12:29.3474138');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 289);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 293);
 GO
 
 -- [RelatedLinks]: 0 rows
@@ -4648,7 +4703,7 @@ GO
 
 -- [SystemSettings]: 1 rows
 SET IDENTITY_INSERT [SystemSettings] ON;
-INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl]) VALUES (1, N'Ban do so Xa Van Dinh', NULL, N'Ban do so Xa Van Dinh', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', NULL, NULL, 1, '2026-07-09T05:55:06.5425972', NULL);
+INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl]) VALUES (1, N'Bản đồ số Di sản Văn hóa Vân Đình', N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', N'Bản đồ số Di sản Văn hóa Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-07-19T12:21:06.8245073', N'');
 SET IDENTITY_INSERT [SystemSettings] OFF;
 GO
 DBCC CHECKIDENT ([SystemSettings], RESEED, 1);

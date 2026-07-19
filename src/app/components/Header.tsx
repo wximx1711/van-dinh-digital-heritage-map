@@ -6,6 +6,8 @@ import {
   Map, BookOpen, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
 } from 'lucide-react';
 import { Skeleton } from './Skeleton';
+import { LazyImage } from './LazyImage';
+import { getImageUrl } from '../utils/url';
 
 interface HeaderProps {
   currentPage: string;
@@ -19,11 +21,12 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [hotline, setHotline] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    apiGet<{ phone?: string }>('/system-settings')
-      .then(data => setHotline(data?.phone ?? null))
-      .catch(() => setHotline(null));
+    apiGet<{ phone?: string; logoUrl?: string }>('/system-settings')
+      .then(data => { setHotline(data?.phone ?? null); setLogoUrl(data?.logoUrl ?? null); })
+      .catch(() => { setHotline(null); setLogoUrl(null); });
   }, []);
 
   const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
@@ -75,11 +78,15 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
         >
           <div style={{
             width: 48, height: 48, borderRadius: 8,
-            background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+            background: logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
+            flexShrink: 0, overflow: 'hidden',
           }}>
-            <Landmark size={26} color="white" />
+            {logoUrl ? (
+              <LazyImage src={getImageUrl(logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
+            ) : (
+              <Landmark size={26} color="white" />
+            )}
           </div>
           <div>
             <div style={{ color: '#D4A017', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, lineHeight: 1.2 }}>

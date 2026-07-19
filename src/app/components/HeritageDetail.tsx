@@ -13,7 +13,7 @@ import { DetailPageSkeleton, Skeleton } from './Skeleton';
 import { openGoogleMapsDirections } from '../utils/geo';
 import {
   ArrowLeft, MapPin, Calendar, Download, FileText, Image, Info, Clock, User,
-  Video, ExternalLink, Globe, Navigation, QrCode, Share2,
+  Video, ExternalLink, Globe, Navigation,
 } from 'lucide-react';
 
 interface HeritageDetailProps {
@@ -55,7 +55,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
   const statusLabels = useStatusLabels();
   const site = siteData;
   const [activeTab, setActiveTab] = useState<'info' | 'history' | 'docs' | 'gallery'>('info');
-  const [showQr, setShowQr] = useState(false);
   const [videos, setVideos] = useState<VideoData[]>([]);
   const [documents, setDocuments] = useState<DocumentData[]>([]);
   const [loadingMedia, setLoadingMedia] = useState(false);
@@ -479,22 +478,6 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                     fontSize: 13, fontWeight: 600, cursor: site.lat !== null && site.lon !== null ? 'pointer' : 'not-allowed', border: 'none',
                   }}>
                   <Navigation size={14} /> {t('detail.route')}
-                </button>
-                <button onClick={() => setShowQr(true)}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    padding: '10px', borderRadius: 8, border: '1px solid #D4A017', background: 'rgba(212,160,23,0.05)',
-                    color: '#B8860B', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  }}>
-                  <QrCode size={14} /> {t('detail.share_qr')}
-                </button>
-                <button onClick={() => { navigator.clipboard.writeText(window.location.href); }}
-                  style={{
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
-                    padding: '10px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white',
-                    color: '#0F3D5E', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  }}>
-                  <Share2 size={14} /> {lang === 'vi' ? 'Sao chép liên kết' : 'Copy Link'}
                 </button>
               </div>
             </div>
