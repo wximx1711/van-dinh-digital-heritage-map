@@ -77,7 +77,6 @@ public static class MappingExtensions
     public static AboutPageDto ToDto(this AboutPage item) => new(item.AboutId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, item.UpdatedAt);
     public static AboutPageHistoryDto ToDto(this AboutPageHistory item) => new(item.HistoryId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, item.UpdatedBy, item.CreatedAt);
     public static SystemSettingDto ToDto(this SystemSetting item) => new(item.SettingId, item.WebsiteName, item.LogoUrl, item.FooterText, item.ContactEmail, item.Phone, item.Address, item.FacebookUrl, item.TiktokUrl, item.YoutubeUrl);
-    public static MonthlyUpdateDto ToDto(this MonthlyUpdate item) => new(item.UpdateId, item.MonthLabel, item.DisplayVi, item.DisplayEn, item.UpdateCount);
     public static RelatedLinkDto ToDto(this RelatedLink item) => new(item.LinkId, item.Title, item.Url, item.DisplayOrder, item.IsEnabled, item.CreatedAt);
 
     /// <summary>

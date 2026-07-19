@@ -99,14 +99,6 @@ export interface HeritageCategory {
   iconUrl: string;
 }
 
-export interface MonthlyUpdate {
-  updateId: number;
-  monthLabel: string;
-  displayVi: string;
-  displayEn: string;
-  updateCount: number;
-}
-
 export interface AboutPageHistoryItem {
   historyId: number;
   titleVi: string | null;
@@ -191,14 +183,6 @@ export interface RecentHeritageStat {
   updatedAt: string;
 }
 
-export interface MonthlyUpdateStat {
-  updateId: number;
-  monthLabel: string;
-  displayVi: string;
-  displayEn: string;
-  updateCount: number;
-}
-
 export interface StatisticsOverview {
   totalHeritage: number;
   nationalCount: number;
@@ -211,6 +195,5 @@ export interface StatisticsOverview {
   classificationBreakdown: ClassificationStat[];
   typeBreakdown: TypeStat[];
   statusBreakdown: StatusStat[];
-  monthlyUpdates: MonthlyUpdateStat[];
   recentHeritages: RecentHeritageStat[];
 }

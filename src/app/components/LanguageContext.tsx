@@ -100,7 +100,6 @@ const translations: Record<string, Record<Lang, string>> = {
   'admin.users': { vi: 'Tài khoản người dùng', en: 'User Accounts' },
   'admin.settings': { vi: 'Cài đặt', en: 'Settings' },
   'admin.categories': { vi: 'Danh mục di tích', en: 'Heritage Categories' },
-  'admin.monthly_updates': { vi: 'Cập nhật hàng tháng', en: 'Monthly Updates' },
   'admin.about': { vi: 'Trang giới thiệu', en: 'About Page' },
   'admin.activity_logs': { vi: 'Nhật ký hoạt động', en: 'Activity Logs' },
   'admin.related_links': { vi: 'Liên kết liên quan', en: 'Related Links' },

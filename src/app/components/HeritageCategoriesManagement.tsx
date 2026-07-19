@@ -2,15 +2,16 @@
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { apiGet, apiPost, apiPut, apiDelete } from '../services/api';
-import type { HeritageCategory } from '../../core/types';
+import type { HeritageCategory, HeritageType } from '../../core/types';
 import {
   Plus, Search, Pencil, Trash2, X, Check, AlertTriangle,
   ChevronLeft, ChevronRight, LayoutList
 } from 'lucide-react';
 import { AdminTableSkeleton } from './Skeleton';
-import { getImageUrl } from '../utils/url';
 import { ConfirmDialog } from './ConfirmDialog';
 import { LazyImage } from './LazyImage';
+import { getIconUrl } from '../heritageIcons';
+import { typeLabels } from '../../data/labels';
 
 type FormMode = 'add' | 'edit' | null;
 
@@ -204,9 +205,9 @@ export function HeritageCategoriesManagement({ onDirtyChange }: HeritageCategori
                   onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? 'white' : '#FAFBFD'; }}>
                   <td style={{ padding: '12px 14px', fontSize: 12, color: '#5d7a8c', fontWeight: 600 }}>{item.categoryId}</td>
                   <td style={{ padding: '12px 14px', fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{item.code}</td>
-                  <td style={{ padding: '12px 14px', fontSize: 12, color: '#1a2332' }}>{item.nameVi}</td>
+                  <td style={{ padding: '12px 14px', fontSize: 12, color: '#1a2332' }}>{typeLabels[item.code as HeritageType]?.vi ?? item.nameVi}</td>
                   <td style={{ padding: '12px 14px', fontSize: 12, color: '#5d7a8c' }}>{item.nameEn}</td>
-                  <td style={{ padding: '12px 14px', fontSize: 18 }}>{item.iconUrl ? <LazyImage src={getImageUrl(item.iconUrl)} alt="" style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'cover' }} /> : '-'}</td>
+                  <td style={{ padding: '12px 14px', fontSize: 18 }}><LazyImage src={getIconUrl(item.code as HeritageType)} alt="" style={{ width: 28, height: 28, objectFit: 'contain' }} /></td>
                   <td style={{ padding: '12px 14px' }}>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <button onClick={() => openEdit(item)}

@@ -264,18 +264,6 @@ public sealed class SystemSetting
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }
 
-public sealed class MonthlyUpdate
-{
-    public int UpdateId { get; set; }
-    [Required, MaxLength(20)]
-    public string MonthLabel { get; set; } = "";
-    [Required, MaxLength(50)]
-    public string DisplayVi { get; set; } = "";
-    [Required, MaxLength(50)]
-    public string DisplayEn { get; set; } = "";
-    public int UpdateCount { get; set; }
-}
-
 public sealed class RelatedLink
 {
     public int LinkId { get; set; }

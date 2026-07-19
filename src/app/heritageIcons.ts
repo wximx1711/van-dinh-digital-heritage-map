@@ -25,9 +25,11 @@ const emojiFallbacks: Partial<Record<HeritageType, string>> = {
   lang: '🪦',
 };
 
-function emojiToDataUri(emoji: string): string {
+function emojiToDataUri(emoji: string, scale: number = 1): string {
+  const fontSize = Math.round(18 * scale);
+  const y = Math.round(12 + (18 - 12) * scale);
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><text x="12" y="18" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="18">${emoji}</text></svg>`
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><text x="12" y="${y}" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="${fontSize}">${emoji}</text></svg>`
   )}`;
 }
 
@@ -67,7 +69,10 @@ const focusViewBoxes: Record<string, string> = {
 
 function getIconUrl(type: HeritageType): string {
   if (type in heritageIconUrls) return heritageIconUrls[type];
-  if (type in emojiFallbacks) return emojiToDataUri(emojiFallbacks[type]!);
+  if (type in emojiFallbacks) {
+    const scale = type === 'den' || type === 'lang' ? 0.5 : 1;
+    return emojiToDataUri(emojiFallbacks[type]!, scale);
+  }
   return FALLBACK_SVG;
 }
 
@@ -81,7 +86,10 @@ function getIconDataUri(type: HeritageType): string {
     }
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(raw)}`;
   }
-  if (type in emojiFallbacks) return emojiToDataUri(emojiFallbacks[type]!);
+  if (type in emojiFallbacks) {
+    const scale = type === 'den' || type === 'lang' ? 0.5 : 1;
+    return emojiToDataUri(emojiFallbacks[type]!, scale);
+  }
   return FALLBACK_SVG;
 }
 

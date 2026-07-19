@@ -85,7 +85,12 @@ export function GoogleMapView({
       : `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D0D0D0" stroke-width="1"/>`;
     const iconContent = hasSvgIcon(type)
       ? `<image href="${getIconDataUri(type)}" x="2" y="2" width="24" height="24" preserveAspectRatio="xMidYMid meet"/>`
-      : `<text x="14" y="21" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="16">${emojiFallbacks[type] ?? '?'}</text>`;
+      : (() => {
+          const scale = type === 'den' || type === 'lang' ? 0.5 : 1;
+          const fontSize = Math.round(16 * scale);
+          const y = Math.round(14 + (21 - 14) * scale);
+          return `<text x="14" y="${y}" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="${fontSize}">${emojiFallbacks[type] ?? '?'}</text>`;
+        })();
     return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 40">
         ${body}

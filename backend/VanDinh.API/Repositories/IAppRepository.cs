@@ -11,7 +11,6 @@ public interface IAppRepository
     IReadOnlyList<Heritage> Heritages { get; }
     IReadOnlyList<IntangibleHeritage> IntangibleHeritages { get; }
     IReadOnlyList<ActivityLog> ActivityLogs { get; }
-    IReadOnlyList<MonthlyUpdate> MonthlyUpdates { get; }
     AboutPage AboutPage { get; }
     IReadOnlyList<AboutPageHistory> AboutPageHistories { get; }
     SystemSetting SystemSetting { get; }
@@ -62,11 +61,6 @@ public interface IAppRepository
     IntangibleHeritage AddIntangible(IntangibleHeritage item);
     void UpdateIntangible(IntangibleHeritage item);
     void DeleteIntangible(string publicId);
-
-    MonthlyUpdate? FindMonthlyUpdate(int id);
-    MonthlyUpdate AddMonthlyUpdate(MonthlyUpdate item);
-    void UpdateMonthlyUpdate(MonthlyUpdate item);
-    void DeleteMonthlyUpdate(int id);
 
     IReadOnlyList<RelatedLink> RelatedLinks { get; }
 

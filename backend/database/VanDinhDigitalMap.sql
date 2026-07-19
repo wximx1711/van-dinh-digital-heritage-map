@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-15T14:10:32Z
+    GENERATED: 2026-07-19T11:16:52Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -261,16 +261,6 @@ CREATE TABLE [MediaFiles] (
 );
 GO
 
-CREATE TABLE [MonthlyUpdates] (
-    [UpdateId] int IDENTITY(1,1),
-    [MonthLabel] nvarchar(80) NOT NULL,
-    [DisplayVi] nvarchar(200) NOT NULL,
-    [DisplayEn] nvarchar(200) NOT NULL,
-    [UpdateCount] int NOT NULL CONSTRAINT [DF_MonthlyUpdates_UpdateCount] DEFAULT ((0)),
-    CONSTRAINT [PK_MonthlyUpdates] PRIMARY KEY CLUSTERED ([UpdateId])
-);
-GO
-
 CREATE TABLE [RelatedLinks] (
     [LinkId] int IDENTITY(1,1),
     [Title] nvarchar(800) NOT NULL,
@@ -385,7 +375,7 @@ GO
 -- SEED AND CURRENT DATA
 -- ========================================
 
--- [__EFMigrationsHistory]: 16 rows
+-- [__EFMigrationsHistory]: 17 rows
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260701052754_InitialCreate', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260702054259_UpdateDatabaseSchema', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260703000000_AddAuditFieldsToIntangibleHeritage', N'10.0.9');
@@ -402,6 +392,7 @@ INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'202607
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260709000000_AddIntangibleHeritageSections', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260710000000_AddIntangibleHeritageEnglishFields', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260710110210_FixNullableMismatch', N'10.0.9');
+INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260719111342_RemoveMonthlyUpdate', N'10.0.9');
 GO
 
 -- [Roles]: 2 rows
@@ -434,7 +425,7 @@ GO
 -- [AboutPageHistories]: 0 rows
 GO
 
--- [ActivityLogs]: 186 rows
+-- [ActivityLogs]: 203 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -622,9 +613,26 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10147, 3, N'UPDATE', N'Heritage', 12, N'VĐHN-DT-012', '2026-07-15T09:21:38.4567491', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10148, 3, N'CREATE', N'HeritageDocuments', 13, N'hb4069ccf', '2026-07-15T09:24:42.5054157', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10149, 3, N'UPDATE', N'Heritage', 13, N'VĐHN-DT-013', '2026-07-15T09:25:13.6484676', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10150, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-19T09:39:15.6525415', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10151, 3, N'UPDATE', N'Heritage', 13, N'VĐHN-DT-013', '2026-07-19T09:39:53.3954833', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10152, 3, N'UPDATE', N'Heritage', 14, N'VĐHN-DT-014', '2026-07-19T09:42:40.3848409', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10153, 3, N'UPDATE', N'Heritage', 14, N'VĐHN-DT-014', '2026-07-19T09:45:41.2262596', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10154, 3, N'UPDATE', N'Heritage', 14, N'VĐHN-DT-014', '2026-07-19T09:48:04.4951564', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10155, 3, N'CREATE', N'HeritageDocuments', 14, N'h217d569c', '2026-07-19T09:49:42.4883008', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10156, 3, N'UPDATE', N'Heritage', 14, N'VĐHN-DT-014', '2026-07-19T09:49:44.9065881', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10157, 3, N'CREATE', N'Heritage', 10020, N'VĐHN-DT-048', '2026-07-19T09:52:04.8982694', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10158, 3, N'UPDATE', N'Heritage', 10020, N'VĐHN-DT-048', '2026-07-19T09:55:24.9857746', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10159, 3, N'CREATE', N'HeritageDocuments', 15, N'h3f278032', '2026-07-19T09:58:03.6761059', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10160, 3, N'UPDATE', N'Heritage', 10020, N'VĐHN-DT-048', '2026-07-19T09:58:06.3256425', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10161, 3, N'UPDATE', N'Heritage', 15, N'VĐHN-DT-015', '2026-07-19T10:07:38.9973651', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10162, 3, N'CREATE', N'HeritageDocuments', 16, N'ha1d5034e', '2026-07-19T10:26:33.6116371', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10163, 3, N'DELETE', N'HeritageDocuments', 16, N'ha1d5034e', '2026-07-19T10:26:37.0288716', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10164, 3, N'UPDATE', N'Heritage', 15, N'VĐHN-DT-015', '2026-07-19T10:26:43.2353552', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10165, 3, N'CREATE', N'HeritageDocuments', 17, N'ha1d5034e', '2026-07-19T10:26:58.6192222', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10166, 3, N'UPDATE', N'Heritage', 15, N'VĐHN-DT-015', '2026-07-19T10:27:00.1195104', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10149);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10166);
 GO
 
 -- [HeritageCategories]: 9 rows
@@ -643,7 +651,7 @@ GO
 DBCC CHECKIDENT ([HeritageCategories], RESEED, 9);
 GO
 
--- [Heritage]: 47 rows
+-- [Heritage]: 48 rows
 SET IDENTITY_INSERT [Heritage] ON;
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (1, N'heff617cc', N'VĐHN-DT-001', 2, N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'CHÙA BA CHÈ (BÀ CHÈ - BÀ TRÀ TỰ)', N'chùa-ba-chè-bà-chè-bà-trà-tự', N'city', N'active', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', 20.72903680, 105.77182720, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Ba Chè (hoặc Chùa Bà Chè).
@@ -1634,8 +1642,8 @@ Regular rituals: The temple also maintains rituals on the first and fifteenth da
 According to the demarcation record dated May 12, 2000, the monument is strictly demarcated for Protection Zone I (Inviolable Zone):
 Scope: Located entirely on plot number 87, cadastral map number 01 (drawn in 1985 by Phuong Tu commune) with a total area of ​​5,106 m².
 Boundaries: East: bordered by plots 98 and 99 and the village road; West: bordered by the village road; South: bordered by the village road; North: bordered by plots 400 and 86.
-All construction, excavation, and illegal encroachment that alters or diminishes the value of the original architectural components and artifacts within the red boundary of the temple are strictly prohibited. All plans for landscape restoration around the temple (Area II) must comply with the Ordinance on the Protection of Historical Monuments and be approved by the competent authority.', N'/uploads/images/f2cd72194d2c4a04852049b053399730.jpg', N'1862', N'xã Vân Đình', N'/api/qr/heritage/hb4069ccf', N'https://maps.app.goo.gl/6mv2ZvpuVsVgycEXA', 0, NULL, 3, '2026-07-11T08:36:50.5479268', '2026-07-15T09:25:13.4244675');
-INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (14, N'h217d569c', N'VĐHN-DT-014', 1, N'ĐỀN VÀ ĐÌNH THANH ẤM', N'ĐỀN VÀ ĐÌNH THANH ẤM', N'đền-và-đình-thanh-ấm', N'national', N'active', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', 20.72735920, 105.76932830, N'1. Thông tin chung
+All construction, excavation, and illegal encroachment that alters or diminishes the value of the original architectural components and artifacts within the red boundary of the temple are strictly prohibited. All plans for landscape restoration around the temple (Area II) must comply with the Ordinance on the Protection of Historical Monuments and be approved by the competent authority.', N'/uploads/images/f2cd72194d2c4a04852049b053399730.jpg', N'1862', N'xã Vân Đình', N'/api/qr/heritage/hb4069ccf', N'https://maps.app.goo.gl/6mv2ZvpuVsVgycEXA', 0, NULL, 3, '2026-07-11T08:36:50.5479268', '2026-07-19T09:39:53.3774038');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (14, N'h217d569c', N'VĐHN-DT-014', 1, N'ĐÌNH THANH ẤM', N'ĐÌNH THANH ẤM', N'đình-thanh-ấm', N'national', N'active', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', 20.72735920, 105.76932830, N'1. Thông tin chung
 Tên di tích: Đền Thanh Ấm và Đình Thanh Ấm.
 Địa điểm: Thôn Thanh Ấm (nguyên xưa thủa nhà Trần có tên cổ là trang Hoa Âm, sau đổi là xã Hoa Đình), xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội).
 Loại hình và Xếp hạng: Di tích Lịch sử và Kiến trúc - Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin ký Quyết định số 65 QĐ/BT ngày 16/01/1995 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
@@ -1688,7 +1696,7 @@ Before the main festival day, the ceremonial committee and the village elder per
 According to the 1994 ranking proposal minutes and the technical drawing set, the boundary of Protection Zone I (Inviolable Zone) of the monument complex is defined on a 1/1000 scale cadastral map:
 The Village Temple (Plot No. 298): A spacious plot of land adjacent to the residential area at the beginning of the village and the national highway. East: borders plots 324 and 325; West: borders plot 319 and national highway 21B; South: borders plots 320, 321, 227, and 323; North: borders plots 296 and 227.
 The Shrine (Plots No. 457 and 216): Located on a large, isolated mound outside the main area. East: borders plot 75 and the entrance to the shrine; West: borders plot 100; South: borders plots 77 and 78; To the north, it borders an agricultural area.
-All construction, excavation, and exploitation activities that alter the original state within the red-marked area are strictly prohibited. Minor repairs or additions to green-marked structures must be approved by the Provincial/City People''s Committee.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1782', NULL, N'/api/qr/heritage/h217d569c', N'https://maps.app.goo.gl/pCxXxFhRqocLfH6R8', 0, NULL, 3, '2026-07-11T08:39:34.3705914', NULL);
+All construction, excavation, and exploitation activities that alter the original state within the red-marked area are strictly prohibited. Minor repairs or additions to green-marked structures must be approved by the Provincial/City People''s Committee.', N'/uploads/images/2dd78de4dd824d8fbeec9861e2d90cd0.jpg', N'1782', N'xã Vân Đình', N'/api/qr/heritage/h217d569c', N'https://maps.app.goo.gl/pCxXxFhRqocLfH6R8', 0, NULL, 3, '2026-07-11T08:39:34.3705914', '2026-07-19T09:49:44.8944857');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (15, N'ha1d5034e', N'VĐHN-DT-015', 3, N'ĐỀN VĨNH THƯỢNG (Đền Đệ Nhất - Đệ Nhị - Đệ Tam - Đệ Tứ - Đệ Ngũ)', N'ĐỀN VĨNH THƯỢNG', N'đền-vĩnh-thượng', N'city', N'active', N'Vĩnh Lộc Thượng, Vân Đình, Hà Nội 100000, Việt Nam', N'Vĩnh Lộc Thượng, Vân Đình, Hà Nội 100000, Việt Nam', 20.74575360, 105.69917160, N'1. Thông tin chung
 Tên di tích: Đền Vĩnh Thượng (Đền Đệ Nhất, Đền Đệ Nhị, Đền Đệ Tam, Đền Đệ Tứ, Đền Đệ Ngũ).
 Địa điểm: Thôn Vĩnh Thượng (xưa là xã Vĩnh Lộc Thượng, tổng Sơn Lãng, phủ Ứng Hòa, tỉnh Hà Đông), xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội. Cụm năm ngôi đền nằm rải rác ven chiền sông Đáy cổ thuộc địa phận thôn.
@@ -1763,7 +1771,7 @@ Third Temple: Area 189.6 m² (North bordered by garden, South bordered by vacant
 
 Fourth Temple: Area 1,183.3 m² (All four sides (East, West, South, and North) are bordered by agricultural land of Son Cong commune).
 Fifth Temple: Area 827.8 m² (North bordered by riverside alluvial land, South bordered by orchards, East bordered by concrete road and cultivated land, West bordered by the Day River).
-All illegal construction and exploitation activities within the protected area of ​​the five temples are strictly prohibited by law.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1296', N'xã Vân Đình', N'/api/qr/heritage/ha1d5034e', N'https://maps.app.goo.gl/JyXo2tZ6qbaE95s36', 0, NULL, 3, '2026-07-11T08:49:55.0109777', NULL);
+All illegal construction and exploitation activities within the protected area of ​​the five temples are strictly prohibited by law.', N'/uploads/images/2bf08e8fbb3244a5a08ca8f30a7f8e79.jpg', N'1296', N'xã Vân Đình', N'/api/qr/heritage/ha1d5034e', N'https://maps.app.goo.gl/JyXo2tZ6qbaE95s36', 0, NULL, 3, '2026-07-11T08:49:55.0109777', '2026-07-19T10:27:00.1080494');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (16, N'h5e5909c5', N'VĐHN-DT-016', 3, N'ĐỀN, MIẾU TẢO KHÊ (MIẾU THƯỢNG, MIẾU HẠ VÀ ĐỀN MẪU)', N'ĐỀN, MIẾU TẢO KHÊ', N'đền-miếu-tảo-khê', N'city', N'active', N'QP34+P2H, Tảo Khê, Hồng Sơn, Hà Nội, Việt Nam', N'QP34+P2H, Tảo Khê, Hồng Sơn, Hà Nội, Việt Nam', 20.75483250, 105.70191840, N'1. Thông tin chung và Xếp hạng di tích
 Tên di tích chính thức: Đền, miếu Tảo Khê (gồm Miếu Thượng, Miếu Hạ và Đền Mẫu).
 Địa điểm phân bố: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội.
@@ -3820,12 +3828,66 @@ Through many historical changes, the original wooden architecture of the past no
 ○The People''s Committee of Van Dinh commune needs to mark the boundaries of the protected area on the ground after classification to preserve the site intact. Establish a sub-committee for managing the site in the village to manage donations transparently and guide visitors to practice civilized behavior at the place of worship.
 
 The locality needs to develop a comprehensive plan and master plan to restore the items using traditional materials from the Northern region, creating a dignified appearance and preserving the spiritual significance sustainably.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1924', N'xã Vân Đình', N'/api/qr/heritage/ha69408d3', N'https://maps.app.goo.gl/ZD9dveCFnY7WS33s6', 0, NULL, 3, '2026-07-12T13:46:17.9744641', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10020, N'h3f278032', N'VĐHN-DT-048', 3, N'Đền Thanh Ấm', N'Đền Thanh Ấm', N'đền-thanh-ấm', N'national', N'active', N'PQCG+J3X, Đền, Cầu Thanh Ấm, Vân Đình, Hà Nội, Việt Nam', N'PQCG+J3X, Đền, Cầu Thanh Ấm, Vân Đình, Hà Nội, Việt Nam', 20.72162880, 105.77265020, N'1. Thông tin chung
+Tên di tích: Đền Thanh Ấm và Đình Thanh Ấm.
+Địa điểm: Thôn Thanh Ấm (nguyên xưa thủa nhà Trần có tên cổ là trang Hoa Âm, sau đổi là xã Hoa Đình), xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội).
+Loại hình và Xếp hạng: Di tích Lịch sử và Kiến trúc - Nghệ thuật. Được Bộ trưởng Bộ Văn hóa Thông tin ký Quyết định số 65 QĐ/BT ngày 16/01/1995 công nhận và xếp hạng là Di tích cấp Quốc gia.', N'1. General Information
+Name of the site: Thanh Am Temple and Thanh Am Communal House.
+Location: Thanh Am Village (originally known as Hoa Am during the Tran Dynasty, later renamed Hoa Dinh Commune), Tan Phuong Commune, Ung Hoa District, Ha Tay Province (now Van Dinh Town, Ung Hoa District, Hanoi City).
+
+Type and Classification: Historical and Architectural-Artistic Monument. Recognized and classified as a National Monument by Decision No. 65 QD/BT dated January 16, 1995, signed by the Minister of Culture and Information.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Cụm di tích đền và đình Thanh Ấm thờ vị Thành hoàng, Phúc thần là ngài Minh Phúc Đại vương (tên thật là Chu Minh Phúc).
+Thần tích & Công trạng: Ngài sinh trưởng tại Châu Ái (Thanh Hóa), là bậc thông minh, văn võ song toàn. Vào thế kỷ thứ X, khi đất nước lâm vào nạn 12 sứ quân cát cứ, ngài đã đến đầu quân dưới trướng anh hùng Đinh Bộ Lĩnh tại động Hoa Lư và được phong làm "Tiền bộ tướng quân".
+Khi đi chiêu dụ hiền tài qua trang Hoa Âm, ngài phối hợp cùng đạo quân của Dương Công (Hoàng Độ) tuyển mộ được 1 vạn 5 nghìn binh sĩ. Nghĩa quân của Minh Phúc và Hoàng Độ đã lập chiến công vang dội, đánh tan sứ quân Kiều Công Mậu ở Phong Châu, rồi xuôi quân xuống Đỗ Động Giang hỗ trợ Đinh Bộ Lĩnh tiêu diệt sứ quân Đỗ Cảnh Thạc, thống nhất giang sơn. Ngài được Đinh Tiên Hoàng phong tước "Minh ứng Thuận phúc đại vương Thượng đẳng Thần". Sau khi nhà Đinh mất, ngài lui về trang Hoa Âm cùng dân cày cấy, làm điều nhân nghĩa và hóa thần tại đồn binh cũ vào ngày 10 tháng 12.
+Dấu ấn kháng chiến: Trong thời kỳ kháng chiến chống Pháp, di tích là địa bàn chiến lược vững chắc, nơi bảo vệ và diễn ra các cuộc họp tối mật của các đồng chí lãnh đạo Trung ương Đảng và Nhà nước như Trường Chinh, Hoàng Quốc Việt, Đỗ Mười, Văn Tiến Dũng...
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Đền Thanh Ấm: Tọa lạc trên một gò đất cao hình con rùa biệt lập ở cuối làng. Qua Nghi môn trụ biểu có câu đối Hán Nôm và mái tam quan giả ngói là vào khuôn viên chính. Kiến trúc đền làm theo kiểu chữ Nhị ($=$) gồm đền Thượng và đền Hạ:
+Đền Hạ: Gồm 5 gian vững chắc xây bít đốc hồi, khung gỗ lim chịu lực trên các hàng cột lớn kê đá tảng cổ bồng. Hệ thống vì kèo kết cấu "thượng chồng rường, hạ kẻ bẩy" truyền thống kết hợp tường xây bao gạch Nguyễn muộn; thượng lương ghi dấu năm tu sửa Bảo Đại thứ 12 (1944).
+Đền Thượng: Nằm song song phía sau đền Hạ, có 3 gian nhỏ xây bít đốc, vì kèo kiểu chồng rường và trụ trốn mộc mạc, bên trong đặt khám thờ Thành hoàng chạm trổ tinh xảo tích Tứ linh, Tứ quý.
+Đình Thanh Ấm: Nằm ở đầu làng cạnh trục đường lộ, được di chuyển và tôn tạo lại vào năm 1926. Đình gồm 5 gian làm bằng khung gỗ lim với 4 hàng chân cột tròn (đường kính cột cái tới 40cm), chân tảng đá chạm khắc hình bát giác. Đình bảo lưu được một số cấu kiện kiến trúc cổ thời Lê Trung Hưng (đầu dư chạm rồng đao mác hình tia lửa thẳng) đan xen hài hòa với bộ vì "thượng giá chiêng, hạ chồng rường, bẩy hiên" thời Nguyễn.
+4. Hệ thống Di vật, Cổ vật Cụm di tích bảo tồn nguyên vẹn nhiều đồ tự khí, cổ vật vùng miền phong phú:
+Tài liệu cổ: 01 cuốn Thần phả "Ngọc phả Đại Vương từ điển" do Nguyễn Bính phụng soạn năm 1557 (thời Lê) và 06 đạo sắc phong bằng giấy dó, cổ nhất là sắc niên hiệu Cảnh Hưng năm thứ 40 (1779).
+Đồ gỗ và đồ thờ: Khám thờ cổ, cỗ long ngai bài vị Thành hoàng chạm đầu rồng thế kỷ XVII, 01 chiếc kiệu tay bành gỗ sơn son thếp vàng thời Nguyễn, hương án gỗ, đại tự, giá văn, quán tẩy, đôi hia thờ, mi môn và bộ binh khí bát bửu xà mâu 12 chiếc.
+Đồ kim loại & Sành sứ: 01 khánh đồng, 01 chuông đồng, bộ đỉnh lư đồng, 04 đôi lộc bình sứ, bát bình hương sành và nậm rượu. Đặc biệt, xung quanh khu vực khảo cổ đền còn phát hiện nhiều mảnh gốm xám có hoa văn hình học, vạch chéo đặc trưng của nền văn hóa Đông Sơn muộn.
+5. Sinh hoạt lễ hội truyền thống
+Lễ hội truyền thống của làng Thanh Ấm được tổ chức đều đặn hàng năm vào ngày mùng 10 tháng Chạp (âm lịch), trùng với ngày hóa của Đức Thành hoàng Minh Phúc Đại vương.
+Trước ngày hội chính, ban khánh tiết và cụ thủ từ làm lễ Mộc dục bao sái long ngai đồ tế tự bằng nước mưa tinh khiết pha ngũ vị hương, dùng vải lụa đỏ bao sái nghiêm ngặt. Lễ vật dâng thánh là mâm xôi chay do các giáp trong làng chu tất, có chúc văn tế sớ ca ngợi công đức phò Đinh tiễn Tống của bậc phúc thần để giáo dục lòng yêu nước cho con cháu đời sau.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Theo biên bản đề nghị xếp hạng năm 1994 và tập bản vẽ kỹ thuật, ranh giới khu vực bảo vệ I (Vùng bất khả xâm phạm) của cụm di tích được phân định khép kín trên bản đồ giải thửa tỷ lệ 1/1000:
+Ngôi Đình (Thửa số 298): Diện tích đất rộng rãi bám sát khu dân cư đầu làng và quốc lộ. Phía Đông giáp thửa 324, 325; Phía Tây giáp thửa 319 và quốc lộ 21B; Phía Nam giáp các thửa 320, 321, 227, 323; Phía Bắc giáp thửa 296, 227.
+Ngôi Đền (Thửa số 457 và 216): Nằm trên gò đất rộng biệt lập ngoài bãi. Phía Đông giáp thửa 75 và lối vào đền; Phía Tây giáp thửa 100; Phía Nam giáp các thửa 77, 78; Phía Bắc giáp khu vực ruộng canh tác.
+Mọi hoạt động xây dựng, đào bới, khai thác làm thay đổi nguyên trạng trong chỉ giới khu vực màu đỏ đều bị nghiêm cấm. Trường hợp tu sửa nhỏ hoặc bổ sung các công trình tôn tạo màu xanh phải có đề án khoa học được UBND tỉnh/thành phố phê duyệt.', N'2. The Figure of Worship and Historical Value
+The Figure of Worship: The Thanh Am temple and communal house complex worships the tutelary deity, the benevolent god Minh Phuc Dai Vuong (real name Chu Minh Phuc).
+Legend & Achievements: He was born in Ai Chau (Thanh Hoa), a man of great intelligence and skill in both literature and martial arts. In the 10th century, when the country was plagued by the Twelve Warlords, he joined the army under the hero Dinh Bo Linh at Hoa Lu and was appointed "Front Army General".
+
+While recruiting talented people through Hoa Am village, he collaborated with the army of Duong Cong (Hoang Do) to recruit 15,000 soldiers. The army of Minh Phuc and Hoang Do achieved resounding victories, defeating the warlord Kieu Cong Mau in Phong Chau, then marched down to Do Dong Giang to support Dinh Bo Linh in eliminating the warlord Do Canh Thac, unifying the country. He was bestowed the title "Minh Ung Thuan Phuc Dai Vuong Thuong Dang Than" by Dinh Tien Hoang. After the fall of the Dinh Dynasty, he retired to Hoa Am village to cultivate the land with the people, performing acts of kindness and righteousness, and became a deity at the old military outpost on December 10th.
+Resistance Mark: During the resistance against the French, the site was a strategic stronghold, protecting and hosting top-secret meetings of leading comrades of the Central Party and State such as Truong Chinh, Hoang Quoc Viet, Do Muoi, Van Tien Dung...
+3. Architectural and Artistic Characteristics
+Thanh Am Temple: Located on a high, isolated turtle-shaped mound at the end of the village. Passing through the ceremonial gate with its Han Nom couplets and a three-arched gate resembling tiles leads to the main courtyard. The temple''s architecture follows the character "Nhị" ($=$) and consists of the Upper Temple and the Lower Temple:
+Lower Temple: Consists of 5 sturdy bays built with solid gable ends, the frame of lim wood supports the load on rows of large columns supporting ancient stone blocks. The truss system uses the traditional "upper beam, lower purlin" structure combined with brick walls built by the late Nguyen Dynasty; The main beam marks the year of the 12th Bảo Đại reign renovation (1944).
+
+Upper Temple: Located parallel to the back of the Lower Temple, it has three small bays built with solid gables, a simple double-beam truss system, and hidden pillars. Inside is an exquisitely carved shrine dedicated to the tutelary deity, depicting the Four Sacred Animals and Four Seasons.
+
+Thanh Ấm Communal House: Located at the beginning of the village next to the main road, it was moved and renovated in 1926. The communal house consists of five bays made of ironwood with four rows of round columns (main columns up to 40cm in diameter), and octagonal carved stone bases. The communal house preserves some ancient architectural elements from the Lê Trung Hưng period (dragon-shaped finials with straight flame-shaped dragons and swords) harmoniously interwoven with the "upper beam, lower double-beam, and eaves" truss system of the Nguyễn dynasty.
+
+4. The System of Relics and Antiquities: The complex of relics preserves a rich collection of regional artifacts and relics:
+Ancient documents: 01 book of the "Ngoc Pha Dai Vuong Tu Dien" (Dictionary of the Great King''s Genealogy) compiled by Nguyen Binh in 1557 (Le Dynasty) and 06 royal decrees on Do paper, the oldest being a decree from the 40th year of the Canh Hung reign (1779).
+Wooden and religious objects: Ancient altar, ancient dragon throne and ancestral tablets of the tutelary deity carved with dragon heads from the 17th century, 01 wooden palanquin with gilded and lacquered arms from the Nguyen Dynasty, wooden incense table, large inscription, writing stand, washing basin, pair of ceremonial shoes, gate and a set of 12 precious weapons including spears.
+Metal and ceramic objects: 01 bronze chime, 01 bronze bell, a set of bronze incense burners, 04 pairs of porcelain vases, ceramic incense bowls and wine flasks. In particular, around the archaeological site of the temple, many fragments of gray pottery with geometric patterns and diagonal lines characteristic of the late Dong Son culture have been discovered.
+5. Traditional Festival Activities
+The traditional festival of Thanh Am village is held regularly every year on the 10th day of the 12th lunar month, coinciding with the death anniversary of the village''s patron deity, Minh Phuc Dai Vuong.
+Before the main festival day, the ceremonial committee and the village elder perform the ritual of bathing and cleaning the dragon throne and sacrificial objects with pure rainwater mixed with five spices, and meticulously cleaning them with red silk cloth. The offerings to the deity are vegetarian sticky rice prepared by the village''s hamlets, along with a eulogy praising the merits of the benevolent deity in supporting the Dinh and Song dynasties, to educate future generations about patriotism.
+6. Protection and Demarcation of the Monument
+According to the 1994 ranking proposal minutes and the technical drawing set, the boundary of Protection Zone I (Inviolable Zone) of the monument complex is defined on a 1/1000 scale cadastral map:
+The Village Temple (Plot No. 298): A spacious plot of land adjacent to the residential area at the beginning of the village and the national highway. East: borders plots 324 and 325; West: borders plot 319 and national highway 21B; South: borders plots 320, 321, 227, and 323; North: borders plots 296 and 227.
+The Shrine (Plots No. 457 and 216): Located on a large, isolated mound outside the main area. East: borders plot 75 and the entrance to the shrine; West: borders plot 100; South: borders plots 77 and 78; To the north, it borders an agricultural area.
+All construction, excavation, and exploitation activities that alter the original state within the red-marked area are strictly prohibited. Minor repairs or additions to green-marked structures must be approved by the Provincial/City People''s Committee.', N'/uploads/images/7f9a35882a0b469a8fa3d8f3a266ac38.jpg', N'1792', N'xã Vân Đình', N'/api/qr/heritage/h3f278032', N'https://maps.app.goo.gl/81gTK9CxC8GKqKXC6', 0, NULL, 3, '2026-07-19T09:52:04.8036105', '2026-07-19T09:58:06.2445056');
 SET IDENTITY_INSERT [Heritage] OFF;
 GO
-DBCC CHECKIDENT ([Heritage], RESEED, 10019);
+DBCC CHECKIDENT ([Heritage], RESEED, 10020);
 GO
 
--- [HeritageDocuments]: 13 rows
+-- [HeritageDocuments]: 16 rows
 SET IDENTITY_INSERT [HeritageDocuments] ON;
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (1, 1, N'lý lịch.pdf', N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'PDF', 5419292, '2026-07-09T13:35:15.6084942');
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (2, 2, N'Lý lịch.pdf', N'/uploads/documents/a31c8af906e242fb94bfa3b74ca3fb3c.pdf', N'PDF', 4180811, '2026-07-09T13:53:27.9933011');
@@ -3840,12 +3902,15 @@ INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[File
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (11, 11, N'Lý lịch.pdf', N'/uploads/documents/eb8c1b2fe3c348088ee36faf43ab2fea.pdf', N'PDF', 12137534, '2026-07-13T11:24:49.1958248');
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (12, 12, N'Biên bản khoanh vùng.pdf', N'/uploads/documents/621f15e82d124fe7af14a7ea90ac3c05.pdf', N'PDF', 2637297, '2026-07-13T11:46:58.9962952');
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (13, 13, N'Lý lịch.pdf', N'/uploads/documents/3ccbf8a5fd3e40808f13bbc6324882b1.pdf', N'PDF', 5569034, '2026-07-15T09:24:42.4477336');
+INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (14, 14, N'Lý lịch.pdf', N'/uploads/documents/157c47f9538b429db76e95f2f677d991.pdf', N'PDF', 6367313, '2026-07-19T09:49:42.4336255');
+INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (15, 10020, N'Lý lịch.pdf', N'/uploads/documents/5bcaca01731c4ee3ab140b3c9abfe2c1.pdf', N'PDF', 6367313, '2026-07-19T09:58:03.6662921');
+INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (17, 15, N'bản đồ Vĩnh Thượng.pdf', N'/uploads/documents/2bcac68b9ad647ebbd28b52461927405.pdf', N'PDF', 1953426, '2026-07-19T10:26:58.6168544');
 SET IDENTITY_INSERT [HeritageDocuments] OFF;
 GO
-DBCC CHECKIDENT ([HeritageDocuments], RESEED, 13);
+DBCC CHECKIDENT ([HeritageDocuments], RESEED, 17);
 GO
 
--- [HeritageImages]: 195 rows
+-- [HeritageImages]: 240 rows
 SET IDENTITY_INSERT [HeritageImages] ON;
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (1, 1, N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', NULL, 1, '2026-07-09T13:35:05.3147378');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (2, 1, N'/uploads/images/532b8cf854bf4208ab48161ce7439a60.jpg', NULL, 2, '2026-07-09T13:35:05.4034413');
@@ -3916,8 +3981,6 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (67, 6, N'/uploads/images/31cad23b91c3457d81873fdb885f3e9d.jpg', NULL, 6, '2026-07-10T09:12:03.6239044');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (68, 6, N'/uploads/images/2196c0824eaf48048394e970efc55c92.jpg', NULL, 7, '2026-07-10T09:12:03.6265323');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (69, 7, N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', NULL, 1, '2026-07-10T10:22:10.9088243');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (79, 14, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T08:39:34.3871681');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (80, 15, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T08:49:55.0256838');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (81, 16, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T08:54:52.3870487');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (82, 17, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:00:01.5858449');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (83, 18, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T09:04:11.3432058');
@@ -4042,9 +4105,56 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10172, 13, N'/uploads/images/84e9df13629f451a93a8fbd0d5425877.jpg', NULL, 11, '2026-07-15T09:25:13.6318216');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10173, 13, N'/uploads/images/f8e447e09e3949d49247935514561b49.jpg', NULL, 12, '2026-07-15T09:25:13.6367431');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10174, 13, N'/uploads/images/ed113c1413b6473da7f642bb522daff9.jpg', NULL, 13, '2026-07-15T09:25:13.6413237');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10176, 14, N'/uploads/images/2dd78de4dd824d8fbeec9861e2d90cd0.jpg', NULL, 1, '2026-07-19T09:48:04.4406138');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10177, 14, N'/uploads/images/47d1c9b0dc68458ca984c1c792f424d3.jpg', NULL, 2, '2026-07-19T09:48:04.4555838');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10178, 14, N'/uploads/images/e0a95e153715485ebce9e88e84a13508.jpg', NULL, 3, '2026-07-19T09:48:04.4596897');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10179, 14, N'/uploads/images/4ee6f11cd8ee4fdfaec8001915e23782.jpg', NULL, 4, '2026-07-19T09:48:04.4625760');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10180, 14, N'/uploads/images/dd0d4e97058942379ad0cf985088f104.jpg', NULL, 5, '2026-07-19T09:48:04.4646098');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10181, 14, N'/uploads/images/de706b4ee8d44350a997de84f858b860.jpg', NULL, 6, '2026-07-19T09:48:04.4665560');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10182, 14, N'/uploads/images/126cf8b3e4914c3bbd125f77fe3b1515.jpg', NULL, 7, '2026-07-19T09:48:04.4685960');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10183, 14, N'/uploads/images/dec8205718da4d87a1bacd96e66e4db9.jpg', NULL, 8, '2026-07-19T09:48:04.4716232');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10184, 14, N'/uploads/images/ccc2a4c58b84452999d46119968314f2.jpg', NULL, 9, '2026-07-19T09:48:04.4741297');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10185, 14, N'/uploads/images/f7e19d1049c44c08a7c4bf7b1028ef5a.jpg', NULL, 10, '2026-07-19T09:48:04.4767818');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10186, 14, N'/uploads/images/498c729b81af471284d4715e0b948977.jpg', NULL, 11, '2026-07-19T09:48:04.4791232');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10187, 14, N'/uploads/images/ff76756a6552474d95da3fd8be9f3b3b.jpg', NULL, 12, '2026-07-19T09:48:04.4821733');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10188, 14, N'/uploads/images/84e9df13629f451a93a8fbd0d5425877.jpg', NULL, 13, '2026-07-19T09:48:04.4848202');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10189, 14, N'/uploads/images/758013df6bf6415f86d4d67ab6e39269.jpg', NULL, 14, '2026-07-19T09:48:04.4884801');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10191, 10020, N'/uploads/images/7f9a35882a0b469a8fa3d8f3a266ac38.jpg', NULL, 1, '2026-07-19T09:58:06.2732350');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10192, 10020, N'/uploads/images/f46485eaa73d4499b0f1ee9ebd05b934.jpg', NULL, 2, '2026-07-19T09:58:06.2858444');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10193, 10020, N'/uploads/images/673f90ce9016408a814c38a038460c16.jpg', NULL, 3, '2026-07-19T09:58:06.2896166');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10194, 10020, N'/uploads/images/722c5267a7db42938731145a6ef0b446.jpg', NULL, 4, '2026-07-19T09:58:06.2928289');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10195, 10020, N'/uploads/images/332fe61827144b7bb5bc999c41f47b8e.jpg', NULL, 5, '2026-07-19T09:58:06.2957236');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10196, 10020, N'/uploads/images/8a18544e495b4afc89b55d6165e35d94.jpg', NULL, 6, '2026-07-19T09:58:06.2978609');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10197, 10020, N'/uploads/images/1bdd1e9583a4464287286352c57ea5f2.jpg', NULL, 7, '2026-07-19T09:58:06.3001904');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10198, 10020, N'/uploads/images/97cd0bb6eaab4d2e82a6a58e19fcb748.jpg', NULL, 8, '2026-07-19T09:58:06.3023465');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10199, 10020, N'/uploads/images/41b3958b50e34034bf5c515a61fcf1e7.jpg', NULL, 9, '2026-07-19T09:58:06.3055841');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10200, 10020, N'/uploads/images/84abc1be2144417faf164de52e2794d8.jpg', NULL, 10, '2026-07-19T09:58:06.3090498');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10201, 10020, N'/uploads/images/64fdaa99bc0544edb84cb3a949af2b32.jpg', NULL, 11, '2026-07-19T09:58:06.3115878');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10202, 10020, N'/uploads/images/e9e5e08338fb409e9604559e87f043cf.jpg', NULL, 12, '2026-07-19T09:58:06.3145446');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10203, 10020, N'/uploads/images/983bfdd2031b45869a7619ce7327743b.jpg', NULL, 13, '2026-07-19T09:58:06.3182496');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10204, 15, N'/uploads/images/2bf08e8fbb3244a5a08ca8f30a7f8e79.jpg', NULL, 1, '2026-07-19T10:26:43.1648916');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10205, 15, N'/uploads/images/1fcf9510d1e14c59a4015deff627534f.jpg', NULL, 2, '2026-07-19T10:26:43.1746110');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10206, 15, N'/uploads/images/79cab0f40f164a419eaa7724584fce62.jpg', NULL, 3, '2026-07-19T10:26:43.1784855');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10207, 15, N'/uploads/images/51eeff2d62e1467f91bef7c95bbf65da.jpg', NULL, 4, '2026-07-19T10:26:43.1811263');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10208, 15, N'/uploads/images/f885b80c0058472bad4632d9ce35f85c.jpg', NULL, 5, '2026-07-19T10:26:43.1831805');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10209, 15, N'/uploads/images/4bb9599481af462a8f1ae900acbb7faa.jpg', NULL, 6, '2026-07-19T10:26:43.1856875');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10210, 15, N'/uploads/images/5c972ca140ce4347961824d803dc85fe.jpg', NULL, 7, '2026-07-19T10:26:43.1883364');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10211, 15, N'/uploads/images/5075eeb7530e489a93fa7195cf8cbfce.jpg', NULL, 8, '2026-07-19T10:26:43.1904341');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10212, 15, N'/uploads/images/a6c8ba63a1514b11a850129294701036.jpg', NULL, 9, '2026-07-19T10:26:43.1926624');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10213, 15, N'/uploads/images/d2326561b4d045e592f30b49d6ffc851.jpg', NULL, 10, '2026-07-19T10:26:43.1952365');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10214, 15, N'/uploads/images/d9067a1b7992405d89281304ee28d5a4.jpg', NULL, 11, '2026-07-19T10:26:43.1983934');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10215, 15, N'/uploads/images/f532441cc67246778fe2c70ce71580d2.jpg', NULL, 12, '2026-07-19T10:26:43.2019115');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10216, 15, N'/uploads/images/bc12f06e2cf140c496458946d0ce6d2a.jpg', NULL, 13, '2026-07-19T10:26:43.2048354');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10217, 15, N'/uploads/images/55e5f24c8f0547e3b749ea01a5068178.jpg', NULL, 14, '2026-07-19T10:26:43.2078796');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10218, 15, N'/uploads/images/87442b1119e34dfd98fae3c96d3facdd.jpg', NULL, 15, '2026-07-19T10:26:43.2108269');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10219, 15, N'/uploads/images/f5a64fc662bd405bb9d27da9c0b1b021.jpg', NULL, 16, '2026-07-19T10:26:43.2148983');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10220, 15, N'/uploads/images/2bcb9af2b608427f834986c2af203daf.jpg', NULL, 17, '2026-07-19T10:26:43.2187608');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10221, 15, N'/uploads/images/afa78ef43c87433ab57ab231b2da0f4e.jpg', NULL, 18, '2026-07-19T10:26:43.2218293');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10222, 15, N'/uploads/images/69a151d5f5f144dd9f157225c66cd3fd.jpg', NULL, 19, '2026-07-19T10:26:43.2251484');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10223, 15, N'/uploads/images/d2eefff00e87450a900733ab199743e9.jpg', NULL, 20, '2026-07-19T10:26:43.2285615');
 SET IDENTITY_INSERT [HeritageImages] OFF;
 GO
-DBCC CHECKIDENT ([HeritageImages], RESEED, 10174);
+DBCC CHECKIDENT ([HeritageImages], RESEED, 10223);
 GO
 
 -- [HeritageVideos]: 0 rows
@@ -4276,7 +4386,7 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
--- [MediaFiles]: 201 rows
+-- [MediaFiles]: 250 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -4479,12 +4589,58 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (234, N'/uploads/images/f8e447e09e3949d49247935514561b49.jpg', N'IMG_1998.jpg', 5070609, N'image', '2026-07-15T09:23:38.3639067');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (235, N'/uploads/images/84e9df13629f451a93a8fbd0d5425877.jpg', N'IMG_2003.jpg', 3259618, N'image', '2026-07-15T09:23:43.7544887');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (236, N'/uploads/documents/3ccbf8a5fd3e40808f13bbc6324882b1.pdf', N'Lý lịch.pdf', 5569034, N'document', '2026-07-15T09:24:42.4444197');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (239, N'/uploads/images/f7e19d1049c44c08a7c4bf7b1028ef5a.jpg', N'IMG_5367.JPG', 3872931, N'image', '2026-07-19T09:46:11.3154225');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (240, N'/uploads/images/ccc2a4c58b84452999d46119968314f2.jpg', N'IMG_5371.JPG', 3092894, N'image', '2026-07-19T09:46:13.1465743');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (241, N'/uploads/images/ff76756a6552474d95da3fd8be9f3b3b.jpg', N'IMG_5385.JPG', 3688351, N'image', '2026-07-19T09:46:17.7211522');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (243, N'/uploads/images/126cf8b3e4914c3bbd125f77fe3b1515.jpg', N'IMG_5369.JPG', 2871085, N'image', '2026-07-19T09:46:23.9285402');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (244, N'/uploads/images/dec8205718da4d87a1bacd96e66e4db9.jpg', N'IMG_5377.JPG', 3330177, N'image', '2026-07-19T09:46:25.7726478');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (245, N'/uploads/images/4ee6f11cd8ee4fdfaec8001915e23782.jpg', N'IMG_5370.JPG', 3291236, N'image', '2026-07-19T09:46:29.5465972');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (246, N'/uploads/images/dd0d4e97058942379ad0cf985088f104.jpg', N'IMG_5378.JPG', 3148842, N'image', '2026-07-19T09:46:31.0495640');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (247, N'/uploads/images/de706b4ee8d44350a997de84f858b860.jpg', N'IMG_5384.JPG', 2705439, N'image', '2026-07-19T09:46:34.2900354');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (248, N'/uploads/images/758013df6bf6415f86d4d67ab6e39269.jpg', N'IMG_5362.JPG', 3553945, N'image', '2026-07-19T09:46:36.7292838');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (249, N'/uploads/images/e0a95e153715485ebce9e88e84a13508.jpg', N'IMG_5379.JPG', 2069375, N'image', '2026-07-19T09:46:44.6556005');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (250, N'/uploads/images/47d1c9b0dc68458ca984c1c792f424d3.jpg', N'IMG_5375.JPG', 2509488, N'image', '2026-07-19T09:46:47.9587320');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (251, N'/uploads/images/498c729b81af471284d4715e0b948977.jpg', N'IMG_5371.JPG', 3092894, N'image', '2026-07-19T09:46:56.9810114');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (252, N'/uploads/images/2dd78de4dd824d8fbeec9861e2d90cd0.jpg', N'IMG_5360.JPG', 3143273, N'image', '2026-07-19T09:47:02.8389087');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (253, N'/uploads/documents/157c47f9538b429db76e95f2f677d991.pdf', N'Lý lịch.pdf', 6367313, N'document', '2026-07-19T09:49:42.4302232');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (254, N'/uploads/images/983bfdd2031b45869a7619ce7327743b.jpg', N'IMG_5385.JPG', 3688351, N'image', '2026-07-19T09:55:55.0678122');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (255, N'/uploads/images/e9e5e08338fb409e9604559e87f043cf.jpg', N'IMG_5386.JPG', 2510377, N'image', '2026-07-19T09:56:08.4300734');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (256, N'/uploads/images/64fdaa99bc0544edb84cb3a949af2b32.jpg', N'IMG_5387.JPG', 2186137, N'image', '2026-07-19T09:56:10.0567690');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (257, N'/uploads/images/84abc1be2144417faf164de52e2794d8.jpg', N'IMG_5389.JPG', 2252517, N'image', '2026-07-19T09:56:11.6156001');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (258, N'/uploads/images/41b3958b50e34034bf5c515a61fcf1e7.jpg', N'IMG_5379.JPG', 2069375, N'image', '2026-07-19T09:56:12.8167947');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (259, N'/uploads/images/1bdd1e9583a4464287286352c57ea5f2.jpg', N'IMG_5388.JPG', 1920621, N'image', '2026-07-19T09:56:14.4017544');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (260, N'/uploads/images/332fe61827144b7bb5bc999c41f47b8e.jpg', N'IMG_0947.jpg', 4945169, N'image', '2026-07-19T09:56:28.5890280');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (261, N'/uploads/images/97cd0bb6eaab4d2e82a6a58e19fcb748.jpg', N'IMG_0948.jpg', 2933154, N'image', '2026-07-19T09:56:33.8249222');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (262, N'/uploads/images/8a18544e495b4afc89b55d6165e35d94.jpg', N'IMG_0949.jpg', 4160353, N'image', '2026-07-19T09:56:38.7158638');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (263, N'/uploads/images/722c5267a7db42938731145a6ef0b446.jpg', N'IMG_0950.jpg', 3949805, N'image', '2026-07-19T09:56:43.0847002');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (264, N'/uploads/images/673f90ce9016408a814c38a038460c16.jpg', N'IMG_0953.jpg', 3058972, N'image', '2026-07-19T09:56:48.1027679');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (265, N'/uploads/images/f46485eaa73d4499b0f1ee9ebd05b934.jpg', N'IMG_0954.jpg', 4712639, N'image', '2026-07-19T09:56:52.7722115');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (266, N'/uploads/images/7f9a35882a0b469a8fa3d8f3a266ac38.jpg', N'IMG_0955.jpg', 3055029, N'image', '2026-07-19T09:56:57.1123161');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (267, N'/uploads/documents/5bcaca01731c4ee3ab140b3c9abfe2c1.pdf', N'Lý lịch.pdf', 6367313, N'document', '2026-07-19T09:58:03.6626437');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (268, N'/uploads/images/2bf08e8fbb3244a5a08ca8f30a7f8e79.jpg', N'IMG_2730.jpg', 3815941, N'image', '2026-07-19T10:23:01.1696274');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (269, N'/uploads/images/1fcf9510d1e14c59a4015deff627534f.jpg', N'IMG_2740.jpg', 4423358, N'image', '2026-07-19T10:23:06.3401024');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (270, N'/uploads/images/79cab0f40f164a419eaa7724584fce62.jpg', N'IMG_2742.jpg', 4768167, N'image', '2026-07-19T10:23:11.0290005');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (271, N'/uploads/images/51eeff2d62e1467f91bef7c95bbf65da.jpg', N'IMG_2746.jpg', 4412599, N'image', '2026-07-19T10:23:16.1217478');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (272, N'/uploads/images/f885b80c0058472bad4632d9ce35f85c.jpg', N'IMG_2747.jpg', 5099940, N'image', '2026-07-19T10:23:24.0718336');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (273, N'/uploads/images/4bb9599481af462a8f1ae900acbb7faa.jpg', N'IMG_2748.jpg', 4635457, N'image', '2026-07-19T10:23:29.5430851');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (274, N'/uploads/images/5075eeb7530e489a93fa7195cf8cbfce.jpg', N'IMG_2929.jpg', 2617597, N'image', '2026-07-19T10:23:35.6164507');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (275, N'/uploads/images/5c972ca140ce4347961824d803dc85fe.jpg', N'IMG_2933.jpg', 3538354, N'image', '2026-07-19T10:23:43.8139849');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (276, N'/uploads/images/d9067a1b7992405d89281304ee28d5a4.jpg', N'IMG_2939.jpg', 3019056, N'image', '2026-07-19T10:23:50.2675040');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (277, N'/uploads/images/a6c8ba63a1514b11a850129294701036.jpg', N'IMG_2944.jpg', 3033635, N'image', '2026-07-19T10:23:57.6311710');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (278, N'/uploads/images/d2326561b4d045e592f30b49d6ffc851.jpg', N'IMG_2946.jpg', 3288567, N'image', '2026-07-19T10:24:02.7332891');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (279, N'/uploads/images/f532441cc67246778fe2c70ce71580d2.jpg', N'IMG_2728.jpg', 4770439, N'image', '2026-07-19T10:24:09.1410166');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (280, N'/uploads/images/f5a64fc662bd405bb9d27da9c0b1b021.jpg', N'IMG_2774.jpg', 3242404, N'image', '2026-07-19T10:24:14.4711019');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (281, N'/uploads/images/87442b1119e34dfd98fae3c96d3facdd.jpg', N'IMG_2779.jpg', 5015833, N'image', '2026-07-19T10:24:20.3759892');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (282, N'/uploads/images/55e5f24c8f0547e3b749ea01a5068178.jpg', N'IMG_2788.jpg', 4634016, N'image', '2026-07-19T10:24:31.0187019');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (283, N'/uploads/images/bc12f06e2cf140c496458946d0ce6d2a.jpg', N'IMG_2799.jpg', 3989933, N'image', '2026-07-19T10:24:38.7097794');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (284, N'/uploads/images/afa78ef43c87433ab57ab231b2da0f4e.jpg', N'IMG_2806.jpg', 4427471, N'image', '2026-07-19T10:24:46.3053536');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (285, N'/uploads/images/2bcb9af2b608427f834986c2af203daf.jpg', N'IMG_2809.jpg', 3902490, N'image', '2026-07-19T10:24:54.3089909');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (286, N'/uploads/images/d2eefff00e87450a900733ab199743e9.jpg', N'IMG_2907.jpg', 5012578, N'image', '2026-07-19T10:25:00.5779851');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (287, N'/uploads/images/69a151d5f5f144dd9f157225c66cd3fd.jpg', N'IMG_2912.jpg', 3590434, N'image', '2026-07-19T10:25:15.6290393');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (289, N'/uploads/documents/2bcac68b9ad647ebbd28b52461927405.pdf', N'bản đồ Vĩnh Thượng.pdf', 1953426, N'document', '2026-07-19T10:26:58.6155028');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 236);
-GO
-
--- [MonthlyUpdates]: 0 rows
+DBCC CHECKIDENT ([MediaFiles], RESEED, 289);
 GO
 
 -- [RelatedLinks]: 0 rows

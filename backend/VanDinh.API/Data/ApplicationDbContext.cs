@@ -20,7 +20,6 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<AboutPage> AboutPages => Set<AboutPage>();
     public DbSet<AboutPageHistory> AboutPageHistories => Set<AboutPageHistory>();
     public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
-    public DbSet<MonthlyUpdate> MonthlyUpdates => Set<MonthlyUpdate>();
     public DbSet<RelatedLink> RelatedLinks => Set<RelatedLink>();
     public DbSet<MediaFile> MediaFiles => Set<MediaFile>();
 
@@ -38,7 +37,6 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new AboutPageHistoryConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());
         modelBuilder.ApplyConfiguration(new SystemSettingConfiguration());
-        modelBuilder.ApplyConfiguration(new MonthlyUpdateConfiguration());
         modelBuilder.ApplyConfiguration(new RelatedLinkConfiguration());
         modelBuilder.ApplyConfiguration(new MediaFileConfiguration());
     }

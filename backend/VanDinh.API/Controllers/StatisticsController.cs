@@ -14,7 +14,6 @@ public sealed class StatisticsController(IAppRepository repository) : Controller
         var heritages = repository.Heritages;
         var intangible = repository.IntangibleHeritages;
         var categories = repository.Categories;
-        var monthlyUpdates = repository.MonthlyUpdates;
 
         var totalHeritage = heritages.Count;
         var nationalCount = heritages.Count(h => h.Classification == "national");
@@ -77,7 +76,6 @@ public sealed class StatisticsController(IAppRepository repository) : Controller
             classificationBreakdown,
             typeBreakdown,
             statusBreakdown,
-            monthlyUpdates = monthlyUpdates.Select(m => new { m.UpdateId, m.MonthLabel, m.DisplayVi, m.DisplayEn, m.UpdateCount }),
             recentHeritages
         };
 

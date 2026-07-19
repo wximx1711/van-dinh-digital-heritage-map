@@ -81,11 +81,6 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
     value: item.count,
   }));
 
-  const monthChartData = data.monthlyUpdates.map(item => ({
-    name: lang === 'vi' ? item.displayVi : item.displayEn,
-    value: item.updateCount,
-  }));
-
   const statusData = data.statusBreakdown.map(item => ({
     name: statusLabels[item.status]?.[lang] || item.status,
     value: item.count,
@@ -206,24 +201,6 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
             </div>
           )}
         </div>
-
-        {/* Monthly updates chart */}
-        {monthChartData.length > 0 && (
-          <div style={{ background: 'white', borderRadius: 12, padding: '20px', boxShadow: '0 2px 12px rgba(15,61,94,0.08)', marginBottom: 24 }}>
-            <h3 style={{ color: '#0F3D5E', fontSize: 15, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 16px' }}>
-              {lang === 'vi' ? 'Cập nhật hàng tháng' : 'Monthly Updates'}
-            </h3>
-            <ResponsiveContainer width="100%" height={260}>
-              <BarChart data={monthChartData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#F0F4F8" />
-                <XAxis dataKey="name" tick={{ fontSize: 11, fill: '#5d7a8c' }} />
-                <YAxis tick={{ fontSize: 11, fill: '#5d7a8c' }} allowDecimals={false} />
-                <Tooltip formatter={(value) => [value, lang === 'vi' ? 'Cập nhật' : 'Updates']} />
-                <Bar dataKey="value" fill="#D4A017" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        )}
 
         {/* Recent heritage updates */}
         {data.recentHeritages.length > 0 && (

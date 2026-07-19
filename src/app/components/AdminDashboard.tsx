@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
@@ -8,7 +8,7 @@ import { getImageUrl } from '../utils/url';
 import {
   LayoutDashboard, Building2, BookOpen, ImageIcon,
   Users, Settings, Bell, LogOut, ChevronRight, Star,
-  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown, List, Calendar, Info, ClipboardList, QrCode as QrCodeIcon
+  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown, List, Info, ClipboardList, QrCode as QrCodeIcon
 } from 'lucide-react';
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
@@ -17,7 +17,6 @@ import { UserManagement } from './UserManagement';
 import { IntangibleManagement } from './IntangibleManagement';
 import { HeritageCategoriesManagement } from './HeritageCategoriesManagement';
 import { AboutPageManagement } from './AboutPageManagement';
-import { MonthlyUpdatesManagement } from './MonthlyUpdatesManagement';
 import { MediaManagement } from './MediaManagement';
 import { QrManagement } from './QrManagement';
 import { SystemSettingsManagement } from './SystemSettingsManagement';
@@ -26,11 +25,11 @@ import { ActivityLogPage } from './ActivityLogPage';
 import { LazyImage } from './LazyImage';
 
 interface AdminDashboardProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (page: string, id?: string) => void;
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'monthly-updates' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'related-links';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'related-links';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -90,7 +89,6 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} /> },
     { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} /> },
     { key: 'categories', label: t('admin.categories'), icon: <List size={16} /> },
-    { key: 'monthly-updates', label: t('admin.monthly_updates'), icon: <Calendar size={16} /> },
     { key: 'about', label: t('admin.about'), icon: <Info size={16} /> },
     { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} /> },
     { key: 'qr', label: lang === 'vi' ? 'QR Code' : 'QR Code', icon: <QrCodeIcon size={16} /> },
@@ -114,15 +112,37 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const cityCount = heritageSites.filter(h => h.classification === 'city').length;
   const unrankedCount = heritageSites.filter(h => h.classification === 'unranked').length;
 
-  const notifications = [
-    { id: 1, textVi: 'Di tích Chùa Thanh Đình cần cập nhật hồ sơ', textEn: 'Thanh Dinh Pagoda profile needs update', time: '2h' },
-    { id: 2, textVi: 'Báo cáo thống kê tháng 4 đã sẵn sàng', textEn: 'April statistics report is ready', time: '5h' },
-    { id: 3, textVi: 'Yêu cầu thêm di tích mới từ cán bộ địa phương', textEn: 'New heritage site request from local staff', time: '1d' },
-  ];
+  function getRelativeTime(dateStr: string): string {
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return lang === 'vi' ? 'Vài giây trước' : 'Just now';
+    if (mins < 60) return lang === 'vi' ? `${mins} phút trước` : `${mins} min ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return lang === 'vi' ? `${hours} giờ trước` : `${hours}h ago`;
+    const days = Math.floor(hours / 24);
+    if (days < 7) return lang === 'vi' ? `${days} ngày trước` : `${days}d ago`;
+    return dateStr;
+  }
 
-  const recentUpdates = heritageSites
-    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
-    .slice(0, 5);
+  const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const recentUpdates = useMemo(() =>
+    heritageSites
+      .filter(site => new Date(site.updatedAt).getTime() >= sevenDaysAgo)
+      .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+      .slice(0, 5),
+    [heritageSites]
+  );
+
+  const notifications = useMemo(() =>
+    recentUpdates.map(site => ({
+      id: site.id,
+      nameVi: site.nameVi,
+      nameEn: site.nameEn,
+      relativeTime: getRelativeTime(site.updatedAt),
+      siteId: site.id,
+    })),
+    [recentUpdates, lang]
+  );
 
 
   const statusColors: Record<string, string> = {
@@ -272,19 +292,26 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
               {notifOpen && (
                 <div style={{
                   position: 'absolute', top: '100%', right: 0, marginTop: 4, zIndex: 200,
-                  background: 'white', borderRadius: 10, width: 300,
+                  background: 'white', borderRadius: 10, width: 300, maxHeight: 360, overflowY: 'auto',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.12)', border: '1px solid rgba(15,61,94,0.08)',
                 }}>
                   <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(15,61,94,0.08)', display: 'flex', justifyContent: 'space-between' }}>
                     <span style={{ fontSize: 13, fontWeight: 700, color: '#0F3D5E' }}>{t('common.notification')}</span>
                     <span style={{ fontSize: 11, color: '#D4A017', fontWeight: 600 }}>{notifications.length} {lang === 'vi' ? 'mới' : 'new'}</span>
                   </div>
-                  {notifications.map(n => (
-                    <div key={n.id} style={{ padding: '12px 16px', borderBottom: '1px solid rgba(15,61,94,0.05)', display: 'flex', gap: 10 }}>
+                  {notifications.length === 0 ? (
+                    <div style={{ padding: '24px 16px', textAlign: 'center', fontSize: 12, color: '#5d7a8c' }}>
+                      {lang === 'vi' ? 'Không có thông báo mới' : 'No new notifications'}
+                    </div>
+                  ) : notifications.map(n => (
+                    <div key={n.id} onClick={() => { setNotifOpen(false); onNavigate('heritage-detail', n.siteId); }}
+                      style={{ padding: '12px 16px', borderBottom: '1px solid rgba(15,61,94,0.05)', display: 'flex', gap: 10, cursor: 'pointer' }}
+                      onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.background = '#F0F4F8'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.background = 'transparent'; }}>
                       <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#D4A017', marginTop: 5, flexShrink: 0 }} />
-                      <div>
-                        <p style={{ fontSize: 12, color: '#1a2332', margin: '0 0 2px' }}>{lang === 'vi' ? n.textVi : n.textEn}</p>
-                        <span style={{ fontSize: 10, color: '#5d7a8c' }}>{n.time} {lang === 'vi' ? 'trước' : 'ago'}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 12, color: '#1a2332', margin: '0 0 2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lang === 'vi' ? n.nameVi : n.nameEn}</p>
+                        <span style={{ fontSize: 10, color: '#5d7a8c' }}>{lang === 'vi' ? `Cập nhật · ${n.relativeTime}` : `Updated · ${n.relativeTime}`}</span>
                       </div>
                     </div>
                   ))}
@@ -522,7 +549,6 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           )}
 
           {section === 'categories' && <HeritageCategoriesManagement onDirtyChange={handleDirtyChange} />}
-          {section === 'monthly-updates' && <MonthlyUpdatesManagement onDirtyChange={handleDirtyChange} />}
           {section === 'about' && <AboutPageManagement onDirtyChange={handleDirtyChange} />}
           {section === 'media' && <MediaManagement />}
           {section === 'qr' && <QrManagement />}

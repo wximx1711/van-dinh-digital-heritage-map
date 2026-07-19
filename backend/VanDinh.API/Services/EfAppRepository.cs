@@ -42,8 +42,6 @@ public sealed class EfAppRepository : IAppRepository
         .OrderByDescending(l => l.CreatedAt)
         .ToList();
 
-    public IReadOnlyList<MonthlyUpdate> MonthlyUpdates => _context.MonthlyUpdates.AsNoTracking().OrderBy(m => m.UpdateId).ToList();
-
     public IQueryable<Heritage> HeritagesUntracked => _context.Heritage
         .AsNoTracking()
         .Include(h => h.Images)
@@ -568,35 +566,6 @@ public sealed class EfAppRepository : IAppRepository
         item.IsDeleted = true;
         item.UpdatedAt = DateTime.UtcNow;
         _context.SaveChanges();
-    }
-
-    public MonthlyUpdate? FindMonthlyUpdate(int id) => _context.MonthlyUpdates
-        .AsNoTracking()
-        .FirstOrDefault(x => x.UpdateId == id);
-
-    public MonthlyUpdate AddMonthlyUpdate(MonthlyUpdate item)
-    {
-        _context.MonthlyUpdates.Add(item);
-        _context.SaveChanges();
-        return item;
-    }
-
-    public void UpdateMonthlyUpdate(MonthlyUpdate item)
-    {
-        var existing = _context.MonthlyUpdates.Find(item.UpdateId);
-        if (existing is null) return;
-        _context.Entry(existing).CurrentValues.SetValues(item);
-        _context.SaveChanges();
-    }
-
-    public void DeleteMonthlyUpdate(int id)
-    {
-        var item = _context.MonthlyUpdates.Find(id);
-        if (item is not null)
-        {
-            _context.MonthlyUpdates.Remove(item);
-            _context.SaveChanges();
-        }
     }
 
     public IReadOnlyList<RelatedLink> RelatedLinks => _context.RelatedLinks
