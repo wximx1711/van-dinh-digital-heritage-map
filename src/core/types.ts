@@ -45,7 +45,7 @@ export interface IntangibleHeritage {
   id: string;
   nameVi: string;
   nameEn: string;
-  category: 'festival' | 'performance' | 'craft' | 'ritual' | 'story';
+  category: 'knowledge' | 'festival' | 'belief' | 'craft';
   descriptionVi: string;
   descriptionEn: string;
   image: string;

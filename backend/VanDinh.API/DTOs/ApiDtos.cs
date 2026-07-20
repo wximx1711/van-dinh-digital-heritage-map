@@ -175,7 +175,7 @@ public sealed record IntangibleHeritageRequest(
     [Required, StringLength(200, MinimumLength = 5)]
     string NameEn,
 
-    [Required, RegularExpression(@"^(festival|performance|craft|ritual|story)$")]
+    [Required, RegularExpression(@"^(knowledge|festival|belief|craft)$")]
     string Category,
 
     string? DescriptionVi,

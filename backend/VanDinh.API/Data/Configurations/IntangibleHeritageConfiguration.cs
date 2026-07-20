@@ -11,7 +11,7 @@ public sealed class IntangibleHeritageConfiguration : IEntityTypeConfiguration<I
         builder.ToTable("IntangibleHeritage", t =>
         {
             t.HasCheckConstraint("CK_IntangibleHeritage_Category",
-                "Category IN ('festival', 'performance', 'craft', 'ritual', 'story')");
+                "Category IN ('knowledge', 'festival', 'belief', 'craft')");
         });
         builder.HasKey(x => x.IntangibleId);
         builder.Property(x => x.IntangibleId).ValueGeneratedOnAdd();

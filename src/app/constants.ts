@@ -1,11 +1,10 @@
 import type { HeritageType } from '../core/types';
 
 export const intangibleCategoryIcons = {
+  knowledge: '📖',
   festival: '🎭',
-  performance: '🎶',
+  belief: '🙏',
   craft: '🧵',
-  ritual: '🙏',
-  story: '📜',
 };
 
 export const classificationColors = {

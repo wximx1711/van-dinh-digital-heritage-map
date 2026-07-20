@@ -66,10 +66,10 @@ interface IntangibleItem {
 
 type FormMode = 'add' | 'edit' | null;
 
-const categories = ['festival', 'performance', 'craft', 'ritual', 'story'];
+const categories = ['knowledge', 'festival', 'belief', 'craft'];
 
 const emptyItem: IntangibleItem = {
-  id: '', nameVi: '', nameEn: '', category: 'festival',
+  id: '', nameVi: '', nameEn: '', category: 'knowledge',
   descriptionVi: '', descriptionEn: '', image: '', videoUrl: '',
   otherNames: '', location: '', culturalSpace: '', community: '', representativePersons: '',
   origin: '', originEn: '', formationHistory: '', historicalDevelopment: '',
