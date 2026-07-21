@@ -20,9 +20,14 @@ public sealed class StatisticsController(IAppRepository repository) : Controller
         var cityCount = heritages.Count(h => h.Classification == "city");
         var unrankedCount = heritages.Count(h => h.Classification == "unranked");
         var totalIntangible = intangible.Count;
-        var totalImages = heritages.Sum(h => h.Images.Count);
-        var totalVideos = heritages.Sum(h => h.Videos.Count);
-        var totalDocuments = heritages.Sum(h => h.Documents.Count);
+        // Count media from the MediaFiles table (same source as MediaManagement/search)
+        // so that Dashboard and Media Library are always consistent.
+        // Previously this code summed Heritage.Images/Videos/Documents collections,
+        // which excluded orphaned files and caused the Dashboard to show different
+        // counts than the Media Library.
+        var totalImages = repository.CountMediaFilesByType("image");
+        var totalVideos = repository.CountMediaFilesByType("video");
+        var totalDocuments = repository.CountMediaFilesByType("document");
 
         var classificationBreakdown = heritages
             .GroupBy(h => h.Classification)

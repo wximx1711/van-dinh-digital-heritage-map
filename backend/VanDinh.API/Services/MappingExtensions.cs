@@ -75,7 +75,12 @@ public static class MappingExtensions
     }
     public static ActivityLogDto ToDto(this ActivityLog item) => new(item.LogId, item.UserId, item.User?.Username ?? "system", item.User?.Role?.RoleName ?? "", item.Action, item.EntityName, item.EntityId, item.Description, item.IpAddress, item.CreatedAt);
     public static AboutPageDto ToDto(this AboutPage item) => new(item.AboutId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, item.UpdatedAt);
-    public static AboutPageHistoryDto ToDto(this AboutPageHistory item) => new(item.HistoryId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, item.UpdatedBy, item.CreatedAt);
+    public static AboutPageHistoryDto ToDto(this AboutPageHistory item, IReadOnlyDictionary<long, User> userLookup)
+    {
+        var user = userLookup.GetValueOrDefault(item.UpdatedBy);
+        var editorName = user?.FullName ?? user?.Username ?? "Unknown User";
+        return new AboutPageHistoryDto(item.HistoryId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, editorName, item.CreatedAt);
+    }
     public static SystemSettingDto ToDto(this SystemSetting item) => new(item.SettingId, item.WebsiteName, item.LogoUrl, item.FooterText, item.ContactEmail, item.Phone, item.Address, item.FacebookUrl, item.TiktokUrl, item.YoutubeUrl);
     public static ContactMessageDto ToDto(this ContactMessage item) => new(item.Id, item.FullName, item.Email, item.Subject, item.Message, item.CreatedAt, item.IsRead, item.ReadAt, item.IPAddress, item.UserAgent);
     public static ContactMessageListItem ToListItem(this ContactMessage item) => new(item.Id, item.FullName, item.Email, item.Subject, item.CreatedAt, item.IsRead, item.ReadAt);

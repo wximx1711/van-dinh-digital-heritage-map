@@ -3,6 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { ConfirmDialog } from './ConfirmDialog';
+import { fetchStatisticsOverview } from '../services/statisticsService';
 
 import { getImageUrl } from '../utils/url';
 import {
@@ -46,6 +47,9 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  // Media counts fetched from backend /statistics/overview which queries
+  // the MediaFiles table — same source of truth as the Media Library.
+  const [mediaCounts, setMediaCounts] = useState({ images: 0, videos: 0, documents: 0 });
 
   const handleDirtyChange = useCallback((dirty: boolean) => {
     setFormDirty(dirty);
@@ -73,9 +77,6 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     setShowNavConfirm(false);
     setPendingSection(null);
   }, []);
-  const totalImages = heritageSites.reduce((s, h) => s + (h.images?.length || 0), 0);
-  const totalVideos = 0;
-  const totalDocuments = 0;
   const totalIntangible = intangibleHeritage.length;
 
   const adminNavItems = [
@@ -154,6 +155,16 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
       setSection('dashboard');
     }
   }, [section, allowedSections]);
+
+  // Fetch media counts from backend whenever the dashboard tab becomes visible,
+  // ensuring they stay in sync with the Media Library.
+  useEffect(() => {
+    if (section === 'dashboard') {
+      fetchStatisticsOverview()
+        .then(data => setMediaCounts({ images: data.totalImages, videos: data.totalVideos, documents: data.totalDocuments }))
+        .catch(() => {});
+    }
+  }, [section]);
 
   return (
     <div style={{ display: 'flex', height: 'calc(100vh - 0px)', background: '#F0F4F8', overflow: 'hidden' }}>
@@ -419,9 +430,9 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                   { label: t('stats.city'), value: cityCount, icon: <Award size={18} />, color: '#1A5276' },
                   { label: t('stats.unranked'), value: unrankedCount, icon: <LayoutGrid size={18} />, color: '#7F8C8D' },
                   { label: t('stats.intangible'), value: totalIntangible, icon: <BookOpen size={18} />, color: '#D4A017' },
-                  { label: lang === 'vi' ? 'Hình ảnh' : 'Images', value: totalImages, icon: <ImageIcon size={18} />, color: '#27AE60' },
-                  { label: lang === 'vi' ? 'Video' : 'Videos', value: totalVideos, icon: <RefreshCw size={18} />, color: '#8E44AD' },
-                  { label: lang === 'vi' ? 'Tài liệu' : 'Documents', value: totalDocuments, icon: <LayoutGrid size={18} />, color: '#E67E22' },
+                  { label: lang === 'vi' ? 'Hình ảnh' : 'Images', value: mediaCounts.images, icon: <ImageIcon size={18} />, color: '#27AE60' },
+                  { label: lang === 'vi' ? 'Video' : 'Videos', value: mediaCounts.videos, icon: <RefreshCw size={18} />, color: '#8E44AD' },
+                  { label: lang === 'vi' ? 'Tài liệu' : 'Documents', value: mediaCounts.documents, icon: <LayoutGrid size={18} />, color: '#E67E22' },
                 ].map(s => (
                   <div key={s.label} style={{
                     background: 'white', borderRadius: 10, padding: '16px',

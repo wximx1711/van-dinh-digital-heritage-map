@@ -102,4 +102,7 @@ public interface IAppRepository
 
     // ── Media search ─────────────────────────────────────────────────
     PagedResult<MediaItemDto> SearchMedia(MediaSearchRequest request);
+
+    // ── Media counting (single source of truth for dashboard stats) ──
+    int CountMediaFilesByType(string mediaType);
 }

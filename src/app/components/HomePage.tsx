@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 
 interface HomePageProps {
-  onNavigate: (page: string, id?: string) => void;
+  onNavigate: (page: string, id?: string, searchQuery?: string) => void;
 }
 
 export function HomePage({ onNavigate }: HomePageProps) {
@@ -34,7 +34,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
   ];
 
 const handleSearch = () => {
-     if (searchQuery.trim()) onNavigate('relics');
+     const q = searchQuery.trim();
+     if (q) onNavigate('relics', undefined, q);
    };
 
   return (

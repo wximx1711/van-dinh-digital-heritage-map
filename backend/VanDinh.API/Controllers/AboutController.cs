@@ -27,10 +27,14 @@ public sealed class AboutController(IAppRepository repository, IActivityLogServi
     [HttpGet("history")]
     public IActionResult GetHistory()
     {
-        var history = repository.AboutPageHistories
-            .Select(h => h.ToDto())
-            .ToList();
-        return ApiResponse.Success(history);
+        var historyList = repository.AboutPageHistories.ToList();
+        // Batch-load all referenced users once to avoid N+1 lookups.
+        var userIds = historyList.Select(h => h.UpdatedBy).Distinct().ToHashSet();
+        var userLookup = repository.Users
+            .Where(u => userIds.Contains(u.UserId))
+            .ToDictionary(u => u.UserId, u => u);
+        var dtos = historyList.Select(h => h.ToDto(userLookup)).ToList();
+        return ApiResponse.Success(dtos);
     }
 
     [Authorize(Roles = "MANAGER")]

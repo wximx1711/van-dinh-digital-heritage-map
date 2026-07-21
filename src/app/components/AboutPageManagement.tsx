@@ -432,7 +432,7 @@ export function AboutPageManagement({ onDirtyChange }: AboutPageManagementProps)
                       <div style={{ fontSize: 11, color: '#5d7a8c', marginBottom: 8 }}>
                         {new Date(h.createdAt).toLocaleString(lang === 'vi' ? 'vi-VN' : 'en-US')}
                         <span style={{ margin: '0 8px' }}>|</span>
-                        {lang === 'vi' ? 'Người chỉnh sửa:' : 'Edited by:'} ID {h.updatedBy}
+                        {lang === 'vi' ? 'Người chỉnh sửa:' : 'Edited by:'} {h.editorName}
                       </div>
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, fontSize: 12 }}>
                         <div>

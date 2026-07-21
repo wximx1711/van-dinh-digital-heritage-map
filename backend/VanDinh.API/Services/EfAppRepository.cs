@@ -819,6 +819,17 @@ public sealed class EfAppRepository : IAppRepository
         }
     }
 
+    // ── Media counting (single source of truth for dashboard stats) ──
+    // Counts directly from the MediaFiles table so that AdminDashboard
+    // and MediaManagement always see the same numbers. Previously the
+    // StatisticsController summed Heritage.Images/Videos/Documents which
+    // only counted media linked to heritage sites, missing orphaned files
+    // and diverging from the Media Library view.
+    public int CountMediaFilesByType(string mediaType)
+    {
+        return _context.MediaFiles.Count(mf => mf.MediaType == mediaType);
+    }
+
     // ── Media search ────────────────────────────────────────────────
 
     public PagedResult<MediaItemDto> SearchMedia(MediaSearchRequest request)

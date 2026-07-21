@@ -109,7 +109,7 @@ export interface AboutPageHistoryItem {
   mainContentEn: string | null;
   bannerImage: string | null;
   contactInfo: string | null;
-  updatedBy: number;
+  editorName: string;
   createdAt: string;
 }
 

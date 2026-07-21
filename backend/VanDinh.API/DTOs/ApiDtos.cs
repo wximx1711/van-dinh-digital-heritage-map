@@ -235,7 +235,7 @@ public sealed record AboutPageHistoryDto(
     string? MainContentEn,
     string? BannerImage,
     string? ContactInfo,
-    long UpdatedBy,
+    string EditorName,
     DateTime CreatedAt);
 
 /// <summary>About page data transfer object.</summary>

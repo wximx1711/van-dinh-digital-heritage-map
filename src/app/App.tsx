@@ -212,6 +212,7 @@ function AppInner() {
   const [page, setPage] = useState<Page>('home');
   const [heritageSiteId, setHeritageSiteId] = useState<string>('h001');
   const [intangibleId, setIntangibleId] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const auth = useAuth();
 
   useEffect(() => {
@@ -233,9 +234,14 @@ function AppInner() {
     }
   }, [page, auth.isAuthenticated, auth.isAdmin, auth.isManager]);
 
-  const navigate = (targetPage: string, id?: string) => {
+  const navigate = (targetPage: string, id?: string, search?: string) => {
     if (targetPage === 'heritage-detail' && id) setHeritageSiteId(id);
     if (targetPage === 'intangible-detail' && id) setIntangibleId(id);
+    if (search !== undefined) {
+      setSearchQuery(search);
+    } else {
+      setSearchQuery('');
+    }
     setPage(targetPage as Page);
     if (!['login', 'admin'].includes(targetPage)) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -311,7 +317,7 @@ function AppInner() {
   const renderContent = () => {
     switch (page) {
       case 'home': return <HomePage onNavigate={navigate} />;
-      case 'relics': return <RelicsPage onNavigate={navigate} />;
+      case 'relics': return <RelicsPage onNavigate={navigate} searchQuery={searchQuery} />;
       case 'intangible': return <IntangiblePage onNavigate={navigate} />;
       case 'statistics': return <StatisticsPage onNavigate={navigate} />;
       case 'heritage-detail': return <HeritageDetail siteId={heritageSiteId} onNavigate={navigate} />;
