@@ -134,8 +134,6 @@ public sealed record HeritageRequest(
     string? Image,
 
     [Required]
-    [RegularExpression(@"^[1-9]\d{2,3}$",
-        ErrorMessage = "Year built must be a valid integer between 100 and current year")]
     string? YearBuilt,
 
     [MaxLength(150)]

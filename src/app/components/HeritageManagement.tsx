@@ -253,12 +253,6 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
     if (!editSite.status) errors.status = lang === 'vi' ? 'Trạng thái là bắt buộc' : 'Status is required';
 
     if (!editSite.yearBuilt.trim()) errors.yearBuilt = lang === 'vi' ? 'Năm xây dựng là bắt buộc' : 'Year built is required';
-    else {
-      const yearStr = editSite.yearBuilt.trim();
-      const yearNum = parseInt(yearStr, 10);
-      if (isNaN(yearNum) || yearNum.toString() !== yearStr) errors.yearBuilt = lang === 'vi' ? 'Chỉ nhập số nguyên' : 'Integer numbers only';
-      else if (yearNum < 100 || yearNum > currentYear) errors.yearBuilt = lang === 'vi' ? `Năm phải từ 100 đến ${currentYear}` : `Year must be between 100 and ${currentYear}`;
-    }
 
     if (!editSite.code.trim()) errors.code = lang === 'vi' ? 'Mã di tích là bắt buộc' : 'Code is required';
 

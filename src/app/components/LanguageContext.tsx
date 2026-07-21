@@ -66,6 +66,9 @@ const translations: Record<string, Record<Lang, string>> = {
   'intangible.festival': { vi: 'Lễ hội truyền thống', en: 'Traditional Festival' },
   'intangible.belief': { vi: 'Tập quán tín ngưỡng', en: 'Religious Customs' },
   'intangible.craft': { vi: 'Nghề thủ công truyền thống', en: 'Traditional Craft' },
+  'intangible.performance': { vi: 'Tri thức dân gian', en: 'Folk Knowledge' },
+  'intangible.ritual': { vi: 'Tập quán tín ngưỡng', en: 'Religious Customs' },
+  'intangible.story': { vi: 'Tri thức dân gian', en: 'Folk Knowledge' },
   // Detail page
   'detail.gallery': { vi: 'Thư viện ảnh', en: 'Photo Gallery' },
   'detail.panorama': { vi: 'Xem 360°', en: '360° View' },

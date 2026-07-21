@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VanDinh.API.Data;
 
@@ -11,9 +12,11 @@ using VanDinh.API.Data;
 namespace VanDinh.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260720125128_UpdateIntangibleHeritageCategoryConstraint")]
+    partial class UpdateIntangibleHeritageCategoryConstraint
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -384,6 +387,8 @@ namespace VanDinh.API.Migrations
                             t.HasCheckConstraint("CK_Heritage_NameVi_NotEmpty", "LEN(TRIM(NameVi)) >= 5");
 
                             t.HasCheckConstraint("CK_Heritage_Status", "Status IN ('active', 'maintenance', 'closed')");
+
+                            t.HasCheckConstraint("CK_Heritage_YearBuilt", "YearBuilt IS NULL OR (TRY_CAST(YearBuilt AS INT) IS NOT NULL AND TRY_CAST(YearBuilt AS INT) >= 100 AND TRY_CAST(YearBuilt AS INT) <= YEAR(GETDATE()))");
                         });
                 });
 

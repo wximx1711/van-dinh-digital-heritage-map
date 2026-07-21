@@ -101,14 +101,7 @@ public sealed class HeritageService(
         if (string.IsNullOrWhiteSpace(request.Status))
             errors.Add("Status is required.");
 
-        if (!string.IsNullOrWhiteSpace(request.YearBuilt))
-        {
-            if (!int.TryParse(request.YearBuilt, out var year))
-                errors.Add("Year built must be a valid integer.");
-            else if (year < 100 || year > DateTime.UtcNow.Year)
-                errors.Add($"Year built must be between 100 and {DateTime.UtcNow.Year}.");
-        }
-        else
+        if (string.IsNullOrWhiteSpace(request.YearBuilt))
         {
             errors.Add("Year built is required.");
         }
