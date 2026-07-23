@@ -381,7 +381,6 @@ public sealed class HeritageService(
         var existingImages = repository.FindHeritage(publicId)?.Images;
         if (existingImages is null) return;
 
-        var existingByUrl = existingImages.ToDictionary(x => x.ImageUrl, x => x.ImageId);
         var newUrls = (imageUrls ?? [])
             .Where(u => !string.IsNullOrWhiteSpace(u))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -389,12 +388,12 @@ public sealed class HeritageService(
             newUrls.Add(thumbnailUrl);
 
         // RULE 4: Remove images no longer in the set
-        foreach (var kvp in existingByUrl)
+        foreach (var image in existingImages)
         {
-            if (!newUrls.Contains(kvp.Key))
+            if (!newUrls.Contains(image.ImageUrl))
             {
                 // Remove the DB record for this heritage
-                var removedUrl = repository.RemoveImageFromHeritage(publicId, kvp.Value);
+                var removedUrl = repository.RemoveImageFromHeritage(publicId, image.ImageId);
 
                 // Delete physical file only if NOT referenced by any OTHER heritage
                 if (removedUrl is not null)

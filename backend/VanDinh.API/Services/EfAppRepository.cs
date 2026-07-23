@@ -438,7 +438,9 @@ public sealed class EfAppRepository : IAppRepository
             .Where(mf => mf.MediaType == "image")
             .ToList();
         _logger.LogInformation("FindAllImageUrls: Loaded {Count} records from table MediaFiles (MediaType=image)", records.Count);
-        return records.ToDictionary(mf => mf.Url, mf => mf.MediaFileId);
+        return records
+            .GroupBy(mf => mf.Url)
+            .ToDictionary(g => g.Key, g => g.First().MediaFileId);
     }
 
     public Dictionary<string, long> FindAllVideoUrls()
@@ -446,7 +448,9 @@ public sealed class EfAppRepository : IAppRepository
         return _context.MediaFiles
             .AsNoTracking()
             .Where(mf => mf.MediaType == "video")
-            .ToDictionary(mf => mf.Url, mf => mf.MediaFileId);
+            .ToList()
+            .GroupBy(mf => mf.Url)
+            .ToDictionary(g => g.Key, g => g.First().MediaFileId);
     }
 
     public Dictionary<string, long> FindAllDocumentUrls()
@@ -454,7 +458,9 @@ public sealed class EfAppRepository : IAppRepository
         return _context.MediaFiles
             .AsNoTracking()
             .Where(mf => mf.MediaType == "document")
-            .ToDictionary(mf => mf.Url, mf => mf.MediaFileId);
+            .ToList()
+            .GroupBy(mf => mf.Url)
+            .ToDictionary(g => g.Key, g => g.First().MediaFileId);
     }
 
     public void DeleteImage(string publicId, long imageId)

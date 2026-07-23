@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-21T04:09:26Z
+    GENERATED: 2026-07-23T09:15:10Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -482,7 +482,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 334 rows
+-- [ActivityLogs]: 413 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -818,9 +818,88 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10295, 3, N'UPDATE', N'Heritage', 10030, N'VĐHN-DT-056', '2026-07-21T03:29:00.0022890', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10296, 3, N'LOGOUT', N'Users', NULL, N'User logged out.', '2026-07-21T04:06:55.8385544', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10297, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-21T04:07:04.0579908', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10298, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-22T07:46:51.6291113', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10299, 3, N'UPDATE', N'Heritage', 32, N'VĐHN-DT-032', '2026-07-22T07:52:09.5314400', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10300, 3, N'UPDATE', N'Heritage', 32, N'VĐHN-DT-032', '2026-07-22T07:52:44.3544072', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10301, 3, N'CREATE', N'HeritageDocuments', 27, N'hdbaf0829', '2026-07-22T07:55:28.4805196', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10302, 3, N'UPDATE', N'Heritage', 32, N'VĐHN-DT-032', '2026-07-22T07:55:30.3608795', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10303, 3, N'UPDATE', N'Heritage', 33, N'VĐHN-DT-033', '2026-07-22T08:00:08.7657864', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10304, 3, N'UPDATE', N'Heritage', 34, N'VĐHN-DT-034', '2026-07-22T08:31:20.5610114', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10305, 3, N'UPDATE', N'Heritage', 35, N'VĐHN-DT-035', '2026-07-22T08:37:01.2230879', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10306, 3, N'CREATE', N'HeritageDocuments', 28, N'h60390c9c', '2026-07-22T08:39:15.9237793', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10307, 3, N'UPDATE', N'Heritage', 35, N'VĐHN-DT-035', '2026-07-22T08:39:17.1841988', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10308, 3, N'UPDATE', N'Heritage', 36, N'VĐHN-DT-036', '2026-07-22T08:41:36.4861704', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10309, 3, N'UPDATE', N'Heritage', 23, N'VĐHN-DT-023', '2026-07-22T08:41:55.0549893', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10310, 3, N'UPDATE', N'Heritage', 27, N'VĐHN-DT-027', '2026-07-22T08:42:44.6238125', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10311, 3, N'UPDATE', N'Heritage', 36, N'VĐHN-DT-036', '2026-07-22T08:43:08.3551772', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10312, 3, N'UPDATE', N'Heritage', 27, N'VĐHN-DT-027', '2026-07-22T08:43:38.9340106', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10313, 3, N'UPDATE', N'Heritage', 36, N'VĐHN-DT-036', '2026-07-22T08:46:20.4987988', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10314, 3, N'UPDATE', N'Heritage', 36, N'VĐHN-DT-036', '2026-07-22T08:46:31.0257574', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10315, 3, N'UPDATE', N'Heritage', 37, N'VĐHN-DT-037', '2026-07-22T08:47:05.5502300', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10316, 3, N'UPDATE', N'Heritage', 36, N'VĐHN-DT-036', '2026-07-22T08:47:15.7716419', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10317, 3, N'UPDATE', N'Heritage', 37, N'VĐHN-DT-037', '2026-07-22T08:52:33.0958792', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10318, 3, N'UPDATE', N'Heritage', 10010, N'VĐHN-DT-038', '2026-07-22T08:54:47.6839098', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10319, 3, N'UPDATE', N'Heritage', 10014, N'VĐHN-DT-042', '2026-07-22T09:00:23.5076858', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10320, 3, N'UPDATE', N'Heritage', 1, N'VĐHN-DT-001', '2026-07-22T09:28:16.8373103', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10321, 3, N'UPDATE', N'Heritage', 1, N'VĐHN-DT-001', '2026-07-22T09:31:44.2635942', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10322, 3, N'UPDATE', N'Heritage', 2, N'VĐHN-DT-002', '2026-07-22T09:33:05.2638236', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10323, 3, N'UPDATE', N'Heritage', 4, N'VĐHN-DT-004', '2026-07-22T09:36:35.9596216', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10324, 3, N'UPDATE', N'Heritage', 5, N'VĐHN-DT-005', '2026-07-22T09:38:27.1590993', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10325, 3, N'UPDATE', N'Heritage', 6, N'VĐHN-DT-006', '2026-07-22T09:39:01.3995406', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10326, 3, N'UPDATE', N'Heritage', 7, N'VĐHN-DT-007', '2026-07-22T09:41:13.4926027', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10327, 3, N'UPDATE', N'Heritage', 8, N'VĐHN-DT-008', '2026-07-22T09:43:23.4821834', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10328, 3, N'UPDATE', N'Heritage', 9, N'VĐHN-DT-009', '2026-07-22T09:44:02.3662280', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10329, 3, N'UPDATE', N'Heritage', 11, N'VĐHN-DT-011', '2026-07-22T09:45:19.6260998', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10330, 3, N'UPDATE', N'Heritage', 12, N'VĐHN-DT-012', '2026-07-22T09:46:21.8808947', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10331, 3, N'UPDATE', N'Heritage', 13, N'VĐHN-DT-013', '2026-07-22T09:46:51.6897338', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10332, 3, N'UPDATE', N'Heritage', 19, N'VĐHN-DT-019', '2026-07-22T09:47:44.4519906', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10333, 3, N'UPDATE', N'Heritage', 21, N'VĐHN-DT-021', '2026-07-22T09:48:03.7868877', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10334, 3, N'UPDATE', N'Heritage', 22, N'VĐHN-DT-022', '2026-07-22T09:48:17.7723535', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10335, 3, N'UPDATE', N'Heritage', 23, N'VĐHN-DT-023', '2026-07-22T09:48:42.4009472', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10336, 3, N'UPDATE', N'Heritage', 24, N'VĐHN-DT-024', '2026-07-22T09:49:08.0484879', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10337, 3, N'UPDATE', N'Heritage', 25, N'VĐHN-DT-025', '2026-07-22T09:51:08.1766923', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10338, 3, N'UPDATE', N'Heritage', 26, N'VĐHN-DT-026', '2026-07-22T09:51:25.3864994', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10339, 3, N'UPDATE', N'Heritage', 27, N'VĐHN-DT-027', '2026-07-22T09:51:43.5068030', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10340, 3, N'UPDATE', N'Heritage', 28, N'VĐHN-DT-028', '2026-07-22T09:52:00.1655742', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10341, 3, N'UPDATE', N'Heritage', 30, N'VĐHN-DT-030', '2026-07-22T09:52:33.9777170', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10342, 3, N'UPDATE', N'Heritage', 31, N'VĐHN-DT-031', '2026-07-22T09:52:47.8974244', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10343, 3, N'UPDATE', N'Heritage', 32, N'VĐHN-DT-032', '2026-07-22T09:53:03.6505176', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10344, 3, N'UPDATE', N'Heritage', 33, N'VĐHN-DT-033', '2026-07-22T09:53:27.5776509', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10345, 3, N'UPDATE', N'Heritage', 34, N'VĐHN-DT-034', '2026-07-22T09:53:42.4823267', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10346, 3, N'UPDATE', N'Heritage', 35, N'VĐHN-DT-035', '2026-07-22T09:54:01.8583237', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10347, 3, N'UPDATE', N'Heritage', 37, N'VĐHN-DT-037', '2026-07-22T09:54:19.3589792', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10348, 3, N'UPDATE', N'Heritage', 10010, N'VĐHN-DT-038', '2026-07-22T09:56:04.7366058', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10349, 3, N'UPDATE', N'Heritage', 10011, N'VĐHN-DT-039', '2026-07-22T09:58:10.5815268', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10350, 3, N'UPDATE', N'Heritage', 10014, N'VĐHN-DT-042', '2026-07-22T09:59:47.2123456', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10351, 3, N'UPDATE', N'Heritage', 10014, N'VĐHN-DT-042', '2026-07-22T09:59:57.4052140', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10352, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-23T07:31:03.7419956', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10353, 3, N'UPDATE', N'Heritage', 10011, N'VĐHN-DT-039', '2026-07-23T07:39:40.9647518', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10354, 3, N'UPDATE', N'Heritage', 10011, N'VĐHN-DT-039', '2026-07-23T07:44:07.7829418', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10355, 3, N'UPDATE', N'Heritage', 10012, N'VĐHN-DT-040', '2026-07-23T07:51:03.6061595', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10356, 3, N'UPDATE', N'Heritage', 10013, N'VĐHN-DT-041', '2026-07-23T07:58:26.0906837', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10357, 3, N'UPDATE', N'Heritage', 10013, N'VĐHN-DT-041', '2026-07-23T08:05:10.1110415', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10358, 3, N'UPDATE', N'Heritage', 10015, N'VĐHN-DT-043', '2026-07-23T08:06:06.0940722', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10359, 3, N'UPDATE', N'Heritage', 10015, N'VĐHN-DT-043', '2026-07-23T08:10:48.4477295', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10360, 3, N'UPDATE', N'Heritage', 10015, N'VĐHN-DT-043', '2026-07-23T08:11:03.8105398', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10361, 3, N'UPDATE', N'Heritage', 10016, N'VĐHN-DT-044', '2026-07-23T08:21:04.2286183', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10362, 3, N'UPDATE', N'Heritage', 10017, N'VĐHN-DT-045', '2026-07-23T08:31:03.2433829', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10363, 3, N'UPDATE', N'Heritage', 10017, N'VĐHN-DT-045', '2026-07-23T08:31:12.4137622', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10364, 3, N'UPDATE', N'Heritage', 10017, N'VĐHN-DT-045', '2026-07-23T08:32:30.8161097', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10365, 3, N'UPDATE', N'Heritage', 10018, N'VĐHN-DT-046', '2026-07-23T08:39:42.3445417', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10366, 3, N'UPDATE', N'Heritage', 10019, N'VĐHN-DT-047', '2026-07-23T08:41:35.5583852', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10367, 3, N'CREATE', N'Heritage', 10031, N'VĐHN-DT-057', '2026-07-23T08:44:59.2394886', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10368, 3, N'UPDATE', N'Heritage', 10019, N'VĐHN-DT-047', '2026-07-23T08:46:10.1575421', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10369, 3, N'UPDATE', N'Heritage', 10019, N'VĐHN-DT-047', '2026-07-23T08:46:45.1927580', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10370, 3, N'UPDATE', N'Heritage', 10021, N'VĐHN-DT-049', '2026-07-23T08:54:15.8129981', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10371, 3, N'CREATE', N'Heritage', 10032, N'VĐHN-DT-058', '2026-07-23T09:00:29.4724866', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10372, 3, N'UPDATE', N'Heritage', 10032, N'VĐHN-DT-058', '2026-07-23T09:01:10.7214545', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10373, 3, N'CREATE', N'Heritage', 10033, N'VĐHN-DT-059', '2026-07-23T09:04:02.1771158', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10374, 3, N'UPDATE', N'Heritage', 10033, N'VĐHN-DT-059', '2026-07-23T09:04:24.4964538', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10375, 3, N'CREATE', N'Heritage', 10034, N'VĐHN-DT-060', '2026-07-23T09:06:53.6244685', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10376, 3, N'UPDATE', N'Heritage', 10034, N'VĐHN-DT-060', '2026-07-23T09:07:19.0515355', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10297);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10376);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -847,7 +926,7 @@ GO
 DBCC CHECKIDENT ([HeritageCategories], RESEED, 9);
 GO
 
--- [Heritage]: 58 rows
+-- [Heritage]: 62 rows
 SET IDENTITY_INSERT [Heritage] ON;
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (1, N'heff617cc', N'VĐHN-DT-001', 2, N'CHÙA BÀ CHÈ (BÀ TRÀ TỰ)', N'CHÙA BÀ CHÈ (BÀ TRÀ TỰ)', N'chùa-bà-chè-bà-trà-tự', N'city', N'active', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', 20.72903680, 105.77182720, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Ba Chè (hoặc Chùa Bà Chè).
@@ -878,7 +957,7 @@ Ngày giỗ trận sinh linh (18/8 Âm lịch): Ngày 19/9/1948, thực dân Ph�
 Căn cứ theo bản vẽ mặt bằng tổng thể hiện trạng, di tích tọa lạc trên khu đất bằng phẳng, rộng rãi ở phía Tây Bắc của làng, kiến trúc mang lối quy chuẩn truyền thống và sắc thái thanh tịnh:
 Cổng Tam quan: Kiến trúc cung đình xây chồng diêm 2 tầng 4 mái, đầu hồi bít đốc, các góc đao uốn cong vút tạc hình rồng lá hướng về nóc. Điểm độc đáo nổi bật là hệ thống hàng cột hiên trước được cổ nhân tạo dựng bằng đá xanh liền khối xẻ vuông chịu lực, có khắc niên đại rõ ràng vào năm Minh Mạng thứ 12 (1831). Cổ diêm đắp nổi ba chữ chữ Hán lớn: "Bà Trà Tự".
 Tòa Tiền đường (Bái đường): Là nếp nhà ngang gồm 5 gian (chiều dài mặt bằng tổng thể cụm chính là 15,72m) xây kiểu bít đốc hồi. Bộ khung chịu lực bằng gỗ tứ thiết với kết cấu kèo theo lối "Giá chiêng - rường cụt" vững chãi, kỹ thuật bào trơn đóng bén ăn mộng khít khao. Trên xà gồ còn lưu dòng chữ Hán ghi nhận đợt đại trùng tu thời Tây Sơn: "Cảnh Thịnh sáng niên... trùng tu đại cát lợi" (1793 hoặc 1800).
-Tòa Thượng điện: Kết cấu nhà dọc gồm 3 gian nối liên hoàn với gian giữa Tiền đường tạo thành bố cục chữ Đinh ($\mathbf{J}$). Thượng điện thâm nghiêm với hệ bệ thờ xây dật cấp cao dần từ ngoài vào trong làm nơi tôn trí hệ thống tượng pháp.
+Tòa Thượng điện: Kết cấu nhà dọc gồm 3 gian nối liên hoàn với gian giữa Tiền đường tạo thành bố cục chữ Đinh. Thượng điện thâm nghiêm với hệ bệ thờ xây dật cấp cao dần từ ngoài vào trong làm nơi tôn trí hệ thống tượng pháp.
 Các công trình phụ trợ: Khuôn viên nội tự bao quanh gồm có dãy nhà Mẫu, nhà Tổ (kiểu nhà ngang nằm phía sau Tam bảo) và khu vườn tháp mộ cổ bảo lưu tháp cổ "Hoàng Hà bảo tháp" chứa hài cốt vị sư tổ từ thời Lê - Trịnh.
 4. Hệ thống cổ vật, tự khí và Tượng pháp đặc trưng
 Chùa Ba Chè lưu giữ hệ thống tượng tròn gỗ mít và đất luyện vô cùng giá trị, phong phú (khoảng trên 20 pho) bao gồm:
@@ -897,7 +976,7 @@ Hiện vật quý hiếm khác:
 Căn cứ theo bản đồ địa chính trích lục vẽ năm 1992 (Tờ số 12, tỷ lệ 1/1000) và biên bản khoanh vùng lập ngày 02/07/1999, ranh giới quản lý của di tích được phân định nghiêm ngặt:
 Khu vực I (Vùng cốt lõi gốc bất khả xâm phạm - Màu đỏ):
 Phạm vi hành chính: Bao gồm tòa Tam bảo chính điện, nhà Tổ, nhà Mẫu, khu hành lang sân gạch nội tự và vườn tháp mộ.
-Diện tích đất cốt lõi: Đạt 7.995,0 $m^2$ (trong đó đã tính bao gồm 13,0 $m^2$ diện tích dải đất lưu không bảo vệ ven rìa).
+Diện tích đất cốt lõi: Đạt 7.995,0 m2 (trong đó đã tính bao gồm 13,0 m2 diện tích dải đất lưu không bảo vệ ven rìa).
 Vị trí ranh giới tiếp giáp thửa đất số 600:
 Phía Đông: Tiếp giáp lối Đường đồng trục chính và các thửa đất giải thửa số 377, 389, 388.
 Phía Tây: Tiếp giáp hành lang mương nước rãnh thoát của thửa đất số 505 dốc ra hướng bờ sông Đáy.
@@ -943,7 +1022,7 @@ Layer 6: The Nine Dragon Altar is carved from wood with dragons spraying water t
 Other rare artifacts:
 01 ancient bronze bell cast in the year Quy Ty (1953) with a finely engraved brocade seal.
 01 ancient stone stele composed by General Do (title of Nhan Hau) and containing philosophical and historical records of the temple''s restoration from the Vinh Huu era.
-02 blocks of ancient green stone reliefs depicting dragons and unicorns from the 15th century, along with 14 bricks from the Le-Mac period with embossed stylized flowers, mythical creatures, and dragons.', N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', N'1403', N'xã Vân Đình', N'/api/qr/heritage/heff617cc', N'https://maps.app.goo.gl/3ddEcNYLoH31G9DV8', 0, NULL, 3, '2026-07-09T13:35:05.1690537', '2026-07-20T14:43:32.4773505');
+02 blocks of ancient green stone reliefs depicting dragons and unicorns from the 15th century, along with 14 bricks from the Le-Mac period with embossed stylized flowers, mythical creatures, and dragons.', N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', N'1403', N'xã Vân Đình', N'/api/qr/heritage/heff617cc', N'https://maps.app.goo.gl/3ddEcNYLoH31G9DV8', 0, NULL, 3, '2026-07-09T13:35:05.1690537', '2026-07-22T09:31:44.2429095');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (2, N'h0d0c0cbc', N'VĐHN-DT-002', 2, N'CHÙA CAO LÃM (DIÊN KHÁNH TỰ)', N'CHÙA CAO LÃM (DIÊN KHÁNH TỰ)', N'chùa-cao-lãm-diên-khánh-tự', N'city', N'active', N'QP5Q+HHJ, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', N'QP5Q+HHJ, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', 20.75896640, 105.73630870, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Cao Lãm.
 Tên chữ: Diên Khánh Tự.
@@ -967,7 +1046,7 @@ Năm 1950, di tích bị máy bay thực dân Pháp ném bom và bắn phá dữ
 Chùa Cao Lãm nằm chung không gian linh thiêng của cụm di tích Đình - Miếu tại trung tâm làng, phía trước hướng ra giếng mắt rồng và cây đa cổ thụ. Mặt bằng công trình gồm có:
 Tam quan: Thiết kế nề ngõa gồm 3 lối đi (Không quan, Trung quan, Giả quan) liên kết bởi hệ thống tường bao đắp nổi hoa văn chữ "Thọ". Hai bên cột trụ biểu lớn đắp hình búp sen, soi gờ kẻ chỉ và trang trí cốn ô lồng đèn đề tài Tứ linh. Phía trên đắp biển tên chữ chữ Hán "Diên Khánh Tự" đi kèm hình hổ phù đội lửa tam muội.
 Tòa Tiền đường: Thiết kế gồm 3 gian 2 chái xây theo lối đầu hồi bít đốc tay ngai nối trụ biểu. Cấu trúc rầm đỡ mái dựa trên 5 hàng chân cột. Điểm độc đáo là hàng cột hiên phía trước được làm hoàn toàn bằng đá xanh nguyên khối, hệ cột cái bằng gỗ lim vuông đặt trên chân tảng đá. Vì kèo làm theo hai kiểu kết hợp: "Thượng chồng rường con nhị, trung kẻ, hạ tiên kẻ hậu bẩy" và "Thượng giá chiêng chồng rường nách, trung cốn chồng rường" trang trí họa tiết chạm thủng hình hoa quý và linh vật.
-Tòa Thượng điện: Là nếp nhà dọc gồm 3 gian bít đốc hồi liên hoàn với Tiền đường tạo thành hình chữ Đinh ($\mathbf{J}$). Vì nóc cấu trúc kiểu giá chiêng con nhị, phía trên các xà ngang gác các cấu kiện chạm thủng đề tài Lưỡng long chầu nhật có công năng mềm mại như hệ thống y môn.
+Tòa Thượng điện: Là nếp nhà dọc gồm 3 gian bít đốc hồi liên hoàn với Tiền đường tạo thành hình chữ Đinh. Vì nóc cấu trúc kiểu giá chiêng con nhị, phía trên các xà ngang gác các cấu kiện chạm thủng đề tài Lưỡng long chầu nhật có công năng mềm mại như hệ thống y môn.
 Nhà Tổ & Nhà Mẫu: Nằm quy hoạch đồng bộ ở phía sau. Đáng chú ý, hạng mục Nhà thờ Tổ được đầu tư xây mới đồng bộ từ nguồn kinh phí xã hội hóa vào tháng 8 năm 2010 với kinh phí 920.233.000 đồng.
 4. Hệ thống cổ vật, tự khí và Tượng pháp
 Hồ sơ kiểm kê của Ban Quản lý di tích ghi nhận chùa lưu giữ được nhiều hiện vật giá trị:
@@ -975,9 +1054,9 @@ Hệ thống tượng tròn cổ: Phật điện dật cấp trang nghiêm bài 
 Hiện vật quý khác: 01 quả chuông đồng đúc năm Thiệu Trị nguyên niên (1841) bám triện gấm tinh xảo; kết hợp hệ thống 04 bức hoành phi gỗ cổ, 03 bức cửa võng sơn son thếp vàng, 03 chiếc đỉnh đồng thờ tự và hệ thống 06 chiếc bát hương cổ (trong đó có 01 bát hương dòng gốm Thổ Hà cổ quý hiếm).
 5. Công tác khoanh vùng địa chính & Chỉ giới bảo vệ di tích
 Căn cứ theo bản trích lục bản đồ giải thửa Tờ số 8 (Bản đồ 299) do địa chính xã thực hiện đo vẽ năm 1985, tổng diện tích cụm di tích được phân định pháp lý cho Khu vực bảo vệ I (Vùng bất khả xâm phạm) như sau:
-Chỉ giới khoanh vùng đất Chùa (Thửa đất số 164E): Diện tích vùng lõi bất khả xâm phạm của riêng hạng mục Chùa Cao Lãm là 160 $m^2$.
+Chỉ giới khoanh vùng đất Chùa (Thửa đất số 164E): Diện tích vùng lõi bất khả xâm phạm của riêng hạng mục Chùa Cao Lãm là 160 m2.
 Ranh giới tiếp giáp: Cả bốn phía Đông, Tây, Nam, Bắc của thửa đất cốt lõi 164E đều được bao bọc khép kín bởi thửa đất hành lang 164F.
-Chỉ giới Khu vực bảo vệ II đất Chùa (Thửa đất số 164F): Có diện tích 1.440 $m^2$ bao quanh tiếp giáp thửa 164E.
+Chỉ giới Khu vực bảo vệ II đất Chùa (Thửa đất số 164F): Có diện tích 1.440 m^2 bao quanh tiếp giáp thửa 164E.
 Ranh giới tiếp giáp tổng thể khu đất chùa: Phía Đông và phía Tây giáp trục Đường thôn; Phía Nam giáp thửa đất đình 164B; Phía Bắc giáp phần đất trống còn lại của thửa 164F.
 Mọi hành vi tự ý đào bới nền móng cổ, tháo dỡ các cấu kiện chạm khắc cốn mê gỗ lim hoặc di chuyển chuông cổ Thiệu Trị, bát hương gốm Thổ Hà ra khỏi hành lang khoanh vùng của các thửa đất trên đều bị pháp luật nghiêm cấm và xử lý xử phạt nghiêm khắc.', N'2. Historical and Cultural Value & Revolutionary Imprint
 
@@ -1011,7 +1090,7 @@ The boundaries of the protected area II of the temple land (Plot No. 164F): Cove
 
 The overall boundaries of the temple land are: East and West bordering the village road; South bordering plot 164B; North bordering the remaining vacant land of plot 164F.
 
-Any unauthorized excavation of ancient foundations, dismantling of carved wooden brackets or moving the ancient Thieu Tri bell or Tho Ha ceramic incense burner outside the designated corridor of the above plots is strictly prohibited and will be severely punished by law.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'1702', N'xã Vân Đình', N'/api/qr/heritage/h0d0c0cbc', N'https://maps.app.goo.gl/HmaBmvZU9Jpfp2Sk8', 0, NULL, 3, '2026-07-09T13:49:50.2184218', '2026-07-19T11:42:16.0213695');
+Any unauthorized excavation of ancient foundations, dismantling of carved wooden brackets or moving the ancient Thieu Tri bell or Tho Ha ceramic incense burner outside the designated corridor of the above plots is strictly prohibited and will be severely punished by law.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'1702', N'xã Vân Đình', N'/api/qr/heritage/h0d0c0cbc', N'https://maps.app.goo.gl/HmaBmvZU9Jpfp2Sk8', 0, NULL, 3, '2026-07-09T13:49:50.2184218', '2026-07-22T09:33:05.2499114');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (3, N'heba4c83e', N'VĐHN-DT-003', 2, N'CHÙA ĐÔNG DƯƠNG (Thiên Phúc Tự - Vĩnh Thọ Tự)', N'CHÙA ĐÔNG DƯƠNG', N'chùa-đông-dương', N'national', N'active', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', N'Đông Dương, Vân Đình, Hà Nội, Việt Nam', 20.70736230, 105.78912930, N'1. Thông tin hành chính và Xếp hạng di tích
 Tên di tích thống nhất: Chùa Đông Dương.
 Tên chữ qua các thời kỳ:
@@ -1125,7 +1204,7 @@ Chùa tọa lạc biệt lập trên gò đất cao mang hình dáng con rùa n�
 Cổng chùa (Tam quan): Kiến trúc đồ sộ xây theo lối mai cua vòm cuốn rộng 3m, cao 4m. Tầng trên xây bức cuốn thư vôi vữa ghi bài văn chữ Hán ca ngợi Phật pháp. Hai bên là cổng phụ làm kiểu mái đao cong ngói ống kết nối dãy cột đồng trụ uy nghi.
 Gác chuông: Công trình liên sau cổng, mặt bằng hình chữ nhật gồm 3 gian. Gian giữa xây 2 tầng mái đao cong uốn lượn có đắp nổi Lưỡng long chầu nguyệt tôn nghiêm, bên trong treo quả chuông đồng cổ đại tự. Hai gian bên có một tầng và hàng lan can con tiện bao quanh bảo vệ.
 Tòa Bái đường (Tiền đường): Ngôi nhà ngang gồm 5 gian xây bít đốc hồi, mái dốc lợp ngói ri. Hệ khung gỗ lim chắc chắn liên kết mông mác bén khít chịu lực trên bốn hàng chân cột, chân cột kê tảng đá tròn. Gian đầu hồi bên tả đặt khám thờ gỗ chạm đầu rồng và tượng Đức Ông.
-Tòa Thượng điện (Hậu điện): Nằm song song với tòa Bái đường phía sau qua khoảng sân hẹp chưa đầy 1m (mặt bằng kiến trúc tổng thể tạo thành hình chữ Nhị ($\mathbf{=}$)). Thượng điện gồm 3 gian rộng rãi, vách ngăn tường hậu chia thành các ban thờ dật cấp thoải dần để bài trí phật điện khang trang.
+Tòa Thượng điện (Hậu điện): Nằm song song với tòa Bái đường phía sau qua khoảng sân hẹp chưa đầy 1m (mặt bằng kiến trúc tổng thể tạo thành hình chữ Nhị. Thượng điện gồm 3 gian rộng rãi, vách ngăn tường hậu chia thành các ban thờ dật cấp thoải dần để bài trí phật điện khang trang.
 Hạng mục phụ trợ: Phía sau và bên cạnh được quy hoạch đồng bộ dãy nhà Mẫu, nhà Tổ và khu bảo tháp mộ sư lưu giữ xá lị các vị trụ trì qua các đời.
 4. Hệ thống di vật, cổ vật quý hiếm
 Chùa Dương Khê lưu giữ một bộ sưu tập di vật phong phú có niên đại trải dài trải dài từ thời Lê - Mạc đến thời Nguyễn:
@@ -1155,7 +1234,7 @@ Temple Gate (Tam Quan): A massive structure built in the style of a wide, arched
 Bell Tower: Located behind the gate, the rectangular structure consists of three bays. The central bay has two levels with curved roofs and a sculpted relief of two dragons flanking the moon, symbolizing solemnity. Inside hangs an ancient bronze bell. The two side bays each have a level and a surrounding balustrade with decorative spindles for protection.
 
 Front Hall (Bai Duong): A horizontal building with five bays, built with gable ends and a sloping tile roof. The sturdy ironwood frame is tightly connected and supports four rows of columns, each column resting on a round stone base. The left gable contains a wooden altar carved with dragon heads and a statue of the Venerable Master.
-The Upper Hall (Rear Hall): Located parallel to the rear worship hall across a narrow courtyard less than 1 meter wide (the overall architectural plan forms the shape of the Chinese character ''二'' ($\mathbf{=}$)). The Upper Hall consists of 3 spacious bays, with rear walls dividing the altars into tiered, sloping sections to create a dignified Buddhist space.
+The Upper Hall (Rear Hall): Located parallel to the rear worship hall across a narrow courtyard less than 1 meter wide (the overall architectural plan forms the shape of the Chinese character ''二''. The Upper Hall consists of 3 spacious bays, with rear walls dividing the altars into tiered, sloping sections to create a dignified Buddhist space.
 
 Auxiliary facilities: Behind and to the side are a comprehensively planned complex of Mother''s House, Ancestor''s House, and a stupa containing the relics of abbots from various generations.
 
@@ -1182,7 +1261,7 @@ Other wooden and porcelain items: Four ornate, openworked lacquered wooden doors
 5. Strictly Enclosing and Defining the Protection Zone
 Based on the 1985 cadastral map (Sheet No. 02, scale 1/1000) and the cadastral zoning record dated March 17, 1998, the protected area of ​​the relic site has been established with a legal framework strictly prohibiting encroachment:
 Protection Zone I (Core Zone - Red): Includes all structures including the gate, bell tower, Three Treasures Hall, altar, Ancestor''s House, Mother''s House, monk''s tomb tower, and the entire inner garden area. The boundary of the land is defined as a closed zone closely following the existing protective wall of the relic site.
-Any activities involving the dismantling of ancient wooden architectural components, encroachment on and filling in the turtle-shaped mound, or the exchange or relocation of 45 Buddhist statues and stone and ceramic artifacts from the Le Dynasty outside the red boundary of the relic site are strictly prohibited and subject to criminal prosecution under the Law on Cultural Heritage.', N'/uploads/images/7399aa122c7a4e12a4beca859ed87a99.jpg', N'1620', N'xã Vân Đình', N'/api/qr/heritage/h77221b53', N'https://maps.app.goo.gl/tGhR7g7tFgHRCDEH7', 0, NULL, 3, '2026-07-10T08:39:26.9346343', '2026-07-10T08:43:42.2217051');
+Any activities involving the dismantling of ancient wooden architectural components, encroachment on and filling in the turtle-shaped mound, or the exchange or relocation of 45 Buddhist statues and stone and ceramic artifacts from the Le Dynasty outside the red boundary of the relic site are strictly prohibited and subject to criminal prosecution under the Law on Cultural Heritage.', N'/uploads/images/7399aa122c7a4e12a4beca859ed87a99.jpg', N'1620', N'xã Vân Đình', N'/api/qr/heritage/h77221b53', N'https://maps.app.goo.gl/tGhR7g7tFgHRCDEH7', 0, NULL, 3, '2026-07-10T08:39:26.9346343', '2026-07-22T09:36:35.9470436');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (5, N'h8f0c9440', N'VĐHN-DT-005', 2, N'CHÙA HẬU XÁ (THÁI BÌNH TỰ)', N'CHÙA HẬU XÁ (THÁI BÌNH TỰ)', N'chùa-hậu-xá-thái-bình-tự', N'city', N'active', N'PQGM+R7W, Hậu Xá, Vân Đình, Hà Nội, Việt Nam', N'PQGM+R7W, Hậu Xá, Vân Đình, Hà Nội, Việt Nam', 20.72722690, 105.78054630, N'1. Thông tin hành chính & Xếp hạng
 Tên di tích: Chùa Hậu Xá.
 Tên chữ (Tên gọi khác): Thái Bình Tự.
@@ -1204,7 +1283,7 @@ Thời kỳ chống Pháp: Chùa Hậu Xá là cơ sở nuôi giấu cán bộ c
 Thời kỳ chống Mỹ: Chùa là địa điểm sơ tán của nhiều cơ quan ban ngành thuộc huyện Ứng Hòa, đồng thời là nơi tổ chức các lớp học và là trụ sở họp chi bộ thôn.
 3. Khảo tả công trình kiến trúc hiện trạng Quần thể kiến trúc của di tích tương đối nguyên vẹn, được bài trí trang nhã và u tịch dưới bóng các cây cổ thụ. Hướng chùa quay về phía Tây - Nam nhìn ra giếng mắt rồng.
 Cổng chùa (Tam quan): Xây dựng theo lối chồng diêm giả 8 mái với các góc đao cong ngược lên trang trí hình rồng chạy về nóc, phần giữa hai tầng mái đắp nổi 3 chữ Hán tên chữ của chùa. Lối đi cấu tạo theo kiểu cuốn vòm.
-Tòa Tiền đường: Kiến trúc hình chữ Đinh ($\mathbf{J}$) liên hoàn với Thượng điện, xây hồi bít đốc gồm 5 gian 2 dĩ lợp ngói ri cổ. Hệ kết cấu khung đỡ mái chịu lực trên 5 hàng chân cột. Hàng cột hiên phía trước được làm hoàn toàn bằng đá xanh nguyên khối, hàng cột cái bằng gỗ chịu lực đặt trên các chân đá tảng. Vì kèo kết cấu kiểu "Thượng giá chiêng rường nách, hạ kẻ ngồi xà nách, bẩy" vững chãi.
+Tòa Tiền đường: Kiến trúc hình chữ Đinh liên hoàn với Thượng điện, xây hồi bít đốc gồm 5 gian 2 dĩ lợp ngói ri cổ. Hệ kết cấu khung đỡ mái chịu lực trên 5 hàng chân cột. Hàng cột hiên phía trước được làm hoàn toàn bằng đá xanh nguyên khối, hàng cột cái bằng gỗ chịu lực đặt trên các chân đá tảng. Vì kèo kết cấu kiểu "Thượng giá chiêng rường nách, hạ kẻ ngồi xà nách, bẩy" vững chãi.
 Tòa Thượng điện: Nối vuông góc từ gian giữa Tiền đường chạy dọc ra phía sau, kết cấu vì kèo kiểu "Thượng kèo kẻ giá chiêng, hạ rường nách". Hệ thống bệ gạch được xây dật cấp cao dần từ ngoài vào trong để đặt Phật điện.
 Các công trình phụ trợ: Phía sau và hai bên được quy hoạch đồng bộ bao gồm nhà Mẫu (kiểu nhà ngang), nhà Tổ, nhà khách và hệ thống vườn tháp mộ sư.
 4. Hệ thống cổ vật, tự khí & Tượng pháp
@@ -1216,14 +1295,14 @@ Cổ vật tự khí tiêu biểu:
 02 bức hoành phi gỗ sơn son thếp vàng, 03 đôi câu đối chữ Hán tại Thượng điện, 01 bức cửa võng chạm lộng hoa văn Tứ quý, 03 chiếc bát hương sành gốm Thổ Hà cổ và 01 tấm văn bia đá đặt trang trọng tại Tiền đường.
 5. Chỉ giới pháp lý & Khoanh vùng bảo vệ di tích Căn cứ theo bản đồ giải thửa vẽ năm 2003 (Tờ số 01, tỷ lệ 1/1000) và biên bản thống nhất liên ngành ngày 23/10/2004, địa giới địa chính di tích được hoạch định rõ ràng như sau:
 Khu vực I (Vùng bất khả xâm phạm cốt lõi - Màu đỏ):
-Diện tích: 1.578,9 $m^2$.
+Diện tích: 1.578,9 m2.
 Vị trí địa chính: Nằm trọn vẹn trên thửa đất số 211.
 Ranh giới tiếp giáp: Phía Đông giáp thửa đất số 532; Phía Tây giáp đường ngõ đi vào Thiên; Phía Nam giáp thửa đất số 532; Phía Bắc giáp khu dân cư hiện trạng.
 Khu vực II (Vùng điều chỉnh xây dựng bảo vệ cảnh quan - Màu xanh):
-Diện tích: 2.207,9 $m^2$.
+Diện tích: 2.207,9 m2.
 Vị trí địa chính: Nằm trên thửa đất số 532.
 Ranh giới tiếp giáp: Phía Đông giáp các thửa đất số 202, 221 và ngõ xóm; Phía Tây giáp đường bê tông vào thôn; Phía Nam giáp các thửa đất số 232 và 233; Phía Bắc giáp thửa đất số 211 và thửa số 533.
-Một vùng diện tích đất canh tác phụ trợ rộng 2.926,3 $m^2$ kề cận tiếp giáp (Đông giáp đường vào thôn; Tây giáp đất lúa HTX; Nam giáp ao tập thể thửa 312; Bắc giáp các thửa 210, 158, 534) cũng được đưa vào hành lanh giám sát quy hoạch.
+Một vùng diện tích đất canh tác phụ trợ rộng 2.926,3 m2 kề cận tiếp giáp (Đông giáp đường vào thôn; Tây giáp đất lúa HTX; Nam giáp ao tập thể thửa 312; Bắc giáp các thửa 210, 158, 534) cũng được đưa vào hành lanh giám sát quy hoạch.
 Mọi hoạt động đào bới, tháo dỡ cấu kiện gốc hoặc tự ý cơi nới xâm lấn ranh giới của các thửa đất trên đều bị nghiêm cấm theo Luật Di sản văn hóa.', N'2. Historical and Cultural Value & Remnants of the Resistance
 Spiritual Significance: The pagoda is dedicated to Mahayana Buddhism. The site serves as a center for traditional religious and spiritual activities in the Hau Xa village community, guiding people towards compassion, promoting good deeds, punishing evil, and fostering love for humanity.
 Sculptural Art: The Buddha Hall houses a diverse and rich collection of round statues dating from the 19th to 20th centuries. Each statue is meticulously crafted, possessing high aesthetic value and reflecting the unique characteristics of each specific figure.
@@ -1259,7 +1338,7 @@ Area: 2,207.9 m².
 Catalog location: Located on plot number 532.
 Adjacent boundaries: East: borders plots number 202, 221 and the village alley; West: borders the concrete road into the village; South: borders plots number 232 and 233; North: borders plot number 211 and plot number 533.
 An adjacent area of ​​2,926.3 m² of auxiliary agricultural land (East: borders the road into the village; West: borders the cooperative''s rice land; South: borders the collective pond of plot 312; North: borders plots 210, 158, and 534) is also included in the planning monitoring corridor.
-All activities involving excavation, dismantling of original structures, or unauthorized expansion that encroaches on the boundaries of the land plots are strictly prohibited under the Law on Cultural Heritage.', N'/uploads/images/e300e9d46a99489abe98f69ab9435013.jpg', N'1822', N'xã Vân Đình', N'/api/qr/heritage/h8f0c9440', N'https://maps.app.goo.gl/AhMjew2aKCX5xfPD7', 0, NULL, 3, '2026-07-10T08:58:29.6621554', '2026-07-10T09:02:12.3550089');
+All activities involving excavation, dismantling of original structures, or unauthorized expansion that encroaches on the boundaries of the land plots are strictly prohibited under the Law on Cultural Heritage.', N'/uploads/images/e300e9d46a99489abe98f69ab9435013.jpg', N'1822', N'xã Vân Đình', N'/api/qr/heritage/h8f0c9440', N'https://maps.app.goo.gl/AhMjew2aKCX5xfPD7', 0, NULL, 3, '2026-07-10T08:58:29.6621554', '2026-07-22T09:38:27.1443089');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (6, N'h04c50ed4', N'VĐHN-DT-006', 2, N'CHÙA NGHI LỘC (Động Hoa Tự)', N'CHÙA NGHI LỘC', N'chùa-nghi-lộc', N'city', N'active', N'PPXF+J5, Nghi Lộc, Vân Đình, Hà Nội, Việt Nam', N'PPXF+J5, Nghi Lộc, Vân Đình, Hà Nội, Việt Nam', 20.74912040, 105.72029390, N'1. Thông tin hành chính và Xếp hạng
 Tên di tích thống nhất: Chùa Nghi Lộc.
 Tên chữ (Tên gọi khác): Động Hoa Tự.
@@ -1301,7 +1380,7 @@ Hiện vật kim loại: 01 chiếc khánh đồng tế lễ, 01 chiếc chuông
 Căn cứ theo bản đồ địa chính trích lục vẽ năm 1986 (Tờ số 1 và số 88, tỷ lệ 1/2000) và biên bản khoanh vùng lập ngày 28/11/1992, ranh giới địa chính cụm di tích được phân định bất khả xâm phạm:
 Khu vực bảo vệ I (Vùng cốt lõi gốc - Màu đỏ):
 Phạm vi: Bao gồm Chùa chính, ngôi Đình cổ, Quán Nghi Lộc liền kề cùng toàn bộ phần sân gạch nội tự và giếng chùa.
-Diện tích: 2.903 $m^2$ đặt trọn vẹn trên các thửa đất số 188, 187 và thửa 63.
+Diện tích: 2.903 m2 đặt trọn vẹn trên các thửa đất số 188, 187 và thửa 63.
 Ranh giới tiếp giáp: Phía Đông giáp đê Sông Đáy cổ; Phía Tây giáp thửa đất số 186; Phía Nam giáp các thửa đất số 189 và thửa 1584; Phía Bắc giáp trục Đường làng hiện hữu.
 Khu vực bảo vệ II (Vùng điều chỉnh xây dựng phụ trợ - Màu xanh):
 Phạm vi: Vùng bãi ao, đất thổ canh bao quanh nâng đỡ cảnh quan cho vùng lõi.
@@ -1356,7 +1435,7 @@ Boundaries: East: bordering the ancient Day River dike; West: bordering land par
 Protection Zone II (Auxiliary Construction Adjustment Zone - Green):
 Scope: The pond area and cultivated land surrounding and supporting the landscape of the core zone.
 Area: Located on land parcel No. 181 and part of parcels 187/1577 (former school).
-Boundaries: East: bordering the pond.', N'/uploads/images/0c0967608cd44b25ab51295f6ee42e02.jpg', N'1577', N'xã Vân Đình', N'/api/qr/heritage/h04c50ed4', N'https://maps.app.goo.gl/weAujc2ABnzpJ9r29', 0, NULL, 3, '2026-07-10T09:09:38.8022619', '2026-07-10T09:12:03.6012411');
+Boundaries: East: bordering the pond.', N'/uploads/images/0c0967608cd44b25ab51295f6ee42e02.jpg', N'1577', N'xã Vân Đình', N'/api/qr/heritage/h04c50ed4', N'https://maps.app.goo.gl/weAujc2ABnzpJ9r29', 0, NULL, 3, '2026-07-10T09:09:38.8022619', '2026-07-22T09:39:01.3878146');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (7, N'hb9071290', N'VĐHN-DT-007', 2, N'CHÙA NGUYỄN XÁ ( Phổ Ứng Tự , Phả Ứng Tự)', N'CHÙA NGUYỄN XÁ', N'chùa-nguyễn-xá', N'city', N'active', N'Vân Đình, Hà Nội, Việt Nam', N'Vân Đình, Hà Nội, Việt Nam', 20.72914850, 105.79171110, N'1. Thông tin hành chính & Xếp hạng
 Tên di tích thống nhất: Chùa Nguyễn Xá (nằm trong quần thể cụm di tích Đình - Chùa Nguyễn Xá).
 Tên chữ: Phổ Ứng Tự hoặc Phả Ứng Tự.
@@ -1375,7 +1454,7 @@ Ranking level: Ranked as a City-level Architectural and Artistic Monument by Dec
 Thần tích & Thờ phụng: Chùa thờ Phật theo phái Đại Thừa, phối hợp cùng các ban thờ Tổ (Tổ sư Bồ Đề Đạt Ma) và nhà Mẫu (Tam tòa Thánh Mẫu, Đức Thánh Trần). Thần tích ghi nhận chùa là nơi vua Đinh Tiên Hoàng từng dừng chân và ngự lại trong hành trình kinh lược dẹp loạn 12 sứ quân qua trang Nguyễn Xá.
 Dấu ấn kháng chiến: Trong thời kỳ kháng chiến chống thực dân Pháp, cụm di tích là điểm di tích cách mạng quan trọng. Năm 1848, Công binh xưởng Phan Đình Phùng đã chọn địa điểm chính tại Đình và Chùa Nguyễn Xá để làm nơi sản xuất vũ khí, đúc súng phục vụ tiền tuyến. Nơi đây cũng đồng thời được trưng dụng làm kho quân nhu tối mật phục vụ kháng chiến.
 3. Quy mô kiến trúc nghệ thuật hiện trạng
-Căn cứ theo bản vẽ hiện trạng (bản vẽ Chùa Tảo Khê.pdf), cụm di tích nằm liền kề nhau trên một dải đất cao rộng đầu làng nhìn về hướng Nam, phía trước có hồ nước lớn tụ thủy. Chùa chính có bố cục hình chữ Đinh ($\mathbf{J}$) gồm Tiền đường và Thượng điện:
+Căn cứ theo bản vẽ hiện trạng (bản vẽ Chùa Tảo Khê.pdf), cụm di tích nằm liền kề nhau trên một dải đất cao rộng đầu làng nhìn về hướng Nam, phía trước có hồ nước lớn tụ thủy. Chùa chính có bố cục hình chữ Đinh gồm Tiền đường và Thượng điện:
 Tòa Tiền đường: Ngôi nhà ngang gồm 3 gian bít đốc tay ngai nối trụ biểu, bờ nóc đắp kiểu bờ đinh, lợp ngói mũi hài. Bộ khung làm bằng gỗ với bốn hàng chân cột tròn vững chắc, sơn son. Hiện trạng tòa Tiền đường chủ yếu dùng làm không gian chuẩn bị lễ và hành lễ phụ.
 Tòa Thượng điện: Kết cấu dọc gồm 4 gian 1 dĩ nối liên hoàn với Tiền đường, khung chịu lực lim gụ sơn son, vì kèo kiểu "Thượng chồng rường, hạ kẻ ngồi" mộc mạc làm bệ đỡ nâng các tầng mái dột ngói mũi. Thượng điện xây các bệ dật cấp dốc thoải từ trên xuống để đặt phật điện.
 Nhà Tổ và Nhà Mẫu: Quy hoạch khang trang phía sau tòa Thượng điện. Nhà Tổ có kết cấu ngang gồm 5 gian xây bít đốc. Nhà Mẫu kết cấu chữ Đinh với bộ vì kiểu quá giang trốn cột mộc mạc bám hiên. Bên cạnh còn có cấu trúc Tháp mộ sư bằng gạch chỉ miết mạch thắt cổ bồng tôn nghiêm.
@@ -1388,10 +1467,10 @@ Tòa Tiền đường: Đặt tượng Đức Ông (Ngài Cấp Cô Độc quan 
 Nhà Tổ & Nhà Mẫu: Đặt tượng Tổ Bồ Đề Đạt Ma mặt trắng râu quai nón; tượng Tam tòa Thánh Mẫu mặc áo choàng ba màu (Thượng Thiên mặc áo vàng ở giữa, mẫu Địa, mẫu Thoải) và tượng Đức Thánh Trần mặc vương phục cầm bài vị.
 Hiện vật quý khác: 01 chiếc bát hương gốm cổ Phù Lãng men da lươn thế kỷ XIX (chạm hai tai rồng); kết hợp các bức cửa võng chạm lộng tích Tứ quý hóa long, Phượng chầu, hoành phi đề chữ "Phổ Ứng tự", các bức cuốn thư gấm chữ Vạn nền đen khảm trai tinh xảo.
 5. Công tác khoanh vùng địa chính & Chỉ giới bảo vệ di tích
-Căn cứ theo bản đồ giải thửa và biên bản thống nhất liên ngành ngày 27/12/2016, tổng diện tích đất khoanh vùng bảo vệ của cụm di tích Đình - Chùa Nguyễn Xá là 5.317,1 $m^2$ nằm hoàn toàn trong Khu vực bảo vệ I (Vùng bất khả xâm phạm, không có Khu vực bảo vệ II):
+Căn cứ theo bản đồ giải thửa và biên bản thống nhất liên ngành ngày 27/12/2016, tổng diện tích đất khoanh vùng bảo vệ của cụm di tích Đình - Chùa Nguyễn Xá là 5.317,1 m2 nằm hoàn toàn trong Khu vực bảo vệ I (Vùng bất khả xâm phạm, không có Khu vực bảo vệ II):
 Phân định bản đồ đất (Số bản đồ XN5-16.418 L2, tỷ lệ 1/500):
-Khu 1 (Diện tích 3.718,1 $m^2$): Giới hạn bởi các điểm mốc từ 1 đến 27, 1 (Vùng lõi chứa Chùa chính, nhà Tổ, nhà Mẫu, nghi môn và sân vườn nội tự).
-Khu 2 (Diện tích 1.599,0 $m^2$): Giới hạn bởi các điểm từ 28 đến 51 và các điểm nối giao nhau (Vùng chứa Đình chính và các hạng mục kề cận).
+Khu 1 (Diện tích 3.718,1 m2): Giới hạn bởi các điểm mốc từ 1 đến 27, 1 (Vùng lõi chứa Chùa chính, nhà Tổ, nhà Mẫu, nghi môn và sân vườn nội tự).
+Khu 2 (Diện tích 1.599,0 m2): Giới hạn bởi các điểm từ 28 đến 51 và các điểm nối giao nhau (Vùng chứa Đình chính và các hạng mục kề cận).
 Ranh giới tiếp giáp tổng thể cụm:
 Phía Đông và phía Bắc: Tiếp giáp với tường bao khu đất thổ cư của nhân dân xã Phương Tú.
 Phía Tây: Tiếp giáp liền kề đất thổ cư dân sinh xã Phương Tú.
@@ -1428,7 +1507,7 @@ West: Adjacent to the residential land of Phuong Tu commune.
 
 South: Adjacent to the safety corridor of the inter-provincial asphalt road (Provincial Road 428).
 
-Prohibited regulations: Absolutely no construction, excavation, or expansion that illegally damages or distorts the ancient concrete and lim wood architectural components or moves statues outside the red boundary of the monument is permitted. The Monument Management Board requests the local authorities to develop a plan to cease using the front hall as a public meeting place to restore the purely spiritual space of the temple.', N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', N'1783', N'xã Vân Đình', N'/api/qr/heritage/hb9071290', N'https://maps.app.goo.gl/WbiEZKKn4kK8dA7X7', 0, NULL, 3, '2026-07-10T10:22:10.8893110', '2026-07-13T09:44:21.6311016');
+Prohibited regulations: Absolutely no construction, excavation, or expansion that illegally damages or distorts the ancient concrete and lim wood architectural components or moves statues outside the red boundary of the monument is permitted. The Monument Management Board requests the local authorities to develop a plan to cease using the front hall as a public meeting place to restore the purely spiritual space of the temple.', N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', N'1783', N'xã Vân Đình', N'/api/qr/heritage/hb9071290', N'https://maps.app.goo.gl/WbiEZKKn4kK8dA7X7', 0, NULL, 3, '2026-07-10T10:22:10.8893110', '2026-07-22T09:41:13.4808714');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (8, N'h76d93626', N'VĐHN-DT-008', 2, N'CHÙA PHÍ TRẠCH (Thái Dương Tự)', N'CHÙA PHÍ TRẠCH', N'chùa-phí-trạch', N'city', N'active', N'Vân Đình, Hà Nội, Việt Nam', N'Vân Đình, Hà Nội, Việt Nam', 20.73271540, 105.79618260, N'1. Thông tin hành chính & Xếp hạng
 Tên di tích: Chùa Phí Trạch.
 Tên chữ: Thái Dương Tự (Thái Dương theo nghĩa Hán tự là luồng ánh sáng, biểu thị cho ánh sáng của Phật pháp và sự giác ngộ).
@@ -1449,7 +1528,7 @@ Lịch sử khởi dựng: Dựa trên các vết tích vật chất thu thập 
 Chùa tọa lạc trên khuôn viên cao ráo, rộng rãi ở trung tâm làng, ẩn mình dưới bóng các cây cổ thụ và hệ thống vườn tháp. Mặt bằng các hạng mục chính bao gồm:
 Cổng chùa (Tam quan): Thiết kế giản đơn, phía trên đề bốn chữ đại tự "Thái Dương Tự môn". Qua cổng là đường đi lát gạch vuông dẫn vào khoảng sân trước được bài trí hòn non bộ và cây cảnh trang nhã.
 Tòa Tiền đường (Bái đường): Xây dựng nền cao qua 3 bậc tam cấp theo lối đầu hồi bít đốc tay ngai, mặt trước có 2 cột trụ vuông đắp đèn lồng. Hai mái lợp ngói ri cổ, hai bên tường hồi trổ ô cửa sổ đắp nổi chữ "Thọ". Hệ khung gỗ lim chắc chắn chịu lực trên các hàng chân cột xẻ vuông, kết cấu vì kèo làm kiểu "Giá chiêng con Nhị". Các bức cốn chạm nổi, sơn khắc đề tài "Tứ quý hóa long" (mai, trúc, cúc, thông hóa rồng) trên nền phủ màu đen huyền xảo diệu.
-Tòa Thượng điện: Nối liền với tòa Tiền đường theo cấu trúc dạng chữ Đinh ($\mathbf{J}$) khép kín. Kết cấu gồm 3 gian vững chãi, hệ thống bệ thờ xây 5 bậc dật cấp thoải dần từ trên xuống giúp các lớp tượng pháp được bài trí trang nghiêm, tôn kính, không bị che khuất tầm nhìn từ dưới lên.
+Tòa Thượng điện: Nối liền với tòa Tiền đường theo cấu trúc dạng chữ Đinh khép kín. Kết cấu gồm 3 gian vững chãi, hệ thống bệ thờ xây 5 bậc dật cấp thoải dần từ trên xuống giúp các lớp tượng pháp được bài trí trang nghiêm, tôn kính, không bị che khuất tầm nhìn từ dưới lên.
 Các công trình phụ trợ: Mặt bằng khu đất nội tự còn quy hoạch đồng bộ dãy Nhà Mẫu (kiến trúc bít đốc ngang) và dãy Nhà Khách chạy dọc song song tạo sự bề thế.
 4. Hệ thống cổ vật, tự khí và Tượng pháp
 Hệ thống di vật tại di tích phong phú, được lưu giữ bảo quản cẩn thận, nổi bật gồm có:
@@ -1461,7 +1540,7 @@ Hiện vật bằng đá và sành sứ: 01 tấm bia đá biên niên sử di t
 Dấu ấn kiến trúc cổ còn lại: Các chân cột cái bằng đá tảng xanh thời Lê chạm 3 lớp cánh sen tinh xảo, các viên gạch hòm sớ xây tường kích thước lớn in nổi hình chim phượng và 04 viên gạch cổ hình hoa chanh vuông (kích thước 26cm).
 5. Chỉ giới hành chính khoanh vùng bảo vệ di tích
 Căn cứ theo bản đồ giải thửa vẽ năm 1985 (Tờ số 01, tỷ lệ 1/1000) và biên bản thống nhất liên ngành ngày 12/05/2000, ranh giới địa chính của di tích được phân định khép kín cho Khu vực bảo vệ I (Vùng bất khả xâm phạm) như sau:
-Diện tích đất cốt lõi: Tổng diện tích đạt 3.707 $m^2$, nằm trên hai thửa đất ký hiệu số 239 và 241.
+Diện tích đất cốt lõi: Tổng diện tích đạt 3.707 m2, nằm trên hai thửa đất ký hiệu số 239 và 241.
 Ranh giới tiếp giáp:
 Phía Đông: Tiếp giáp trực tiếp với trục Đường xóm.
 Phía Tây: Tiếp giáp với thửa ruộng giải thửa số 358.
@@ -1502,7 +1581,7 @@ West: Adjacent to the rice field plot No. 358.
 
 South: Directly adjacent to the cultivated rice field area.
 North: Adjacent to land plots No. 358 and No. 236.
-Any act of digging, dismantling original architectural components, encroaching on or arbitrarily moving artifacts and statues out of the corridor of the two land plots above is strictly prohibited and will be severely punished according to the law.', N'/uploads/images/b875c14cc48043b69d1a4b4145d17361.jpg', N'1550', N'xã Vân Đình', N'/api/qr/heritage/h76d93626', N'https://maps.app.goo.gl/QTiDP7No4TGu7L2k8', 0, NULL, 3, '2026-07-10T12:38:11.4117215', '2026-07-13T09:47:56.6072942');
+Any act of digging, dismantling original architectural components, encroaching on or arbitrarily moving artifacts and statues out of the corridor of the two land plots above is strictly prohibited and will be severely punished according to the law.', N'/uploads/images/b875c14cc48043b69d1a4b4145d17361.jpg', N'1550', N'xã Vân Đình', N'/api/qr/heritage/h76d93626', N'https://maps.app.goo.gl/QTiDP7No4TGu7L2k8', 0, NULL, 3, '2026-07-10T12:38:11.4117215', '2026-07-22T09:43:23.4695003');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (9, N'hfbb0c594', N'VĐHN-DT-009', 2, N'CHÙA TẢO KHÊ (SÙNG LINH TỰ)', N'CHÙA TẢO KHÊ (SÙNG LINH TỰ)', N'chùa-tảo-khê-sùng-linh-tự', N'city', N'active', N'PQ7H+MXF, Vân Đình, Hà Nội, Việt Nam', N'PQ7H+MXF, Vân Đình, Hà Nội, Việt Nam', 20.71334920, 105.78105570, N'1. Thông tin chung
 Tên di tích: Chùa Tảo Khê.
 Tên chữ: Sùng Linh Tự.
@@ -1518,7 +1597,7 @@ Chùa là cơ sở cách mạng quan trọng trong thời kỳ tiền khởi ngh
 Đây là nơi các đồng chí lãnh đạo cao cấp của Đảng như Hoàng Quốc Việt (Bí thư Xứ ủy Bắc Kỳ) đã về hoạt động, tổ chức nhiều cuộc họp quan trọng, mở lớp huấn luyện cán bộ chống khủng bố vào tháng 7 năm 1942.
 Tại gian Thượng điện của chùa vẫn còn lưu giữ dấu tích hầm bí mật nơi cán bộ cách mạng từng ẩn náu.
 3. Đặc điểm kiến trúc
-Bố cục: Chùa có kiến trúc kiểu chữ "Đinh" ($J$) gồm tòa Tiền đường và Thượng điện.
+Bố cục: Chùa có kiến trúc kiểu chữ "Đinh" gồm tòa Tiền đường và Thượng điện.
 Kiến trúc Tiền đường: Gồm 5 gian, 2 chái, tường xây hồi bít đốc, 4 hàng chân cột, vì kèo kết cấu kiểu "Thượng giá chiêng chồng rường, hạ chồng rường".
 Kiến trúc Thượng điện: Kết cấu nhà dọc 3 gian, phía dưới xây gạch giật cấp cao dần về phía sau để bài trí hệ thống tượng Phật.
 4. Hiện vật và Cổ vật tiêu biểu Chùa lưu giữ hệ thống di vật có giá trị nghệ thuật cao:
@@ -1528,7 +1607,7 @@ Di vật gốm sứ: Hệ thống bát hương gốm (đặc biệt có bát hư
 Di văn Hán Nôm: 01 tấm bia đá do Tiến sĩ Dương Lâm chấp bút.
 5. Khoanh vùng bảo vệ di tích
 Căn cứ biên bản khoanh vùng ngày 15/09/1998, khu vực bảo vệ di tích được xác định như sau:
-Khu vực I (Khu vực bất khả xâm phạm): Tổng diện tích 6.336 $m^2$ (bao gồm toàn bộ công trình di tích, sân, vườn).
+Khu vực I (Khu vực bất khả xâm phạm): Tổng diện tích 6.336 m2 (bao gồm toàn bộ công trình di tích, sân, vườn).
 Phía Đông: Giáp các thửa đất số 289, 286 và 290.
 Phía Tây: Giáp đất canh tác ruộng 5%.
 Phía Nam: Giáp đường làng.
@@ -1561,7 +1640,7 @@ East: Bordering land plots No. 289, 286, and 290.
 West: Bordering 5% of cultivated rice fields.
 South: Bordering the village road.
 North: Bordering 5% of cultivated rice fields.
-All construction, relocation, and alteration of the original state within Zone I are strictly prohibited.', N'/uploads/images/4ae6845585894eab9d2fbb39131b2b76.jpg', N'1907', N'xã Vân Đình', N'/api/qr/heritage/hfbb0c594', N'https://maps.app.goo.gl/m96Ff3JykPDEiWiy9', 0, NULL, 3, '2026-07-10T13:30:03.4922582', '2026-07-13T10:39:31.6059974');
+All construction, relocation, and alteration of the original state within Zone I are strictly prohibited.', N'/uploads/images/4ae6845585894eab9d2fbb39131b2b76.jpg', N'1907', N'xã Vân Đình', N'/api/qr/heritage/hfbb0c594', N'https://maps.app.goo.gl/m96Ff3JykPDEiWiy9', 0, NULL, 3, '2026-07-10T13:30:03.4922582', '2026-07-22T09:44:02.3522381');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10, N'h3191e9b6', N'VĐHN-DT-010', 2, N'CHÙA VÂN ĐÌNH (Liên Hoa Tự - Liên Đàm Tự)', N'CHÙA VÂN ĐÌNH', N'chùa-vân-đình', N'city', N'active', N'Chùa Vân Đình, Vân Đình, Hà Nội, Việt Nam', N'Chùa Vân Đình, Vân Đình, Hà Nội, Việt Nam', 20.73232120, 105.76297520, N'1. Thông tin hành chính và Xếp hạng
 Tên di tích thống nhất: Chùa Vân Đình.
 Tên chữ (Tên gọi khác): Liên Hoa Tự hoặc Liên Đàm Tự (có nghĩa là Chùa Hoa Sen hoặc Chùa Đầm Sen). Trước năm 1908, khi hạ giải hạ nóc để trùng tu cổ nhân còn phát hiện dấu tích tên cũ là chùa Hoành Nhi (Hoành Nhi Tự).
@@ -1723,7 +1802,7 @@ South: Bordered by agricultural land and a concrete drainage ditch.
 East: Bordered by a village pond, cultivated land, and the Day River dike.
 
 West: Bordered by the main concrete road and cultivated land.
-Prohibited activities: All construction, illegal exploitation, or excavation that alters the original landscape and architecture is strictly prohibited.', N'/uploads/images/c17a79d4e3a7459bb95ca598c78a28cb.jpg', N'1905', NULL, N'/api/qr/heritage/hc421f590', N'https://maps.app.goo.gl/UBRWZ1SCZqSsLK2K6', 0, NULL, 3, '2026-07-11T06:27:38.2282744', '2026-07-13T11:25:06.6210108');
+Prohibited activities: All construction, illegal exploitation, or excavation that alters the original landscape and architecture is strictly prohibited.', N'/uploads/images/c17a79d4e3a7459bb95ca598c78a28cb.jpg', N'1905', NULL, N'/api/qr/heritage/hc421f590', N'https://maps.app.goo.gl/UBRWZ1SCZqSsLK2K6', 0, NULL, 3, '2026-07-11T06:27:38.2282744', '2026-07-22T09:45:19.6122780');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (12, N'hd355460c', N'VĐHN-DT-012', 1, N'CỤM ĐÌNH VÀ QUÁN VÂN ĐÌNH (Đình Thượng, Đình Trung, Quán ông Đô)', N'CỤM ĐÌNH VÀ QUÁN VÂN ĐÌNH', N'cụm-đình-và-quán-vân-đình', N'national', N'active', N'PQ8R+9Q4, Vân Đình, Hà Nội, Việt Nam', N'PQ8R+9Q4, Vân Đình, Hà Nội, Việt Nam', 20.71639910, 105.79110770, N'1. Thông tin chung
 Tên di tích: Cụm di tích Đình và Quán Vân Đình (bao gồm Đình Thượng, Đình Trung và Quán ông Đô).
 Địa điểm: Làng Vân Đình, xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội). Cụm di tích nằm trải dài theo hệ thống đường làng xóm chợ và xóm bến đò kề bờ hữu ngạn sông Đáy.
@@ -1736,7 +1815,7 @@ Type and Classification: Architectural and Artistic Monument. Recognized and cla
 Thành hoàng thờ tại Đình: Đình thờ ba anh em sinh ba là các vị phúc thần: Viết Pháp (Chiêu Pháp thiên vương đồng súy lý vực tôn thần), Viết Cư (Đông Cư linh ứng phù hộ dực vận tôn thần) và Viết Hoàn (Mộc Hoàn cư sỹ tôn thần). Ba ngài có công dẹp loạn 12 sứ quân, phối hợp cùng Đinh Bộ Lĩnh đánh tan cánh quân của Đỗ Cảnh Thạc tại trận Đỗ Động Giang để thống nhất giang sơn. Sau khi Đinh Tiên Hoàng mất, ba ngài tuẫn tiết trên sông Đáy để giữ lòng trung quân.
 Thần thờ phụng tại Quán: Quán thờ vị nhân thần là Đô Đại tướng quân (tên thật là Tuấn, tục gọi là Vỹ), một danh tướng thời Lê - Mạc có công kiên cường trấn giữ biên cương Kinh Bắc. Khi bị thương nặng, ngài cưỡi ngựa phi về đến bến đò cầu Chỗ quê hương rồi hóa thân dưới dòng sông.
 3. Đặc điểm Kiến trúc - Nghệ thuật
-Đình Trung: Tọa lạc trên thửa đất số 27 (diện tích 1.515 $m^2$). Mặt bằng kiến trúc làm theo kiểu chữ Tam ($=$), gồm Đại bái, Thiêu hương, Hậu cung và hai dãy dải vũ. Tòa Đại bái rộng lớn dài 20m, có 4 mái đao cong uốn lượn kiểu dáng thuyền rồng độc đáo. Hệ thống vì kèo kết cấu "thượng chồng rường hạ dư, cốn, bẩy" thời Nguyễn (niên hiệu Thiệu Trị thứ 6 - 1846). Các bức cốn chạm khắc lộng lẫy đề tài tứ linh, hổ phù và tích "long cuốn thủy". Tòa Thiêu hương có kết cấu 2 tầng 8 mái đao cong phản ánh thuyết âm dương ngũ hành.
+Đình Trung: Tọa lạc trên thửa đất số 27 (diện tích 1.515 m2). Mặt bằng kiến trúc làm theo kiểu chữ Tam, gồm Đại bái, Thiêu hương, Hậu cung và hai dãy dải vũ. Tòa Đại bái rộng lớn dài 20m, có 4 mái đao cong uốn lượn kiểu dáng thuyền rồng độc đáo. Hệ thống vì kèo kết cấu "thượng chồng rường hạ dư, cốn, bẩy" thời Nguyễn (niên hiệu Thiệu Trị thứ 6 - 1846). Các bức cốn chạm khắc lộng lẫy đề tài tứ linh, hổ phù và tích "long cuốn thủy". Tòa Thiêu hương có kết cấu 2 tầng 8 mái đao cong phản ánh thuyết âm dương ngũ hành.
 Đình Thượng (Đình Sắc): Nằm giữa xóm Bến, kiến trúc mặt bằng chữ Nhị ($=$) gồm Đại bái và Hậu cung. Đại bái có kết cấu 4 hàng chân cột gỗ tròn, các bức cốn chạm nổi tiên cưỡi rồng và hổ cư long bàn tinh xảo thời Lê Trung Hưng; thượng lương ghi dấu năm tu sửa Tự Đức thứ 2 (1849). Hậu cung kết hợp kiến trúc cổ phương Đông với vòm cuốn Gô-tích phương Tây.
 Quán ông Đô: Nằm ven bến cầu sông Đáy, kiến trúc chữ Đinh ($J$) gồm Quán hạ (5 gian) và Quán thượng (3 gian Hậu cung). Cổng quán xây gạch dày như thành lũy, trên đỉnh có tấm hoành phi bằng đá đề chữ "Đại tướng quân miếu thần".
 4. Hệ thống Di vật, Cổ vật
@@ -1775,7 +1854,7 @@ According to the proposal minutes and demarcation map prepared in 1994, the rele
 Protection Area I (Inviolable Zone - Red): Includes plot number 293 (Upper Communal House), plot number 27 (Central Communal House), and plot number 42 (Ông Đô''s Inn).
 
 Area & Adjacent: The Central Communal House is adjacent to the market and residential area of ​​Vân Đình town, bordered to the south by the Vân Đình women''s area, and to the north by the embankment of the Đáy River. Ông Đô''s Inn is adjacent to the market alley and water canal; original components, sculptural details, and artifacts must be protected in their original state on the land.
-Preservation Area (Green): Includes adjacent land plots surrounding the site to regulate construction and preserve the overall ecological landscape of the monument complex. Any encroachment, excavation, or illegal construction is strictly prohibited without the approval of the Minister of Culture and Information.', N'/uploads/images/e69c64259ca44b7284cebc88124f16ed.jpg', N'1823', N'xã Vân Đình', N'/api/qr/heritage/hd355460c', N'https://maps.app.goo.gl/93ggYWUyDENRGV4R7', 0, NULL, 3, '2026-07-11T06:32:02.7182167', '2026-07-15T09:21:38.4482149');
+Preservation Area (Green): Includes adjacent land plots surrounding the site to regulate construction and preserve the overall ecological landscape of the monument complex. Any encroachment, excavation, or illegal construction is strictly prohibited without the approval of the Minister of Culture and Information.', N'/uploads/images/e69c64259ca44b7284cebc88124f16ed.jpg', N'1823', N'xã Vân Đình', N'/api/qr/heritage/hd355460c', N'https://maps.app.goo.gl/93ggYWUyDENRGV4R7', 0, NULL, 3, '2026-07-11T06:32:02.7182167', '2026-07-22T09:46:21.8668620');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (13, N'hb4069ccf', N'VĐHN-DT-013', 3, N'ĐỀN PHÍ TRẠCH (Đền Quán Ông)', N'ĐỀN PHÍ TRẠCH (Đền Quán Ông)', N'đền-phí-trạch-đền-quán-ông', N'city', N'active', N'PRV2+F9R, Phí Trạch, Vân Đình, Hà Nội, Việt Nam', N'PRV2+F9R, Phí Trạch, Vân Đình, Hà Nội, Việt Nam', 20.74373330, 105.79830230, N'1. Thông tin chung
 Tên di tích: Đền Phí Trạch hay còn có tên gọi khác là đền Quán Ông.
 Địa điểm: Tọa lạc giữa cánh đồng thôn Phí Trạch, xã Phương Tú, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tổng Đạo Tú, huyện Sơn Lãng, phủ Ứng Hòa, tỉnh Hà Tây / Hà Đông).
@@ -1838,7 +1917,7 @@ Regular rituals: The temple also maintains rituals on the first and fifteenth da
 According to the demarcation record dated May 12, 2000, the monument is strictly demarcated for Protection Zone I (Inviolable Zone):
 Scope: Located entirely on plot number 87, cadastral map number 01 (drawn in 1985 by Phuong Tu commune) with a total area of ​​5,106 m².
 Boundaries: East: bordered by plots 98 and 99 and the village road; West: bordered by the village road; South: bordered by the village road; North: bordered by plots 400 and 86.
-All construction, excavation, and illegal encroachment that alters or diminishes the value of the original architectural components and artifacts within the red boundary of the temple are strictly prohibited. All plans for landscape restoration around the temple (Area II) must comply with the Ordinance on the Protection of Historical Monuments and be approved by the competent authority.', N'/uploads/images/f2cd72194d2c4a04852049b053399730.jpg', N'1862', N'xã Vân Đình', N'/api/qr/heritage/hb4069ccf', N'https://maps.app.goo.gl/6mv2ZvpuVsVgycEXA', 0, NULL, 3, '2026-07-11T08:36:50.5479268', '2026-07-19T09:39:53.3774038');
+All construction, excavation, and illegal encroachment that alters or diminishes the value of the original architectural components and artifacts within the red boundary of the temple are strictly prohibited. All plans for landscape restoration around the temple (Area II) must comply with the Ordinance on the Protection of Historical Monuments and be approved by the competent authority.', N'/uploads/images/f2cd72194d2c4a04852049b053399730.jpg', N'1862', N'xã Vân Đình', N'/api/qr/heritage/hb4069ccf', N'https://maps.app.goo.gl/6mv2ZvpuVsVgycEXA', 0, NULL, 3, '2026-07-11T08:36:50.5479268', '2026-07-22T09:46:51.6776118');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (14, N'h217d569c', N'VĐHN-DT-014', 1, N'ĐÌNH THANH ẤM', N'ĐÌNH THANH ẤM', N'đình-thanh-ấm', N'national', N'active', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', N'123 QL21B, Vân Đình, Hà Nội, Việt Nam', 20.72735920, 105.76932830, N'1. Thông tin chung
 Tên di tích: Đền Thanh Ấm và Đình Thanh Ấm.
 Địa điểm: Thôn Thanh Ấm (nguyên xưa thủa nhà Trần có tên cổ là trang Hoa Âm, sau đổi là xã Hoa Đình), xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội).
@@ -2223,7 +2302,7 @@ According to the ranking proposal and demarcation map (prepared in 1995), the mo
 Protection Zone I (Inviolable): Includes land parcels No. 156 and 157 (The area of ​​parcel 157 alone, according to the map, is 3,333 m2).
 
 Boundaries: East: bordering parcels 154 and 155; West: bordering the road and alley; South: bordering the alley; North: bordering Road 75.
-This area is strictly prohibited from any acts of dismantling, changing location, or illegal construction and exploitation. Any special activities must have the permission of the Ministry of Culture and Information.', N'/uploads/images/508f8d9a64734116b822848aeff7c962.jpg', N'1634', NULL, N'/api/qr/heritage/h2a2caf37', N'https://maps.app.goo.gl/VxU8JkiK8qpBDhML6', 0, NULL, 3, '2026-07-11T09:06:47.0527973', '2026-07-21T00:49:26.2637726');
+This area is strictly prohibited from any acts of dismantling, changing location, or illegal construction and exploitation. Any special activities must have the permission of the Ministry of Culture and Information.', N'/uploads/images/508f8d9a64734116b822848aeff7c962.jpg', N'1634', NULL, N'/api/qr/heritage/h2a2caf37', N'https://maps.app.goo.gl/VxU8JkiK8qpBDhML6', 0, NULL, 3, '2026-07-11T09:06:47.0527973', '2026-07-22T09:47:44.4412994');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (20, N'hdc3bad4e', N'VĐHN-DT-020', 1, N'ĐÌNH GIANG ĐƯỜNG', N'ĐÌNH GIANG ĐƯỜNG', N'đình-giang-đường', N'city', N'active', N'PPRR+6M7, Giang Đường, Vân Đình, Hà Nội, Việt Nam', N'PPRR+6M7, Giang Đường, Vân Đình, Hà Nội, Việt Nam', 20.74052950, 105.73910630, N'1. Thông tin chung
 Tên di tích: Đình Giang Đường.
 Địa điểm: Thôn Giang Đường, xã Đồng Tiến, huyện Ứng Hòa, thành phố Hà Nội (trước năm 1945 thuộc xã Thanh Dương, tổng Bạch Sam, huyện Sơn Minh, phủ Ứng Hòa).
@@ -2347,7 +2426,7 @@ Rituals and Festivals: The village is divided into 4 hamlets (East, Temple, Pago
 According to the demarcation record dated October 10, 2003, and the cadastral map, the monument is clearly demarcated:
 Protection Area 1 (Inviolable): Located on plot number 426 with an area of ​​1079.5 m2. Adjacent to the village road and kindergarten to the East, West, and North; adjacent to plot 459 to the South.
 Protected Area 2 (Construction Adjustment): Includes land parcels No. 459, 636, and 398 with a total area of ​​1968.5 m2.
-All construction and exploitation activities within the designated area are strictly prohibited; exceptional cases require permission from the Minister of Culture and Information.', N'/uploads/images/4e0ca3e0283b4393a1a97341a50c5595.jpg', N'1788', N'xã Vân Đình', N'/api/qr/heritage/h58d574a2', N'https://maps.app.goo.gl/KpmLB6gr9vwc7oEL7', 0, NULL, 3, '2026-07-11T09:23:04.4273724', '2026-07-21T01:02:01.4006105');
+All construction and exploitation activities within the designated area are strictly prohibited; exceptional cases require permission from the Minister of Culture and Information.', N'/uploads/images/4e0ca3e0283b4393a1a97341a50c5595.jpg', N'1788', N'xã Vân Đình', N'/api/qr/heritage/h58d574a2', N'https://maps.app.goo.gl/KpmLB6gr9vwc7oEL7', 0, NULL, 3, '2026-07-11T09:23:04.4273724', '2026-07-22T09:48:03.7658910');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (22, N'h1c6be40c', N'VĐHN-DT-022', 1, N'ĐÌNH TẢO KHÊ', N'ĐÌNH TẢO KHÊ', N'đình-tảo-khê', N'national', N'active', N'PQ5J+9JP, Vân Đình, Hà Nội, Việt Nam', N'PQ5J+9JP, Vân Đình, Hà Nội, Việt Nam', 20.70846150, 105.77899610, N'1. Thông tin chung
 Tên di tích: Đình Tảo Khê.
 Địa điểm: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tỉnh Hà Tây).
@@ -2403,7 +2482,7 @@ The village communal house is the center of cultural and religious activities fo
 According to the 1998 proposal for ranking and the demarcation map, the monument is defined as follows:
 Protection Zone I (Inviolable): Located on plot number 1082 with an area of ​​824 m2. To the East, it borders the village road and residential area; to the West, it borders the Cooperative''s office; to the South and North, it borders the village road and the pond.
 Protection Zone II (Construction Adjustment): Includes plots number 1082 and 1085 (mostly the communal pond), with a total area of ​​17,456 m2.
-All construction and exploitation activities that affect the demarcated monument area are strictly prohibited without permission from the competent authority.', N'/uploads/images/559e54f4d11540c1864ffa32c4ca16eb.jpg', N'1603', N'xã Vân Đình', N'/api/qr/heritage/h1c6be40c', N'https://maps.app.goo.gl/Ma93jWijNy8akTAN9', 0, NULL, 3, '2026-07-11T09:25:10.2409435', '2026-07-21T01:12:01.1496838');
+All construction and exploitation activities that affect the demarcated monument area are strictly prohibited without permission from the competent authority.', N'/uploads/images/559e54f4d11540c1864ffa32c4ca16eb.jpg', N'1603', N'xã Vân Đình', N'/api/qr/heritage/h1c6be40c', N'https://maps.app.goo.gl/Ma93jWijNy8akTAN9', 0, NULL, 3, '2026-07-11T09:25:10.2409435', '2026-07-22T09:48:17.7615517');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (23, N'h3bb13f5d', N'VĐHN-DT-023', 1, N'ĐÌNH TỬ DƯƠNG', N'ĐÌNH TỬ DƯƠNG', N'đình-tử-dương', N'national', N'active', N'QP9J+X3C, Tử Dương, Vân Đình, Hà Nội, Việt Nam', N'QP9J+X3C, Tử Dương, Vân Đình, Hà Nội, Việt Nam', 20.77035630, 105.72947220, N'1. Thông tin chung
 Tên di tích: Đình Tử Dương (Long Khánh tự).
 Địa điểm: Thôn Tử Dương, xã Cao Thành, huyện Ứng Hòa, tỉnh Hà Tây (nay là thành phố Hà Nội).
@@ -2457,7 +2536,7 @@ According to the minutes dated December 28, 1991, and the cadastral map, the ent
 Protected Area (Area I - Inviolable): Includes all land parcels numbered 444, 445, 446, 441, 440, 439, 436, 435. Boundaries: East bordering parcels 448, 437, 438, 433; West bordering the stone gate alley and parts of parcels 449, 450, 491, 490; South bordering the three village roads and parcel 492; The northern boundary adjoins the temple alley and plots 355, 361, 362, and 365.
 The construction adjustment area (Area II): Includes plots 444, 445, 446, 441, 440, 439, 435, 449, 450, 491, 490, 355, 361, 362, and 365. Any construction activity here requires permission from the Provincial People''s Committee and the opinion of the Ministry/Department of Culture.
 
-The management, restoration, and use of the relic must strictly comply with the Ordinance on the Protection and Use of Historical and Cultural Relics.', N'/uploads/images/ce6127de17f8423e9269295608ebd248.jpg', N'Thế kỉ 15', N'xã Vân đình', N'/api/qr/heritage/h3bb13f5d', N'https://maps.app.goo.gl/KB1iKHGaYdpxxrwM9', 0, NULL, 3, '2026-07-11T09:29:37.3038569', '2026-07-21T01:34:34.6495847');
+The management, restoration, and use of the relic must strictly comply with the Ordinance on the Protection and Use of Historical and Cultural Relics.', N'/uploads/images/ce6127de17f8423e9269295608ebd248.jpg', N'Thế kỉ 15', N'xã Vân đình', N'/api/qr/heritage/h3bb13f5d', N'https://maps.app.goo.gl/KB1iKHGaYdpxxrwM9', 0, NULL, 3, '2026-07-11T09:29:37.3038569', '2026-07-22T09:48:42.3905573');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (24, N'h688c4f07', N'VĐHN-DT-024', 5, N'PHỦ ỨNG THIÊN', N'PHỦ ỨNG THIÊN', N'phủ-ứng-thiên', N'city', N'active', N'PQMM+J7, Vân Đình, Hà Nội, Việt Nam', N'PQMM+J7, Vân Đình, Hà Nội, Việt Nam', 20.73405400, 105.78059870, N'1. Thông tin chung
 Tên di tích: Phủ Ứng Thiên.
 Tên gọi khác: Khánh Hòa Linh từ hay Đền Khánh Hòa.
@@ -2474,7 +2553,7 @@ Thần tích & Truyền thuyết:
 Mẫu Liễu Hạnh: Tương truyền là công chúa Quỳnh Nương ở Thiên đình lỡ tay làm rơi chén ngọc, bị đày xuống trần đầu thai làm con gái ông Lê Thái Công (xã Vân Cát, huyện Thiên Bản, nay là Vụ Bản, Nam Định) mang tên Giáng Tiên. Sau khi về trời, nàng được Ngọc Hoàng đổi tên thành Liễu Hạnh và cho giáng trần lần hai, lần ba để cứu khốn phò nguy, giúp dân trừ tà, hiển linh phò trợ triều đình tiễu trừ giặc dã và được phong Chế Thắng Hóa diệu Đại Vương.
 Ngọc Nữ Thủy Tinh phu nhân: Vị tôn thần có công phù trợ đất nước, bảo vệ và che chở cho nhân dân khang kiện, hanh thuận. Ngài đã được triều đình ban tặng nhiều đạo sắc phong, tước phong đến bậc Thượng đẳng thần.
 3. Đặc điểm Kiến trúc - Nghệ thuật
-Không gian & Bố cục: Di tích tọa lạc trên vùng đất đắc địa, quang đãng, quay mặt về hướng Tây - Nam. Mặt bằng tổng thể phân bố theo kết cấu chữ "Đinh" ($J$) liên hoàn bao gồm: Cổng phủ ngoài, Cổng tam quan, Tiền tế, Trung cung, Hậu cung và Nhà thờ Phật.
+Không gian & Bố cục: Di tích tọa lạc trên vùng đất đắc địa, quang đãng, quay mặt về hướng Tây - Nam. Mặt bằng tổng thể phân bố theo kết cấu chữ "Đinh" liên hoàn bao gồm: Cổng phủ ngoài, Cổng tam quan, Tiền tế, Trung cung, Hậu cung và Nhà thờ Phật.
 Chi tiết các hạng mục:
 Cổng Phủ ngoài: Là công trình cổ bằng gạch rêu phong mang dấu ấn kiến trúc thời Nguyễn, phía trên đắp hình bia đá đề ba chữ Hán.
 Cổng tam quan: Công trình trùng tu năm 2010 với kết cấu ba lối đi khép kín. Lối chính giữa bề thế làm theo kiểu hai tầng tám mái đao cong đắp hình tượng mặt trời và rồng chầu, phía dưới đắp cuốn thư đề chữ Hán.
@@ -2528,7 +2607,7 @@ Demarcation: According to the 2025 status report, because the monument is locate
 
 Area: Protection Zone I has a total area of ​​8,821.0 m², limited from marker 1 to marker 41 on the current status map at a scale of 1/500.
 
-Boundaries: East: bordered by a neighborhood road and a public pond; West: bordered by a public pond and a neighborhood road; North: bordered by a public pond; South: bordered by a neighborhood road and agricultural land. All illegal construction and exploitation activities within the demarcated boundaries are strictly prohibited.', N'/uploads/images/fe0a2ee72c3a4875a8034d333cd0f1fc.jpg', N'1910', N'xã Vân Đình', N'/api/qr/heritage/h688c4f07', N'https://maps.app.goo.gl/pECtJth8qXct8MyD9', 0, NULL, 3, '2026-07-11T09:32:35.7911615', '2026-07-21T02:01:32.4703989');
+Boundaries: East: bordered by a neighborhood road and a public pond; West: bordered by a public pond and a neighborhood road; North: bordered by a public pond; South: bordered by a neighborhood road and agricultural land. All illegal construction and exploitation activities within the demarcated boundaries are strictly prohibited.', N'/uploads/images/fe0a2ee72c3a4875a8034d333cd0f1fc.jpg', N'1910', N'xã Vân Đình', N'/api/qr/heritage/h688c4f07', N'https://maps.app.goo.gl/pECtJth8qXct8MyD9', 0, NULL, 3, '2026-07-11T09:32:35.7911615', '2026-07-22T09:49:08.0322348');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (25, N'hdca739c5', N'VĐHN-DT-025', 6, N'QUÁN HOÀNG XÁ', N'QUÁN HOÀNG XÁ', N'quán-hoàng-xá', N'city', N'active', N'PQPG+763, Vân Đình, Hà Nội, Việt Nam', N'PQPG+763, Vân Đình, Hà Nội, Việt Nam', 20.73563140, 105.77295310, N'1. Thông tin chung
 Tên di tích: Quán Hoàng Xá (các tên gọi khác: quán làng Hoa Đình, quán Văn chỉ, miếu Hoàng Xá).
 Địa điểm: Thôn Hoàng Xá, thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.
@@ -2582,7 +2661,7 @@ Rituals and Celebrations: Including the bathing of the statue, offering of gifts
 6. Protection and Demarcation of the Monument
 Demarcation: According to the minutes dated November 1, 2013, because the temple is located in a planned residential area, the authorities agreed to demarcate only Protection Zone I with a total area of ​​1,116.6 m2 (including the main gate, main hall, and rear hall).
 
-Protection and Preservation: This area strictly prohibits all construction and exploitation activities that affect the historical site. The authorities propose demolishing or relocating an old cooperative warehouse within the premises to restore the landscape and reconstruct the two rows of left and right ramparts.', N'/uploads/images/a8f2fad4b06d4476b2eb9f4d090ae4f9.jpg', N'1909', N'xã Vân Đình', N'/api/qr/heritage/hdca739c5', N'https://maps.app.goo.gl/tS44g2swGYFBH6QY6', 0, NULL, 3, '2026-07-11T14:59:57.3350682', '2026-07-21T02:07:18.3680205');
+Protection and Preservation: This area strictly prohibits all construction and exploitation activities that affect the historical site. The authorities propose demolishing or relocating an old cooperative warehouse within the premises to restore the landscape and reconstruct the two rows of left and right ramparts.', N'/uploads/images/a8f2fad4b06d4476b2eb9f4d090ae4f9.jpg', N'1909', N'xã Vân Đình', N'/api/qr/heritage/hdca739c5', N'https://maps.app.goo.gl/tS44g2swGYFBH6QY6', 0, NULL, 3, '2026-07-11T14:59:57.3350682', '2026-07-22T09:51:08.1683731');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (26, N'h16c4f495', N'VĐHN-DT-026', 8, N'NHÀ THỜ TIẾN SĨ MAI DANH TÔNG', N'NHÀ THỜ TIẾN SĨ MAI DANH TÔNG', N'nhà-thờ-tiến-sĩ-mai-danh-tông', N'city', N'active', N'QP5Q+FJ6, Thôn, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', N'QP5Q+FJ6, Thôn, Cao Lãm, Vân Đình, Hà Nội, Việt Nam', 20.75863490, 105.73910680, N'1. Thông tin chung
 Tên di tích: Nhà thờ Tiến sĩ Mai Danh Tông.
 Địa điểm: Thôn Cao Lãm, xã Cao Thành, huyện Ứng Hoà, tỉnh Hà Tây (trước năm 1945 gọi là thôn Khả Lãm, xã Cao Lãm, tổng Bạch Sam, huyện Ứng Hòa, tỉnh Hà Đông).
@@ -2635,12 +2714,12 @@ Ritual: On the 9th day of the 10th lunar month, the family performs a ceremony t
 Demarcation: According to the minutes dated December 20, 2007, the monument was divided into two specific protection zones based on the cadastral map of Cao Thanh commune (sheet 8, map 299).
 
 Zone 1: This is an inviolable area, encompassing plot 184A with an area of ​​50m2, where all original elements of the monument must be protected intact.
-Zone 2: This is a construction adjustment zone adjacent to the historical site, including plot number 184B with a total area of ​​56.25m2, where only cultural structures intended to enhance the landscape are permitted.', N'/uploads/images/cb3296edc5a24a1582afb8317faf7e11.png', N'1939', N'xã Vân Đình', N'/api/qr/heritage/h16c4f495', N'https://maps.app.goo.gl/9EFp7q442TbJsYHFA', 0, NULL, 3, '2026-07-11T15:06:30.0535957', '2026-07-14T08:43:09.4237035');
-INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (27, N'h42dc5c25', N'VĐHN-DT-027', 8, N'NHÀ THỜ HỌ DƯƠNG VÀ LĂNG MỘ DƯƠNG LÂM', N'NHÀ THỜ HỌ DƯƠNG VÀ LĂNG MỘ DƯƠNG LÂM', N'nhà-thờ-họ-dương-và-lăng-mộ-dương-lâm', N'city', N'active', N'PQ5Q+J27, Đường, đi, Vân Đình, Hà Nội, Việt Nam', N'PQ5Q+J27, Đường, đi, Vân Đình, Hà Nội, Việt Nam', 20.70902900, 105.78496100, N'1. Thông tin chung
-Tên di tích: Nhà thờ họ Dương (Chi Ất hạ) và Lăng mộ danh nhân văn hóa Dương Lâm (1851-1920).
+Zone 2: This is a construction adjustment zone adjacent to the historical site, including plot number 184B with a total area of ​​56.25m2, where only cultural structures intended to enhance the landscape are permitted.', N'/uploads/images/cb3296edc5a24a1582afb8317faf7e11.png', N'1939', N'xã Vân Đình', N'/api/qr/heritage/h16c4f495', N'https://maps.app.goo.gl/9EFp7q442TbJsYHFA', 0, NULL, 3, '2026-07-11T15:06:30.0535957', '2026-07-22T09:51:25.3798723');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (27, N'h42dc5c25', N'VĐHN-DT-027', 8, N'NHÀ THỜ HỌ DƯƠNG', N'NHÀ THỜ HỌ DƯƠNG', N'nhà-thờ-họ-dương', N'city', N'active', N'PQ5Q+J27, Đường, đi, Vân Đình, Hà Nội, Việt Nam', N'PQ5Q+J27, Đường, đi, Vân Đình, Hà Nội, Việt Nam', 20.70902900, 105.78496100, N'1. Thông tin chung
+Tên di tích: Nhà thờ họ Dương (Chi Ất hạ) .
 Địa điểm: Nhà thờ tọa lạc tại xóm 4, thôn Vân Đình, thị trấn Vân Đình; Lăng mộ tọa lạc tại thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, tỉnh Hà Tây (nay là Hà Nội).
 Xếp hạng: Cả hai công trình đều được UBND tỉnh Hà Tây xếp hạng là Di tích Lịch sử - Văn hóa cấp tỉnh theo Quyết định số 2064/QĐ-UBND ngày 07/11/2007.', N'1. General Information
-Name of the relics: Duong Family Ancestral Temple (Half Branch) and the Mausoleum of the cultural figure Duong Lam (1851-1920).
+Name of the relics: Duong Family Ancestral Temple (Half Branch)
 
 Location: The temple is located in Hamlet 4, Van Dinh Village, Van Dinh Town; the mausoleum is located in Tao Khe Village, Tao Duong Van Commune, Ung Hoa District, Ha Tay Province (now Hanoi).
 
@@ -2694,7 +2773,7 @@ Area 1 (inviolable): Plot 224A, area 102.4 m2 (Church construction area).
 Area 2 (construction adjustment): Plots 224 and 224B, area 725 m2 (including courtyard, garden and ornamental plant garden).
 Duong Lam Mausoleum Area: Includes plot 842 with an area of ​​810 m2 (mausoleum area) and plot 835 with an area of ​​127 m2 (well and pathway).
 
-These areas are strictly protected by law, prohibiting any activities that could damage the monument.', N'/uploads/images/b0d4a65b50a141f981e1b5d30c42e0ab.jpg', N'1921', N'xã Vân Đình', N'/api/qr/heritage/h42dc5c25', N'https://maps.app.goo.gl/dbkCks1LbkSd5MMp8', 0, NULL, 3, '2026-07-11T15:22:09.7904106', '2026-07-21T02:14:30.7831907');
+These areas are strictly protected by law, prohibiting any activities that could damage the monument.', N'/uploads/images/b0d4a65b50a141f981e1b5d30c42e0ab.jpg', N'1921', N'xã Vân Đình', N'/api/qr/heritage/h42dc5c25', N'https://maps.app.goo.gl/dbkCks1LbkSd5MMp8', 0, NULL, 3, '2026-07-11T15:22:09.7904106', '2026-07-22T09:51:43.4976190');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (28, N'hf9efe579', N'VĐHN-DT-028', 1, N'ĐÌNH VĨNH LỘC HẠ', N'ĐÌNH VĨNH LỘC HẠ', N'đình-vĩnh-lộc-hạ', N'national', N'active', N'PPRF+X64, Vĩnh Hạ, Vân Đình, Hà Nội, Việt Nam', N'PPRF+X64, Vĩnh Hạ, Vân Đình, Hà Nội, Việt Nam', 20.74350250, 105.72137650, N'1. Thông tin chung
 Tên di tích: Đình Vĩnh Lộc Hạ.
 Địa điểm: Thôn Vĩnh Hạ (trước đây là thôn Vĩnh Lộc Hạ), xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội.
@@ -2744,7 +2823,7 @@ Demarcation: According to the minutes dated October 17, 2013, and the revised ma
 
 Area Allocation: The protection zone includes the entire temple pond, ceremonial gate, courtyard, main hall, and left and right wings; it is divided into two parts: the area within the dike protection boundary is 930.0 m2 and the area outside the dike protection boundary is 2,592.7 m2.
 
-Current Status: The monument is showing serious signs of deterioration in the wooden components (termites, roof damage, leaks), requiring relevant authorities to develop a plan for timely restoration and renovation, and to add some religious artifacts. All management and restoration activities must strictly comply with the Law on Cultural Heritage.', N'/uploads/images/7ba7f42fc6f8461f981afe0ed755a8e8.jpg', N'1817', N'xã Vân Đình', N'/api/qr/heritage/hf9efe579', N'https://maps.app.goo.gl/PyzL5cMeUR7y3gCq9', 0, NULL, 3, '2026-07-11T15:33:12.5837942', '2026-07-21T02:40:32.6950283');
+Current Status: The monument is showing serious signs of deterioration in the wooden components (termites, roof damage, leaks), requiring relevant authorities to develop a plan for timely restoration and renovation, and to add some religious artifacts. All management and restoration activities must strictly comply with the Law on Cultural Heritage.', N'/uploads/images/7ba7f42fc6f8461f981afe0ed755a8e8.jpg', N'1817', N'xã Vân Đình', N'/api/qr/heritage/hf9efe579', N'https://maps.app.goo.gl/PyzL5cMeUR7y3gCq9', 0, NULL, 3, '2026-07-11T15:33:12.5837942', '2026-07-22T09:52:00.1583161');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (29, N'h0e029eb3', N'VĐHN-DT-029', 1, N'ĐÌNH HẬU XÁ', N'ĐÌNH HẬU XÁ', N'đình-hậu-xá', N'unranked', N'active', N'PQHM+538, Thôn, Hậu Xá, Vân Đình, Hà Nội, Việt Nam', N'PQHM+538, Thôn, Hậu Xá, Vân Đình, Hà Nội, Việt Nam', 20.72690620, 105.78298500, N'1. Thông tin chung
 Tên di tích: Đình Hậu Xá.
 Địa điểm: Thôn Hậu Xá, xã Phương Tú, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội).
@@ -2844,7 +2923,7 @@ Quán Bà (Plot 63A - 1227 m2): East borders plot 63B and a well; West borders a
 Quán Đông (Plot 17A - 550 m2): East borders plot 17B; West borders a field; South borders a pond (plot 189) and a rice field; North borders a village road and a rice field.
 Quán Tây (Plot 94A - 1044 m2): East borders a road; West borders plots 94B and 94C; South borders a village road; North borders plot 94D.
 
-All illegal construction and exploitation activities in this area are strictly prohibited by law.', N'/uploads/images/b10586fc64354c239ed78714126972ad.jpg', N'1803', N'xã Vân Đình', N'/api/qr/heritage/hf2fd9fe9', N'https://maps.app.goo.gl/fZqwwiLfYMeSXAFV9', 0, NULL, 3, '2026-07-11T15:40:06.5777962', '2026-07-21T02:43:47.0670656');
+All illegal construction and exploitation activities in this area are strictly prohibited by law.', N'/uploads/images/b10586fc64354c239ed78714126972ad.jpg', N'1803', N'xã Vân Đình', N'/api/qr/heritage/hf2fd9fe9', N'https://maps.app.goo.gl/fZqwwiLfYMeSXAFV9', 0, NULL, 3, '2026-07-11T15:40:06.5777962', '2026-07-22T09:52:33.9668407');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (31, N'h15e40533', N'VĐHN-DT-031', 1, N'ĐÌNH THƯỢNG', N'ĐÌNH THƯỢNG', N'đình-thượng', N'national', N'active', N'https://maps.app.goo.gl/dVNdN6RmrvwngXfa7', N'https://maps.app.goo.gl/dVNdN6RmrvwngXfa7', 20.73312870, 105.75719070, N'1. Thông tin chung
 Tên di tích: Đình Ngọ Xá (gồm hai ngôi đình là Đình Thượng và Đình Trung).
 Địa điểm: Thôn Ngọ Xá, xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thành phố Hà Nội). Di tích nằm trải dài theo chân đê tả ngạn sông Đáy, cách thị trấn Vân Đình khoảng 2km về phía Bắc.
@@ -2899,7 +2978,7 @@ Festival Part: The procession is lively with lion dances, dragon dances, coin da
 According to the map and demarcation record compiled in 1999, both temples have strictly protected areas:
 Protection Area I of the Upper Temple: Includes plot number 62A with an area of ​​2,094 m2. (East bordering plots 63 and 62B, West bordering plot 42, South bordering plot 61, North bordering the Day River dike).
 Protection Zone I of Dinh Trung: Includes plot number 268A with an area of ​​1,615 m2. (East bordering the village road/nursery, West and South bordering plot 268B, North bordering the Day River dike).
-All construction and exploitation activities are strictly prohibited in the demarcated protection zones. Exceptional cases require permission from the Minister of Culture and Information.', N'/uploads/images/33b19ffab8e24a23ad7b2d2def18549c.jpg', N'Thế kỉ 19', N'xã Vân Đình', N'/api/qr/heritage/h15e40533', N'https://maps.app.goo.gl/dVNdN6RmrvwngXfa7', 0, NULL, 3, '2026-07-11T15:44:05.7411193', '2026-07-21T03:18:46.0714653');
+All construction and exploitation activities are strictly prohibited in the demarcated protection zones. Exceptional cases require permission from the Minister of Culture and Information.', N'/uploads/images/33b19ffab8e24a23ad7b2d2def18549c.jpg', N'Thế kỉ 19', N'xã Vân Đình', N'/api/qr/heritage/h15e40533', N'https://maps.app.goo.gl/dVNdN6RmrvwngXfa7', 0, NULL, 3, '2026-07-11T15:44:05.7411193', '2026-07-22T09:52:47.8850015');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (32, N'hdbaf0829', N'VĐHN-DT-032', 1, N'ĐÌNH THANH DƯƠNG', N'ĐÌNH THANH DƯƠNG', N'đình-thanh-dương', N'national', N'active', N'QP2Q+H7C, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', N'QP2Q+H7C, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', 20.75215320, 105.73776460, N'1. Thông tin chung
 Tên di tích: Đình Thanh Dương (trước đây dân gian quen gọi là đình Giang Làng).
 Địa điểm: Thôn Thanh Dương (Giang Làng), xã Đồng Tiến, huyện Ứng Hòa, thành phố Hà Nội (trước đây thuộc tỉnh Hà Sơn Bình).
@@ -2941,7 +3020,7 @@ Stone, porcelain, and bronze objects: Including two stone incense burners, two m
 5. Protection and Demarcation of the Monument
 According to the minutes dated January 29, 1991, the monument was divided into two protection zones:
 Protection Zone (Zone I - Inviolable): This zone contains the monuments on plot 195B and the two ponds (plots 230 and 88). Boundaries: East bordering the pond (plot 230), West bordering the pond (plot 88), South bordering the ponds (plots 88 and 230), North bordering plot 195B. Construction, demolition, and violations are strictly prohibited in this area.
-Construction Adjustment Zone (Zone II): This zone includes the road behind the well and pond 230. Boundaries: East, West, and South bordering cultivated fields; To the north, it borders plots 147, 195A, and 146. All construction activities here require permission from the Provincial People''s Committee and the opinion of the Department/Ministry of Culture.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1620', N'xã Vân Đình', N'/api/qr/heritage/hdbaf0829', N'https://maps.app.goo.gl/PovsM6DVq8ekHpMC6', 0, NULL, 3, '2026-07-11T15:50:13.0262789', NULL);
+Construction Adjustment Zone (Zone II): This zone includes the road behind the well and pond 230. Boundaries: East, West, and South bordering cultivated fields; To the north, it borders plots 147, 195A, and 146. All construction activities here require permission from the Provincial People''s Committee and the opinion of the Department/Ministry of Culture.', N'/uploads/images/3dad1c2e297b491a93fc199f130f6dc1.jpg', N'1620', N'xã Vân Đình', N'/api/qr/heritage/hdbaf0829', N'https://maps.app.goo.gl/PovsM6DVq8ekHpMC6', 0, NULL, 3, '2026-07-11T15:50:13.0262789', '2026-07-22T09:53:03.6389180');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (33, N'hf7b476ab', N'VĐHN-DT-033', 1, N'ĐÌNH THÀNH VẬT', N'ĐÌNH THÀNH VẬT', N'đình-thành-vật', N'city', N'active', N'PPMQ+837, Thành Vật, Vân Đình, Hà Nội, Việt Nam', N'PPMQ+837, Thành Vật, Vân Đình, Hà Nội, Việt Nam', 20.73329950, 105.73510570, N'1. Thông tin chung
 Tên di tích: Đình Thành Vật.
 Địa điểm: Xã Đồng Tiến, huyện Ứng Hòa, tỉnh Hà Sơn Bình (theo hồ sơ năm 1989-1990, nay thuộc thành phố Hà Nội).
@@ -2959,8 +3038,8 @@ Nghệ thuật điêu khắc: Đình mang đậm dấu ấn kiến trúc, nghệ
 Di tích hiện còn bảo lưu được nhiều hiện vật và đồ thờ tự có giá trị như: tượng thờ, bát hương, bia đá, kiệu thờ, đỉnh đồng.
 Đặc biệt, đình còn lưu giữ được các tài liệu Hán Nôm quan trọng bao gồm Cuốn Thần phả và các Đạo sắc phong của triều đại phong kiến.
 5. Công tác bảo vệ và Khoanh vùng di tích
-Quy mô khoanh vùng: Theo biên bản ngày 08/08/1989 và bản đồ khoanh vùng, khu vực bảo vệ (khu vực bất khả xâm phạm) nằm toàn bộ trên thửa đất số 187 với diện tích 3.076 $m^2$ (bao gồm diện tích đình và sân đình).
-Nằm kề bên là thửa đất số 188 (khu sân vận động) với diện tích 3.996 $m^2$, đây là công trình văn hóa không làm ảnh hưởng đến di tích.
+Quy mô khoanh vùng: Theo biên bản ngày 08/08/1989 và bản đồ khoanh vùng, khu vực bảo vệ (khu vực bất khả xâm phạm) nằm toàn bộ trên thửa đất số 187 với diện tích 3.076 m2 (bao gồm diện tích đình và sân đình).
+Nằm kề bên là thửa đất số 188 (khu sân vận động) với diện tích 3.996 m2, đây là công trình văn hóa không làm ảnh hưởng đến di tích.
 Ranh giới khu vực bảo vệ (Thửa 187):
 Phía Đông: Giáp các thửa 204, 203, 202, 201, 198 (toàn bộ là khu dân cư).
 Phía Tây: Giáp đường làng và cánh đồng bờ lũy.
@@ -2991,7 +3070,7 @@ West: Bordering the village road and the embankment field.
 South: Bordering plot 189.
 
 North: Bordering plots 163, 164, 165, 166, and 167 (all residential areas).
-Construction is strictly prohibited in this area. Unauthorized demolition, relocation, or damage to the monument, resulting in a reduction of its inherent value, is also prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1716', N'xã Vân Đình', N'/api/qr/heritage/hf7b476ab', N'https://maps.app.goo.gl/gkB5F8qYmFNjAhi27', 0, NULL, 3, '2026-07-11T15:52:38.3688906', NULL);
+Construction is strictly prohibited in this area. Unauthorized demolition, relocation, or damage to the monument, resulting in a reduction of its inherent value, is also prohibited.', N'/uploads/images/21fd35ec83fa47b3b682144d3eec311b.jpg', N'1716', N'xã Vân Đình', N'/api/qr/heritage/hf7b476ab', N'https://maps.app.goo.gl/gkB5F8qYmFNjAhi27', 0, NULL, 3, '2026-07-11T15:52:38.3688906', '2026-07-22T09:53:27.5696064');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (34, N'h99944079', N'VĐHN-DT-034', 1, N'ĐÌNH ĐÔNG DƯƠNG', N'ĐÌNH ĐÔNG DƯƠNG', N'đình-đông-dương', N'national', N'active', N'PQ6V+CJW, Đông Dương, Vân Đình, Hà Nội, Việt Nam', N'PQ6V+CJW, Đông Dương, Vân Đình, Hà Nội, Việt Nam', 20.71046900, 105.78858200, N'1. Thông tin chung
 Tên di tích: Đình Đông Dương.
 Địa điểm: Thôn Đông Dương, xã Tảo Dương Văn, huyện Ứng Hòa, tỉnh Hà Tây (nay là thành phố Hà Nội).
@@ -3012,7 +3091,7 @@ Hệ thống đồ thờ tự đa dạng với 4 cỗ ngai (3 gỗ, 1 đồng), 
 Ngoài ra còn có sập thờ sơn mài vẽ tứ linh, đỉnh đồng, lộc bình, chuông đồng, giá văn, quán tẩy và cây nến.
 5. Công tác bảo vệ và Khoanh vùng di tích
 Theo biên bản khoanh vùng lập năm 1993, khu vực I (khu vực bất khả xâm phạm) có tổng diện tích 3185m2, bao gồm thửa đất số 526 (đất Miếu) và thửa 378.
-Ranh giới bảo vệ phía Đông giáp đường làng và các thửa 377, 389, 388. Phía Tây giáp thửa 505 (thùng vũng). Phía Nam giáp đường làng và các thửa 374, 381, 385. Phía Bắc giáp thửa 575 và cánh đồng. Mọi hoạt động xây dựng, khai thác trong khu vực này đều bị nghiêm cấm nếu không có sự cho phép của Bộ trưởng Bộ Văn hóa Thông tin.', N'2. Worshipped Figures and Historical Value
+Ranh giới bảo vệ phía Đông giáp đường làng và các thửa 377, 389, 388. Phía Tây giáp thửa 505 (thùng vũng). Phía Nam giáp đường làng và các thửa 374, 381, 385. Phía Bắc giáp thửa 575 và cánh đồng. Mọi hoạt động xây dựng, khai thác trong khu vực này đều bị nghiêm cấm nếu không có sự cho phép của Bộ trưởng Bộ Văn hóa Thông tin', N'2. Worshipped Figures and Historical Value
 Worshiped Figures: The site is dedicated to two local tutelary deities who lived during the reign of the 18th Hung King: Long Cung Uy Quang Kiem Tri Thong Quoc Dai Vuong and Nguyen Suy, Hung Luoc Sung Phuc Tru Quoc Dai Vuong.
 Legend: The two deities rendered great service to King Hung in defeating the Thuc Phan rebels and protecting the country of Van Lang. They were granted land in Dong Duong village. Later, when Dinh Tien Hoang passed through here to quell the rebellion of the 12 warlords, he received divine assistance from the two deities, so the king included them in the national tradition and bestowed a royal decree. The deities'' birthdays are on March 12th and their death anniversaries are on June 6th of the lunar calendar.
 
@@ -3031,7 +3110,7 @@ In addition, there are lacquered altars painted with the four mythical creatures
 
 5. Protection and Demarcation of the Monument
 According to the demarcation record established in 1993, Area I (the inviolable area) has a total area of ​​3185m2, including plot number 526 (the temple land) and plot 378.
-The eastern boundary of the protected area borders the village road and plots 377, 389, and 388. The western boundary borders plot 505 (the pond). The southern boundary borders the village road and plots 374, 381, and 385. The northern boundary borders plot 575 and the field. All construction and exploitation activities in this area are strictly prohibited without the permission of the Minister of Culture and Information.', N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', N'Thế kỉ 16', N'xã Vân Đình', N'/api/qr/heritage/h99944079', N'https://maps.app.goo.gl/e6YECkD2ng88oK249', 0, NULL, 3, '2026-07-11T15:55:11.9805210', '2026-07-20T15:32:07.7110994');
+The eastern boundary of the protected area borders the village road and plots 377, 389, and 388. The western boundary borders plot 505 (the pond). The southern boundary borders the village road and plots 374, 381, and 385. The northern boundary borders plot 575 and the field. All construction and exploitation activities in this area are strictly prohibited without the permission of the Minister of Culture and Information.', N'/uploads/images/016530dce9254af589e866093b13340b.jpg', N'Thế kỉ 16', N'xã Vân Đình', N'/api/qr/heritage/h99944079', N'https://maps.app.goo.gl/e6YECkD2ng88oK249', 0, NULL, 3, '2026-07-11T15:55:11.9805210', '2026-07-22T09:53:42.4720660');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (35, N'h60390c9c', N'VĐHN-DT-035', 8, N'NHÀ THỜ HỌ TRƯƠNG ĐỖ', N'NHÀ THỜ HỌ TRƯƠNG ĐỖ', N'nhà-thờ-họ-trương-đỗ', N'city', N'active', N'PQ6J+6PX, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', N'PQ6J+6PX, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', 20.71064380, 105.78131910, N'1. Thông tin chung
 Tên di tích: Nhà thờ họ Trương Đỗ.
 Địa điểm: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, Thành phố Hà Nội (trước năm 1945 thuộc tổng Phương Đình, huyện Sơn Lãng, phủ Ứng Hòa).
@@ -3080,13 +3159,13 @@ Rituals: The ritual of cleansing the ancestral altar with ginger water or five-s
 In addition, the church also organizes the Ancestor Commemoration Day (4th day of the 5th lunar month), the Spring Festival, monthly full moon ceremonies, and activities promoting education and talent.
 6. Protection and Demarcation of the Monument
 Demarcation: According to the minutes compiled in 2024, because the monument is located in a residential area with stable boundaries, the authorities agreed to demarcate only Protection Zone I with a total area of ​​119.4 m2, including the entire main church building, courtyard, and surrounding wall.
-Management and Preservation: The monument is currently directly looked after by people appointed by the Truong Do family, maintaining its cleanliness and beauty. The local government is guiding the establishment of a Monument Protection Committee to develop a comprehensive plan and a plan for protecting and promoting the value of the heritage in accordance with the Law on Cultural Heritage.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1855', N'xã Vân Đình', N'/api/qr/heritage/h60390c9c', N'https://maps.app.goo.gl/J5p3dPrYrdGmqpdt6', 0, NULL, 3, '2026-07-11T16:04:10.8614482', NULL);
-INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (36, N'h6c6098e7', N'VĐHN-DT-036', 8, N'NHÀ THỜ HỌ DƯƠNG (CHI ẤT HẠ)', N'NHÀ THỜ HỌ DƯƠNG (CHI ẤT HẠ)', N'nhà-thờ-họ-dương-chi-ất-hạ', N'city', N'active', N'18 Xóm 4, Vân Đình, Hà Nội, Việt Nam', N'18 Xóm 4, Vân Đình, Hà Nội, Việt Nam', 20.73322490, 105.76372540, N'1. Thông tin chung
-Tên di tích: Nhà thờ họ Dương - Chi Ất Hạ.
+Management and Preservation: The monument is currently directly looked after by people appointed by the Truong Do family, maintaining its cleanliness and beauty. The local government is guiding the establishment of a Monument Protection Committee to develop a comprehensive plan and a plan for protecting and promoting the value of the heritage in accordance with the Law on Cultural Heritage.', N'/uploads/images/cb04f72c2f154a4fb355222f4b98c84b.jpg', N'Thế kỉ 18', N'xã Vân Đình', N'/api/qr/heritage/h60390c9c', N'https://maps.app.goo.gl/J5p3dPrYrdGmqpdt6', 0, NULL, 3, '2026-07-11T16:04:10.8614482', '2026-07-22T09:54:01.8482113');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (36, N'h6c6098e7', N'VĐHN-DT-036', 9, N'LĂNG MỘ DƯƠNG LÂM', N'LĂNG MỘ DƯƠNG LÂM', N'lăng-mộ-dương-lâm', N'city', N'active', N'18 Xóm 4, Vân Đình, Hà Nội, Việt Nam', N'18 Xóm 4, Vân Đình, Hà Nội, Việt Nam', 20.73322490, 105.76372540, N'1. Thông tin chung
+Tên di tích: LĂNG MỘ DƯƠNG LÂM
 Địa điểm: Xóm 4, thôn Vân Đình, thị trấn Vân Đình, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc Hà Nội). Thôn Vân Đình xưa kia được gọi là trang Hoa Âm, một địa danh cổ từ thời Trần.
 Loại hình: Di tích Lịch sử - Văn hóa cấp tỉnh (loại hình kiến trúc nghệ thuật dạng lưu niệm danh nhân).
 Xếp hạng: Được UBND tỉnh Hà Tây xếp hạng theo Quyết định số 2064/QĐ-UBND ngày 07/11/2007.', N'1. General Information
-Name of the monument: Duong Family Ancestral Temple - At Ha Branch.
+Name of the monument: LĂNG MỘ DƯƠNG LÂM
 Location: Hamlet 4, Van Dinh Village, Van Dinh Town, Ung Hoa District, Ha Tay Province (now part of Hanoi). Van Dinh Village was formerly known as Hoa Am Village, an ancient place name from the Tran Dynasty.
 
 Type: Provincial-level Historical and Cultural Monument (architectural monument commemorating a famous person).
@@ -3148,7 +3227,7 @@ In addition, the family also holds ceremonies on occasions such as the Upper Fie
 According to the minutes dated September 20, 2007 (based on the cadastral map of Van Dinh town, surveyed in 2003, sheet number 3), the monument is demarcated into two protection areas:
 Protection Area 1: Includes plot number 224A with an area of ​​102.4m2 (the church construction area). This is an inviolable area.
 Protection Area 2: Includes plot number 224 (courtyard, garden) and 224B (flower garden) with a total area of ​​725m2. This is an area where construction is adjusted to protect the landscape.
-(Specifically, the tomb of Mr. Duong Lam in Tao Duong Van commune is also demarcated independently, comprising plot 842 with an area of ​​810m2 and a passageway/well of 127m2).', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1839', N'xã Vân Đình', N'/api/qr/heritage/h6c6098e7', N'https://maps.app.goo.gl/YrkRnY9ebmbCE3aV9', 0, NULL, 3, '2026-07-11T16:07:25.2053796', NULL);
+(Specifically, the tomb of Mr. Duong Lam in Tao Duong Van commune is also demarcated independently, comprising plot 842 with an area of ​​810m2 and a passageway/well of 127m2).', N'/uploads/images/0653185e7231448ba9907f4299a7a5e5.png', N'1839', N'xã Vân Đình', N'/api/qr/heritage/h6c6098e7', N'https://maps.app.goo.gl/YrkRnY9ebmbCE3aV9', 0, NULL, 3, '2026-07-11T16:07:25.2053796', '2026-07-22T08:47:15.7602640');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (37, N'hcf142f3f', N'VĐHN-DT-037', 9, N'LĂNG MỘ DANH NHÂN DƯƠNG KHUÊ', N'LĂNG MỘ DANH NHÂN DƯƠNG KHUÊ', N'lăng-mộ-danh-nhân-dương-khuê', N'city', N'active', N'QP2R+X5, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', N'QP2R+X5, Thanh Dương, Vân Đình, Hà Nội, Việt Nam', 20.75256580, 105.73789980, N'1. Thông tin chung
 Tên di tích: Lăng mộ danh nhân Dương Khuê.
 Địa điểm: Khu vực cánh đồng thuộc xã Đồng Tiến, huyện Ứng Hòa, thành phố Hà Nội.
@@ -3204,169 +3283,169 @@ Demarcation: According to the current status map surveyed in September 2018 and 
 
 Area: Protection Zone I has a total area of ​​26.4 m2, bounded by markers 1 to 7, 1 on the map.
 
-Boundaries: All four sides (East, West, South, North) are adjacent to the concrete road and cultivated land of Dong Tien commune. All construction and illegal exploitation activities in this area are strictly prohibited.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1903', N'xã Vân Đình', N'/api/qr/heritage/hcf142f3f', N'https://maps.app.goo.gl/iC89oTEZdNLRcRxv7', 0, NULL, 3, '2026-07-11T16:10:37.1694985', NULL);
+Boundaries: All four sides (East, West, South, North) are adjacent to the concrete road and cultivated land of Dong Tien commune. All construction and illegal exploitation activities in this area are strictly prohibited.', N'/uploads/images/bdd3081514fd41dc8ec3e48a42941340.jpg', N'1903', N'xã Vân Đình', N'/api/qr/heritage/hcf142f3f', N'https://maps.app.goo.gl/iC89oTEZdNLRcRxv7', 0, NULL, 3, '2026-07-11T16:10:37.1694985', '2026-07-22T09:54:19.3550066');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10010, N'hfde987c7', N'VĐHN-DT-038', 2, N'Chùa Ngoài Vĩnh Hạ (Vĩnh Phúc tự)', N'Chùa Ngoài Vĩnh Hạ', N'chùa-ngoài-vĩnh-hạ', N'city', N'active', N'PPRC+WGF, Unnamed, Road, Vân Đình, Hà Nội, Việt Nam', N'PPRC+WGF, Unnamed, Road, Vân Đình, Hà Nội, Việt Nam', 20.74349250, 105.72067910, N'1. Tên gọi và Vị trí địa lý
-●Tên gọi chính thức: Chùa Ngoài Vĩnh Hạ, tên chữ (tên tự) là Vĩnh Phúc tự.
-●Nguồn gốc tên gọi: Thôn Vĩnh Hạ có hai ngôi chùa, chùa nằm bên trong làng gọi là chùa Trong, còn chùa nằm tách biệt ngoài cánh đồng gọi là chùa Ngoài.
-●Vị trí hiện tại: Thôn Vĩnh Hạ, xã Vân Đình, thành phố Hà Nội (sau các đợt sáp nhập hành chính mở rộng xã Vân Đình vào tháng 7 năm 2025). Chùa nằm cách trung tâm Hà Nội khoảng 52km, tọa lạc ở khu vực trong đê, gần sát chân đê sông Đáy trên cánh đồng Sau Chùa và cách chùa Trong khoảng 300m.
+Tên gọi chính thức: Chùa Ngoài Vĩnh Hạ, tên chữ (tên tự) là Vĩnh Phúc tự.
+Nguồn gốc tên gọi: Thôn Vĩnh Hạ có hai ngôi chùa, chùa nằm bên trong làng gọi là chùa Trong, còn chùa nằm tách biệt ngoài cánh đồng gọi là chùa Ngoài.
+Vị trí hiện tại: Thôn Vĩnh Hạ, xã Vân Đình, thành phố Hà Nội (sau các đợt sáp nhập hành chính mở rộng xã Vân Đình vào tháng 7 năm 2025). Chùa nằm cách trung tâm Hà Nội khoảng 52km, tọa lạc ở khu vực trong đê, gần sát chân đê sông Đáy trên cánh đồng Sau Chùa và cách chùa Trong khoảng 300m.
 Phân loại di tích: Di tích Lịch sử - nghệ thuật.', N'1. Name and Geographical Location
-● Official name: Vinh Ha Outer Pagoda, the official name (religious name) is Vinh Phuc Pagoda.
+Official name: Vinh Ha Outer Pagoda, the official name (religious name) is Vinh Phuc Pagoda.
 
 ● Origin of the name: Vinh Ha village has two pagodas; the pagoda located inside the village is called the Inner Pagoda, and the pagoda located separately in the fields is called the Outer Pagoda.
 
 ● Current location: Vinh Ha village, Van Dinh commune, Hanoi city (after administrative mergers and expansion of Van Dinh commune in July 2025). The pagoda is located approximately 52km from the center of Hanoi, situated in the area inside the dike, close to the foot of the Day River dike in the fields behind the pagoda, and about 300m from the Inner Pagoda.
 
 Classification of monument: Historical and artistic monument.', N'2. Đối tượng thờ tự và Phối thờ hậu
-●Thờ Phật: Chùa theo phái Bắc tông, Phật điện bài trí đầy đủ các tượng Phật để truyền bá giáo lý, đề cao tính khuyến thiện trừng ác (như bộ tượng Tam thế, tượng Thích Ca...).
-●Thờ hậu: Tại gian bên phải Tiền đường có ban thờ phối thờ ông Trương Đắc Du (Hàn Du). Ông là người xã Vân Nội, chủ cai nhà máy diêm Hà Nội. Lúc nhỏ, mẹ ông làm giúp việc ở chùa; khi trưởng thành và thành đạt, thấy chùa xuống cấp, ông đã cung tiến số tiền lớn để trùng tu. Nhân dân biết ơn nên lập bàn thờ hậu để hương hỏa hàng ngày khi ông mất.
+Thờ Phật: Chùa theo phái Bắc tông, Phật điện bài trí đầy đủ các tượng Phật để truyền bá giáo lý, đề cao tính khuyến thiện trừng ác (như bộ tượng Tam thế, tượng Thích Ca...).
+Thờ hậu: Tại gian bên phải Tiền đường có ban thờ phối thờ ông Trương Đắc Du (Hàn Du). Ông là người xã Vân Nội, chủ cai nhà máy diêm Hà Nội. Lúc nhỏ, mẹ ông làm giúp việc ở chùa; khi trưởng thành và thành đạt, thấy chùa xuống cấp, ông đã cung tiến số tiền lớn để trùng tu. Nhân dân biết ơn nên lập bàn thờ hậu để hương hỏa hàng ngày khi ông mất.
 3. Sinh hoạt văn hóa tín ngưỡng
-●Thực trạng hoạt động: Do hiện nay chùa Ngoài đang bị xuống cấp nghiêm trọng, không đảm bảo an toàn, nên hầu hết các sinh hoạt, lễ tiết tôn giáo lớn đều được người dân chuyển vào thực hiện tại chùa Trong Vĩnh Hạ.
-●Các lễ tiết chính: Tổ chức dâng lễ cúng đức Phật vào các dịp Tết Nguyên đán, Thượng nguyên, Vu lan, ngày sóc, ngày vọng... Đặc biệt là ngày lễ Phật Đản (tháng Tư âm lịch) tổ chức rất cẩn trọng với các nghi thức tắm Phật bằng nước mưa hoặc nước lọc đun với ngũ vị hương.
-●Lễ giỗ Tổ: Tổ chức vào ngày 14 tháng 6 âm lịch hàng năm để làm giỗ sư cụ Đàm Chăm (pháp danh Thích Đàm Đam, mất năm 1977). Ngày này quy tụ toàn bộ người dân trong làng và có mời đại diện làng khác sang tham dự.
+Thực trạng hoạt động: Do hiện nay chùa Ngoài đang bị xuống cấp nghiêm trọng, không đảm bảo an toàn, nên hầu hết các sinh hoạt, lễ tiết tôn giáo lớn đều được người dân chuyển vào thực hiện tại chùa Trong Vĩnh Hạ.
+Các lễ tiết chính: Tổ chức dâng lễ cúng đức Phật vào các dịp Tết Nguyên đán, Thượng nguyên, Vu lan, ngày sóc, ngày vọng... Đặc biệt là ngày lễ Phật Đản (tháng Tư âm lịch) tổ chức rất cẩn trọng với các nghi thức tắm Phật bằng nước mưa hoặc nước lọc đun với ngũ vị hương.
+Lễ giỗ Tổ: Tổ chức vào ngày 14 tháng 6 âm lịch hàng năm để làm giỗ sư cụ Đàm Chăm (pháp danh Thích Đàm Đam, mất năm 1977). Ngày này quy tụ toàn bộ người dân trong làng và có mời đại diện làng khác sang tham dự.
 4. Lịch sử, Kiến trúc và Các lần trùng tu
-●Niên đại: Các phong cách kiến trúc và hiện vật chứng minh chùa Ngoài được khởi dựng vào thời Nguyễn. Trên thượng lương Thượng điện có khắc dòng chữ Hán ghi nhận mốc dựng vào ngày 25 tháng 11 năm Bảo Đại thứ 13 (1938), và trên tường hoa chắn mái Tiền đường đắp mốc năm Bảo Đại Nhâm Ngọ (1942). Tam bảo được dựng hoàn chỉnh trong khoảng 4 năm này.
-●Cấu trúc mặt bằng: Tổng thể mặt bằng hình chữ Đinh, quay hướng Tây, bao gồm các công trình: Tam quan, Tam bảo (Tiền đường và Thượng điện) nằm trong tường bao. Cách Tam quan 100m trên cánh đồng Sướng Bông có tháp mộ của sư Thích Đàm Đam.
-●Đặc điểm các công trình:
-○Tam quan: Quay hướng Nam, gồm 3 gian kiểu tường hồi bít đốc mang phong cách giữa thế kỷ XX, khung gỗ làm kiểu vì kèo cọc báng đơn giản. Sân chùa sau cổng có một cây đại cổ thụ linh thiêng.
-○Tiền đường (3 gian): Khung gỗ xoan kết cấu trốn cột để mở rộng không gian nội thất, quá giang gác lên tường bao. Điểm nhấn nghệ thuật lớn nhất ở đây là hệ thống tường hoa chắn mái phía trước, đắp nổi tinh xảo các hình tượng tứ quý (tùng, cúc, trúc, mai) và tứ linh (long, lân, quy, phụng) bằng kỹ thuật đắp nổi đầu thế kỷ XX.
-○Thượng điện (3 gian): Nối liền kiểu chuôi vồ, kết cấu khung gỗ xoan đơn giản, vì nóc kiểu giá chiêng, đặt các lớp tượng và hoành phi "Vĩnh Phúc tự" cổ.
+Niên đại: Các phong cách kiến trúc và hiện vật chứng minh chùa Ngoài được khởi dựng vào thời Nguyễn. Trên thượng lương Thượng điện có khắc dòng chữ Hán ghi nhận mốc dựng vào ngày 25 tháng 11 năm Bảo Đại thứ 13 (1938), và trên tường hoa chắn mái Tiền đường đắp mốc năm Bảo Đại Nhâm Ngọ (1942). Tam bảo được dựng hoàn chỉnh trong khoảng 4 năm này.
+Cấu trúc mặt bằng: Tổng thể mặt bằng hình chữ Đinh, quay hướng Tây, bao gồm các công trình: Tam quan, Tam bảo (Tiền đường và Thượng điện) nằm trong tường bao. Cách Tam quan 100m trên cánh đồng Sướng Bông có tháp mộ của sư Thích Đàm Đam.
+Đặc điểm các công trình:
+Tam quan: Quay hướng Nam, gồm 3 gian kiểu tường hồi bít đốc mang phong cách giữa thế kỷ XX, khung gỗ làm kiểu vì kèo cọc báng đơn giản. Sân chùa sau cổng có một cây đại cổ thụ linh thiêng.
+Tiền đường (3 gian): Khung gỗ xoan kết cấu trốn cột để mở rộng không gian nội thất, quá giang gác lên tường bao. Điểm nhấn nghệ thuật lớn nhất ở đây là hệ thống tường hoa chắn mái phía trước, đắp nổi tinh xảo các hình tượng tứ quý (tùng, cúc, trúc, mai) và tứ linh (long, lân, quy, phụng) bằng kỹ thuật đắp nổi đầu thế kỷ XX.
+Thượng điện (3 gian): Nối liền kiểu chuôi vồ, kết cấu khung gỗ xoan đơn giản, vì nóc kiểu giá chiêng, đặt các lớp tượng và hoành phi "Vĩnh Phúc tự" cổ.
 5. Hệ thống Di vật tiêu biểu
 Do biến thiên của chiến tranh và lịch sử, số lượng di vật hiện không còn nhiều, tuy nhiên chùa có một cổ vật đặc biệt:
-●Chuông đồng cổ: Quả chuông mang tên "Vĩnh Phúc tự" đúc vào năm Thành Thái thứ 13 (1901). Để đảm bảo an toàn chống mất cắp, người dân địa phương hiện nay đã di dời quả chuông này vào bảo quản bên trong chùa Trong Vĩnh Hạ.
-●Đồ thờ tự: Các hiện vật như hệ thống tượng Phật Tam thế, tòa Cửu long, bát hương, chân đèn, mâm bồng... được bài trí gọn gàng, tôn nghiêm.
+Chuông đồng cổ: Quả chuông mang tên "Vĩnh Phúc tự" đúc vào năm Thành Thái thứ 13 (1901). Để đảm bảo an toàn chống mất cắp, người dân địa phương hiện nay đã di dời quả chuông này vào bảo quản bên trong chùa Trong Vĩnh Hạ.
+Đồ thờ tự: Các hiện vật như hệ thống tượng Phật Tam thế, tòa Cửu long, bát hương, chân đèn, mâm bồng... được bài trí gọn gàng, tôn nghiêm.
 6. Thực trạng và Phương hướng bảo tồn
-●Thực trạng: Khuôn viên đất đai ổn định, không bị lấn chiếm. Tuy nhiên, do nằm cách xa khu dân cư, chùa ít được quét dọn thường xuyên và đang bị xuống cấp nghiêm trọng. Các cấu kiện gỗ tại tòa Tam bảo đang bị mối xông làm mục rỗng, đe dọa trực tiếp đến sự an toàn của công trình.
-●Phương hướng:
-○Địa phương cần lập kế hoạch, hồ sơ khoa học đề nghị cấp thẩm quyền xếp hạng chùa Ngoài Vĩnh Hạ là di tích cấp Thành phố để có cơ sở pháp lý bảo vệ tốt hơn.
-○Đề xuất tu bổ khẩn cấp: Cần sớm có phương án xử lý mối mọt và đầu tư kinh phí trùng tu tôn tạo tổng thể tòa Tam bảo, Tam quan theo đúng nguyên tắc kiến trúc cổ truyền của người Việt vùng Bắc Bộ.
+Thực trạng: Khuôn viên đất đai ổn định, không bị lấn chiếm. Tuy nhiên, do nằm cách xa khu dân cư, chùa ít được quét dọn thường xuyên và đang bị xuống cấp nghiêm trọng. Các cấu kiện gỗ tại tòa Tam bảo đang bị mối xông làm mục rỗng, đe dọa trực tiếp đến sự an toàn của công trình.
+Phương hướng:
+Địa phương cần lập kế hoạch, hồ sơ khoa học đề nghị cấp thẩm quyền xếp hạng chùa Ngoài Vĩnh Hạ là di tích cấp Thành phố để có cơ sở pháp lý bảo vệ tốt hơn.
+Đề xuất tu bổ khẩn cấp: Cần sớm có phương án xử lý mối mọt và đầu tư kinh phí trùng tu tôn tạo tổng thể tòa Tam bảo, Tam quan theo đúng nguyên tắc kiến trúc cổ truyền của người Việt vùng Bắc Bộ.
 Đẩy mạnh công tác xã hội hóa, huy động các nguồn lực công đức hợp pháp dưới sự tư vấn của chuyên gia văn hóa, lắp đặt thêm biển chỉ dẫn vào chùa và tăng cường công tác phòng cháy chữa cháy.', N'2. Objects of Worship and Ancestral Altar
-● Buddhist Worship: The temple follows the Northern Buddhist tradition, with the main hall fully furnished with Buddha statues to propagate the teachings and promote the principle of encouraging good and punishing evil (such as the Three Ages statues, the Shakyamuni Buddha statue, etc.).
+Buddhist Worship: The temple follows the Northern Buddhist tradition, with the main hall fully furnished with Buddha statues to propagate the teachings and promote the principle of encouraging good and punishing evil (such as the Three Ages statues, the Shakyamuni Buddha statue, etc.).
 
-● Ancestral Altar: In the right-hand section of the front hall, there is an altar dedicated to Mr. Truong Dac Du (Han Du). He was from Van Noi commune and the foreman of the Hanoi match factory. When he was young, his mother worked as a helper at the temple; when he grew up and became successful, seeing the temple in disrepair, he donated a large sum of money for its restoration. Out of gratitude, the people established an ancestral altar to offer incense daily after his death.
+Ancestral Altar: In the right-hand section of the front hall, there is an altar dedicated to Mr. Truong Dac Du (Han Du). He was from Van Noi commune and the foreman of the Hanoi match factory. When he was young, his mother worked as a helper at the temple; when he grew up and became successful, seeing the temple in disrepair, he donated a large sum of money for its restoration. Out of gratitude, the people established an ancestral altar to offer incense daily after his death.
 
 3. Cultural and Religious Activities
-● Current Activities: Due to the serious deterioration of the outer temple and its unsafe condition, most major religious activities and ceremonies are now held at the inner Vinh Ha temple. ●Main rituals: Offerings are made to Buddha on occasions such as Lunar New Year, the Lantern Festival, the Vu Lan Festival, the first and fifteenth days of the lunar month... Especially on Buddha''s Birthday (April in the lunar calendar), the ceremony is very carefully organized with rituals such as bathing the Buddha statue with rainwater or filtered water boiled with five kinds of incense.
+Current Activities: Due to the serious deterioration of the outer temple and its unsafe condition, most major religious activities and ceremonies are now held at the inner Vinh Ha temple. ●Main rituals: Offerings are made to Buddha on occasions such as Lunar New Year, the Lantern Festival, the Vu Lan Festival, the first and fifteenth days of the lunar month... Especially on Buddha''s Birthday (April in the lunar calendar), the ceremony is very carefully organized with rituals such as bathing the Buddha statue with rainwater or filtered water boiled with five kinds of incense.
 
-●Ancestor Commemoration Ceremony: Held on the 14th day of the 6th lunar month every year to commemorate the death of Venerable Thich Dam Dam (Dharma name Thich Dam Dam, passed away in 1977). This day brings together all the villagers and invites representatives from other villages to attend.
+Ancestor Commemoration Ceremony: Held on the 14th day of the 6th lunar month every year to commemorate the death of Venerable Thich Dam Dam (Dharma name Thich Dam Dam, passed away in 1977). This day brings together all the villagers and invites representatives from other villages to attend.
 
 4. History, Architecture and Renovations
-●Date: Architectural styles and artifacts prove that the Outer Pagoda was built during the Nguyen Dynasty. On the main beam of the Upper Hall, there is an inscription in Chinese characters recording the date of construction as November 25th, the 13th year of Bao Dai''s reign (1938), and on the decorative wall covering the roof of the Front Hall, there is an inscription marking the year of Bao Dai''s reign as the year of the Water Horse (1942). The Three Treasures were completely built within these four years.
+Date: Architectural styles and artifacts prove that the Outer Pagoda was built during the Nguyen Dynasty. On the main beam of the Upper Hall, there is an inscription in Chinese characters recording the date of construction as November 25th, the 13th year of Bao Dai''s reign (1938), and on the decorative wall covering the roof of the Front Hall, there is an inscription marking the year of Bao Dai''s reign as the year of the Water Horse (1942). The Three Treasures were completely built within these four years.
 
-●Structure of the floor plan: The overall floor plan is in the shape of the Chinese character "Đinh," facing west, and includes the following structures: the Three-Gate entrance, the Three Treasures (Front Hall and Upper Hall) located within a surrounding wall. 100 meters from the Three-Gate entrance, in the Suong Bong field, is the tomb tower of Venerable Thich Dam Dam.
+Structure of the floor plan: The overall floor plan is in the shape of the Chinese character "Đinh," facing west, and includes the following structures: the Three-Gate entrance, the Three Treasures (Front Hall and Upper Hall) located within a surrounding wall. 100 meters from the Three-Gate entrance, in the Suong Bong field, is the tomb tower of Venerable Thich Dam Dam.
 
-●Characteristics of the structures:
+Characteristics of the structures:
 
-○Three-Gate entrance: Facing south, it consists of three bays with gable walls in the style of the mid-20th century, with a simple wooden frame using trusses and posts. Behind the gate is a sacred ancient tree in the temple courtyard.
+Three-Gate entrance: Facing south, it consists of three bays with gable walls in the style of the mid-20th century, with a simple wooden frame using trusses and posts. Behind the gate is a sacred ancient tree in the temple courtyard.
 
-○Front Hall (3 bays): The structure is made of mahogany wood with hidden columns to expand the interior space, and the crossbeam rests on the surrounding wall. The greatest artistic highlight here is the system of floral wall panels covering the roof in front, with exquisitely sculpted reliefs of the four auspicious plants (pine, chrysanthemum, bamboo, plum blossom) and the four mythical creatures (dragon, unicorn, turtle, phoenix) using early 20th-century relief techniques.
+Front Hall (3 bays): The structure is made of mahogany wood with hidden columns to expand the interior space, and the crossbeam rests on the surrounding wall. The greatest artistic highlight here is the system of floral wall panels covering the roof in front, with exquisitely sculpted reliefs of the four auspicious plants (pine, chrysanthemum, bamboo, plum blossom) and the four mythical creatures (dragon, unicorn, turtle, phoenix) using early 20th-century relief techniques.
 
-○Upper Hall (3 bays): Connected in a mallet-handle style, the structure is made of mahogany wood, with a gong-shaped roof truss, housing layers of statues and the ancient "Vinh Phuc Temple" horizontal plaque.
+Upper Hall (3 bays): Connected in a mallet-handle style, the structure is made of mahogany wood, with a gong-shaped roof truss, housing layers of statues and the ancient "Vinh Phuc Temple" horizontal plaque.
 
 5. Representative Artifacts
 Due to the vicissitudes of war and history, the number of artifacts is now not large; however, the temple has one special artifact:
-●Ancient bronze bell: The bell bearing the name "Vinh Phuc Temple" was cast in the 13th year of the reign of Emperor Thanh Thai (1901). To ensure safety against theft, local residents have now moved the bell inside the Trong Vinh Ha pagoda for safekeeping.
+Ancient bronze bell: The bell bearing the name "Vinh Phuc Temple" was cast in the 13th year of the reign of Emperor Thanh Thai (1901). To ensure safety against theft, local residents have now moved the bell inside the Trong Vinh Ha pagoda for safekeeping.
 
-●Religious artifacts: Items such as the Three Buddha statues, the Nine Dragon altar, incense burners, candlesticks, offering trays, etc., are neatly and respectfully arranged.
+Religious artifacts: Items such as the Three Buddha statues, the Nine Dragon altar, incense burners, candlesticks, offering trays, etc., are neatly and respectfully arranged.
 
 6. Current Situation and Conservation Directions
-●Current Situation: The land area is stable and not encroached upon. However, due to its distance from residential areas, the pagoda is rarely cleaned and is seriously deteriorating. The wooden components in the main hall are being infested with termites, posing a direct threat to the safety of the structure.
+Current Situation: The land area is stable and not encroached upon. However, due to its distance from residential areas, the pagoda is rarely cleaned and is seriously deteriorating. The wooden components in the main hall are being infested with termites, posing a direct threat to the safety of the structure.
 
-●Directions:
-○The local authorities need to develop a plan and scientific documentation to propose that the competent authority classify the Ngoai Vinh Ha pagoda as a City-level historical site to provide a better legal basis for protection. ○ Urgent restoration proposals: A plan to address termite infestation and investment in the overall restoration and renovation of the main temple and gate according to the traditional architectural principles of the Northern Vietnamese region is urgently needed.
+Directions:
+The local authorities need to develop a plan and scientific documentation to propose that the competent authority classify the Ngoai Vinh Ha pagoda as a City-level historical site to provide a better legal basis for protection. ○ Urgent restoration proposals: A plan to address termite infestation and investment in the overall restoration and renovation of the main temple and gate according to the traditional architectural principles of the Northern Vietnamese region is urgently needed.
 
-Promote social mobilization, gather legitimate donations with the advice of cultural experts, install additional directional signs to the temple, and strengthen fire prevention and control measures.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1938', N'xã Vân Đình', N'/api/qr/heritage/hfde987c7', N'https://maps.app.goo.gl/cUToyP5iDcm5TJGC8', 0, NULL, 3, '2026-07-12T12:53:24.8513720', '2026-07-15T09:17:26.9053478');
+Promote social mobilization, gather legitimate donations with the advice of cultural experts, install additional directional signs to the temple, and strengthen fire prevention and control measures.', N'/uploads/images/90ed976a843f4826ab6d5ecf7ffde5c9.jpg', N'1938', N'xã Vân Đình', N'/api/qr/heritage/hfde987c7', N'https://maps.app.goo.gl/cUToyP5iDcm5TJGC8', 0, NULL, 3, '2026-07-12T12:53:24.8513720', '2026-07-22T09:56:04.7255338');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10011, N'hf3d6bfe1', N'VĐHN-DT-039', 1, N'Đình Quán Chài', N'Đình Quán Chài', N'đình-quán-chài', N'city', N'active', N'PPMW+66M, Đoàn Xá, Vân Đình, Hà Nội, Việt Nam', N'PPMW+66M, Đoàn Xá, Vân Đình, Hà Nội, Việt Nam', 20.73445210, 105.74598840, N'1. Tên gọi và Vị trí địa lý
-●Tên gọi chính thức: Đình Quán Chài.
-●Vị trí hiện tại: Thôn Đoàn Xá, xã Vân Đình, thành phố Hà Nội (sau đợt sáp nhập hành chính mở rộng xã Vân Đình vào tháng 7 năm 2025). Di tích tọa lạc ở vị trí gần sông Đáy và nằm ở khu vực giữa làng.
-●Phân loại di tích: Di tích Lịch sử văn hóa.', N'1. Name and Geographical Location
-●Official name: Quan Chai Temple.
+Tên gọi chính thức: Đình Quán Chài.
+Vị trí hiện tại: Thôn Đoàn Xá, xã Vân Đình, thành phố Hà Nội (sau đợt sáp nhập hành chính mở rộng xã Vân Đình vào tháng 7 năm 2025). Di tích tọa lạc ở vị trí gần sông Đáy và nằm ở khu vực giữa làng.
+Phân loại di tích: Di tích Lịch sử văn hóa.', N'1. Name and Geographical Location
+Official name: Quan Chai Temple.
 
-●Current location: Doan Xa Hamlet, Van Dinh Commune, Hanoi City (after the administrative merger and expansion of Van Dinh Commune in July 2025). The site is located near the Day River and in the middle of the village.
+Current location: Doan Xa Hamlet, Van Dinh Commune, Hanoi City (after the administrative merger and expansion of Van Dinh Commune in July 2025). The site is located near the Day River and in the middle of the village.
 
-●Classification of site: Historical and cultural relic.', N'2. Các vị thần được thờ phụng
+Classification of site: Historical and cultural relic.', N'2. Các vị thần được thờ phụng
 Di tích gắn liền với đời sống của cư dân vùng sông nước, là nơi thờ tự các vị thần liên quan đến yếu tố tự nhiên và sông nước:
-●Thần Hà Bá (Thần Sông): Vị thần cai quản sông nước trong tín ngưỡng dân gian. Cư dân ven sông Đáy lập đền thờ Hà Bá để cầu bình an khi đi sông nước, tránh tai nạn và mong đánh bắt được nhiều tôm cá phục vụ mưu sinh.
-●Đương cảnh Thành hoàng Quốc Vương Quyền Tri Giang Hải tôn thần: Vị thần được thờ với tư cách là Thành hoàng làng, từng được các triều vua như Thành Thái ban sắc phong.
-●Tứ vị tôn thần: Gồm Hoàng Nương, Hoàng phi công chúa, Cấp Thủy Tinh công chúa và Quốc Mẫu vua bà (Quốc Mẫu phu nhân).
+Thần Hà Bá (Thần Sông): Vị thần cai quản sông nước trong tín ngưỡng dân gian. Cư dân ven sông Đáy lập đền thờ Hà Bá để cầu bình an khi đi sông nước, tránh tai nạn và mong đánh bắt được nhiều tôm cá phục vụ mưu sinh.
+Đương cảnh Thành hoàng Quốc Vương Quyền Tri Giang Hải tôn thần: Vị thần được thờ với tư cách là Thành hoàng làng, từng được các triều vua như Thành Thái ban sắc phong.
+Tứ vị tôn thần: Gồm Hoàng Nương, Hoàng phi công chúa, Cấp Thủy Tinh công chúa và Quốc Mẫu vua bà (Quốc Mẫu phu nhân).
 3. Ý nghĩa Lịch sử và Giá trị Cách mạng
-●Đời sống cổ xưa: Thể hiện nét tâm linh đặc trưng của người dân chài lưới, gắn bó chặt chẽ với dòng sông Đáy.
-●Hoạt động cách mạng: Trước Cách mạng tháng Tám, di tích là nơi cất giấu tài liệu mật, nuôi giấu cán bộ và là nơi họp bàn bí mật của lực lượng cách mạng.
-●Khen thưởng: Di tích đã được Chủ tịch UBND tỉnh Hà Tây (cũ) cấp bằng khen vào năm 2007 nhờ có thành tích tham gia trong cuộc kháng chiến chống Mỹ cứu nước.
+Đời sống cổ xưa: Thể hiện nét tâm linh đặc trưng của người dân chài lưới, gắn bó chặt chẽ với dòng sông Đáy.
+Hoạt động cách mạng: Trước Cách mạng tháng Tám, di tích là nơi cất giấu tài liệu mật, nuôi giấu cán bộ và là nơi họp bàn bí mật của lực lượng cách mạng.
+Khen thưởng: Di tích đã được Chủ tịch UBND tỉnh Hà Tây (cũ) cấp bằng khen vào năm 2007 nhờ có thành tích tham gia trong cuộc kháng chiến chống Mỹ cứu nước.
 4. Sinh hoạt văn hóa và Lễ hội truyền thống
 Do nguồn gốc là cư dân chài lưới nên sinh hoạt văn hóa tại đây mang đậm dấu ấn sông nước:
-●Hội đình (Mùng 4 tháng Giêng hàng năm): Diễn ra trong 02 ngày với các nghi thức chuẩn bị rất công phu.
-○Chiều 30 Tết: Các cụ cao tuổi mang lễ vật (vàng Đức Thủy Quan, hương oản...) chèo thuyền ra giữa sông Đáy làm lễ khấn xin phép rước ngài về đình ăn Tết, trên bờ có tiếng chiêng trống hò reo mời thần.
-○Sáng mùng 4 Tết: Tổ chức lễ rước thần hồi cung bằng thuyền rồng. Sau đó, lễ hội đua thuyền rồng (bơi chải) truyền thống chính thức bắt đầu giữa các đội nam, nữ trong thôn. Có mời đoàn hát quan họ biểu diễn dưới thuyền để cổ động.
-●Các ngày tiết đặc biệt:
-○Chùa không làm lễ thượng điền, hạ điền như cư dân nông nghiệp mà làm lễ cầu lộc vào Rằm tháng Giêng và ngày Mồng một tháng Tư âm lịch (gọi là ngày "cá đi ăn thề").
-○Ngày hóa của ngài được tổ chức làm giỗ, nhân dân đóng góp mua đồ lễ, thụ lộc tại nhà khách.
+Hội đình (Mùng 4 tháng Giêng hàng năm): Diễn ra trong 02 ngày với các nghi thức chuẩn bị rất công phu.
+Chiều 30 Tết: Các cụ cao tuổi mang lễ vật (vàng Đức Thủy Quan, hương oản...) chèo thuyền ra giữa sông Đáy làm lễ khấn xin phép rước ngài về đình ăn Tết, trên bờ có tiếng chiêng trống hò reo mời thần.
+Sáng mùng 4 Tết: Tổ chức lễ rước thần hồi cung bằng thuyền rồng. Sau đó, lễ hội đua thuyền rồng (bơi chải) truyền thống chính thức bắt đầu giữa các đội nam, nữ trong thôn. Có mời đoàn hát quan họ biểu diễn dưới thuyền để cổ động.
+Các ngày tiết đặc biệt:
+Chùa không làm lễ thượng điền, hạ điền như cư dân nông nghiệp mà làm lễ cầu lộc vào Rằm tháng Giêng và ngày Mồng một tháng Tư âm lịch (gọi là ngày "cá đi ăn thề").
+Ngày hóa của ngài được tổ chức làm giỗ, nhân dân đóng góp mua đồ lễ, thụ lộc tại nhà khách.
 5. Khảo tả Kiến trúc và Nội thất
 Cụm di tích nhìn theo hướng Đông Nam, hướng thẳng ra dòng sông Đáy, kiến trúc bao gồm nhiều hạng mục được xây dựng kiểu chữ Đinh nối liền Tiền tế và Hậu cung:
-●Nghi môn: Gồm 4 cột đồng trụ (đỉnh đắp nghê và phượng chụm, thân khắc câu đối chữ Hán) kết hợp tường lửng đắp nổi hình voi chiến.
-●Đình chính (kiểu chữ Đinh): Tiền tế gồm 3 gian, tường hồi bít đốc, bờ nóc đắp rồng chầu. Kết cấu bộ vì bằng bê tông đắp nổi hoa văn tứ linh theo lối cổ truyền "thượng chồng rường, hạ cốn, bẩy hiên". Hậu cung mái cuốn vòm bê tông cốt thép đặt ban thờ, long ngai và các bát hương đá cổ.
-●Đền chính (kiểu chữ Đinh): Nằm song song, Tiền tế có hiên lối đi kiểu cuốn vòm, bộ vì bằng gỗ tạp bào trơn. Hậu cung mái cuốn vòm đặt khám và tượng thờ cùng bát hương gốm Thổ Hà.
-●Nhà Mẫu (kiểu chữ Đinh): Tiền tế có hiên đổ bê tông mái bằng. Hai gian bên thờ Mẫu Sơn Trang và Đức thánh Trần. Hậu cung đặt tượng Tam tòa Thánh mẫu, Ngũ vị tôn ông, Tam vị ông Hoàng.
+Nghi môn: Gồm 4 cột đồng trụ (đỉnh đắp nghê và phượng chụm, thân khắc câu đối chữ Hán) kết hợp tường lửng đắp nổi hình voi chiến.
+Đình chính (kiểu chữ Đinh): Tiền tế gồm 3 gian, tường hồi bít đốc, bờ nóc đắp rồng chầu. Kết cấu bộ vì bằng bê tông đắp nổi hoa văn tứ linh theo lối cổ truyền "thượng chồng rường, hạ cốn, bẩy hiên". Hậu cung mái cuốn vòm bê tông cốt thép đặt ban thờ, long ngai và các bát hương đá cổ.
+Đền chính (kiểu chữ Đinh): Nằm song song, Tiền tế có hiên lối đi kiểu cuốn vòm, bộ vì bằng gỗ tạp bào trơn. Hậu cung mái cuốn vòm đặt khám và tượng thờ cùng bát hương gốm Thổ Hà.
+Nhà Mẫu (kiểu chữ Đinh): Tiền tế có hiên đổ bê tông mái bằng. Hai gian bên thờ Mẫu Sơn Trang và Đức thánh Trần. Hậu cung đặt tượng Tam tòa Thánh mẫu, Ngũ vị tôn ông, Tam vị ông Hoàng.
 6. Hệ thống Di vật tiêu biểu
 Các hiện vật tại di tích tuy không quá nhiều nhưng đa dạng về chất liệu, được bảo quản tốt:
-●Đồ giấy: Hệ thống sắc phong thời Nguyễn phong phú, ghi nhận công lao bảo trợ của các vị thần sông nước đối với quốc gia và nhân dân.
-●Đồ đá và gốm: Các bát hương đá cổ tại Hậu cung đình chính và bát hương gốm Thổ Hà có giá trị mỹ thuật đặc trưng cao.
-●Đồ gỗ: Các bức hoành phi cổ như "Thượng đẳng linh từ", "Thủy cung thánh mẫu", "Mẫu nghi thiên hạ", cùng hệ thống tượng thần, tượng mẫu, long ngai do nghệ nhân đẽo gọt chuẩn mực.
+Đồ giấy: Hệ thống sắc phong thời Nguyễn phong phú, ghi nhận công lao bảo trợ của các vị thần sông nước đối với quốc gia và nhân dân.
+Đồ đá và gốm: Các bát hương đá cổ tại Hậu cung đình chính và bát hương gốm Thổ Hà có giá trị mỹ thuật đặc trưng cao.
+Đồ gỗ: Các bức hoành phi cổ như "Thượng đẳng linh từ", "Thủy cung thánh mẫu", "Mẫu nghi thiên hạ", cùng hệ thống tượng thần, tượng mẫu, long ngai do nghệ nhân đẽo gọt chuẩn mực.
 7. Thực trạng và Phương hướng bảo tồn
-●Thực trạng: Có tường bao 3 phía nên đất đai không bị lấn chiếm. Tuy nhiên, các kiến trúc hiện nay đều là sản phẩm phục dựng từ năm 2002 bằng vật liệu bê tông hoặc gỗ tạp kém bền vững, kiểu dáng kiến trúc chưa đạt độ thẩm mỹ cao, khuôn viên còn thiếu nhà khách và nhà phụ trợ.
-●Phương hướng:
-○Địa phương cần lập tiểu ban quản lý di tích để trông nom, thu gom tiền công đức đúng quy định, hướng dẫn người dân thực hiện nếp sống văn minh khi đi lễ, đồng thời đảm bảo công tác phòng cháy chữa cháy, chống trộm cắp.
+Thực trạng: Có tường bao 3 phía nên đất đai không bị lấn chiếm. Tuy nhiên, các kiến trúc hiện nay đều là sản phẩm phục dựng từ năm 2002 bằng vật liệu bê tông hoặc gỗ tạp kém bền vững, kiểu dáng kiến trúc chưa đạt độ thẩm mỹ cao, khuôn viên còn thiếu nhà khách và nhà phụ trợ.
+Phương hướng:
+Địa phương cần lập tiểu ban quản lý di tích để trông nom, thu gom tiền công đức đúng quy định, hướng dẫn người dân thực hiện nếp sống văn minh khi đi lễ, đồng thời đảm bảo công tác phòng cháy chữa cháy, chống trộm cắp.
 Cần xây dựng kế hoạch tu bổ tôn tạo tổng thể, quy hoạch lại các hạng mục công trình bằng vật liệu truyền thống vững chãi để nâng cao tính thẩm mỹ và gìn giữ nét văn hóa sông nước nguyên bản cho thế hệ mai sau.', N'2. The Deities Worshiped
 The site is closely associated with the lives of the riverine inhabitants, serving as a place of worship for deities related to nature and the river:
-● River God (Hà Bá): The deity who governs the river in folk beliefs. Residents along the Đáy River built temples to worship Hà Bá to pray for safety while traveling on the river, to avoid accidents, and to hope for abundant catches of shrimp and fish to support their livelihood.
+River God (Hà Bá): The deity who governs the river in folk beliefs. Residents along the Đáy River built temples to worship Hà Bá to pray for safety while traveling on the river, to avoid accidents, and to hope for abundant catches of shrimp and fish to support their livelihood.
 
-● Local Guardian Deity (Thành Hoàng Quốc Vương Quyền Tri Giang Hải Tôn Thần): This deity is worshipped as the village''s guardian deity, having received royal decrees from emperors such as Thành Thái.
+Local Guardian Deity (Thành Hoàng Quốc Vương Quyền Tri Giang Hải Tôn Thần): This deity is worshipped as the village''s guardian deity, having received royal decrees from emperors such as Thành Thái.
 
-● The Four Venerable Deities: Including Hoàng Nương, Hoàng Phi Princess, Cấp Thủy Tinh Princess, and Quốc Mẫu Queen Mother (Quốc Mẫu Phu Nhân).
+The Four Venerable Deities: Including Hoàng Nương, Hoàng Phi Princess, Cấp Thủy Tinh Princess, and Quốc Mẫu Queen Mother (Quốc Mẫu Phu Nhân).
 
 3. Historical Significance and Revolutionary Value
-● Ancient Life: Reflecting the unique spiritual characteristics of the fishermen, closely connected to the Đáy River. ● Revolutionary Activities: Before the August Revolution, the site served as a hiding place for secret documents, a shelter for revolutionary cadres, and a secret meeting place for revolutionary forces.
+Ancient Life: Reflecting the unique spiritual characteristics of the fishermen, closely connected to the Đáy River. ● Revolutionary Activities: Before the August Revolution, the site served as a hiding place for secret documents, a shelter for revolutionary cadres, and a secret meeting place for revolutionary forces.
 
-● Awards: The site was awarded a certificate of merit by the Chairman of the People''s Committee of Ha Tay province (formerly) in 2007 for its achievements in participating in the resistance war against the US to save the country.
+Awards: The site was awarded a certificate of merit by the Chairman of the People''s Committee of Ha Tay province (formerly) in 2007 for its achievements in participating in the resistance war against the US to save the country.
 
 4. Cultural Activities and Traditional Festivals
 Due to its origins as a fishing community, the cultural activities here bear the strong imprint of the river:
-● Temple Festival (4th day of the first lunar month every year): Takes place over two days with very elaborate preparations.
+Temple Festival (4th day of the first lunar month every year): Takes place over two days with very elaborate preparations.
 
-○ On the afternoon of the 30th day of the lunar month: Elderly people bring offerings (gold, incense, cakes, etc.) and row boats to the middle of the Day River to pray and ask permission to bring the deity back to the temple to celebrate Tet. On the shore, there are sounds of gongs and drums, cheering to invite the deity.
+On the afternoon of the 30th day of the lunar month: Elderly people bring offerings (gold, incense, cakes, etc.) and row boats to the middle of the Day River to pray and ask permission to bring the deity back to the temple to celebrate Tet. On the shore, there are sounds of gongs and drums, cheering to invite the deity.
 
-○ On the morning of the 4th day of the Lunar New Year: A procession is held to bring the deity back to the palace by dragon boat. Following this, the traditional dragon boat race (rowing) officially begins between the male and female teams of the village. A Quan Ho folk singing troupe is invited to perform on the boats to cheer on the participants.
+On the morning of the 4th day of the Lunar New Year: A procession is held to bring the deity back to the palace by dragon boat. Following this, the traditional dragon boat race (rowing) officially begins between the male and female teams of the village. A Quan Ho folk singing troupe is invited to perform on the boats to cheer on the participants.
 
-● Special Festivals:
-○ The temple does not hold the traditional rice planting and harvesting ceremonies like the agricultural community, but instead holds a ceremony to pray for good fortune on the 15th day of the first lunar month and the 1st day of the fourth lunar month (called the "fish going to eat the oath" day).
+Special Festivals:
+The temple does not hold the traditional rice planting and harvesting ceremonies like the agricultural community, but instead holds a ceremony to pray for good fortune on the 15th day of the first lunar month and the 1st day of the fourth lunar month (called the "fish going to eat the oath" day).
 
-○ The anniversary of the deity''s passing is commemorated with a memorial service; the people contribute to buying offerings and partake in the blessings at the guesthouse.
+The anniversary of the deity''s passing is commemorated with a memorial service; the people contribute to buying offerings and partake in the blessings at the guesthouse.
 
 5. Architectural and Interior Design
 The complex faces southeast, directly overlooking the Day River. The architecture comprises several elements built in a T-shaped style, connecting the front hall and the rear hall:
-● Ceremonial Gate: Consists of four bronze pillars (topped with mythical creatures and phoenixes, the body inscribed with Chinese couplets) combined with a low wall sculpted with reliefs of war elephants.
+Ceremonial Gate: Consists of four bronze pillars (topped with mythical creatures and phoenixes, the body inscribed with Chinese couplets) combined with a low wall sculpted with reliefs of war elephants.
 
-● Main Pavilion (T-shaped style): The front hall has three bays, with gable walls and a roof ridge sculpted with dragons. The truss structure is made of concrete with reliefs of the four mythical creatures in the traditional style of "upper beams, lower brackets, and eaves." The rear hall has a reinforced concrete vaulted roof containing the altar, dragon throne, and ancient stone incense burners.
+Main Pavilion (T-shaped style): The front hall has three bays, with gable walls and a roof ridge sculpted with dragons. The truss structure is made of concrete with reliefs of the four mythical creatures in the traditional style of "upper beams, lower brackets, and eaves." The rear hall has a reinforced concrete vaulted roof containing the altar, dragon throne, and ancient stone incense burners.
 
-● Main Temple (T-shaped style): Located parallel to the front hall, it has a vaulted walkway and a truss made of smooth, planed wood. The rear hall has a vaulted roof containing the shrine and statues, along with Tho Ha ceramic incense burners.
+Main Temple (T-shaped style): Located parallel to the front hall, it has a vaulted walkway and a truss made of smooth, planed wood. The rear hall has a vaulted roof containing the shrine and statues, along with Tho Ha ceramic incense burners.
 
-● Mother Goddess House (T-shaped): The front hall has a concrete porch with a flat roof. The two side chambers are dedicated to Mother Goddess Son Trang and Saint Tran. The rear hall houses statues of the Three Holy Mothers, the Five Venerable Elders, and the Three Royal Lords.
+Mother Goddess House (T-shaped): The front hall has a concrete porch with a flat roof. The two side chambers are dedicated to Mother Goddess Son Trang and Saint Tran. The rear hall houses statues of the Three Holy Mothers, the Five Venerable Elders, and the Three Royal Lords.
 
 6. Representative Artifacts
 The artifacts at the site, although not numerous, are diverse in materials and well-preserved:
-● Paper objects: A rich system of imperial decrees from the Nguyen dynasty, acknowledging the benevolent contributions of river and water deities to the nation and its people.
+Paper objects: A rich system of imperial decrees from the Nguyen dynasty, acknowledging the benevolent contributions of river and water deities to the nation and its people.
 
-● Stone and ceramic objects: Ancient stone incense burners in the rear hall of the main temple and Tho Ha ceramic incense burners have high artistic value.
+Stone and ceramic objects: Ancient stone incense burners in the rear hall of the main temple and Tho Ha ceramic incense burners have high artistic value.
 
-● Wooden objects: Ancient horizontal plaques such as "Upper-class sacred temple," "Water palace holy mother," "Mother of the world," along with a system of statues of gods, goddesses, and dragon thrones carved by skilled artisans.
+Wooden objects: Ancient horizontal plaques such as "Upper-class sacred temple," "Water palace holy mother," "Mother of the world," along with a system of statues of gods, goddesses, and dragon thrones carved by skilled artisans.
 
 7. Current Situation and Conservation Directions
-●Current Situation: The site is surrounded by walls on three sides, preventing land encroachment. However, the current structures are all reconstructions from 2002 using less durable concrete or inferior wood materials; the architectural style lacks aesthetic appeal, and the grounds lack a guesthouse and auxiliary buildings.
+Current Situation: The site is surrounded by walls on three sides, preventing land encroachment. However, the current structures are all reconstructions from 2002 using less durable concrete or inferior wood materials; the architectural style lacks aesthetic appeal, and the grounds lack a guesthouse and auxiliary buildings.
 
-●Directions:
+Directions:
 
-○The local authorities need to establish a sub-committee to manage the site, oversee and collect donations according to regulations, guide people to practice civilized behavior when visiting, and ensure fire safety and theft prevention.
+The local authorities need to establish a sub-committee to manage the site, oversee and collect donations according to regulations, guide people to practice civilized behavior when visiting, and ensure fire safety and theft prevention.
 
-A comprehensive restoration and renovation plan should be developed, redesigning the structures using sturdy traditional materials to enhance aesthetics and preserve the original riverine culture for future generations.', N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', N'Thế kỉ 19', N'xã Vân Đình', N'/api/qr/heritage/hf3d6bfe1', N'https://maps.app.goo.gl/5eV7u6LQaCmMHH8t5', 0, NULL, 3, '2026-07-12T13:02:49.0313913', '2026-07-20T15:40:12.3131736');
+A comprehensive restoration and renovation plan should be developed, redesigning the structures using sturdy traditional materials to enhance aesthetics and preserve the original riverine culture for future generations.', N'/uploads/images/113b2eb5e46641caa63b553fa1014aa1.jpg', N'Thế kỉ 19', N'xã Vân Đình', N'/api/qr/heritage/hf3d6bfe1', N'https://maps.app.goo.gl/5eV7u6LQaCmMHH8t5', 0, NULL, 3, '2026-07-12T13:02:49.0313913', '2026-07-23T07:44:07.4579547');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10012, N'h0849e27a', N'VĐHN-DT-040', 2, N'Chùa Đoàn Xá', N'Chùa Đoàn Xá', N'chùa-đoàn-xá', N'city', N'active', N'PPJV+XWR, Unnamed, Road, Vân Đình, Hà Nội, Việt Nam', N'PPJV+XWR, Unnamed, Road, Vân Đình, Hà Nội, Việt Nam', 20.73350300, 105.74522840, N'1. Tên gọi và Vị trí địa lý
 ●Tên gọi: Tên chính thức trong hồ sơ khoa học là Chùa Đoàn Xá, tên chữ (tên tự) của chùa là Ngọc Quang tự.
 ●Vị trí hiện tại: Thôn Đoàn Xá, xã Vân Đình, thành phố Hà Nội (sau đợt sáp nhập hành chính có hiệu lực từ đầu năm 2025). Chùa nằm cách trung tâm Hà Nội khoảng 40km, tọa lạc ở khu vực phía trong đê, cạnh khu chợ của làng và cách đình Đoàn Xá khoảng 100m.
@@ -3444,7 +3523,7 @@ The pagoda preserves many artifacts of diverse materials (wood, stone, bronze, c
 ○ It is necessary to inventory and scientifically assess the artifacts; regular maintenance should be carried out to prevent termite infestation and peeling.
 
 ○When restoring and renovating, strict adherence to the Law on Cultural Heritage is necessary, with the participation of researchers, avoiding unauthorized repairs of artifacts using unsuitable materials.
-Installing additional signposts for visitors, promoting traditional education for the younger generation, and strengthening fire prevention measures are also important.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1831', N'xã Vân Đình', N'/api/qr/heritage/h0849e27a', N'https://maps.app.goo.gl/BFAB8ZpgPK9sjsKdA', 0, NULL, 3, '2026-07-12T13:11:43.1271835', '2026-07-12T13:14:57.0951384');
+Installing additional signposts for visitors, promoting traditional education for the younger generation, and strengthening fire prevention measures are also important.', N'/uploads/images/0f1f5e6641f8469ab941df81802715f0.jpg', N'1831', N'xã Vân Đình', N'/api/qr/heritage/h0849e27a', N'https://maps.app.goo.gl/BFAB8ZpgPK9sjsKdA', 0, NULL, 3, '2026-07-12T13:11:43.1271835', '2026-07-23T07:51:03.4836261');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10013, N'hb755acb9', N'VĐHN-DT-041', 2, N'Chùa Kê', N'Chùa Kê', N'chùa-kê', N'city', N'active', N'PQGR+7MW, Vân Đình, Hà Nội, Việt Nam', N'PQGR+7MW, Vân Đình, Hà Nội, Việt Nam', 20.72574670, 105.78912870, N'1. Tên gọi và Vị trí địa lý
 ●Tên gọi chính thức: Chùa Kê.
 ●Tên gọi khác: Chùa còn có tên chữ là Đống Khể tự.
@@ -3534,85 +3613,85 @@ The system of artifacts at the pagoda is rich in materials (wood, bronze, cerami
 
 ○ Tourism Development: Strengthen the connection of Ke Pagoda to the cultural and spiritual tourism route of the surrounding area; establish more signposts, print promotional brochures and display information boards about the history of the relic for pilgrims.
 
-○ Preservation: Strengthen regular inventory and scientific appraisal of artifacts; develop plans to reduce waste pressure and environmental pollution during the festival season and pay absolute attention to fire prevention and control at the relic site.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1843', N'xã Vân Đình', N'/api/qr/heritage/hb755acb9', N'https://maps.app.goo.gl/t4q42GesFoKwQAX16', 0, NULL, 3, '2026-07-12T13:14:49.0497357', NULL);
+○ Preservation: Strengthen regular inventory and scientific appraisal of artifacts; develop plans to reduce waste pressure and environmental pollution during the festival season and pay absolute attention to fire prevention and control at the relic site.', N'/uploads/images/3d909f18a6734558acf452d382b23678.jpg', N'1843', N'xã Vân Đình', N'/api/qr/heritage/hb755acb9', N'https://maps.app.goo.gl/t4q42GesFoKwQAX16', 0, NULL, 3, '2026-07-12T13:14:49.0497357', '2026-07-23T08:05:10.0070845');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10014, N'hea44167f', N'VĐHN-DT-042', 2, N'Chùa Trong Vĩnh Hạ', N'Chùa Trong Vĩnh Hạ', N'chùa-trong-vĩnh-hạ', N'city', N'active', N'PPRC+WGF, Unnamed, Road, Vân Đình, Hà Nội, Việt Nam', N'PPRC+WGF, Unnamed, Road, Vân Đình, Hà Nội, Việt Nam', 20.74270770, 105.72176280, N'1. Tên gọi và Vị trí địa lý
-●Tên gọi chính thức: Chùa Trong Vĩnh Hạ, tên chữ (tên tự) là Vĩnh Phúc tự.
-●Nguồn gốc tên gọi: Thôn Vĩnh Hạ có hai ngôi chùa mang cùng tên chữ, ngôi chùa nằm sát khu dân cư đông đúc ở trong làng gọi là chùa Trong, còn ngôi chùa nằm cách 300m ngoài cánh đồng gọi là chùa Ngoài.
-●Vị trí hiện tại: Thôn Vĩnh Hạ, xã Vân Đình, thành phố Hà Nội (sau đợt điều chỉnh sáp nhập đơn vị hành chính vào tháng 7 năm 2025). Chùa cách trung tâm Hà Nội khoảng 52km, tọa lạc ở khu vực trong đê, gần sát chân đê sông Đáy.
-●Phân loại di tích: Di tích Lịch sử - văn hóa.', N'1. Name and Geographical Location
-● Official name: Vinh Ha Inner Pagoda, the official name (in-law name) is Vinh Phuc Pagoda.
+Tên gọi chính thức: Chùa Trong Vĩnh Hạ, tên chữ (tên tự) là Vĩnh Phúc tự.
+Nguồn gốc tên gọi: Thôn Vĩnh Hạ có hai ngôi chùa mang cùng tên chữ, ngôi chùa nằm sát khu dân cư đông đúc ở trong làng gọi là chùa Trong, còn ngôi chùa nằm cách 300m ngoài cánh đồng gọi là chùa Ngoài.
+Vị trí hiện tại: Thôn Vĩnh Hạ, xã Vân Đình, thành phố Hà Nội (sau đợt điều chỉnh sáp nhập đơn vị hành chính vào tháng 7 năm 2025). Chùa cách trung tâm Hà Nội khoảng 52km, tọa lạc ở khu vực trong đê, gần sát chân đê sông Đáy.
+Phân loại di tích: Di tích Lịch sử - văn hóa.', N'1. Name and Geographical Location
+Official name: Vinh Ha Inner Pagoda, the official name (in-law name) is Vinh Phuc Pagoda.
 
 ● Origin of the name: Vinh Ha village has two pagodas with the same official name. The pagoda located near the densely populated residential area within the village is called the Inner Pagoda, while the pagoda located 300m away in the fields is called the Outer Pagoda.
 
 ● Current location: Vinh Ha village, Van Dinh commune, Hanoi city (after the administrative unit merger in July 2025). The pagoda is approximately 52km from the center of Hanoi, located within the dike area, close to the foot of the Day River dike.
 
 ● Classification of relic: Historical and cultural relic.', N'2. Đối tượng thờ tự và Phối thờ
-●Thờ Phật: Chùa thuộc phái Bắc tông, Phật điện đặt ở tầng 2 bài trí tôn nghiêm các lớp tượng Phật (Tam thế, Adiđà, Quan Âm Nam Hải, Thích Ca sơ sinh...) nhằm hướng con người đến các giá trị nhân văn, khuyến thiện trừng ác.
-●Thờ Tổ và phối thờ tín ngưỡng dân gian: Thờ Tổ (Bồ Đề Đạt Ma đặt ở ban thờ tầng 1), thờ Mẫu (nhà Mẫu dựng năm 2001) và ban thờ lộ thiên Đức Thánh Trần để đáp ứng đời sống tâm linh đa dạng của người dân.
+Thờ Phật: Chùa thuộc phái Bắc tông, Phật điện đặt ở tầng 2 bài trí tôn nghiêm các lớp tượng Phật (Tam thế, Adiđà, Quan Âm Nam Hải, Thích Ca sơ sinh...) nhằm hướng con người đến các giá trị nhân văn, khuyến thiện trừng ác.
+Thờ Tổ và phối thờ tín ngưỡng dân gian: Thờ Tổ (Bồ Đề Đạt Ma đặt ở ban thờ tầng 1), thờ Mẫu (nhà Mẫu dựng năm 2001) và ban thờ lộ thiên Đức Thánh Trần để đáp ứng đời sống tâm linh đa dạng của người dân.
 3. Đời sống Văn hóa và Sinh hoạt Tín ngưỡng
-●Vai trò trung tâm: Khác với chùa Ngoài đang bị xuống cấp nghiêm trọng, chùa Trong mới được tôn tạo kiên cố và có sư trụ trì, trở thành trung tâm hành lễ chính của toàn bộ nhân dân trong thôn.
-●Các lễ tiết chính: Tổ chức đều đặn các ngày sóc, vọng, Tết Nguyên đán, Thượng nguyên, Vu lan, vào hè (1/4 âm lịch), ra hè (1/7 âm lịch).
-●Lễ Phật Đản (tháng Tư âm lịch): Chuẩn bị trang trọng từ trang phục vải lụa, trang trí Phật đản đến nghi thức dùng nước mưa hoặc nước lọc đun với ngũ vị hương để thực hiện lễ tắm Phật.
-●Lễ giỗ Tổ (14 tháng 6 âm lịch): Là ngày giỗ sư cụ Đàm Chăm (pháp danh Thích Đàm Đam, mất năm 1977). Lễ giỗ được tổ chức tại chùa Trong, quy tụ toàn bộ dân làng và khách mời các làng lân cận sang dự tiệc cộng đồng.
-●Gắn kết cộng đồng: Hàng năm, chùa tổ chức khóa quy mới cho phụ nữ từ 60 tuổi trở lên tham gia vào Ban Chấp tác, giúp thắt chặt tình đoàn kết thôn xóm.
+Vai trò trung tâm: Khác với chùa Ngoài đang bị xuống cấp nghiêm trọng, chùa Trong mới được tôn tạo kiên cố và có sư trụ trì, trở thành trung tâm hành lễ chính của toàn bộ nhân dân trong thôn.
+Các lễ tiết chính: Tổ chức đều đặn các ngày sóc, vọng, Tết Nguyên đán, Thượng nguyên, Vu lan, vào hè (1/4 âm lịch), ra hè (1/7 âm lịch).
+Lễ Phật Đản (tháng Tư âm lịch): Chuẩn bị trang trọng từ trang phục vải lụa, trang trí Phật đản đến nghi thức dùng nước mưa hoặc nước lọc đun với ngũ vị hương để thực hiện lễ tắm Phật.
+Lễ giỗ Tổ (14 tháng 6 âm lịch): Là ngày giỗ sư cụ Đàm Chăm (pháp danh Thích Đàm Đam, mất năm 1977). Lễ giỗ được tổ chức tại chùa Trong, quy tụ toàn bộ dân làng và khách mời các làng lân cận sang dự tiệc cộng đồng.
+Gắn kết cộng đồng: Hàng năm, chùa tổ chức khóa quy mới cho phụ nữ từ 60 tuổi trở lên tham gia vào Ban Chấp tác, giúp thắt chặt tình đoàn kết thôn xóm.
 4. Lịch sử, Kiến trúc và Các lần tu sửa
-●Lịch sử & Niên đại: Được khởi dựng từ xa xưa (thời Nguyễn) song hành cùng chùa Ngoài. Trong thời kỳ kháng chiến chống Pháp, chùa Trong bị bom đạn tàn phá nặng nề, sau đó người dân chỉ dựng tạm một công trình nhỏ để duy trì thờ phụng.
-●Các dấu mốc trùng tu: Năm 2001 xây dựng nhà Mẫu; năm 2010 nhân dân đóng góp kinh phí xây dựng lại toàn bộ tòa Tam bảo kiên cố bằng bê tông cốt thép.
-●Cấu trúc mặt bằng tổng thể: Hình chữ Đinh, bao gồm: Tam quan (sát chân đê), sân rộng trồng cây cổ thụ, Tam bảo (công trình chính), phía sau có nhà Mẫu và ban thờ Đức Thánh Trần lộ thiên.
-●Kiến trúc tòa Tam bảo (Xây kiểu 2 tầng độc đáo):
-○Tầng 1: Làm nơi tiếp khách của nhà chùa và gian chính giữa đặt ban thờ Tổ (thờ Bồ Đề Đạt Ma cùng hai ngai thờ cổ thời Nguyễn).
-○Tầng 2: Là nơi thờ Phật cốt lõi gồm Tiền đường (3 gian 2 dĩ, kết cấu bê tông giả cổ theo lối chồng rường, kẻ ngồi, bức cốn đắp nổi hình tứ quý) và Thượng điện (3 gian, xây bệ gạch nhiều cấp đặt các lớp tượng Phật).
+Lịch sử & Niên đại: Được khởi dựng từ xa xưa (thời Nguyễn) song hành cùng chùa Ngoài. Trong thời kỳ kháng chiến chống Pháp, chùa Trong bị bom đạn tàn phá nặng nề, sau đó người dân chỉ dựng tạm một công trình nhỏ để duy trì thờ phụng.
+Các dấu mốc trùng tu: Năm 2001 xây dựng nhà Mẫu; năm 2010 nhân dân đóng góp kinh phí xây dựng lại toàn bộ tòa Tam bảo kiên cố bằng bê tông cốt thép.
+Cấu trúc mặt bằng tổng thể: Hình chữ Đinh, bao gồm: Tam quan (sát chân đê), sân rộng trồng cây cổ thụ, Tam bảo (công trình chính), phía sau có nhà Mẫu và ban thờ Đức Thánh Trần lộ thiên.
+Kiến trúc tòa Tam bảo (Xây kiểu 2 tầng độc đáo):
+Tầng 1: Làm nơi tiếp khách của nhà chùa và gian chính giữa đặt ban thờ Tổ (thờ Bồ Đề Đạt Ma cùng hai ngai thờ cổ thời Nguyễn).
+Tầng 2: Là nơi thờ Phật cốt lõi gồm Tiền đường (3 gian 2 dĩ, kết cấu bê tông giả cổ theo lối chồng rường, kẻ ngồi, bức cốn đắp nổi hình tứ quý) và Thượng điện (3 gian, xây bệ gạch nhiều cấp đặt các lớp tượng Phật).
 5. Hệ thống Di vật tiêu biểu
 Chùa Trong hiện đang lưu giữ những cổ vật mang giá trị lịch sử - nghệ thuật đặc biệt của địa phương:
-●Chuông đồng cổ “Vĩnh Phúc tự” (1901): Quả chuông được đúc vào năm Thành Thái thứ 13. Chuông này vốn thuộc về chùa Ngoài, nhưng để đảm bảo an toàn, tránh nạn trộm cắp cổ vật, nhân dân đã di dời và bảo quản nghiêm ngặt tại chùa Trong.
-●Ngai thờ cổ: Tại ban thờ Tổ tầng 1 lưu giữ hai ngai thờ cổ bằng gỗ mang phong cách mỹ thuật đặc trưng thời Nguyễn.
+Chuông đồng cổ “Vĩnh Phúc tự” (1901): Quả chuông được đúc vào năm Thành Thái thứ 13. Chuông này vốn thuộc về chùa Ngoài, nhưng để đảm bảo an toàn, tránh nạn trộm cắp cổ vật, nhân dân đã di dời và bảo quản nghiêm ngặt tại chùa Trong.
+Ngai thờ cổ: Tại ban thờ Tổ tầng 1 lưu giữ hai ngai thờ cổ bằng gỗ mang phong cách mỹ thuật đặc trưng thời Nguyễn.
 6. Thực trạng và Phương hướng bảo tồn
-●Thực trạng: Diện tích đất đai ổn định, không bị lấn chiếm. Tòa Tam bảo kiên cố, khang trang và sạch sẽ, đáp ứng hoàn hảo nhu cầu tín ngưỡng cộng đồng. Tuy nhiên, tài liệu ghi nhận một số cấu kiện hoặc hạng mục phụ trợ (như Tam quan) lâu ngày bắt đầu có dấu hiệu bị mối xông.
-●Phương hướng:
-○Tiếp tục hoàn thiện hồ sơ khoa học đề nghị Ủy ban Nhân dân Thành phố Hà Nội chính thức xếp hạng chùa Trong Vĩnh Hạ là di tích Lịch sử - văn hóa.
-○Cần có kế hoạch định kỳ kiểm tra, tổ chức phun thuốc diệt mối bảo vệ các cấu kiện; quản lý minh bạch các nguồn thu công đức, tiền giọt dầu theo quy định của Bộ Tài chính.
-○Quy hoạch đồng bộ cảnh quan, lắp đặt hệ thống biển chỉ dẫn từ đê vào chùa cho khách thập phương, đồng thời trang bị đầy đủ thiết bị phòng cháy chữa cháy để đảm bảo an toàn tuyệt đối cho di tích.', N'2. Objects of Worship and Altar Arrangements
-● Buddhist Worship: The temple belongs to the Northern Buddhist sect. The Buddha hall is located on the second floor, solemnly displaying various Buddha statues (Three Ages, Amitabha, Avalokiteshvara, the infant Buddha, etc.) to guide people towards humanistic values, encouraging good deeds and punishing evil.
+Thực trạng: Diện tích đất đai ổn định, không bị lấn chiếm. Tòa Tam bảo kiên cố, khang trang và sạch sẽ, đáp ứng hoàn hảo nhu cầu tín ngưỡng cộng đồng. Tuy nhiên, tài liệu ghi nhận một số cấu kiện hoặc hạng mục phụ trợ (như Tam quan) lâu ngày bắt đầu có dấu hiệu bị mối xông.
+Phương hướng:
+Tiếp tục hoàn thiện hồ sơ khoa học đề nghị Ủy ban Nhân dân Thành phố Hà Nội chính thức xếp hạng chùa Trong Vĩnh Hạ là di tích Lịch sử - văn hóa.
+Cần có kế hoạch định kỳ kiểm tra, tổ chức phun thuốc diệt mối bảo vệ các cấu kiện; quản lý minh bạch các nguồn thu công đức, tiền giọt dầu theo quy định của Bộ Tài chính.
+Quy hoạch đồng bộ cảnh quan, lắp đặt hệ thống biển chỉ dẫn từ đê vào chùa cho khách thập phương, đồng thời trang bị đầy đủ thiết bị phòng cháy chữa cháy để đảm bảo an toàn tuyệt đối cho di tích.', N'2. Objects of Worship and Altar Arrangements
+Buddhist Worship: The temple belongs to the Northern Buddhist sect. The Buddha hall is located on the second floor, solemnly displaying various Buddha statues (Three Ages, Amitabha, Avalokiteshvara, the infant Buddha, etc.) to guide people towards humanistic values, encouraging good deeds and punishing evil.
 
-● Ancestor Worship and Altar Arrangements for Folk Beliefs: The temple houses ancestral worship (Bodhidharma statue on the first floor), a Mother Goddess shrine (built in 2001), and an open-air altar dedicated to Saint Tran to meet the diverse spiritual needs of the people.
+ Ancestor Worship and Altar Arrangements for Folk Beliefs: The temple houses ancestral worship (Bodhidharma statue on the first floor), a Mother Goddess shrine (built in 2001), and an open-air altar dedicated to Saint Tran to meet the diverse spiritual needs of the people.
 
 3. Cultural Life and Religious Activities
-● Central Role: Unlike the Outer Temple, which is in serious disrepair, the Inner Temple has been recently renovated and is now sturdy, with a resident monk, becoming the main center of worship for all the villagers.
+ Central Role: Unlike the Outer Temple, which is in serious disrepair, the Inner Temple has been recently renovated and is now sturdy, with a resident monk, becoming the main center of worship for all the villagers.
 
-●Main Festivals: Regularly held on the first and fifteenth days of the lunar month, Lunar New Year, Upper Nguyên Festival, Vu Lan Festival, the beginning of summer (1/4 of the lunar calendar), and the end of summer (1/7 of the lunar calendar).
+Main Festivals: Regularly held on the first and fifteenth days of the lunar month, Lunar New Year, Upper Nguyên Festival, Vu Lan Festival, the beginning of summer (1/4 of the lunar calendar), and the end of summer (1/7 of the lunar calendar).
 
-●Buddha''s Birthday (April of the lunar calendar): Preparations are solemn, from silk costumes and Buddha''s Birthday decorations to the ritual of using rainwater or filtered water boiled with five spices to perform the Buddha bathing ceremony.
+Buddha''s Birthday (April of the lunar calendar): Preparations are solemn, from silk costumes and Buddha''s Birthday decorations to the ritual of using rainwater or filtered water boiled with five spices to perform the Buddha bathing ceremony.
 
-●Ancestor Commemoration Ceremony (14th of June of the lunar calendar): Commemorating the death anniversary of Venerable Thich Dam Dam (Dharma name Thich Dam Dam, passed away in 1977). The ceremony is held at Trong Pagoda, bringing together all villagers and guests from neighboring villages for a communal feast.
+Ancestor Commemoration Ceremony (14th of June of the lunar calendar): Commemorating the death anniversary of Venerable Thich Dam Dam (Dharma name Thich Dam Dam, passed away in 1977). The ceremony is held at Trong Pagoda, bringing together all villagers and guests from neighboring villages for a communal feast.
 
-●Community Bonding: Annually, the pagoda organizes a training course for women aged 60 and above to participate in the Executive Committee, helping to strengthen community solidarity.
+Community Bonding: Annually, the pagoda organizes a training course for women aged 60 and above to participate in the Executive Committee, helping to strengthen community solidarity.
 
 4. History, Architecture, and Renovations
-● History & Dating: Built long ago (during the Nguyen Dynasty) alongside the Outer Pagoda. During the resistance against the French, the Inner Pagoda was heavily damaged by bombs and shelling, after which the people only erected a small temporary structure to maintain worship.
+ History & Dating: Built long ago (during the Nguyen Dynasty) alongside the Outer Pagoda. During the resistance against the French, the Inner Pagoda was heavily damaged by bombs and shelling, after which the people only erected a small temporary structure to maintain worship.
 
-● Renovation Milestones: In 2001, the Mother Goddess House was built; in 2010, the people contributed funds to rebuild the entire Three Treasures Hall with reinforced concrete.
+ Renovation Milestones: In 2001, the Mother Goddess House was built; in 2010, the people contributed funds to rebuild the entire Three Treasures Hall with reinforced concrete.
 
-● Overall Layout: Shaped like the letter "Đinh," including: the Three-Gate entrance (at the foot of the dike), a large courtyard planted with ancient trees, the Three Treasures Hall (main building), and behind it, the Mother Goddess House and an open-air altar dedicated to Saint Tran.
+ Overall Layout: Shaped like the letter "Đinh," including: the Three-Gate entrance (at the foot of the dike), a large courtyard planted with ancient trees, the Three Treasures Hall (main building), and behind it, the Mother Goddess House and an open-air altar dedicated to Saint Tran.
 
-● Architecture of the Three Treasures Hall (Unique 2-story design):
+ Architecture of the Three Treasures Hall (Unique 2-story design):
 
-○ First floor: Serves as the temple''s reception area, and the central section houses the Ancestor altar (worshipping Bodhidharma along with two ancient Nguyen Dynasty altars). ○ Second floor: This is the core Buddhist worship area, consisting of the Front Hall (3 bays, 2 side rooms, with a faux-antique concrete structure in the style of overlapping beams, supporting brackets, and relief carvings of the four seasons) and the Main Hall (3 bays, with a multi-tiered brick platform holding layers of Buddha statues).
+ First floor: Serves as the temple''s reception area, and the central section houses the Ancestor altar (worshipping Bodhidharma along with two ancient Nguyen Dynasty altars). ○ Second floor: This is the core Buddhist worship area, consisting of the Front Hall (3 bays, 2 side rooms, with a faux-antique concrete structure in the style of overlapping beams, supporting brackets, and relief carvings of the four seasons) and the Main Hall (3 bays, with a multi-tiered brick platform holding layers of Buddha statues).
 
 5. Representative Artifacts
 The Inner Pagoda currently preserves ancient artifacts of special historical and artistic value of the locality:
-● Ancient bronze bell “Vinh Phuc Tu” (1901): This bell was cast in the 13th year of the reign of Emperor Thanh Thai. This bell originally belonged to the Outer Pagoda, but to ensure safety and prevent theft, the people moved it and strictly preserved it at the Inner Pagoda.
+ Ancient bronze bell “Vinh Phuc Tu” (1901): This bell was cast in the 13th year of the reign of Emperor Thanh Thai. This bell originally belonged to the Outer Pagoda, but to ensure safety and prevent theft, the people moved it and strictly preserved it at the Inner Pagoda.
 
-● Ancient altars: At the ancestral altar on the first floor, there are two ancient wooden altars with a distinctive artistic style from the Nguyen dynasty.
+ Ancient altars: At the ancestral altar on the first floor, there are two ancient wooden altars with a distinctive artistic style from the Nguyen dynasty.
 
 6. Current Status and Conservation Directions
-● Current Status: The land area is stable and not encroached upon. The main temple building is sturdy, spacious, and clean, perfectly meeting the religious needs of the community. However, documents indicate that some components or auxiliary items (such as the main gate) have begun to show signs of termite infestation over time.
+ Current Status: The land area is stable and not encroached upon. The main temple building is sturdy, spacious, and clean, perfectly meeting the religious needs of the community. However, documents indicate that some components or auxiliary items (such as the main gate) have begun to show signs of termite infestation over time.
 
-●Directions:
-○Continue to complete the scientific dossier to propose to the Hanoi People''s Committee to officially classify Trong Vinh Ha Pagoda as a historical and cultural relic.
+Directions:
+Continue to complete the scientific dossier to propose to the Hanoi People''s Committee to officially classify Trong Vinh Ha Pagoda as a historical and cultural relic.
 
-○A plan is needed for periodic inspections and termite control spraying to protect the components; transparent management of donations and offerings according to the regulations of the Ministry of Finance.
+A plan is needed for periodic inspections and termite control spraying to protect the components; transparent management of donations and offerings according to the regulations of the Ministry of Finance.
 
-○Develop a comprehensive landscape plan, install a system of signposts from the dike to the pagoda for visitors, and equip the site with adequate fire safety equipment to ensure absolute safety for the relic.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'2000', N'xã Vân Đình', N'/api/qr/heritage/hea44167f', N'https://maps.app.goo.gl/GH2YiV1CXxTsyza38', 0, NULL, 3, '2026-07-12T13:18:44.2061873', '2026-07-12T13:24:36.7565812');
+Develop a comprehensive landscape plan, install a system of signposts from the dike to the pagoda for visitors, and equip the site with adequate fire safety equipment to ensure absolute safety for the relic.', N'/uploads/images/a0a1621eef4c4dd3a7efa382ea98003c.jpg', N'2000', N'xã Vân Đình', N'/api/qr/heritage/hea44167f', N'https://maps.app.goo.gl/GH2YiV1CXxTsyza38', 0, NULL, 3, '2026-07-12T13:18:44.2061873', '2026-07-22T09:59:57.3944132');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10015, N'h7cdcb8e2', N'VĐHN-DT-043', 2, N'Chùa Làng Văn Cao', N'Chùa Làng Văn Cao', N'chùa-làng-văn-cao', N'city', N'active', N'PR93+6CC, Vân Đình, Hà Nội, Việt Nam', N'PR93+6CC, Vân Đình, Hà Nội, Việt Nam', 20.71720230, 105.80350790, N'1. Tên gọi và Vị trí địa lý
 ●Tên gọi chính thức: Chùa Văn Cao (gọi theo địa danh hành chính của thôn).
 ●Tên chữ (tên tự): Phúc Nam tự, mang ý nghĩa gửi gắm nhiều hy vọng và sự may mắn.
@@ -3711,7 +3790,7 @@ Van Cao Pagoda is a highlight of the local people''s spiritual culture. Major Bu
 
 ○Proposals for long-term restoration: It is necessary to coordinate the development of a comprehensive site plan, gradually replacing the iron frame and corrugated iron roof with traditional materials (wood, tiles, etc.) in the authentic ancient Vietnamese architectural style; and to restore the Ancestor''s House and the Mother''s House.
 
-Increase the printing of brochures, create information boards about the pagoda''s history, and erect a system of directional signs to the pagoda from the inter-village road to attract tourists, while strictly implementing the fire prevention and control plan at the relic site.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'2009', N'xã Vân Đình', N'/api/qr/heritage/h7cdcb8e2', N'https://maps.app.goo.gl/67Fha8bfjFSdy6xL9', 0, NULL, 3, '2026-07-12T13:28:53.4480297', NULL);
+Increase the printing of brochures, create information boards about the pagoda''s history, and erect a system of directional signs to the pagoda from the inter-village road to attract tourists, while strictly implementing the fire prevention and control plan at the relic site.', N'/uploads/images/14d7652acefb4748b7c0aa01bf66a0cd.jpg', N'2009', N'xã Vân Đình', N'/api/qr/heritage/h7cdcb8e2', N'https://maps.app.goo.gl/67Fha8bfjFSdy6xL9', 0, NULL, 3, '2026-07-12T13:28:53.4480297', '2026-07-23T08:11:03.7955587');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10016, N'h0e0f9c4f', N'VĐHN-DT-044', 2, N'Chùa Văn Ông', N'Chùa Văn Ông', N'chùa-văn-ông', N'city', N'active', N'PQGR+7MW, Vân Đình, Hà Nội, Việt Nam', N'PQGR+7MW, Vân Đình, Hà Nội, Việt Nam', 20.72598600, 105.79106680, N'1. Tên gọi và Vị trí địa lý
 ●Tên chính thức: Chùa Văn Ông (được gọi theo tên địa danh của thôn Văn Ông).
 ●Tên chữ: Đại Bi tự.
@@ -3802,7 +3881,7 @@ The system of artifacts at the pagoda is rich in materials (wood, bronze, cerami
 7. Orientation for Protection and Promotion of Value
 ●Currently, the monument is under the management authority of the Van Dinh Commune People''s Committee.
 
-●Proposal: The relevant authorities have completed the scientific dossier and proposed that the City People''s Committee consider and issue a decision to classify Van Ong Pagoda as a City-level Historical and Cultural Monument. At the same time, the locality plans to inventory artifacts, develop a long-term restoration project, and promote (printing leaflets, displaying informational signs) to develop this place into a cultural and spiritual tourism destination for the region.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'2002', N'xã Vân Đình', N'/api/qr/heritage/h0e0f9c4f', N'https://maps.app.goo.gl/MAzT7bfWQVgAjeKi8', 0, NULL, 3, '2026-07-12T13:34:48.5067246', NULL);
+●Proposal: The relevant authorities have completed the scientific dossier and proposed that the City People''s Committee consider and issue a decision to classify Van Ong Pagoda as a City-level Historical and Cultural Monument. At the same time, the locality plans to inventory artifacts, develop a long-term restoration project, and promote (printing leaflets, displaying informational signs) to develop this place into a cultural and spiritual tourism destination for the region.', N'/uploads/images/9d8e52dcaefd470bb79e26202f87d836.jpg', N'2002', N'xã Vân Đình', N'/api/qr/heritage/h0e0f9c4f', N'https://maps.app.goo.gl/MAzT7bfWQVgAjeKi8', 0, NULL, 3, '2026-07-12T13:34:48.5067246', '2026-07-23T08:21:04.0175035');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10017, N'hbd1fc497', N'VĐHN-DT-045', 1, N'Đình Ba', N'Đình Ba', N'đình-ba', N'city', N'active', N'QQ58+2PC, Bạt Chùa, Ứng Thiên, Hà Nội, Việt Nam', N'QQ58+2PC, Bạt Chùa, Ứng Thiên, Hà Nội, Việt Nam', 20.75756710, 105.76191020, N'1. Tên gọi và Vị trí địa lý
 ●Tên chính thức: Đình Ba.
 ●Vị trí hiện nay: Thôn Vân Đình, xã Vân Đình, Thành phố Hà Nội. (Xã Vân Đình mới được thành lập năm 2025 dựa trên việc sáp nhập thị trấn Vân Đình và các xã Cao Sơn Tiến, Phương Tú, Tảo Dương Văn).
@@ -3872,7 +3951,7 @@ The artifacts are concentrated in the main hall, central hall, and rear hall, ma
 7. Value and Protection Orientation of the Monument
 ●Value: Ba Temple is a historical relic associated with the unification of the country during the Dinh Dynasty. The monument plays a role in consolidating the village community, preserving exquisite aesthetics and sculptures, and educating the younger generation about patriotism.
 
-●Current Situation and Future Directions: Currently, the relic is managed by the People''s Committee of Van Dinh commune and is showing signs of deterioration. The local authorities have compiled a scientific dossier and respectfully requested the Department of Culture and Sports to submit it to the City People''s Committee for consideration and decision on classifying Ba Temple as a City-level Historical and Cultural Relic. The future direction will continue to involve the socialization of protection, inventory of artifacts, long-term restoration, and fire prevention at the temple.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'2007', N'xã Vân Đình', N'/api/qr/heritage/hbd1fc497', N'https://maps.app.goo.gl/zy1fZoHF5RUxKBBSA', 0, NULL, 3, '2026-07-12T13:40:31.9332130', NULL);
+●Current Situation and Future Directions: Currently, the relic is managed by the People''s Committee of Van Dinh commune and is showing signs of deterioration. The local authorities have compiled a scientific dossier and respectfully requested the Department of Culture and Sports to submit it to the City People''s Committee for consideration and decision on classifying Ba Temple as a City-level Historical and Cultural Relic. The future direction will continue to involve the socialization of protection, inventory of artifacts, long-term restoration, and fire prevention at the temple.', N'/uploads/images/ce357b4f6a0544828bdc68abe303993a.jpg', N'2007', N'xã Vân Đình', N'/api/qr/heritage/hbd1fc497', N'https://maps.app.goo.gl/zy1fZoHF5RUxKBBSA', 0, NULL, 3, '2026-07-12T13:40:31.9332130', '2026-07-23T08:32:30.7244668');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10018, N'h10e5b154', N'VĐHN-DT-046', 1, N'Đình Giang Soi', N'Đình Giang Soi', N'đình-giang-soi', N'city', N'active', N'PPWP+358, Giang Soi, Ứng Hòa, Hà Nội, Việt Nam', N'PPWP+358, Giang Soi, Ứng Hòa, Hà Nội, Việt Nam', 20.74519470, 105.73285490, N'1. Tên gọi và Vị trí địa lý
 ●Tên gọi: Tên chính thức là Đình Giang Soi (gọi theo địa danh thôn). Tên gọi khác là đình Thanh Dương Soi (gọi theo địa danh cổ của thôn Soi, xã Thanh Dương).
 ●Vị trí hiện tại: Thôn Giang Soi, xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội (sau các đợt sáp nhập hành chính năm 2025). Đình tọa lạc ngay giữa làng Giang Soi, cách trung tâm Hà Nội khoảng 50km về phía Tây Nam.
@@ -3953,12 +4032,12 @@ Although not numerous, the temple possesses extremely valuable artifacts:
 ●Directions:
 ○The local authorities need to plan and develop a comprehensive restoration plan to restore Giang Soi communal house to its original traditional wooden architectural style of the Northern region.
 
-○Special attention should be paid to preserving the imperial decrees: The document reminds us that the imperial decrees must absolutely not be laminated or covered with hard covers (because the heat from lamination will damage the dó paper, causing mold and brittleness). The decrees should be stored in specialized boxes, in a dry place, and experts from the Institute of Han Nom Studies should be consulted to repair any deteriorating decrees.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1622', N'xã Vân Đình', N'/api/qr/heritage/h10e5b154', N'https://maps.app.goo.gl/7QZC3cDg7wku7Z9JA', 0, NULL, 3, '2026-07-12T13:43:25.5012968', NULL);
-INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10019, N'ha69408d3', N'VĐHN-DT-047', 6, N'Quán Sắc và đền Bà Cao Đê.', N'Quán Sắc và đền Bà Cao Đê.', N'quán-sắc-và-đền-bà-cao-đê', N'city', N'active', N'PPJW+87, Vân Đình, Hà Nội, Việt Nam', N'PPJW+87, Vân Đình, Hà Nội, Việt Nam', 20.73114310, 105.74625460, N'1. Tên gọi và Vị trí địa lý
-●Tên gọi chính thức: Quán Sắc và đền Bà Cao Đê.
+○Special attention should be paid to preserving the imperial decrees: The document reminds us that the imperial decrees must absolutely not be laminated or covered with hard covers (because the heat from lamination will damage the dó paper, causing mold and brittleness). The decrees should be stored in specialized boxes, in a dry place, and experts from the Institute of Han Nom Studies should be consulted to repair any deteriorating decrees.', N'/uploads/images/ff4ea6ce29cc42afa6f43c809e017078.jpg', N'1622', N'xã Vân Đình', N'/api/qr/heritage/h10e5b154', N'https://maps.app.goo.gl/7QZC3cDg7wku7Z9JA', 0, NULL, 3, '2026-07-12T13:43:25.5012968', '2026-07-23T08:39:42.2770543');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10019, N'ha69408d3', N'VĐHN-DT-047', 6, N'Quán Sắc', N'Quán Sắc', N'quán-sắc', N'city', N'active', N'PPJW+87, Vân Đình, Hà Nội, Việt Nam', N'PPJW+87, Vân Đình, Hà Nội, Việt Nam', 20.73114310, 105.74625460, N'1. Tên gọi và Vị trí địa lý
+●Tên gọi chính thức: Quán Sắc
 ●Vị trí hiện tại: Thôn Đoàn Xá, xã Vân Đình, thành phố Hà Nội (sau đợt sáp nhập hành chính mở rộng vào tháng 7 năm 2025). Cụm di tích tọa lạc ngay dưới chân đê Tả Đáy, nằm ở vị trí đầu làng, ngoài đê.
 ●Phân loại di tích: Di tích Lịch sử văn hóa.', N'1. Name and Geographical Location
-● Official name: Quan Sac and Ba Cao De Temple.
+● Official name: Quan Sac 
 
 ● Current location: Doan Xa Hamlet, Van Dinh Commune, Hanoi City (after the administrative merger and expansion in July 2025). The complex of relics is located right at the foot of the Ta Day dike, at the beginning of the village, outside the dike.
 
@@ -4023,7 +4102,7 @@ Through many historical changes, the original wooden architecture of the past no
 ●Directions:
 ○The People''s Committee of Van Dinh commune needs to mark the boundaries of the protected area on the ground after classification to preserve the site intact. Establish a sub-committee for managing the site in the village to manage donations transparently and guide visitors to practice civilized behavior at the place of worship.
 
-The locality needs to develop a comprehensive plan and master plan to restore the items using traditional materials from the Northern region, creating a dignified appearance and preserving the spiritual significance sustainably.', N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', N'1924', N'xã Vân Đình', N'/api/qr/heritage/ha69408d3', N'https://maps.app.goo.gl/ZD9dveCFnY7WS33s6', 0, NULL, 3, '2026-07-12T13:46:17.9744641', '2026-07-20T15:43:50.2758285');
+The locality needs to develop a comprehensive plan and master plan to restore the items using traditional materials from the Northern region, creating a dignified appearance and preserving the spiritual significance sustainably.', N'/uploads/images/32670efbfcf2487ca1a641270c98508e.jpg', N'1924', N'xã Vân Đình', N'/api/qr/heritage/ha69408d3', N'https://maps.app.goo.gl/ZD9dveCFnY7WS33s6', 0, NULL, 3, '2026-07-12T13:46:17.9744641', '2026-07-23T08:46:45.1439403');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10020, N'h3f278032', N'VĐHN-DT-048', 3, N'Đền Thanh Ấm', N'Đền Thanh Ấm', N'đền-thanh-ấm', N'national', N'active', N'PQCG+J3X, Đền, Cầu Thanh Ấm, Vân Đình, Hà Nội, Việt Nam', N'PQCG+J3X, Đền, Cầu Thanh Ấm, Vân Đình, Hà Nội, Việt Nam', 20.72162880, 105.77265020, N'1. Thông tin chung
 Tên di tích: Đền Thanh Ấm và Đình Thanh Ấm.
 Địa điểm: Thôn Thanh Ấm (nguyên xưa thủa nhà Trần có tên cổ là trang Hoa Âm, sau đổi là xã Hoa Đình), xã Tân Phương, huyện Ứng Hòa, tỉnh Hà Tây (nay thuộc thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội).
@@ -4151,7 +4230,7 @@ Upper Temple: Area 1,164.0 m² (North bordering concrete road; South and East bo
 Lower Temple: Area 1,047.2 m² (North bordering concrete alley and garden; South bordering concrete road and cultivated land; East bordering cultivated land; West bordering concrete road and residential land).
 
 Mother Goddess Temple (Area I): Area 460.6 m² (North bordering concrete road and Upper Temple; South bordering cultivated land; East bordering concrete road and garden; West bordering pond area).
-Protection Zone II (Area for construction adjustment and landscape enhancement): Applies only to the pond area of ​​the Mother Goddess Temple (Survey Area II) with an area of ​​1,307 square meters.', N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', N'Thế kỉ 16', N'xã Vân Đình', N'/api/qr/heritage/h45fd0336', N'https://maps.app.goo.gl/be2FJoR1yAJRtasU7', 0, NULL, 3, '2026-07-20T14:57:53.0104899', NULL);
+Protection Zone II (Area for construction adjustment and landscape enhancement): Applies only to the pond area of ​​the Mother Goddess Temple (Survey Area II) with an area of ​​1,307 square meters.', N'/uploads/images/09e9a11e459945f69b0ca16c728e462c.jpg', N'Thế kỉ 16', N'xã Vân Đình', N'/api/qr/heritage/h45fd0336', N'https://maps.app.goo.gl/be2FJoR1yAJRtasU7', 0, NULL, 3, '2026-07-20T14:57:53.0104899', '2026-07-23T08:54:15.5556366');
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10022, N'h9e38a060', N'VĐHN-DT-050', 3, N'Đền Mẫu', N'Đền Mẫu', N'đền-mẫu', N'city', N'active', N'QP34+P2H, Tảo Khê, Hồng Sơn, Hà Nội, Việt Nam', N'QP34+P2H, Tảo Khê, Hồng Sơn, Hà Nội, Việt Nam', 20.75483250, 105.70191840, N'1. Thông tin chung và Xếp hạng di tích
 Tên di tích chính thức: Đền, miếu Tảo Khê (gồm Miếu Thượng, Miếu Hạ và Đền Mẫu).
 Địa điểm phân bố: Thôn Tảo Khê, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội.
@@ -4733,12 +4812,173 @@ According to the map and demarcation record compiled in 1999, both temples have 
 Protection Area I of the Upper Temple: Includes plot number 62A with an area of ​​2,094 m2. (East bordering plots 63 and 62B, West bordering plot 42, South bordering plot 61, North bordering the Day River dike).
 Protection Zone I of Dinh Trung: Includes plot number 268A with an area of ​​1,615 m2. (East bordering the village road/nursery, West and South bordering plot 268B, North bordering the Day River dike).
 All construction and exploitation activities are strictly prohibited in the demarcated protection zones. Exceptional cases require permission from the Minister of Culture and Information.', N'/uploads/images/846c81e3c95e48c98783516545ccfd18.jpg', N'Thế kỉ 19', N'xã Vân Đình', N'/api/qr/heritage/h903b86c8', N'https://maps.app.goo.gl/vTbHiymEdw1QzsTj7', 0, NULL, 3, '2026-07-21T02:48:56.7739892', '2026-07-21T03:28:59.8993604');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10031, N'hffe13ba5', N'VĐHN-DT-057', 3, N'Đền Bà Cao Đê', N'Đền Bà Cao Đê', N'đền-bà-cao-đê', N'city', N'active', N'PPMW+F4X, Đoàn Xá, Vân Đình, Hà Nội, Việt Nam', N'PPMW+F4X, Đoàn Xá, Vân Đình, Hà Nội, Việt Nam', 20.73361970, 105.74194100, N'Trong lịch sử và văn hóa tín ngưỡng Việt Nam, có một số di tích nổi tiếng với tên gọi có phần tương đồng. Rất có thể bạn đang nhắc đến một trong những địa danh dưới đây:
+
+Đền Cao (Chí Linh, Hải Dương): Quần thể di tích lịch sử nổi tiếng thờ 5 vị tướng họ Vương (Vương anh em) đã có công lớn giúp vua Lê Đại Hành đánh tan quân Tống xâm lược.
+
+Đền Cao An Phụ (Kinh Môn, Hải Dương): Nơi thờ An Sinh Vương Trần Liễu, phụ thân của Hưng Đạo Đại Vương Trần Quốc Tuấn.
+
+Đền Bà Chúa Kho (Bắc Ninh): Ngôi đền linh thiêng thờ Bà Chúa Kho, người phụ nữ có công cai quản, tích trữ kho lương thực của triều đình trong thời kỳ kháng chiến chống quân Tống.', N'Trong lịch sử và văn hóa tín ngưỡng Việt Nam, có một số di tích nổi tiếng với tên gọi có phần tương đồng. Rất có thể bạn đang nhắc đến một trong những địa danh dưới đây:
+
+Đền Cao (Chí Linh, Hải Dương): Quần thể di tích lịch sử nổi tiếng thờ 5 vị tướng họ Vương (Vương anh em) đã có công lớn giúp vua Lê Đại Hành đánh tan quân Tống xâm lược.
+
+Đền Cao An Phụ (Kinh Môn, Hải Dương): Nơi thờ An Sinh Vương Trần Liễu, phụ thân của Hưng Đạo Đại Vương Trần Quốc Tuấn.
+
+Đền Bà Chúa Kho (Bắc Ninh): Ngôi đền linh thiêng thờ Bà Chúa Kho, người phụ nữ có công cai quản, tích trữ kho lương thực của triều đình trong thời kỳ kháng chiến chống quân Tống.', N'Trong lịch sử và văn hóa tín ngưỡng Việt Nam, có một số di tích nổi tiếng với tên gọi có phần tương đồng. Rất có thể bạn đang nhắc đến một trong những địa danh dưới đây:
+
+Đền Cao (Chí Linh, Hải Dương): Quần thể di tích lịch sử nổi tiếng thờ 5 vị tướng họ Vương (Vương anh em) đã có công lớn giúp vua Lê Đại Hành đánh tan quân Tống xâm lược.
+
+Đền Cao An Phụ (Kinh Môn, Hải Dương): Nơi thờ An Sinh Vương Trần Liễu, phụ thân của Hưng Đạo Đại Vương Trần Quốc Tuấn.
+
+Đền Bà Chúa Kho (Bắc Ninh): Ngôi đền linh thiêng thờ Bà Chúa Kho, người phụ nữ có công cai quản, tích trữ kho lương thực của triều đình trong thời kỳ kháng chiến chống quân Tống.', N'Trong lịch sử và văn hóa tín ngưỡng Việt Nam, có một số di tích nổi tiếng với tên gọi có phần tương đồng. Rất có thể bạn đang nhắc đến một trong những địa danh dưới đây:
+
+Đền Cao (Chí Linh, Hải Dương): Quần thể di tích lịch sử nổi tiếng thờ 5 vị tướng họ Vương (Vương anh em) đã có công lớn giúp vua Lê Đại Hành đánh tan quân Tống xâm lược.
+
+Đền Cao An Phụ (Kinh Môn, Hải Dương): Nơi thờ An Sinh Vương Trần Liễu, phụ thân của Hưng Đạo Đại Vương Trần Quốc Tuấn.
+
+Đền Bà Chúa Kho (Bắc Ninh): Ngôi đền linh thiêng thờ Bà Chúa Kho, người phụ nữ có công cai quản, tích trữ kho lương thực của triều đình trong thời kỳ kháng chiến chống quân Tống.', N'/uploads/images/32670efbfcf2487ca1a641270c98508e.jpg', N'Thế kỉ 18', N'xã Vân Đình', N'/api/qr/heritage/hffe13ba5', N'https://maps.app.goo.gl/RjqNfR81fFgytQGg7', 0, NULL, 3, '2026-07-23T08:44:59.0518874', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10032, N'hb80ddeae', N'VĐHN-DT-058', 1, N'ĐÌNH HOÀNG DƯƠNG', N'ĐÌNH HOÀNG DƯƠNG', N'đình-hoàng-dương', N'city', N'active', N'QP5F+4HX, Hoàng Dương, Vân Đình, Hà Nội, Việt Nam', N'QP5F+4HX, Hoàng Dương, Vân Đình, Hà Nội, Việt Nam', 20.75848140, 105.72085090, N'1. Thông tin chung
+Tên di tích: Đình Hoàng Dương.
+Địa điểm: Thôn Hoàng Dương, xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội.
+Quyết định xếp hạng: Đình Hoàng Dương đã được Chủ tịch UBND tỉnh Hà Tây (cũ) ra Quyết định xếp hạng là Di tích lịch sử - văn hóa cấp tỉnh vào thời điểm cuối năm 2006 / đầu năm 2007 (Căn cứ theo Công văn đề nghị số 572 CV/SVHTT ngày 02/11/2006 của Sở Văn hóa - Thông tin tỉnh Hà Tây). Hiện nay, di tích này được quản lý như cấp Thành phố (do Hà Tây sáp nhập vào Hà Nội). 
+ Giá trị văn hóa bổ sung: Đình Hoàng Dương không chỉ là nơi sinh hoạt tín ngưỡng mà còn gắn liền với một truyền thống vô cùng đặc biệt: Truyền thống thi ca làng Chùa. Từ năm 1936, tao đàn thơ làng Chùa đã được thành lập và thường xuyên tổ chức bình thơ, ngâm thơ ngay tại sân đình, sân chùa.', N'1. General Information
+Name of the monument: Hoang Duong Temple.
+Location: Hoang Duong Hamlet, Son Cong Commune, Ung Hoa District, Hanoi City.
+Classification Decision: Hoang Duong Temple was classified as a provincial-level historical and cultural monument by the Chairman of the People''s Committee of Ha Tay Province (formerly) at the end of 2006/beginning of 2007 (Based on the request letter No. 572 CV/SVHTT dated November 2, 2006, from the Department of Culture and Information of Ha Tay Province). Currently, this monument is managed at the city level (due to Ha Tay''s merger with Hanoi).
+Additional cultural value: Hoang Duong Temple is not only a place of religious worship but is also associated with a very special tradition: the poetry tradition of Chua Village. Since 1936, the Chua Village poetry group has been established and regularly organizes poetry recitations and discussions right in the temple courtyard.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Thần tích: Đình thờ Đương cảnh Thành hoàng làng, những vị thần có công lớn trong việc bảo vệ dân làng, hộ quốc an dân (thường nằm trong hệ thống thờ các vị tướng thời Đinh hoặc các vị thủy thần trị thủy sông Đáy, tương đồng với không gian tín ngưỡng của Đình Vĩnh Lộc Hạ).
+Sự kiện lịch sử: Nằm tựa lưng vào đê sông Đáy, đình Hoàng Dương từng là cơ sở hoạt động bí mật của cán bộ cách mạng, là nơi hội họp, cất giấu lương thực và tập kết lực lượng dân quân du kích trong hai cuộc kháng chiến chống Pháp và chống Mỹ.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Niên đại: Đình mang dấu ấn kiến trúc truyền thống được tu bổ mạnh vào thời Nguyễn (thế kỷ XIX - đầu thế kỷ XX), có sự thay đổi về cấu trúc do lịch sử đắp đê phòng lũ sông Đáy.
+Bố cục: Tọa lạc hướng ra mặt nước, tổng thể công trình bao gồm: Sân đình, Nghi môn, Tả - Hữu mạc và tòa Đại bái nối với Hậu cung tạo thành kiến trúc chữ Đinh (丁).
+Nghệ thuật điêu khắc: Khung gỗ duy trì lối liên kết cổ truyền. Các cấu kiện kiến trúc (đầu dư, kẻ, bẩy) được chạm khắc các đề tài tứ linh (long, ly, quy, phượng) và tứ quý (tùng, cúc, trúc, mai) mang đặc trưng của nghệ thuật chạm khắc gỗ dân gian Bắc Bộ.
+4. Hệ thống Di vật, Cổ vật
+Sắc phong: Lưu giữ các đạo sắc phong do các triều đại phong kiến ban tặng để ghi nhận công lao của Thành hoàng (số lượng và niên hiệu cụ thể theo kiểm kê của ban khánh tiết).
+Hiện vật khác: Hệ thống đồ thờ tự phong phú bao gồm: Ngai thờ, bài vị, hoành phi, câu đối, hương án, chấp kích, bát bửu và các đồ gốm sứ cổ.
+5. Lễ nghi phụng sự
+Thời gian: Lễ hội làng truyền thống được tổ chức hàng năm vào mùa Xuân để tưởng nhớ ngày sinh/ngày hóa của Thành hoàng và cầu cho mưa thuận gió hòa.
+Nghi thức: Lễ rước kiệu, tế nam quan, dâng hương. Lễ vật bắt buộc mang tính nông nghiệp vùng bãi ven sông Đáy (như xôi, lợn, hoa quả).
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Di tích nằm xen kẹt giữa khu dân cư và hành lang bảo vệ đê điều sông Đáy. Khu vực bảo vệ I bao gồm toàn bộ không gian cốt lõi của đình
+Thực trạng: Kiến trúc trải qua thời gian có dấu hiệu xuống cấp tự nhiên. Công tác bảo tồn cần sự phối hợp chặt chẽ giữa chính quyền và nhân dân, tuân thủ Luật Di sản Văn hóa và Luật Đê điều.', N'2. Worshiped Figures and Historical Value
+Legends: The temple is dedicated to the local tutelary deity, a god who made significant contributions to protecting the villagers and ensuring national peace and security (often part of the system of worshipping generals of the Dinh Dynasty or water deities controlling the Day River, similar to the religious space of Vinh Loc Ha Temple).
+
+Historical Events: Situated against the Day River dike, Hoang Duong Temple was once a secret base for revolutionary cadres, a meeting place, a storage location for food, and a gathering point for militia and guerrilla forces during the two wars of resistance against France and the United States.
+
+3. Architectural and Artistic Characteristics
+Date: The temple bears the mark of traditional architecture, heavily renovated during the Nguyen Dynasty (19th - early 20th centuries), with structural changes due to the history of dike construction to prevent flooding on the Day River.
+
+Layout: Situated facing the water, the overall structure includes: the courtyard, the ceremonial gate, the left and right wings, and the main hall connected to the rear hall, forming a T-shaped (丁) architectural design.
+
+Sculptural Art: The wooden frame maintains the traditional connection style. Architectural components (corrugated beams, rafters, braces) are carved with motifs of the four mythical creatures (dragon, lion, turtle, phoenix) and the four auspicious plants (pine, chrysanthemum, bamboo, plum blossom), characteristic of Northern Vietnamese folk wood carving art.
+
+4. System of Relics and Antiquities
+Imperial Decrees: Preserves imperial decrees granted by feudal dynasties to acknowledge the merits of the tutelary deity (the number and specific dates are according to the inventory of the ceremonial committee).
+
+Other Artifacts: A rich system of religious objects including: altars, ancestral tablets, horizontal plaques, couplets, incense altars, ceremonial weapons, eight treasures, and ancient ceramics.
+
+5. Rituals and Service
+Time: The traditional village festival is held annually in the spring to commemorate the birth/death anniversary of the tutelary deity and to pray for favorable weather.
+Rituals: Procession of palanquins, male official ceremony, incense offering. Mandatory offerings are agricultural products from the riverside area of ​​the Day River (such as sticky rice, pork, and fruits).
+
+6. Protection and Demarcation of the Monument
+Demarcation: The monument is situated between a residential area and the Day River dike protection corridor. Protection Zone I includes the entire core space of the communal house.
+Current Status: The architecture shows signs of natural deterioration over time. Conservation work requires close cooperation between the government and the people, in compliance with the Law on Cultural Heritage and the Law on Dikes.', N'/uploads/images/9081ece6bc8d493398d08c3c0fc19d49.jpg', N'Thế kỉ 18', N'xã Vân Đình', N'/api/qr/heritage/hb80ddeae', N'https://maps.app.goo.gl/mRfPB3S7Z9xgmfuK7', 0, NULL, 3, '2026-07-23T09:00:29.4206144', '2026-07-23T09:01:10.6851272');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10033, N'hdfb7722b', N'VĐHN-DT-059', 2, N'CHÙA HOÀNG DƯƠNG', N'CHÙA HOÀNG DƯƠNG', N'chùa-hoàng-dương', N'city', N'active', N'QP69+2RV, Hoàng Dương, Vân Đình, Hà Nội, Việt Nam', N'QP69+2RV, Hoàng Dương, Vân Đình, Hà Nội, Việt Nam', 20.75848140, 105.72085090, N'1. Thông tin chung
+Tên di tích: Chùa Hoàng Dương (Tên chữ thường gọi là Phúc Lâm Tự hoặc Linh Tiên Tự).
+Địa điểm: Thôn Hoàng Dương, xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội.
+Loại hình và Xếp hạng: Di tích Kiến trúc Nghệ thuật - Tôn giáo tín ngưỡng.', N'1. General Information
+Name of the monument: Hoang Duong Pagoda (commonly known as Phuc Lam Tu or Linh Tien Tu).
+
+Location: Hoang Duong village, Son Cong commune, Ung Hoa district, Hanoi city.
+
+Type and Classification: Architectural and Artistic Monument - Religious and Beliefs Monument.', N'2. Nhân vật thờ phụng và Giá trị lịch sử
+Nhân vật thờ phụng: Chùa thờ Phật theo phái Đại thừa (Bắc tông) - tín ngưỡng phổ biến ở đồng bằng Bắc Bộ. Hệ thống thờ bao gồm Tam thế Phật, Phật A Di Đà, Quan Thế Âm Bồ Tát, Đức Ông, Thánh Hiền và hệ thống Đạo Mẫu.
+Giá trị lịch sử: Là trung tâm sinh hoạt văn hóa tâm linh của cộng đồng dân cư thôn Hoàng Dương, hướng con người tới các giá trị từ bi hỷ xả. Trong chiến tranh, nhà chùa cũng là nơi che giấu cán bộ, đóng góp vào phong trào cách mạng địa phương.
+3. Đặc điểm Kiến trúc - Nghệ thuật
+Bố cục: Khuôn viên chùa thanh tịnh, bao gồm các hạng mục: Cổng Tam quan, sân chùa, Tiền đường, Thượng điện, nhà Tổ và nhà Mẫu.
+Kiến trúc: Tòa Tiền đường xây kiểu tường hồi bít đốc. Hệ thống vì kèo làm bằng gỗ, bào trơn đóng bén, ít chạm khắc hoa văn phức tạp, tập trung chủ yếu vào sự bền vững và trang nghiêm của không gian thờ Phật.
+4. Hệ thống Di vật, Cổ vật
+Hệ thống tượng pháp: Lưu giữ được bộ tượng Phật bằng gỗ và đất luyện được sơn son thếp vàng mang phong cách nghệ thuật thế kỷ XVIII - XIX (Tượng Tam thế, tượng A Di Đà, tượng Quan Âm).
+Hiện vật khác: Chuông đồng (Đại hồng chung), hoành phi, câu đối, bia đá ghi chép công đức tu sửa chùa của các thế hệ trước.
+5. Lễ nghi phụng sự
+Thời gian: Các dịp lễ lớn như Rằm tháng Giêng (Thượng nguyên), Lễ Phật Đản (15/4 âm lịch), Lễ Vu Lan (15/7 âm lịch) và các ngày sóc, vọng hàng tháng.
+Nghi thức: Tụng kinh, niệm Phật, dâng hương, cúng chay. Phật tử và nhân dân trong thôn tập trung về chùa cầu bình an, quốc thái dân an.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Nằm trong khu vực quản lý đất đai của thôn Hoàng Dương, được phân định mốc giới rõ ràng với các hộ dân xung quanh
+Thực trạng: Chùa được nhân dân và sư trụ trì (nếu có) bảo quản, thường xuyên quét dọn, cảnh quan môi trường xanh - sạch - đẹp. Cần tiếp tục duy trì việc tu bổ theo đúng nguyên trạng.', N'2. Worshipped Figures and Historical Value
+Worshipped Figures: The temple worships Mahayana Buddhism (Northern Buddhism) - a popular belief in the Northern Delta region. The worship system includes the Three Buddhas of the Past, Present, and Future, Amitabha Buddha, Avalokiteshvara Bodhisattva, the Venerable Master, the Sages, and the Mother Goddess system.
+
+Historical Value: It serves as a center of spiritual and cultural activities for the community of Hoang Duong village, guiding people towards the values ​​of compassion and generosity. During the war, the temple also served as a hiding place for revolutionary cadres, contributing to the local revolutionary movement.
+
+3. Architectural and Artistic Characteristics
+Layout: The temple grounds are serene, including the following elements: the triple-arched gate, the temple courtyard, the front hall, the main hall, the ancestral hall, and the Mother Goddess hall.
+
+Architecture: The front hall is built with gable walls. The truss system is made of wood, smoothly planed and fitted, with minimal ornate carvings, focusing primarily on the durability and solemnity of the Buddhist worship space.
+
+4. Artifacts and Relics
+
+Statues: Preserves a set of wooden and gilded Buddha statues in the artistic style of the 18th-19th centuries (Statues of the Three Ages, Amitabha Buddha, and Avalokiteshvara Bodhisattva).
+
+Other artifacts: Bronze bell (Great Bell), horizontal plaques, couplets, and stone steles recording the merits of previous generations in repairing the temple.
+
+5. Rituals and Service
+
+Time: Major festivals such as the Full Moon of the First Lunar Month (Upper Nguyên Festival), Buddha''s Birthday (15th day of the 4th lunar month), Vu Lan Festival (15th day of the 7th lunar month), and the first and fifteenth days of each lunar month.
+
+Rituals: Chanting scriptures, reciting Buddha''s name, offering incense, and offering vegetarian food. Buddhists and villagers gather at the temple to pray for peace and national prosperity.
+
+6. Protection and Demarcation of the Monument
+Demarcation: Located within the land management area of ​​Hoang Duong village, with clearly defined boundaries separating it from surrounding households [Total area in m2 needs updating].
+
+Current Status: The pagoda is maintained by the local people and the abbot (if any), regularly cleaned, and has a green, clean, and beautiful environment. Maintenance and restoration according to the original state should continue.', N'/uploads/images/245744587a3945a19e62ecb3f9b80a44.jpg', N'Thế kỉ 19', N'xã Vân Đình', N'/api/qr/heritage/hdfb7722b', N'https://maps.app.goo.gl/YY4khafCVMHsfp7BA', 0, NULL, 3, '2026-07-23T09:04:02.1298772', '2026-07-23T09:04:24.4585433');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10034, N'h2be04402', N'VĐHN-DT-060', 7, N'BẾN LỘI - HOÀNG DƯƠNG', N'BẾN LỘI - HOÀNG DƯƠNG', N'bến-lội-hoàng-dương', N'unranked', N'active', N'QP5G+73, Hoàng Dương, Vân Đình, Hà Nội, Việt Nam', N'QP5G+73, Hoàng Dương, Vân Đình, Hà Nội, Việt Nam', 20.75848140, 105.72085090, N'1. Thông tin chung
+Tên di tích: Địa điểm lịch sử Bến lội - Hoàng Dương.
+Địa điểm: Bến đò/Bến lội ven sông Đáy, thuộc thôn Hoàng Dương, xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội.
+Loại hình và Xếp hạng: Di tích Lịch sử (Cách mạng).', N'1. General Information
+Name of the site: Ben Loi - Hoang Duong Historical Site.
+Location: Ferry landing/Ben Loi on the banks of the Day River, in Hoang Duong village, Son Cong commune, Ung Hoa district, Hanoi city.
+Type and Classification: Historical (Revolutionary) Site.', N'2. Nhân vật / Sự kiện lịch sử
+Giá trị cốt lõi: Không phải là di tích thờ tự mà là một địa danh gắn liền với lịch sử kháng chiến oanh liệt.
+Sự kiện lịch sử: Bến lội Hoàng Dương là điểm trung chuyển huyết mạch trên tuyến sông Đáy, nối liền vùng tự do và vùng tạm chiếm. Trong kháng chiến, đây là nơi quân và dân ta bí mật bơi lội vượt sông, vận chuyển vũ khí, tài liệu, và đưa đón cán bộ cách mạng an toàn. Đây là minh chứng cho tinh thần quả cảm, mưu trí của lực lượng du kích xã Sơn Công.
+3. Đặc điểm Kiến trúc - Cảnh quan
+Cảnh quan: Di tích không có các công trình kiến trúc đền chùa đồ sộ, mà mang tính chất cảnh quan thiên nhiên (đoạn sông Đáy, bờ đê, bến nước).
+Đặc điểm: Khu vực nước nông hoặc có dòng chảy thuận lợi để bơi lội/chèo thuyền bí mật trong đêm tối. Hiện nay, bến sông có thể đã được kè bê tông hóa theo quy hoạch đê điều mới.
+4. Hệ thống Di vật, Cổ vật
+Hiện vật: Do đặc thù là địa điểm lịch sử ngoài trời, di vật thường không nằm tại thực địa mà được lưu giữ tại phòng truyền thống xã hoặc bảo tàng địa phương (như thuyền nan, mái chèo, tư liệu liên lạc, vũ khí của du kích). Có thể có bia lưu niệm được dựng lên để đánh dấu địa điểm.
+5. Lễ nghi phụng sự (Tưởng niệm)
+Thời gian: Được chính quyền và nhân dân địa phương tổ chức tưởng niệm vào các ngày lễ lớn như Ngày Thương binh Liệt sĩ (27/7) hoặc Ngày thành lập Quân đội Nhân dân Việt Nam (22/12).
+Nghi thức: Dâng hương, thả hoa đăng trên bến sông để tri ân các anh hùng liệt sĩ đã hy sinh trên dòng sông Đáy, giáo dục truyền thống yêu nước cho thế hệ trẻ.
+6. Công tác bảo vệ và Khoanh vùng di tích
+Khoanh vùng: Khu vực bảo vệ bao gồm đoạn bờ đê đập và phần bến nước liên quan trực tiếp đến lịch sử di tích. Việc cắm mốc giới cần tuân thủ không làm ảnh hưởng đến lưu lượng dòng chảy và an toàn đê điều.
+Thực trạng: Cần được chính quyền quan tâm dựng bia di tích/biển chỉ dẫn để người dân nhận biết, đồng thời giữ gìn vệ sinh môi trường bờ sông, tránh tình trạng khai thác cát hoặc lấn chiếm bến bãi.', N'2. Historical Figures/Events
+Core Value: Not a religious site, but a landmark associated with the glorious history of the resistance war.
+
+Historical Event: Hoang Duong Crossing was a vital transit point on the Day River, connecting the free zone and the temporarily occupied zone. During the resistance war, this was where our troops and civilians secretly swam across the river, transporting weapons, documents, and safely escorting revolutionary cadres. This is evidence of the courage and resourcefulness of the guerrilla forces of Son Cong commune.
+
+3. Architectural and Landscape Characteristics
+Landscape: The site does not have massive temple or pagoda structures, but rather features natural landscapes (the Day River section, embankment, and water landing).
+
+Characteristics: The area has shallow water or a favorable current for secretly swimming/rowing boats at night. Currently, the river landing may have been reinforced with concrete according to the new dike plan.
+
+4. Artifacts and Relics
+Artifacts: Due to the nature of being an outdoor historical site, artifacts are usually not located on-site but are preserved in the commune''s traditional room or local museum (such as bamboo boats, oars, communication documents, and guerrilla weapons). A commemorative plaque may be erected to mark the site.
+
+5. Commemoration Rituals
+Time: Commemorations are organized by the local government and people on major holidays such as the Day of War Invalids and Martyrs (July 27) or the founding day of the Vietnam People''s Army (December 22).
+
+Rituals: Offering incense and releasing lanterns on the riverbank to pay tribute to the heroic martyrs who sacrificed their lives on the Day River, and to educate the younger generation about patriotic traditions.
+
+6. Protection and Demarcation of the Historical Site
+Demarcation: The protected area includes the section of the embankment and the waterfront directly related to the historical site. The placement of boundary markers must comply with regulations that do not affect the flow of water and the safety of the dikes.
+
+Current situation: The authorities need to pay attention to erecting commemorative markers/signs to help people identify the area, while also maintaining environmental hygiene along the riverbanks and preventing sand mining or encroachment on wharves and docks.', N'/uploads/images/542eab9798294f2cbda531688305ecf1.jpg', N'Thế ki 18', N'xã Vân Đình', N'/api/qr/heritage/h2be04402', N'https://maps.app.goo.gl/2tqaoJxmbrF9MNNv9', 0, NULL, 3, '2026-07-23T09:06:53.5552011', '2026-07-23T09:07:19.0137441');
 SET IDENTITY_INSERT [Heritage] OFF;
 GO
-DBCC CHECKIDENT ([Heritage], RESEED, 10030);
+DBCC CHECKIDENT ([Heritage], RESEED, 10034);
 GO
 
--- [HeritageDocuments]: 25 rows
+-- [HeritageDocuments]: 27 rows
 SET IDENTITY_INSERT [HeritageDocuments] ON;
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (1, 1, N'lý lịch.pdf', N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'PDF', 5419292, '2026-07-09T13:35:15.6084942');
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (2, 2, N'Lý lịch.pdf', N'/uploads/documents/a31c8af906e242fb94bfa3b74ca3fb3c.pdf', N'PDF', 4180811, '2026-07-09T13:53:27.9933011');
@@ -4765,12 +5005,14 @@ INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[File
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (24, 28, N'biên bản khoanh vùng.pdf', N'/uploads/documents/2278f26509c84202ab571962a8acd68b.pdf', N'PDF', 2315091, '2026-07-21T02:19:41.6391757');
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (25, 29, N'Bản đồ khoanh vùng Đình Hậu xá.pdf', N'/uploads/documents/8fdeb867462246638b11f84a20a49633.pdf', N'PDF', 1228283, '2026-07-21T02:27:49.1455594');
 INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (26, 30, N'bản đồ.pdf', N'/uploads/documents/1d1c09f6e19f4d5a8c572912153432ce.pdf', N'PDF', 1193672, '2026-07-21T02:43:44.1615860');
+INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (27, 32, N'Biên bản quy định.pdf', N'/uploads/documents/00c723f59956483a90a84a8f71230291.pdf', N'PDF', 1911168, '2026-07-22T07:55:28.4004921');
+INSERT [HeritageDocuments] ([DocumentId],[HeritageId],[FileName],[FileUrl],[FileType],[FileSize],[UploadedAt]) VALUES (28, 35, N'Biên bản khoanh vùng.pdf', N'/uploads/documents/1cfb2026690747c2b92c66fbee6ab3ef.pdf', N'PDF', 2937384, '2026-07-22T08:39:15.8482160');
 SET IDENTITY_INSERT [HeritageDocuments] OFF;
 GO
-DBCC CHECKIDENT ([HeritageDocuments], RESEED, 26);
+DBCC CHECKIDENT ([HeritageDocuments], RESEED, 28);
 GO
 
--- [HeritageImages]: 408 rows
+-- [HeritageImages]: 539 rows
 SET IDENTITY_INSERT [HeritageImages] ON;
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (1, 1, N'/uploads/images/a7a2d72840c6457cbfa54f0118ef1981.jpg', NULL, 1, '2026-07-09T13:35:05.3147378');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (2, 1, N'/uploads/images/532b8cf854bf4208ab48161ce7439a60.jpg', NULL, 2, '2026-07-09T13:35:05.4034413');
@@ -4842,22 +5084,6 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (68, 6, N'/uploads/images/2196c0824eaf48048394e970efc55c92.jpg', NULL, 7, '2026-07-10T09:12:03.6265323');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (69, 7, N'/uploads/images/e33521c313304d3bacdd71e01c33a1d3.jpg', NULL, 1, '2026-07-10T10:22:10.9088243');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (91, 26, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:06:30.0659454');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (97, 32, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:50:13.0387379');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (98, 33, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:52:38.3813540');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (99, 34, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T15:55:11.9983085');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (100, 35, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T16:04:10.8739838');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (101, 36, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T16:07:25.2225713');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (102, 37, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-11T16:10:37.1807065');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10073, 10010, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T12:53:25.0575871');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10074, 10011, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:02:49.0497441');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10075, 10012, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:11:43.1437772');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10076, 10013, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:14:49.0627334');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10077, 10014, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:18:44.2254867');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10078, 10015, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:28:53.4764060');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10079, 10016, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:34:48.5219117');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10080, 10017, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:40:31.9499646');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10081, 10018, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:43:25.5150789');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10082, 10019, N'/uploads/images/bd07bda9558a4f6cad1c9832555d977b.png', NULL, 1, '2026-07-12T13:46:17.9923019');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10083, 7, N'/uploads/images/7f4259b8bda84de79add38f8f1555e00.jpg', NULL, 2, '2026-07-13T09:29:41.3439423');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10084, 7, N'/uploads/images/33aa4343e36e46179c8ae659fecbb659.jpg', NULL, 3, '2026-07-13T09:29:41.4130374');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10085, 7, N'/uploads/images/a819b9ca864741759d4353e1ee0608e6.jpg', NULL, 4, '2026-07-13T09:29:41.4218655');
@@ -4997,17 +5223,11 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10221, 15, N'/uploads/images/afa78ef43c87433ab57ab231b2da0f4e.jpg', NULL, 18, '2026-07-19T10:26:43.2218293');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10222, 15, N'/uploads/images/69a151d5f5f144dd9f157225c66cd3fd.jpg', NULL, 19, '2026-07-19T10:26:43.2251484');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10223, 15, N'/uploads/images/d2eefff00e87450a900733ab199743e9.jpg', NULL, 20, '2026-07-19T10:26:43.2285615');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10224, 10021, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 1, '2026-07-20T14:57:53.2786543');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10227, 10022, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 1, '2026-07-20T15:00:18.7498827');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10228, 10025, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 1, '2026-07-20T15:15:20.2172064');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10229, 10026, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 1, '2026-07-20T15:23:34.1256341');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10230, 10027, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 1, '2026-07-20T15:28:54.2267646');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10231, 34, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 2, '2026-07-20T15:32:07.7133791');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10232, 34, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 2, '2026-07-20T15:32:07.7133778');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10233, 34, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 2, '2026-07-20T15:32:07.7083620');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10234, 34, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 2, '2026-07-20T15:32:07.7083687');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10235, 10028, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 1, '2026-07-20T15:37:59.2274443');
-INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10236, 10011, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 2, '2026-07-20T15:40:12.3209675');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10237, 10029, N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', NULL, 1, '2026-07-20T15:42:47.5994500');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10238, 16, N'/uploads/images/966b1719f1bd4ab193b8ef4b0da3fbf2.jpg', NULL, 1, '2026-07-20T16:04:44.4042036');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10239, 16, N'/uploads/images/b98405b5b7c54d25adf4eb8a11a35b4c.jpg', NULL, 2, '2026-07-20T16:04:44.4176321');
@@ -5180,9 +5400,162 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10407, 10030, N'/uploads/images/7f7d8d00485c42a1beeabbe7464ec3b1.jpg', NULL, 9, '2026-07-21T03:28:59.9862365');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10408, 10030, N'/uploads/images/3e05b6fb52774821a8c07d58bdc015e7.jpg', NULL, 10, '2026-07-21T03:28:59.9902908');
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10409, 10030, N'/uploads/images/a1780ab1ab2142daa97a4afd350c54a1.jpg', NULL, 11, '2026-07-21T03:28:59.9943182');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10410, 32, N'/uploads/images/3dad1c2e297b491a93fc199f130f6dc1.jpg', NULL, 1, '2026-07-22T07:55:30.2047249');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10411, 32, N'/uploads/images/dfed4544c2b64add89c2c09eaf29ee17.jpg', NULL, 2, '2026-07-22T07:55:30.2689721');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10412, 32, N'/uploads/images/d1aa2f1b31a9400f9a58d738cb724593.jpg', NULL, 3, '2026-07-22T07:55:30.2886197');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10413, 32, N'/uploads/images/e34327843b82485e95473f8c16851a43.jpg', NULL, 4, '2026-07-22T07:55:30.2936524');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10414, 32, N'/uploads/images/1c473464111a4875adf50f6bce70bcef.jpg', NULL, 5, '2026-07-22T07:55:30.2981917');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10415, 32, N'/uploads/images/07d7624bf1694ff38519c5e50b1af4d8.jpg', NULL, 6, '2026-07-22T07:55:30.3029769');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10416, 32, N'/uploads/images/d5f62c67009f40ffb52d01a7bdf52d9f.jpg', NULL, 7, '2026-07-22T07:55:30.3088127');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10417, 32, N'/uploads/images/a02be6ba52894fb38e1cff6c1f7bc783.jpg', NULL, 8, '2026-07-22T07:55:30.3145966');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10418, 32, N'/uploads/images/325af9e62bc94f61a9ef66c01bf79f52.jpg', NULL, 9, '2026-07-22T07:55:30.3195846');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10419, 32, N'/uploads/images/545c51a96ca84b2b93cc06c024eff82f.jpg', NULL, 10, '2026-07-22T07:55:30.3251152');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10420, 32, N'/uploads/images/e351fd171ed14b8996aa3ffca25852ff.jpg', NULL, 11, '2026-07-22T07:55:30.3311952');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10421, 32, N'/uploads/images/15f7fe012d7d4409a88c28704e01b11f.jpg', NULL, 12, '2026-07-22T07:55:30.3362363');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10422, 32, N'/uploads/images/9fc61f1af31348049846b87ecd52ef5f.jpg', NULL, 13, '2026-07-22T07:55:30.3410075');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10423, 32, N'/uploads/images/c1d8dfd3006d4cfdaf52c97da132b04f.jpg', NULL, 14, '2026-07-22T07:55:30.3465032');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10424, 32, N'/uploads/images/bd0f248e17fc4b469a1c386c9f9859a6.jpg', NULL, 15, '2026-07-22T07:55:30.3509555');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10425, 33, N'/uploads/images/21fd35ec83fa47b3b682144d3eec311b.jpg', NULL, 1, '2026-07-22T08:00:08.7169577');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10426, 33, N'/uploads/images/e600754117444c4b87c64e6ce50e7e93.jpg', NULL, 2, '2026-07-22T08:00:08.7364726');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10427, 33, N'/uploads/images/816631659669465588d784460e094459.jpg', NULL, 3, '2026-07-22T08:00:08.7415564');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10428, 33, N'/uploads/images/d7fb30eb45ed4894b5e07d4396f7be0c.jpg', NULL, 4, '2026-07-22T08:00:08.7449946');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10429, 33, N'/uploads/images/b15daa02ca5245b8bb2606569fbba946.jpg', NULL, 5, '2026-07-22T08:00:08.7472604');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10430, 33, N'/uploads/images/94e2bcf42a6b4d5c9c9c0bacb7921be7.jpg', NULL, 6, '2026-07-22T08:00:08.7499326');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10431, 33, N'/uploads/images/2217a072fd2842b7b754fbec2a7a028f.jpg', NULL, 7, '2026-07-22T08:00:08.7528551');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10432, 33, N'/uploads/images/d1e2eb49b9cb47ebb389b584c5829411.jpg', NULL, 8, '2026-07-22T08:00:08.7565104');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10433, 34, N'/uploads/images/016530dce9254af589e866093b13340b.jpg', NULL, 1, '2026-07-22T08:31:20.4022122');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10434, 34, N'/uploads/images/7d391d6703ad4f039c59526ee081166a.jpg', NULL, 2, '2026-07-22T08:31:20.5001500');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10435, 34, N'/uploads/images/76f34dcc8dd648e7a36a505348517ea3.jpg', NULL, 3, '2026-07-22T08:31:20.5112072');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10436, 34, N'/uploads/images/b5fd28d6eebb4d02badb0bf324f4950d.jpg', NULL, 4, '2026-07-22T08:31:20.5149802');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10437, 34, N'/uploads/images/54654b7418464332a902f1b1e5dfbf02.jpg', NULL, 5, '2026-07-22T08:31:20.5188944');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10438, 34, N'/uploads/images/660e9852c39a4d0594128162e5e433be.jpg', NULL, 6, '2026-07-22T08:31:20.5233560');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10439, 34, N'/uploads/images/66e7ebc412d8453a812bf6c14253a15a.jpg', NULL, 7, '2026-07-22T08:31:20.5272721');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10440, 34, N'/uploads/images/24f1cf14ff2e4d6caf97002739e7bfbc.jpg', NULL, 8, '2026-07-22T08:31:20.5308710');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10441, 34, N'/uploads/images/0f58333e8bd542e5a911d145f37e1418.jpg', NULL, 9, '2026-07-22T08:31:20.5345359');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10442, 34, N'/uploads/images/e1afe16ffd534377aff8977aa7408294.jpg', NULL, 10, '2026-07-22T08:31:20.5379214');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10443, 34, N'/uploads/images/f16d47f32c8d40798181e811fd43a110.jpg', NULL, 11, '2026-07-22T08:31:20.5407797');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10444, 34, N'/uploads/images/3ba418ebf0c641719192b1427c25f4ff.jpg', NULL, 12, '2026-07-22T08:31:20.5437806');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10445, 34, N'/uploads/images/d279fdd6a9514b3f9d377bb63bd0a3ea.jpg', NULL, 13, '2026-07-22T08:31:20.5476091');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10446, 34, N'/uploads/images/62df97b88b734509a1f18fe9b2ed1385.jpg', NULL, 14, '2026-07-22T08:31:20.5509210');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10447, 34, N'/uploads/images/2fa59f15ff184d0d879e3ff1472edae7.jpg', NULL, 15, '2026-07-22T08:31:20.5540925');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10448, 35, N'/uploads/images/cb04f72c2f154a4fb355222f4b98c84b.jpg', NULL, 1, '2026-07-22T08:39:17.1308843');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10449, 35, N'/uploads/images/f27dcca16ca8484cb380e0ba7a05bc89.jpg', NULL, 2, '2026-07-22T08:39:17.1455890');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10450, 35, N'/uploads/images/c8a3a465553a421f8fd65c67ba5386a7.jpg', NULL, 3, '2026-07-22T08:39:17.1492660');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10451, 35, N'/uploads/images/776c32a2027943c5a432423baa4e096b.jpg', NULL, 4, '2026-07-22T08:39:17.1530817');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10452, 35, N'/uploads/images/37aee6f3bddf40f88585b80df838eae4.jpg', NULL, 5, '2026-07-22T08:39:17.1576030');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10453, 35, N'/uploads/images/fa382ae34cba4db8bdd74477d6f0b399.jpg', NULL, 6, '2026-07-22T08:39:17.1611766');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10454, 35, N'/uploads/images/64e30305e81f4aa38d480728514dcd5d.jpg', NULL, 7, '2026-07-22T08:39:17.1647980');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10455, 35, N'/uploads/images/adbb0629cb24403eb3d60a3c917a051b.jpg', NULL, 8, '2026-07-22T08:39:17.1685503');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10456, 35, N'/uploads/images/cce103eba3814b0bb81d1c6237d8e63d.jpg', NULL, 9, '2026-07-22T08:39:17.1722143');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10457, 35, N'/uploads/images/95eeaa7c052f419dbf0e1daed4c2a54e.jpg', NULL, 10, '2026-07-22T08:39:17.1755011');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10458, 35, N'/uploads/images/9bf9f29deae24181a07838aef852eee3.jpg', NULL, 11, '2026-07-22T08:39:17.1783854');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10459, 36, N'/uploads/images/94de897a2646440c8efb2cc203bf54b2.png', NULL, 1, '2026-07-22T08:46:20.4488980');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10460, 36, N'/uploads/images/0653185e7231448ba9907f4299a7a5e5.png', NULL, 2, '2026-07-22T08:46:20.4635621');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10461, 36, N'/uploads/images/bbd67f1b62f24065b337a4d22e4f74be.png', NULL, 3, '2026-07-22T08:46:20.4701445');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10462, 36, N'/uploads/images/d690e89d2f0d4639a70bd88ea782936d.png', NULL, 4, '2026-07-22T08:46:20.4752288');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10463, 36, N'/uploads/images/0f5af7d3b9264f218c6a8c1fb2777b04.png', NULL, 5, '2026-07-22T08:46:20.4820941');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10464, 36, N'/uploads/images/40c8e54f6b564e26a2b7de88db8287fb.png', NULL, 6, '2026-07-22T08:46:20.4885880');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10465, 37, N'/uploads/images/bdd3081514fd41dc8ec3e48a42941340.jpg', NULL, 1, '2026-07-22T08:52:33.0667869');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10466, 37, N'/uploads/images/e4cf901add434d8a81e10c1bfeef56e1.jpg', NULL, 2, '2026-07-22T08:52:33.0827101');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10467, 37, N'/uploads/images/04e427fc52c043179f7a28074dea3744.jpg', NULL, 3, '2026-07-22T08:52:33.0891587');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10468, 10010, N'/uploads/images/90ed976a843f4826ab6d5ecf7ffde5c9.jpg', NULL, 1, '2026-07-22T08:54:47.6537617');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10469, 10010, N'/uploads/images/5fb40009da1642d99da9378a77df4919.jpg', NULL, 2, '2026-07-22T08:54:47.6684351');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10470, 10010, N'/uploads/images/00c19607d81049ffb11dee1ceadc796f.jpg', NULL, 3, '2026-07-22T08:54:47.6735490');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10471, 10010, N'/uploads/images/45ab3102f3a149bb84f6b3a09381b6ae.jpg', NULL, 4, '2026-07-22T08:54:47.6765449');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10472, 10010, N'/uploads/images/e18f13b549864bdb8ea4697fb893cd7d.jpg', NULL, 5, '2026-07-22T08:54:47.6791321');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10473, 10014, N'/uploads/images/a0a1621eef4c4dd3a7efa382ea98003c.jpg', NULL, 1, '2026-07-22T09:00:23.4530009');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10474, 10014, N'/uploads/images/427d68b77af649bca66f32a5715fc9be.jpg', NULL, 2, '2026-07-22T09:00:23.4681646');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10475, 10014, N'/uploads/images/e9d411d0cef94ee7b82c53ddfc1a9879.jpg', NULL, 3, '2026-07-22T09:00:23.4731371');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10476, 10014, N'/uploads/images/fe6d7dc911594b3cb176dce2e23effdd.jpg', NULL, 4, '2026-07-22T09:00:23.4766132');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10477, 10014, N'/uploads/images/2d40ce98950b478eb444c83a26c1f8aa.jpg', NULL, 5, '2026-07-22T09:00:23.4793898');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10478, 10014, N'/uploads/images/a5e1beaa545b488cafbd9c967c5ac90b.jpg', NULL, 6, '2026-07-22T09:00:23.4822092');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10479, 10014, N'/uploads/images/e81436e33e3c4c5ab593d282c347f8d4.jpg', NULL, 7, '2026-07-22T09:00:23.4851464');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10480, 10014, N'/uploads/images/33b1978123ac4220a59e6db2be6d6a8c.jpg', NULL, 8, '2026-07-22T09:00:23.4890403');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10481, 10014, N'/uploads/images/78195b8bcdc84bf5883e2bc1b74e654e.jpg', NULL, 9, '2026-07-22T09:00:23.4925744');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10482, 10014, N'/uploads/images/875b1399faea4c3c9ad3f67d18ff47dd.jpg', NULL, 10, '2026-07-22T09:00:23.4962156');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10483, 10014, N'/uploads/images/2477d2123521457289e3c549b77d2b4d.jpg', NULL, 11, '2026-07-22T09:00:23.4998328');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10484, 10011, N'/uploads/images/113b2eb5e46641caa63b553fa1014aa1.jpg', NULL, 1, '2026-07-23T07:44:07.6181136');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10485, 10011, N'/uploads/images/6f6cd9c666b7450c8eb8387ef1ae6737.jpg', NULL, 2, '2026-07-23T07:44:07.7202401');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10486, 10011, N'/uploads/images/32c1e0b3016d4ded93b72effb37f55d9.jpg', NULL, 3, '2026-07-23T07:44:07.7409436');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10487, 10011, N'/uploads/images/0a39a7a0bf20463cb98bf7dd21c1ae13.jpg', NULL, 4, '2026-07-23T07:44:07.7450679');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10488, 10011, N'/uploads/images/b2cf6fc04ce94ada98acda2c04b4e8e4.jpg', NULL, 5, '2026-07-23T07:44:07.7492392');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10489, 10011, N'/uploads/images/b22f5cbb83994281bd489800388d2145.jpg', NULL, 6, '2026-07-23T07:44:07.7532451');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10490, 10011, N'/uploads/images/be0cbdc7f1924f1a97a80e1093b3239b.jpg', NULL, 7, '2026-07-23T07:44:07.7573585');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10491, 10011, N'/uploads/images/8286284114274b2c8a250c3e99e8003a.jpg', NULL, 8, '2026-07-23T07:44:07.7617831');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10492, 10011, N'/uploads/images/69b76bfcb10349b29de2fcb730566eca.jpg', NULL, 9, '2026-07-23T07:44:07.7671612');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10493, 10011, N'/uploads/images/87edc4ade8074078aaef261c1db6b5e5.jpg', NULL, 10, '2026-07-23T07:44:07.7727859');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10494, 10012, N'/uploads/images/0f1f5e6641f8469ab941df81802715f0.jpg', NULL, 1, '2026-07-23T07:51:03.5245661');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10495, 10012, N'/uploads/images/c26273e929994268b58b67db86425581.jpg', NULL, 2, '2026-07-23T07:51:03.5428376');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10496, 10012, N'/uploads/images/77e195152adf42cea33804358147ee80.jpg', NULL, 3, '2026-07-23T07:51:03.5527405');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10497, 10012, N'/uploads/images/e95140aa0d01468d86c67316e58f9c8d.jpg', NULL, 4, '2026-07-23T07:51:03.5567858');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10498, 10012, N'/uploads/images/0b6819d84cdf483587f103aa685f28f5.jpg', NULL, 5, '2026-07-23T07:51:03.5614250');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10499, 10012, N'/uploads/images/6cfae8bcd5b54583b829ad4636b3e7aa.jpg', NULL, 6, '2026-07-23T07:51:03.5656656');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10500, 10012, N'/uploads/images/ea88492db4c04c7d8ebf26ac51fba36f.jpg', NULL, 7, '2026-07-23T07:51:03.5692257');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10501, 10012, N'/uploads/images/7449f3ca0c8f417a96395c7702e4c4b6.jpg', NULL, 8, '2026-07-23T07:51:03.5726781');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10502, 10012, N'/uploads/images/f6dcdd9c36b5489b9927abcd16d29e47.jpg', NULL, 9, '2026-07-23T07:51:03.5777530');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10503, 10012, N'/uploads/images/5ec13b04b55d49eabc037f2da74187d1.jpg', NULL, 10, '2026-07-23T07:51:03.5820307');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10504, 10012, N'/uploads/images/b0838991c7a54042adf0863f1812857b.jpg', NULL, 11, '2026-07-23T07:51:03.5863445');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10505, 10012, N'/uploads/images/acaf6ed78f4544c9975edd08207b422f.jpg', NULL, 12, '2026-07-23T07:51:03.5910985');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10506, 10012, N'/uploads/images/e6f8f72c71694e47b2247d4e0e4b6061.jpg', NULL, 13, '2026-07-23T07:51:03.5971922');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10507, 10013, N'/uploads/images/3d909f18a6734558acf452d382b23678.jpg', NULL, 1, '2026-07-23T08:05:10.0535342');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10508, 10013, N'/uploads/images/6b4d06cd43c14b53b3d7ee430994d26f.jpg', NULL, 2, '2026-07-23T08:05:10.0733356');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10509, 10013, N'/uploads/images/33a0be27d4914542b80cca9ccb849f03.jpg', NULL, 3, '2026-07-23T08:05:10.0787084');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10510, 10013, N'/uploads/images/12b6f776193c44a18bbe1beb17e68621.jpg', NULL, 4, '2026-07-23T08:05:10.0833509');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10511, 10013, N'/uploads/images/ca31fe9068ea4ed18be92dd64cbbc641.jpg', NULL, 5, '2026-07-23T08:05:10.0864429');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10512, 10013, N'/uploads/images/8f252f3c91574d168c7224c2b3ff477f.jpg', NULL, 6, '2026-07-23T08:05:10.0893474');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10513, 10013, N'/uploads/images/39fbdf7e7d834c1a918248942bbf9461.jpg', NULL, 7, '2026-07-23T08:05:10.0923957');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10514, 10013, N'/uploads/images/537be7d9a1354555930db8fb75c5f6f5.jpg', NULL, 8, '2026-07-23T08:05:10.0972928');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10515, 10013, N'/uploads/images/0d455929f9474df2b1d77f3a79a7ea45.jpg', NULL, 9, '2026-07-23T08:05:10.1009603');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10516, 10013, N'/uploads/images/7d135486ccfb4076b05355bdd0afb896.jpg', NULL, 10, '2026-07-23T08:05:10.1044290');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10517, 10015, N'/uploads/images/1c901c9f95754524bcb78feb33131ca9.jpg', NULL, 1, '2026-07-23T08:10:48.3728496');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10518, 10015, N'/uploads/images/4bc76963417948e4afd52eef58026c8a.jpg', NULL, 2, '2026-07-23T08:10:48.4105662');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10519, 10015, N'/uploads/images/693995778ac44442a116e8db03231221.jpg', NULL, 3, '2026-07-23T08:10:48.4197663');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10520, 10015, N'/uploads/images/aab1c341e803408798869ee3f6572a84.jpg', NULL, 4, '2026-07-23T08:10:48.4230581');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10521, 10015, N'/uploads/images/83ca7ec44398478c99199cef37be07bd.jpg', NULL, 5, '2026-07-23T08:10:48.4276785');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10522, 10015, N'/uploads/images/2a261f1b0a6b4852b671fc0071307167.jpg', NULL, 6, '2026-07-23T08:10:48.4329644');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10523, 10015, N'/uploads/images/14d7652acefb4748b7c0aa01bf66a0cd.jpg', NULL, 7, '2026-07-23T08:10:48.4375025');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10524, 10016, N'/uploads/images/9d8e52dcaefd470bb79e26202f87d836.jpg', NULL, 1, '2026-07-23T08:21:04.0576521');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10525, 10016, N'/uploads/images/287fda47976240adb6277528be10e6f0.jpg', NULL, 2, '2026-07-23T08:21:04.0876189');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10526, 10016, N'/uploads/images/a895405a3bb54f8d80c4179417a721ae.jpg', NULL, 3, '2026-07-23T08:21:04.1014978');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10527, 10016, N'/uploads/images/ce656f4a6dd44a4fa013f8555019c00a.jpg', NULL, 4, '2026-07-23T08:21:04.1353219');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10528, 10016, N'/uploads/images/e4798f4f1c1249de80e9cfa2b5175286.jpg', NULL, 5, '2026-07-23T08:21:04.1534267');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10529, 10016, N'/uploads/images/e21c5041383849a7808e387f9db8f771.jpg', NULL, 6, '2026-07-23T08:21:04.1614172');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10530, 10016, N'/uploads/images/2f9c17825ca2473c9f25ce2eda990e3e.jpg', NULL, 7, '2026-07-23T08:21:04.1697512');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10531, 10016, N'/uploads/images/0290cb7dec9d4776a6a4f1a19138c110.jpg', NULL, 8, '2026-07-23T08:21:04.1777123');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10532, 10016, N'/uploads/images/69d95fa57a754461a02a7a5a461fb76c.jpg', NULL, 9, '2026-07-23T08:21:04.1858558');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10533, 10016, N'/uploads/images/8c0844764ee14802972a3f4ed940c2d5.jpg', NULL, 10, '2026-07-23T08:21:04.1949354');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10534, 10016, N'/uploads/images/9bcc98faa86f495dac050af560cdd7d3.jpg', NULL, 11, '2026-07-23T08:21:04.2059616');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10535, 10016, N'/uploads/images/30233099359049e8b8c315b32106beb9.jpg', NULL, 12, '2026-07-23T08:21:04.2155739');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10536, 10016, N'/uploads/images/2fb63edb5973422f869df6ef5bbbcd94.jpg', NULL, 13, '2026-07-23T08:21:04.2196306');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10537, 10017, N'/uploads/images/ce357b4f6a0544828bdc68abe303993a.jpg', NULL, 1, '2026-07-23T08:32:30.7659928');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10538, 10017, N'/uploads/images/d155dd722a1d4e06b0b5d66ab7f4c54f.jpg', NULL, 2, '2026-07-23T08:32:30.7864826');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10539, 10017, N'/uploads/images/9114ec38396e48d9847dd80d160bc1f7.jpg', NULL, 3, '2026-07-23T08:32:30.7937334');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10540, 10017, N'/uploads/images/272921d0c94245afa75ab12de769e9e8.jpg', NULL, 4, '2026-07-23T08:32:30.7983978');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10541, 10017, N'/uploads/images/e4804ddd644749998e6a2a53a55a0370.jpg', NULL, 5, '2026-07-23T08:32:30.8022992');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10542, 10018, N'/uploads/images/ff4ea6ce29cc42afa6f43c809e017078.jpg', NULL, 1, '2026-07-23T08:39:42.3196721');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10543, 10031, N'/uploads/images/32670efbfcf2487ca1a641270c98508e.jpg', NULL, 1, '2026-07-23T08:44:59.2166773');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10544, 10019, N'/uploads/images/32670efbfcf2487ca1a641270c98508e.jpg', NULL, 1, '2026-07-23T08:46:10.1336372');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10545, 10019, N'/uploads/images/36eb8dfe5d6b47d2839d973e75de47fd.jpg', NULL, 2, '2026-07-23T08:46:45.1539941');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10546, 10019, N'/uploads/images/d33234d1cd8a40b6a3c8631363e59dbc.jpg', NULL, 3, '2026-07-23T08:46:45.1701684');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10547, 10021, N'/uploads/images/09e9a11e459945f69b0ca16c728e462c.jpg', NULL, 1, '2026-07-23T08:54:15.6395046');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10548, 10021, N'/uploads/images/81e365a1b95f467e8d0227c8c5cb0299.jpg', NULL, 2, '2026-07-23T08:54:15.7059087');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10549, 10021, N'/uploads/images/0180f84101904eefba603a7e58883b2a.jpg', NULL, 3, '2026-07-23T08:54:15.7474636');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10550, 10021, N'/uploads/images/8174edab3b824b58a532828d400aba4d.jpg', NULL, 4, '2026-07-23T08:54:15.7824747');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10551, 10032, N'/uploads/images/9081ece6bc8d493398d08c3c0fc19d49.jpg', NULL, 1, '2026-07-23T09:00:29.4447548');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10552, 10032, N'/uploads/images/097ca19dc5124c7e8467ef4f415e3c30.jpg', NULL, 2, '2026-07-23T09:01:10.6918979');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10553, 10032, N'/uploads/images/076c622d3b10416199436eadc4fb57bf.jpg', NULL, 3, '2026-07-23T09:01:10.7059566');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10554, 10032, N'/uploads/images/5320ed7d75d44aef8a0d47bd522d222a.jpg', NULL, 4, '2026-07-23T09:01:10.7104087');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10555, 10032, N'/uploads/images/8174edab3b824b58a532828d400aba4d.jpg', NULL, 5, '2026-07-23T09:01:10.7141347');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10556, 10033, N'/uploads/images/245744587a3945a19e62ecb3f9b80a44.jpg', NULL, 1, '2026-07-23T09:04:02.1512606');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10557, 10033, N'/uploads/images/7cdd3a4cdc2544419a072c78416ce700.jpg', NULL, 2, '2026-07-23T09:04:24.4683176');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10558, 10033, N'/uploads/images/c3a5dc8adc0b41ed97c9a624990d61fa.jpg', NULL, 3, '2026-07-23T09:04:24.4839351');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10559, 10034, N'/uploads/images/542eab9798294f2cbda531688305ecf1.jpg', NULL, 1, '2026-07-23T09:06:53.5846291');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10560, 10034, N'/uploads/images/d78e73f17f5346258d4920dd0f8d81d7.jpg', NULL, 2, '2026-07-23T09:07:19.0218300');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10561, 10034, N'/uploads/images/4d5782a46fb149b295cc770d281ede69.jpg', NULL, 3, '2026-07-23T09:07:19.0361364');
+INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10562, 10034, N'/uploads/images/8d0cdb6d2fa54b39af3b18e639e8f01b.jpg', NULL, 4, '2026-07-23T09:07:19.0406431');
 SET IDENTITY_INSERT [HeritageImages] OFF;
 GO
-DBCC CHECKIDENT ([HeritageImages], RESEED, 10409);
+DBCC CHECKIDENT ([HeritageImages], RESEED, 10562);
 GO
 
 -- [HeritageVideos]: 1 rows
@@ -5419,7 +5792,7 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
--- [MediaFiles]: 429 rows
+-- [MediaFiles]: 583 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -5850,9 +6223,163 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (475, N'/uploads/images/cd449e8fbafc4c349d06c8e6a1dc5c7f.jpg', N'IMG_1804.jpg', 3589640, N'image', '2026-07-21T03:27:45.2528489');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (476, N'/uploads/images/1b3e9f8efa2742f2881fdfb165abeda3.jpg', N'IMG_1808.jpg', 3664647, N'image', '2026-07-21T03:27:52.6350292');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (477, N'/uploads/images/846c81e3c95e48c98783516545ccfd18.jpg', N'IMG_1810.jpg', 2702609, N'image', '2026-07-21T03:27:59.0928187');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (478, N'/uploads/images/c1d8dfd3006d4cfdaf52c97da132b04f.jpg', N'IMG_5694.JPG', 2063365, N'image', '2026-07-22T07:52:59.9515660');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (479, N'/uploads/images/9fc61f1af31348049846b87ecd52ef5f.jpg', N'IMG_5696.JPG', 3494162, N'image', '2026-07-22T07:53:06.0756062');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (480, N'/uploads/images/15f7fe012d7d4409a88c28704e01b11f.jpg', N'IMG_5697.JPG', 2454511, N'image', '2026-07-22T07:53:11.8811441');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (481, N'/uploads/images/e351fd171ed14b8996aa3ffca25852ff.jpg', N'IMG_5698.JPG', 2464634, N'image', '2026-07-22T07:53:18.7374195');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (482, N'/uploads/images/a02be6ba52894fb38e1cff6c1f7bc783.jpg', N'IMG_5699.JPG', 3047244, N'image', '2026-07-22T07:53:25.0599543');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (483, N'/uploads/images/545c51a96ca84b2b93cc06c024eff82f.jpg', N'IMG_5700.JPG', 2058157, N'image', '2026-07-22T07:53:32.8055021');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (484, N'/uploads/images/325af9e62bc94f61a9ef66c01bf79f52.jpg', N'IMG_5701.JPG', 2581467, N'image', '2026-07-22T07:53:38.2743479');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (485, N'/uploads/images/e34327843b82485e95473f8c16851a43.jpg', N'IMG_5702.JPG', 1916817, N'image', '2026-07-22T07:53:46.4710413');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (486, N'/uploads/images/1c473464111a4875adf50f6bce70bcef.jpg', N'IMG_5703.JPG', 2743145, N'image', '2026-07-22T07:53:51.8076887');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (487, N'/uploads/images/07d7624bf1694ff38519c5e50b1af4d8.jpg', N'IMG_5704.JPG', 2201097, N'image', '2026-07-22T07:53:57.2846947');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (488, N'/uploads/images/d5f62c67009f40ffb52d01a7bdf52d9f.jpg', N'IMG_5705.JPG', 1824075, N'image', '2026-07-22T07:54:03.6135645');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (489, N'/uploads/images/d1aa2f1b31a9400f9a58d738cb724593.jpg', N'IMG_5706.JPG', 3362639, N'image', '2026-07-22T07:54:08.9693298');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (490, N'/uploads/images/dfed4544c2b64add89c2c09eaf29ee17.jpg', N'IMG_5707.JPG', 2181651, N'image', '2026-07-22T07:54:14.3497085');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (491, N'/uploads/images/3dad1c2e297b491a93fc199f130f6dc1.jpg', N'IMG_5708.JPG', 2912534, N'image', '2026-07-22T07:54:20.3182824');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (492, N'/uploads/images/bd0f248e17fc4b469a1c386c9f9859a6.jpg', N'IMG_5709.JPG', 2484895, N'image', '2026-07-22T07:54:25.2704561');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (493, N'/uploads/documents/00c723f59956483a90a84a8f71230291.pdf', N'Biên bản quy định.pdf', 1911168, N'document', '2026-07-22T07:55:28.3971918');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (494, N'/uploads/images/b15daa02ca5245b8bb2606569fbba946.jpg', N'IMG_5837.JPG', 2192378, N'image', '2026-07-22T07:58:40.2379753');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (495, N'/uploads/images/94e2bcf42a6b4d5c9c9c0bacb7921be7.jpg', N'IMG_5838.JPG', 2448127, N'image', '2026-07-22T07:58:44.0401635');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (496, N'/uploads/images/2217a072fd2842b7b754fbec2a7a028f.jpg', N'IMG_5839.JPG', 2917567, N'image', '2026-07-22T07:58:45.9164546');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (497, N'/uploads/images/d1e2eb49b9cb47ebb389b584c5829411.jpg', N'IMG_5846.JPG', 3759990, N'image', '2026-07-22T07:58:47.4790839');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (498, N'/uploads/images/d7fb30eb45ed4894b5e07d4396f7be0c.jpg', N'IMG_5848.JPG', 4174797, N'image', '2026-07-22T07:58:48.9914606');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (499, N'/uploads/images/816631659669465588d784460e094459.jpg', N'IMG_5842.JPG', 4237509, N'image', '2026-07-22T07:58:50.5525759');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (500, N'/uploads/images/e600754117444c4b87c64e6ce50e7e93.jpg', N'IMG_2642.jpg', 4183520, N'image', '2026-07-22T07:59:13.6886083');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (501, N'/uploads/images/21fd35ec83fa47b3b682144d3eec311b.jpg', N'IMG_2647.jpg', 4671820, N'image', '2026-07-22T07:59:17.3928910');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (504, N'/uploads/images/3ba418ebf0c641719192b1427c25f4ff.jpg', N'IMG_5531.JPG', 1241304, N'image', '2026-07-22T08:11:10.4942457');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (505, N'/uploads/images/d279fdd6a9514b3f9d377bb63bd0a3ea.jpg', N'IMG_5528.JPG', 1649692, N'image', '2026-07-22T08:11:18.5646294');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (506, N'/uploads/images/62df97b88b734509a1f18fe9b2ed1385.jpg', N'IMG_5529.JPG', 2275601, N'image', '2026-07-22T08:11:23.5062023');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (507, N'/uploads/images/f16d47f32c8d40798181e811fd43a110.jpg', N'IMG_5512.JPG', 2598874, N'image', '2026-07-22T08:11:28.8850836');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (508, N'/uploads/images/e1afe16ffd534377aff8977aa7408294.jpg', N'IMG_5510.JPG', 2478247, N'image', '2026-07-22T08:11:35.8225641');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (509, N'/uploads/images/0f58333e8bd542e5a911d145f37e1418.jpg', N'IMG_5515.JPG', 3237610, N'image', '2026-07-22T08:11:39.6889929');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (510, N'/uploads/images/24f1cf14ff2e4d6caf97002739e7bfbc.jpg', N'IMG_5503.JPG', 3269008, N'image', '2026-07-22T08:11:43.5284078');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (511, N'/uploads/images/54654b7418464332a902f1b1e5dfbf02.jpg', N'IMG_5506.JPG', 3668981, N'image', '2026-07-22T08:11:47.6520322');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (512, N'/uploads/images/66e7ebc412d8453a812bf6c14253a15a.jpg', N'IMG_1036.jpg', 4331263, N'image', '2026-07-22T08:13:46.2594422');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (513, N'/uploads/images/2fa59f15ff184d0d879e3ff1472edae7.jpg', N'IMG_1037.jpg', 4343003, N'image', '2026-07-22T08:13:51.7931815');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (514, N'/uploads/images/660e9852c39a4d0594128162e5e433be.jpg', N'IMG_1039.jpg', 3875103, N'image', '2026-07-22T08:13:58.3417382');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (515, N'/uploads/images/b5fd28d6eebb4d02badb0bf324f4950d.jpg', N'IMG_1043.jpg', 3636400, N'image', '2026-07-22T08:14:04.4403074');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (516, N'/uploads/images/76f34dcc8dd648e7a36a505348517ea3.jpg', N'IMG_1044.jpg', 2981457, N'image', '2026-07-22T08:14:10.3532533');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (517, N'/uploads/images/7d391d6703ad4f039c59526ee081166a.jpg', N'IMG_1045.jpg', 2539517, N'image', '2026-07-22T08:14:16.3626462');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (518, N'/uploads/images/016530dce9254af589e866093b13340b.jpg', N'IMG_1049.jpg', 3249013, N'image', '2026-07-22T08:14:22.5869738');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (519, N'/uploads/images/95eeaa7c052f419dbf0e1daed4c2a54e.jpg', N'IMG_5494.JPG', 2781929, N'image', '2026-07-22T08:37:23.7827131');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (520, N'/uploads/images/9bf9f29deae24181a07838aef852eee3.jpg', N'IMG_1021.jpg', 3081178, N'image', '2026-07-22T08:37:32.0424309');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (521, N'/uploads/images/cce103eba3814b0bb81d1c6237d8e63d.jpg', N'IMG_1022.jpg', 1955553, N'image', '2026-07-22T08:37:38.0855815');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (522, N'/uploads/images/37aee6f3bddf40f88585b80df838eae4.jpg', N'IMG_1023.jpg', 3593522, N'image', '2026-07-22T08:37:42.9453916');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (523, N'/uploads/images/fa382ae34cba4db8bdd74477d6f0b399.jpg', N'IMG_1024.jpg', 2038907, N'image', '2026-07-22T08:37:46.7798605');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (524, N'/uploads/images/64e30305e81f4aa38d480728514dcd5d.jpg', N'IMG_1025.jpg', 2695240, N'image', '2026-07-22T08:37:50.7361834');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (525, N'/uploads/images/adbb0629cb24403eb3d60a3c917a051b.jpg', N'IMG_1026.jpg', 2760851, N'image', '2026-07-22T08:37:54.9000403');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (526, N'/uploads/images/f27dcca16ca8484cb380e0ba7a05bc89.jpg', N'IMG_1027.jpg', 2865505, N'image', '2026-07-22T08:37:59.7781953');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (527, N'/uploads/images/c8a3a465553a421f8fd65c67ba5386a7.jpg', N'IMG_1029.jpg', 2529956, N'image', '2026-07-22T08:38:09.3457030');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (528, N'/uploads/images/776c32a2027943c5a432423baa4e096b.jpg', N'IMG_1030.jpg', 2639511, N'image', '2026-07-22T08:38:13.2767174');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (529, N'/uploads/images/cb04f72c2f154a4fb355222f4b98c84b.jpg', N'IMG_1028.jpg', 2666437, N'image', '2026-07-22T08:38:17.2214938');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (530, N'/uploads/documents/1cfb2026690747c2b92c66fbee6ab3ef.pdf', N'Biên bản khoanh vùng.pdf', 2937384, N'document', '2026-07-22T08:39:15.8427651');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (531, N'/uploads/images/0f5af7d3b9264f218c6a8c1fb2777b04.png', N'1.png', 1612570, N'image', '2026-07-22T08:45:37.7502669');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (532, N'/uploads/images/40c8e54f6b564e26a2b7de88db8287fb.png', N'3.png', 1386725, N'image', '2026-07-22T08:45:39.6964847');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (533, N'/uploads/images/bbd67f1b62f24065b337a4d22e4f74be.png', N'2.png', 1815369, N'image', '2026-07-22T08:45:42.1613637');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (534, N'/uploads/images/d690e89d2f0d4639a70bd88ea782936d.png', N'5.png', 1572987, N'image', '2026-07-22T08:45:44.2232583');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (535, N'/uploads/images/0653185e7231448ba9907f4299a7a5e5.png', N'6.png', 1407133, N'image', '2026-07-22T08:45:46.6274474');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (536, N'/uploads/images/94de897a2646440c8efb2cc203bf54b2.png', N'4.png', 715669, N'image', '2026-07-22T08:45:49.1072487');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (537, N'/uploads/images/e4cf901add434d8a81e10c1bfeef56e1.jpg', N'Bản sao của IMG_2383.jpg', 3252152, N'image', '2026-07-22T08:51:47.7817628');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (538, N'/uploads/images/bdd3081514fd41dc8ec3e48a42941340.jpg', N'Bản sao của IMG_2387.jpg', 4894387, N'image', '2026-07-22T08:51:52.6632707');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (539, N'/uploads/images/04e427fc52c043179f7a28074dea3744.jpg', N'IMG_2635.jpg', 4923957, N'image', '2026-07-22T08:51:57.2458978');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (540, N'/uploads/images/e18f13b549864bdb8ea4697fb893cd7d.jpg', N'IMG_6014.JPG', 3784865, N'image', '2026-07-22T08:54:01.4883672');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (541, N'/uploads/images/90ed976a843f4826ab6d5ecf7ffde5c9.jpg', N'IMG_6018.JPG', 3656265, N'image', '2026-07-22T08:54:03.0403228');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (542, N'/uploads/images/5fb40009da1642d99da9378a77df4919.jpg', N'IMG_6017.JPG', 3577957, N'image', '2026-07-22T08:54:13.9892215');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (543, N'/uploads/images/00c19607d81049ffb11dee1ceadc796f.jpg', N'IMG_6019.JPG', 3432135, N'image', '2026-07-22T08:54:15.9673295');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (544, N'/uploads/images/45ab3102f3a149bb84f6b3a09381b6ae.jpg', N'IMG_6020.JPG', 1870162, N'image', '2026-07-22T08:54:17.4597374');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (545, N'/uploads/images/2477d2123521457289e3c549b77d2b4d.jpg', N'IMG_5982.JPG', 3439456, N'image', '2026-07-22T08:58:38.6495602');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (546, N'/uploads/images/875b1399faea4c3c9ad3f67d18ff47dd.jpg', N'IMG_5985.JPG', 3537784, N'image', '2026-07-22T08:58:50.1764055');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (547, N'/uploads/images/78195b8bcdc84bf5883e2bc1b74e654e.jpg', N'IMG_5987.JPG', 3417374, N'image', '2026-07-22T08:58:55.0619367');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (548, N'/uploads/images/a5e1beaa545b488cafbd9c967c5ac90b.jpg', N'IMG_5988.JPG', 3595228, N'image', '2026-07-22T08:58:59.5923039');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (549, N'/uploads/images/2d40ce98950b478eb444c83a26c1f8aa.jpg', N'IMG_5993.JPG', 2993237, N'image', '2026-07-22T08:59:06.2361819');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (550, N'/uploads/images/e81436e33e3c4c5ab593d282c347f8d4.jpg', N'IMG_5996.JPG', 3187738, N'image', '2026-07-22T08:59:17.5746725');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (551, N'/uploads/images/33b1978123ac4220a59e6db2be6d6a8c.jpg', N'IMG_5997.JPG', 2394723, N'image', '2026-07-22T08:59:28.1971867');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (552, N'/uploads/images/e9d411d0cef94ee7b82c53ddfc1a9879.jpg', N'IMG_6004.JPG', 2968534, N'image', '2026-07-22T08:59:31.6179124');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (553, N'/uploads/images/fe6d7dc911594b3cb176dce2e23effdd.jpg', N'IMG_6008.JPG', 2623087, N'image', '2026-07-22T08:59:36.4950608');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (554, N'/uploads/images/427d68b77af649bca66f32a5715fc9be.jpg', N'IMG_6010.JPG', 1494874, N'image', '2026-07-22T08:59:42.6100015');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (555, N'/uploads/images/a0a1621eef4c4dd3a7efa382ea98003c.jpg', N'IMG_6011.JPG', 2595304, N'image', '2026-07-22T08:59:45.7816933');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (556, N'/uploads/images/87edc4ade8074078aaef261c1db6b5e5.jpg', N'IMG_5828.JPG', 4094727, N'image', '2026-07-23T07:42:25.0434948');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (557, N'/uploads/images/69b76bfcb10349b29de2fcb730566eca.jpg', N'IMG_5825.JPG', 4420330, N'image', '2026-07-23T07:42:26.8868092');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (558, N'/uploads/images/8286284114274b2c8a250c3e99e8003a.jpg', N'IMG_5822.JPG', 4725935, N'image', '2026-07-23T07:42:29.0707811');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (559, N'/uploads/images/be0cbdc7f1924f1a97a80e1093b3239b.jpg', N'IMG_5819.JPG', 3851289, N'image', '2026-07-23T07:42:30.9880334');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (560, N'/uploads/images/b22f5cbb83994281bd489800388d2145.jpg', N'IMG_5818.JPG', 3869666, N'image', '2026-07-23T07:42:37.7107880');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (561, N'/uploads/images/b2cf6fc04ce94ada98acda2c04b4e8e4.jpg', N'IMG_2623.jpg', 2815280, N'image', '2026-07-23T07:42:53.5593974');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (563, N'/uploads/images/0a39a7a0bf20463cb98bf7dd21c1ae13.jpg', N'IMG_2628.jpg', 2596698, N'image', '2026-07-23T07:43:04.4984263');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (564, N'/uploads/images/32c1e0b3016d4ded93b72effb37f55d9.jpg', N'IMG_2610.jpg', 4728665, N'image', '2026-07-23T07:43:10.0358028');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (565, N'/uploads/images/6f6cd9c666b7450c8eb8387ef1ae6737.jpg', N'IMG_2612.jpg', 4429909, N'image', '2026-07-23T07:43:17.0847033');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (566, N'/uploads/images/113b2eb5e46641caa63b553fa1014aa1.jpg', N'IMG_2616.jpg', 3356638, N'image', '2026-07-23T07:43:26.7550842');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (567, N'/uploads/images/acaf6ed78f4544c9975edd08207b422f.jpg', N'IMG_5604.JPG', 1607581, N'image', '2026-07-23T07:48:57.3089701');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (568, N'/uploads/images/b0838991c7a54042adf0863f1812857b.jpg', N'IMG_5603.JPG', 1922163, N'image', '2026-07-23T07:48:59.1729436');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (569, N'/uploads/images/5ec13b04b55d49eabc037f2da74187d1.jpg', N'IMG_5601.JPG', 2983642, N'image', '2026-07-23T07:49:00.5017267');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (571, N'/uploads/images/e6f8f72c71694e47b2247d4e0e4b6061.jpg', N'IMG_1129.jpg', 2269850, N'image', '2026-07-23T07:49:25.9038542');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (572, N'/uploads/images/f6dcdd9c36b5489b9927abcd16d29e47.jpg', N'IMG_1135.jpg', 2663841, N'image', '2026-07-23T07:49:29.7364918');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (573, N'/uploads/images/0b6819d84cdf483587f103aa685f28f5.jpg', N'IMG_1140.jpg', 2629421, N'image', '2026-07-23T07:49:32.7568772');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (574, N'/uploads/images/6cfae8bcd5b54583b829ad4636b3e7aa.jpg', N'IMG_1130.jpg', 2699003, N'image', '2026-07-23T07:49:36.4982046');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (575, N'/uploads/images/ea88492db4c04c7d8ebf26ac51fba36f.jpg', N'IMG_1132.jpg', 2562291, N'image', '2026-07-23T07:49:41.2851770');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (576, N'/uploads/images/7449f3ca0c8f417a96395c7702e4c4b6.jpg', N'IMG_1133.jpg', 2816132, N'image', '2026-07-23T07:49:46.4740925');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (577, N'/uploads/images/e95140aa0d01468d86c67316e58f9c8d.jpg', N'IMG_1134.jpg', 2836320, N'image', '2026-07-23T07:49:50.6564214');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (578, N'/uploads/images/77e195152adf42cea33804358147ee80.jpg', N'IMG_1137.jpg', 2692708, N'image', '2026-07-23T07:49:54.8272821');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (579, N'/uploads/images/c26273e929994268b58b67db86425581.jpg', N'IMG_1139.jpg', 2337038, N'image', '2026-07-23T07:49:58.9123839');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (580, N'/uploads/images/0f1f5e6641f8469ab941df81802715f0.jpg', N'IMG_1142.jpg', 2141437, N'image', '2026-07-23T07:50:06.6445151');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (581, N'/uploads/images/0d455929f9474df2b1d77f3a79a7ea45.jpg', N'IMG_2449.jpg', 2667487, N'image', '2026-07-23T08:01:49.8723168');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (582, N'/uploads/images/537be7d9a1354555930db8fb75c5f6f5.jpg', N'IMG_2466.jpg', 4496128, N'image', '2026-07-23T08:01:57.4303938');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (583, N'/uploads/images/12b6f776193c44a18bbe1beb17e68621.jpg', N'IMG_2467.jpg', 4885246, N'image', '2026-07-23T08:02:00.9715027');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (584, N'/uploads/images/ca31fe9068ea4ed18be92dd64cbbc641.jpg', N'IMG_2472.jpg', 3915432, N'image', '2026-07-23T08:02:06.6799055');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (585, N'/uploads/images/8f252f3c91574d168c7224c2b3ff477f.jpg', N'IMG_2486.jpg', 3343744, N'image', '2026-07-23T08:02:32.7162518');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (586, N'/uploads/images/39fbdf7e7d834c1a918248942bbf9461.jpg', N'IMG_2489.jpg', 4526090, N'image', '2026-07-23T08:02:38.4879515');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (587, N'/uploads/images/33a0be27d4914542b80cca9ccb849f03.jpg', N'IMG_2499.jpg', 4219115, N'image', '2026-07-23T08:02:42.6479713');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (588, N'/uploads/images/6b4d06cd43c14b53b3d7ee430994d26f.jpg', N'IMG_2507.jpg', 3681059, N'image', '2026-07-23T08:02:46.1306197');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (589, N'/uploads/images/3d909f18a6734558acf452d382b23678.jpg', N'IMG_2513.jpg', 2714807, N'image', '2026-07-23T08:02:49.7530504');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (590, N'/uploads/images/7d135486ccfb4076b05355bdd0afb896.jpg', N'IMG_2408.jpg', 3715480, N'image', '2026-07-23T08:04:08.2575581');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (591, N'/uploads/images/14d7652acefb4748b7c0aa01bf66a0cd.jpg', N'IMG_1100.jpg', 4063042, N'image', '2026-07-23T08:09:34.2078967');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (592, N'/uploads/images/1c901c9f95754524bcb78feb33131ca9.jpg', N'IMG_1101.jpg', 3543720, N'image', '2026-07-23T08:09:40.7379788');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (593, N'/uploads/images/4bc76963417948e4afd52eef58026c8a.jpg', N'IMG_1103.jpg', 2797891, N'image', '2026-07-23T08:09:44.2076858');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (594, N'/uploads/images/693995778ac44442a116e8db03231221.jpg', N'IMG_1104.jpg', 1686452, N'image', '2026-07-23T08:09:47.7604309');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (595, N'/uploads/images/aab1c341e803408798869ee3f6572a84.jpg', N'IMG_1105.jpg', 2894186, N'image', '2026-07-23T08:09:51.4827590');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (596, N'/uploads/images/83ca7ec44398478c99199cef37be07bd.jpg', N'IMG_1106.jpg', 2123328, N'image', '2026-07-23T08:09:55.0941880');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (597, N'/uploads/images/2a261f1b0a6b4852b671fc0071307167.jpg', N'IMG_1107.jpg', 3231355, N'image', '2026-07-23T08:09:58.7409143');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (598, N'/uploads/images/2fb63edb5973422f869df6ef5bbbcd94.jpg', N'IMG_5563.JPG', 3602606, N'image', '2026-07-23T08:17:27.6263974');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (599, N'/uploads/images/30233099359049e8b8c315b32106beb9.jpg', N'IMG_5565.JPG', 2739702, N'image', '2026-07-23T08:17:31.9822076');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (600, N'/uploads/images/9bcc98faa86f495dac050af560cdd7d3.jpg', N'IMG_5567.JPG', 2470269, N'image', '2026-07-23T08:17:37.4334952');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (601, N'/uploads/images/8c0844764ee14802972a3f4ed940c2d5.jpg', N'IMG_5568.JPG', 1413962, N'image', '2026-07-23T08:17:41.8167591');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (602, N'/uploads/images/69d95fa57a754461a02a7a5a461fb76c.jpg', N'IMG_5569.JPG', 2581744, N'image', '2026-07-23T08:17:47.3579856');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (603, N'/uploads/images/e4798f4f1c1249de80e9cfa2b5175286.jpg', N'IMG_5570.JPG', 2351861, N'image', '2026-07-23T08:17:52.0213389');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (604, N'/uploads/images/e21c5041383849a7808e387f9db8f771.jpg', N'IMG_5571.JPG', 1992747, N'image', '2026-07-23T08:17:56.0783721');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (605, N'/uploads/images/2f9c17825ca2473c9f25ce2eda990e3e.jpg', N'IMG_5573.JPG', 2130094, N'image', '2026-07-23T08:18:03.3691315');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (606, N'/uploads/images/0290cb7dec9d4776a6a4f1a19138c110.jpg', N'IMG_5574.JPG', 2277418, N'image', '2026-07-23T08:18:08.2849535');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (607, N'/uploads/images/ce656f4a6dd44a4fa013f8555019c00a.jpg', N'IMG_5575.JPG', 1989926, N'image', '2026-07-23T08:18:12.7416970');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (608, N'/uploads/images/a895405a3bb54f8d80c4179417a721ae.jpg', N'IMG_5576.JPG', 2263247, N'image', '2026-07-23T08:18:17.6400401');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (609, N'/uploads/images/287fda47976240adb6277528be10e6f0.jpg', N'IMG_5566.JPG', 2648796, N'image', '2026-07-23T08:18:22.5382283');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (610, N'/uploads/images/9d8e52dcaefd470bb79e26202f87d836.jpg', N'IMG_5572.JPG', 1301371, N'image', '2026-07-23T08:18:27.1147136');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (611, N'/uploads/images/ce357b4f6a0544828bdc68abe303993a.jpg', N'IMG_1631.jpg', 3983566, N'image', '2026-07-23T08:31:30.7483010');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (612, N'/uploads/images/e4804ddd644749998e6a2a53a55a0370.jpg', N'IMG_1633.jpg', 3882727, N'image', '2026-07-23T08:31:35.4131977');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (613, N'/uploads/images/272921d0c94245afa75ab12de769e9e8.jpg', N'IMG_1637.jpg', 2925050, N'image', '2026-07-23T08:31:42.1035975');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (614, N'/uploads/images/9114ec38396e48d9847dd80d160bc1f7.jpg', N'IMG_1638.jpg', 1979932, N'image', '2026-07-23T08:31:47.8949281');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (615, N'/uploads/images/d155dd722a1d4e06b0b5d66ab7f4c54f.jpg', N'IMG_1639.jpg', 2737600, N'image', '2026-07-23T08:31:52.1798867');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (616, N'/uploads/images/ff4ea6ce29cc42afa6f43c809e017078.jpg', N'images.jpg', 48496, N'image', '2026-07-23T08:39:36.5740910');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (617, N'/uploads/images/32670efbfcf2487ca1a641270c98508e.jpg', N'IMG_5587.JPG', 3374720, N'image', '2026-07-23T08:44:55.6903934');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (618, N'/uploads/images/36eb8dfe5d6b47d2839d973e75de47fd.jpg', N'IMG_1116.jpg', 3390773, N'image', '2026-07-23T08:46:22.2709509');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (619, N'/uploads/images/d33234d1cd8a40b6a3c8631363e59dbc.jpg', N'IMG_5589.JPG', 2146169, N'image', '2026-07-23T08:46:30.9498301');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (620, N'/uploads/images/0180f84101904eefba603a7e58883b2a.jpg', N'IMG_2189.jpg', 4563256, N'image', '2026-07-23T08:53:28.5139430');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (621, N'/uploads/images/81e365a1b95f467e8d0227c8c5cb0299.jpg', N'IMG_2196.jpg', 5099779, N'image', '2026-07-23T08:53:37.3575285');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (622, N'/uploads/images/09e9a11e459945f69b0ca16c728e462c.jpg', N'IMG_2198.jpg', 3972103, N'image', '2026-07-23T08:53:41.6517541');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (623, N'/uploads/images/8174edab3b824b58a532828d400aba4d.jpg', N'IMG_2205.jpg', 2992721, N'image', '2026-07-23T08:53:45.3469136');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (624, N'/uploads/images/5320ed7d75d44aef8a0d47bd522d222a.jpg', N'IMG_5823.JPG', 3054642, N'image', '2026-07-23T09:00:00.4929255');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (625, N'/uploads/images/9081ece6bc8d493398d08c3c0fc19d49.jpg', N'IMG_5820.JPG', 3238150, N'image', '2026-07-23T09:00:26.2710884');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (626, N'/uploads/images/076c622d3b10416199436eadc4fb57bf.jpg', N'IMG_5815.JPG', 3829431, N'image', '2026-07-23T09:00:38.4145077');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (627, N'/uploads/images/097ca19dc5124c7e8467ef4f415e3c30.jpg', N'IMG_5828.JPG', 4078561, N'image', '2026-07-23T09:00:41.4227187');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (628, N'/uploads/images/e66b5ad0c6314d928c6b6ad014812ce2.jpg', N'IMG_5818.JPG', 3259537, N'image', '2026-07-23T09:00:42.7620273');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (629, N'/uploads/images/245744587a3945a19e62ecb3f9b80a44.jpg', N'IMG_5837.JPG', 4248045, N'image', '2026-07-23T09:03:58.6291486');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (630, N'/uploads/images/c3a5dc8adc0b41ed97c9a624990d61fa.jpg', N'IMG_5834.JPG', 3433730, N'image', '2026-07-23T09:04:07.6145209');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (631, N'/uploads/images/7cdd3a4cdc2544419a072c78416ce700.jpg', N'IMG_5832.JPG', 3363454, N'image', '2026-07-23T09:04:09.2807351');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (632, N'/uploads/images/542eab9798294f2cbda531688305ecf1.jpg', N'IMG_5839.JPG', 4321968, N'image', '2026-07-23T09:06:49.4322279');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (633, N'/uploads/images/8d0cdb6d2fa54b39af3b18e639e8f01b.jpg', N'IMG_5839.JPG', 4321968, N'image', '2026-07-23T09:06:58.3157329');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (634, N'/uploads/images/4d5782a46fb149b295cc770d281ede69.jpg', N'IMG_5843.JPG', 3090577, N'image', '2026-07-23T09:06:59.9829510');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (635, N'/uploads/images/d78e73f17f5346258d4920dd0f8d81d7.jpg', N'IMG_5842.JPG', 3206662, N'image', '2026-07-23T09:07:01.5740930');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 477);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 635);
 GO
 
 -- [RelatedLinks]: 1 rows
