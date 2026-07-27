@@ -39,10 +39,11 @@ interface DocumentData {
 
 function extractGoogleMapsEmbed(url: string): string | null {
   if (!url) return null;
+  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
   const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-  if (match) return `https://www.google.com/maps/embed/v1/place?key=&q=${match[1]},${match[2]}&center=${match[1]},${match[2]}&zoom=15`;
+  if (match) return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${match[1]},${match[2]}&center=${match[1]},${match[2]}&zoom=15`;
   const qmatch = url.match(/[?&]q=([^&]+)/);
-  if (qmatch) return `https://www.google.com/maps/embed/v1/place?key=&q=${encodeURIComponent(qmatch[1])}&zoom=15`;
+  if (qmatch) return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(qmatch[1])}&zoom=15`;
   return null;
 }
 
