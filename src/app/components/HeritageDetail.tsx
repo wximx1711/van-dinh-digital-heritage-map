@@ -156,7 +156,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: 'clamp(12px, 3vw, 24px)' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 360px', gap: 24 }} className="heritage-detail-layout">
 
           {/* ===== MAIN CONTENT ===== */}
@@ -168,7 +168,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
 
             {/* Tabs */}
             <div style={{ background: 'white', borderRadius: 12, overflow: 'hidden', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
-              <div style={{ display: 'flex', borderBottom: '1px solid rgba(15,61,94,0.1)' }}>
+              <div className="detail-tabs" style={{ display: 'flex', borderBottom: '1px solid rgba(15,61,94,0.1)', overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
                 {[
                   { key: 'info', label: lang === 'vi' ? 'Thông tin' : 'Info', icon: <Info size={14} /> },
                   { key: 'history', label: lang === 'vi' ? 'Lịch sử' : 'History', icon: <Clock size={14} /> },
@@ -177,12 +177,13 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                 ].map(tab => (
                   <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
                     style={{
-                      flex: 1, padding: '14px 8px', border: 'none', cursor: 'pointer',
+                      flex: '1 0 auto', padding: '14px 12px', border: 'none', cursor: 'pointer',
                       background: activeTab === tab.key ? '#EBF5FB' : 'white',
                       color: activeTab === tab.key ? '#0F3D5E' : '#5d7a8c',
-                      fontSize: 12, fontWeight: activeTab === tab.key ? 700 : 500,
+                      fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: activeTab === tab.key ? 700 : 500,
                       borderBottom: activeTab === tab.key ? '2px solid #D4A017' : '2px solid transparent',
                       display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                      whiteSpace: 'nowrap',
                     }}>
                     {tab.icon} {tab.label}
                   </button>
@@ -193,7 +194,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                 {/* INFO TAB */}
                 {activeTab === 'info' && (
                   <div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+                    <div className="detail-info-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       {[
                         { label: t('detail.code'), value: site.code },
                         { label: t('detail.type'), value: getSafeLabel(typeLabels, site.type) },
@@ -300,7 +301,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                           <Video size={16} style={{ verticalAlign: 'middle', marginRight: 6 }} />
                           {lang === 'vi' ? 'Video' : 'Videos'}
                         </h3>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
+                        <div className="videos-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 24 }}>
                           {videos.map(v => (
                             <div key={v.videoId} style={{ borderRadius: 8, overflow: 'hidden', border: '1px solid rgba(15,61,94,0.08)' }}>
                               {v.videoType === 'youtube' && v.videoUrl ? (
@@ -538,6 +539,21 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
           </div>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .detail-info-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .videos-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 767px) {
+          .detail-tabs {
+            gap: 0 !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

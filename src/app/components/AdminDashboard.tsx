@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
+import { useSystemSettings } from './SystemSettingsContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { ConfirmDialog } from './ConfirmDialog';
 import { fetchStatisticsOverview } from '../services/statisticsService';
@@ -35,6 +36,7 @@ type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'ab
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
   const auth = useAuth();
+  const { settings } = useSystemSettings();
   const { data: heritageSites } = useHeritageSites();
   const { data: intangibleHeritage } = useIntangibleHeritage();
   const classificationLabels = useClassificationLabels();
@@ -168,8 +170,34 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
 
   return (
     <div style={{ display: 'flex', height: 'calc(100vh - 0px)', background: '#F0F4F8', overflow: 'hidden' }}>
+      {/* Mobile sidebar toggle */}
+      <button
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="show-mobile"
+        style={{
+          display: 'none', position: 'fixed', bottom: 16, left: 16, zIndex: 600,
+          padding: '10px 12px', borderRadius: 8, border: 'none',
+          background: '#0F3D5E', color: 'white', cursor: 'pointer',
+          alignItems: 'center', gap: 6, fontSize: 12, fontWeight: 600,
+          boxShadow: '0 4px 12px rgba(15,61,94,0.35)',
+        }}
+        aria-label={lang === 'vi' ? 'Mở menu' : 'Open menu'}
+      >
+        <Menu size={16} />
+        <span>{lang === 'vi' ? 'Menu' : 'Menu'}</span>
+      </button>
+
+      {/* Mobile sidebar backdrop */}
+      {sidebarOpen && (
+        <div
+          className="admin-sidebar-backdrop show-mobile"
+          style={{ display: 'none' }}
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div style={{
+      <div className={`admin-sidebar ${sidebarOpen ? 'admin-sidebar-open' : 'admin-sidebar-closed'}`} style={{
         width: sidebarOpen ? 240 : 60, minWidth: sidebarOpen ? 240 : 60,
         background: '#071520', display: 'flex', flexDirection: 'column',
         transition: 'width 0.3s, min-width 0.3s', overflow: 'hidden',
@@ -182,10 +210,15 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
         }}>
           <div style={{
             width: 36, height: 36, borderRadius: 8, flexShrink: 0,
-            background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+            background: settings?.logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
+            overflow: 'hidden',
           }}>
-            <Landmark size={18} color="white" />
+            {settings?.logoUrl ? (
+              <LazyImage src={getImageUrl(settings.logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+            ) : (
+              <Landmark size={18} color="white" />
+            )}
           </div>
           {sidebarOpen && (
             <div>
@@ -204,7 +237,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
           {navItems.map(item => (
             <button
               key={item.key}
-              onClick={() => handleNavClick(item.key as AdminSection)}
+              onClick={() => { handleNavClick(item.key as AdminSection); if (window.innerWidth < 900) setSidebarOpen(false); }}
               style={{
                 width: '100%', display: 'flex', alignItems: 'center',
                 gap: sidebarOpen ? 10 : 0, justifyContent: sidebarOpen ? 'flex-start' : 'center',
@@ -239,6 +272,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
         <div style={{ padding: '8px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="hide-mobile"
             style={{
               width: '100%', padding: '8px', borderRadius: 6, border: 'none',
               background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.5)',
@@ -267,26 +301,37 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
       {/* Main content */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         {/* Top bar */}
-        <div style={{
+        <div className="admin-topbar" style={{
           background: 'white', borderBottom: '1px solid rgba(15,61,94,0.1)',
-          padding: '0 24px', height: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 16px', height: 56, display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           boxShadow: '0 1px 8px rgba(15,61,94,0.06)',
         }}>
           {/* Breadcrumb */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ color: '#5d7a8c', fontSize: 13 }}>{lang === 'vi' ? 'Quản trị' : 'Admin'}</span>
-            <ChevronRight size={14} style={{ color: '#cbced4' }} />
-            <span style={{ color: '#0F3D5E', fontSize: 13, fontWeight: 600 }}>
+          <div className="admin-breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: 6, minWidth: 0, overflow: 'hidden' }}>
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="show-mobile-block"
+              style={{
+                display: 'none', background: 'none', border: 'none', cursor: 'pointer',
+                color: '#5d7a8c', padding: 4,
+              }}
+            >
+              <Menu size={16} />
+            </button>
+            <span className="hide-mobile" style={{ color: '#5d7a8c', fontSize: 13, whiteSpace: 'nowrap' }}>{lang === 'vi' ? 'Quản trị' : 'Admin'}</span>
+            <ChevronRight size={14} style={{ color: '#cbced4', flexShrink: 0 }} />
+            <span style={{ color: '#0F3D5E', fontSize: 'clamp(12px, 3vw, 13px)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {navItems.find(n => n.key === section)?.label}
             </span>
           </div>
 
           {/* Right controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {/* Notifications */}
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setNotifOpen(!notifOpen)}
+                className="touch-target"
                 style={{
                   width: 36, height: 36, borderRadius: 8,
                   border: '1px solid rgba(15,61,94,0.1)', background: 'white',
@@ -335,9 +380,10 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 onBlur={() => setTimeout(() => setUserMenuOpen(false), 200)}
+                className="touch-target"
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '4px 8px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.1)',
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '4px 6px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.1)',
                   background: userMenuOpen ? '#EBF5FB' : 'transparent', cursor: 'pointer',
                 }}
               >
@@ -345,11 +391,11 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                   width: 34, height: 34, borderRadius: '50%',
                   background: 'linear-gradient(135deg, #0F3D5E, #1A5276)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'white', fontSize: 13, fontWeight: 700,
+                  color: 'white', fontSize: 13, fontWeight: 700, flexShrink: 0,
                 }}>
                   {initials}
                 </div>
-                <div style={{ textAlign: 'left' }}>
+                <div className="hide-mobile" style={{ textAlign: 'left' }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{displayName}</div>
                   <div style={{ fontSize: 10, color: '#5d7a8c' }}>
                     {auth.isAdmin ? (lang === 'vi' ? 'Quản trị viên' : 'Administrator') : (lang === 'vi' ? 'Quản lý' : 'Manager')}
@@ -396,6 +442,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
 
             <button
               onClick={() => onNavigate('home')}
+              className="hide-mobile"
               style={{
                 padding: '6px 12px', borderRadius: 6,
                 border: '1px solid rgba(15,61,94,0.15)', background: 'white',
@@ -412,18 +459,18 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
         <div style={{ flex: 1, overflowY: 'auto' }}>
           {/* DASHBOARD */}
           {section === 'dashboard' && (
-            <div style={{ padding: '24px' }}>
-              <div style={{ marginBottom: 24 }}>
-                <h1 style={{ color: '#0F3D5E', margin: '0 0 4px', fontSize: 22, fontFamily: 'Merriweather, serif' }}>
+            <div style={{ padding: 'clamp(12px, 3vw, 24px)' }}>
+              <div style={{ marginBottom: 20 }}>
+                <h1 style={{ color: '#0F3D5E', margin: '0 0 4px', fontSize: 'clamp(18px, 4vw, 22px)', fontFamily: 'Merriweather, serif' }}>
                   {lang === 'vi' ? `Xin chào, ${displayName}` : `Welcome, ${displayName}`} 👋
                 </h1>
-                <p style={{ color: '#5d7a8c', fontSize: 13, margin: 0 }}>
+                <p className="hide-mobile" style={{ color: '#5d7a8c', fontSize: 13, margin: 0 }}>
                   {lang === 'vi' ? `Hôm nay là ${new Date().toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}` : `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`}
                 </p>
               </div>
 
               {/* Stats cards */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12, marginBottom: 24 }}>
+              <div className="admin-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 10, marginBottom: 20 }}>
                 {[
                   { label: t('stats.total'), value: heritageSites.length, icon: <Building2 size={18} />, color: '#0F3D5E' },
                   { label: t('stats.national'), value: nationalCount, icon: <Star size={18} />, color: '#E74C3C' },
@@ -451,7 +498,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                 ))}
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+              <div className="admin-dashboard-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
                 {/* Recent updates */}
                 <div style={{ background: 'white', borderRadius: 10, boxShadow: '0 2px 8px rgba(15,61,94,0.06)', overflow: 'hidden' }}>
                   <div style={{ padding: '14px 16px', borderBottom: '1px solid rgba(15,61,94,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -579,6 +626,73 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           cancelLabel={lang === 'vi' ? 'Tiếp tục' : 'Keep editing'}
         />
       )}
+      <style>{`
+        @media (max-width: 900px) {
+          .admin-sidebar {
+            position: fixed !important;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 500;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease, width 0s !important;
+            width: 260px !important;
+            min-width: 260px !important;
+          }
+          .admin-sidebar.admin-sidebar-open {
+            transform: translateX(0);
+          }
+          .admin-sidebar.admin-sidebar-closed {
+            transform: translateX(-100%);
+            width: 260px !important;
+            min-width: 260px !important;
+          }
+          .admin-sidebar-backdrop {
+            display: block !important;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 499;
+          }
+          .show-mobile {
+            display: flex !important;
+          }
+          .show-mobile-block {
+            display: block !important;
+          }
+          .hide-mobile {
+            display: none !important;
+          }
+          .admin-dashboard-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .admin-stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+          .admin-topbar {
+            padding: 0 10px !important;
+            height: 52px !important;
+          }
+          .admin-breadcrumb .show-mobile-block {
+            display: block !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .admin-sidebar {
+            width: 100% !important;
+            min-width: 100% !important;
+          }
+          .admin-stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 8px !important;
+          }
+        }
+        @media (min-width: 901px) {
+          .show-mobile, .show-mobile-block {
+            display: none !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

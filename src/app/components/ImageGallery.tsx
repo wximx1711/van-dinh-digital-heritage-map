@@ -27,7 +27,7 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
         background: 'white', borderRadius: 12, overflow: 'hidden', marginBottom: 20,
         boxShadow: '0 2px 12px rgba(15,61,94,0.08)',
       }}>
-        <div style={{
+        <div className="gallery-main-image" style={{
           position: 'relative', height: 400, background: '#dce8f0',
           display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden',
         }}>
@@ -81,9 +81,10 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
         </div>
 
         {showNav && (
-          <div style={{ display: 'flex', gap: 8, padding: '12px', overflowX: 'auto' }}>
+          <div className="gallery-thumbnails" style={{ display: 'flex', gap: 8, padding: '12px', overflowX: 'auto' }}>
             {images.map((img, i) => (
               <div key={i} onClick={() => setActive(i)}
+                className="gallery-thumb"
                 style={{
                   width: 72, height: 52, borderRadius: 6, overflow: 'hidden',
                   cursor: 'pointer', flexShrink: 0,
@@ -146,6 +147,16 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
           </div>
         </div>
       )}
+      <style>{`
+        @media (max-width: 767px) {
+          .gallery-main-image { height: 240px !important; }
+          .gallery-thumbnails { gap: 6px !important; padding: 8px !important; }
+          .gallery-thumb { width: 56px !important; height: 44px !important; }
+        }
+        @media (min-width: 768px) and (max-width: 1024px) {
+          .gallery-main-image { height: 320px !important; }
+        }
+      `}</style>
     </>
   );
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
+import { useSystemSettings } from './SystemSettingsContext';
 import { LazyImage } from './LazyImage';
 import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
@@ -7,18 +8,6 @@ import { Landmark, MapPin, Phone, Mail, Facebook, Youtube, Globe } from 'lucide-
 
 interface FooterProps {
   onNavigate: (page: string) => void;
-}
-
-interface SystemSettingsData {
-  websiteName: string;
-  logoUrl: string;
-  footerText: string;
-  contactEmail: string;
-  phone: string;
-  address: string;
-  facebookUrl: string;
-  tiktokUrl: string;
-  youtubeUrl: string;
 }
 
 interface RelatedLinkData {
@@ -31,19 +20,15 @@ interface RelatedLinkData {
 
 export function Footer({ onNavigate }: FooterProps) {
   const { lang, t } = useLanguage();
-  const [settings, setSettings] = useState<SystemSettingsData | null>(null);
+  const { settings: s } = useSystemSettings();
   const [relatedLinks, setRelatedLinks] = useState<RelatedLinkData[]>([]);
 
   useEffect(() => {
-    apiGet<SystemSettingsData>('/system-settings')
-      .then(setSettings)
-      .catch(() => {});
     apiGet<RelatedLinkData[]>('/related-links')
       .then(data => setRelatedLinks(data?.filter(l => l.isEnabled).sort((a, b) => a.displayOrder - b.displayOrder) || []))
       .catch(() => {});
   }, []);
 
-  const s = settings;
   const enabledRelatedLinks = relatedLinks
     .filter(l => l.isEnabled)
     .sort((a, b) => a.displayOrder - b.displayOrder);
@@ -58,18 +43,19 @@ export function Footer({ onNavigate }: FooterProps) {
     <footer style={{ background: '#071D2E', color: 'rgba(255,255,255,0.8)', marginTop: 'auto' }}>
       <div style={{ background: 'linear-gradient(90deg, transparent, #D4A017 20%, #D4A017 80%, transparent)', height: 2 }} />
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 24px 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 40, marginBottom: 40 }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 24px 24px' }} className="footer-container">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 32, marginBottom: 32 }} className="footer-grid">
           {/* About column */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
               <div style={{
                 width: 40, height: 40, borderRadius: 8,
-                background: 'linear-gradient(135deg, #D4A017, #B8860B)',
+                background: s?.logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
+                overflow: 'hidden',
               }}>
                 {s?.logoUrl ? (
-                  <LazyImage src={getImageUrl(s.logoUrl)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />
+                  <LazyImage src={getImageUrl(s.logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 6 }} />
                 ) : (
                   <Landmark size={20} color="white" />
                 )}
@@ -215,7 +201,7 @@ export function Footer({ onNavigate }: FooterProps) {
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.4)', margin: 0 }}>
             {t('footer.copyright')}
           </p>
-          <div style={{ display: 'flex', gap: 16 }}>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
             {[
               lang === 'vi' ? 'Chính sách bảo mật' : 'Privacy Policy',
               lang === 'vi' ? 'Điều khoản sử dụng' : 'Terms of Use',
@@ -228,6 +214,17 @@ export function Footer({ onNavigate }: FooterProps) {
           </div>
         </div>
       </div>
+      <style>{`
+        @media (max-width: 640px) {
+          .footer-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+          .footer-container {
+            padding: 32px 16px 16px !important;
+          }
+        }
+      `}</style>
     </footer>
   );
 }

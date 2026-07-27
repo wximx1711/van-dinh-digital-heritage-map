@@ -109,25 +109,25 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
         </div>
       </div>
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', transform: 'translateY(-24px)' }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 16px', transform: 'translateY(-24px)' }}>
         {/* Filter bar */}
-        <div style={{ background: 'white', borderRadius: 10, padding: '16px', marginBottom: 20, boxShadow: '0 4px 16px rgba(15,61,94,0.1)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="relics-filters" style={{ background: 'white', borderRadius: 10, padding: '16px', marginBottom: 20, boxShadow: '0 4px 16px rgba(15,61,94,0.1)', display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
           {/* Search */}
           <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
             <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#5d7a8c' }} />
             <input
               value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
               placeholder={t('hero.search.placeholder')}
-              style={{ width: '100%', padding: '9px 9px 9px 32px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 13, background: '#F0F4F8', outline: 'none', boxSizing: 'border-box' }}
+              style={{ width: '100%', padding: '9px 9px 9px 32px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 'clamp(12px, 3vw, 13px)', background: '#F0F4F8', outline: 'none', boxSizing: 'border-box' }}
             />
           </div>
 
           {/* Classification filter */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Filter size={13} style={{ color: '#5d7a8c' }} />
+          <div className="relics-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <Filter size={13} style={{ color: '#5d7a8c', flexShrink: 0 }} />
             <select value={filterCls} onChange={e => { setFilterCls(e.target.value as Classification | 'all'); setPage(1); }}
-              style={{ padding: '9px 10px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 13, background: 'white', cursor: 'pointer', outline: 'none' }}>
-              <option value="all">{t('common.all')} ({lang === 'vi' ? 'Xếp hạng' : 'Classification'})</option>
+              style={{ padding: '9px 10px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 'clamp(12px, 3vw, 13px)', background: 'white', cursor: 'pointer', outline: 'none', maxWidth: 160 }}>
+              <option value="all">{t('common.all')}</option>
               <option value="national">{t('map.national')}</option>
               <option value="city">{t('map.city')}</option>
               <option value="unranked">{t('map.unranked')}</option>
@@ -136,8 +136,8 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
 
           {/* Type filter */}
           <select value={filterType} onChange={e => { setFilterType(e.target.value as HeritageType | 'all'); setPage(1); }}
-            style={{ padding: '9px 10px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 13, background: 'white', cursor: 'pointer', outline: 'none' }}>
-            <option value="all">{t('common.all')} ({lang === 'vi' ? 'Loại hình' : 'Type'})</option>
+            style={{ padding: '9px 10px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 'clamp(12px, 3vw, 13px)', background: 'white', cursor: 'pointer', outline: 'none', maxWidth: 160 }}>
+            <option value="all">{t('common.all')}</option>
             {Object.entries(typeLabels).map(([k, v]) => (
               <option key={k} value={k}>{v[lang]}</option>
             ))}
@@ -145,7 +145,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
 
           {/* Reset */}
           {(search || filterCls !== 'all' || filterType !== 'all') && (
-            <button onClick={resetFilters} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '9px 14px', borderRadius: 7, border: '1px solid rgba(212,160,23,0.3)', background: 'rgba(212,160,23,0.05)', color: '#B8860B', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+            <button onClick={resetFilters} className="touch-target" style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '9px 14px', borderRadius: 7, border: '1px solid rgba(212,160,23,0.3)', background: 'rgba(212,160,23,0.05)', color: '#B8860B', fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 600, cursor: 'pointer' }}>
               <RotateCcw size={12} /> {t('map.resetfilter')}
             </button>
           )}
@@ -228,6 +228,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
                 {paginated.map(site => (
                   <div key={site.id} onClick={() => onNavigate('heritage-detail', site.id)}
+                    className="relics-list-item"
                     style={{ background: 'white', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 2px 8px rgba(15,61,94,0.06)', display: 'flex', transition: 'box-shadow 0.2s' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 6px 20px rgba(15,61,94,0.12)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 8px rgba(15,61,94,0.06)'; }}
@@ -235,9 +236,9 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
                     <div style={{ width: 120, height: 90, background: '#dce8f0', flexShrink: 0 }}>
                       <LazyImage src={getImageUrl(site.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
-                    <div style={{ flex: 1, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 16 }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
+                    <div className="relics-list-content" style={{ flex: 1, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
                           <span style={{ padding: '2px 8px', borderRadius: 4, fontSize: 10, fontWeight: 700, background: classificationBackgrounds[site.classification], color: classificationColors[site.classification] }}>
                             {classificationLabels[site.classification][lang]}
                           </span>
@@ -245,12 +246,12 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
                             {typeLabels[site.type][lang]}
                           </span>
                         </div>
-                        <h3 style={{ color: '#0F3D5E', fontSize: 14, fontWeight: 700, margin: '0 0 4px' }}>{lang === 'vi' ? site.nameVi : site.nameEn}</h3>
+                        <h3 style={{ color: '#0F3D5E', fontSize: 14, fontWeight: 700, margin: '0 0 4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lang === 'vi' ? site.nameVi : site.nameEn}</h3>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <span style={{ fontSize: 11, color: '#5d7a8c', display: 'flex', alignItems: 'center', gap: 3 }}><MapPin size={10} />{lang === 'vi' ? site.addressVi.split(',').slice(-2).join(',') : site.addressEn.split(',').slice(-2).join(',')}</span>
+                          <span style={{ fontSize: 11, color: '#5d7a8c', display: 'flex', alignItems: 'center', gap: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><MapPin size={10} />{lang === 'vi' ? site.addressVi.split(',').slice(-2).join(',') : site.addressEn.split(',').slice(-2).join(',')}</span>
                         </div>
                       </div>
-                      <button style={{ padding: '7px 16px', borderRadius: 7, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <button className="hide-mobile" style={{ padding: '7px 16px', borderRadius: 7, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
                         <Eye size={12} /> {t('featured.viewprofile')}
                       </button>
                     </div>
@@ -375,6 +376,39 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
           </div>
         )}
       </div>
+      <style>{`
+        @media (max-width: 767px) {
+          .relics-filters {
+            gap: 8px !important;
+            padding: 12px !important;
+          }
+          .relics-filter-select select {
+            max-width: 130px !important;
+            font-size: 12px !important;
+          }
+          .relics-list-item {
+            flex-direction: column !important;
+          }
+          .relics-list-item > div:first-child {
+            width: 100% !important;
+            height: 140px !important;
+          }
+          .relics-list-content {
+            padding: 10px 12px !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .relics-filters {
+            flex-direction: column !important;
+          }
+          .relics-filters > div,
+          .relics-filters > select {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

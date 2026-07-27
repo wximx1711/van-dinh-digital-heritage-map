@@ -411,7 +411,7 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
         </button>
       </div>
 
-      <div style={{ background: 'white', borderRadius: 10, padding: '14px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
+      <div className="im-filters" style={{ background: 'white', borderRadius: 10, padding: '14px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
           <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#5d7a8c' }} />
           <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder={t('im.search')} style={{ ...inputStyle, paddingLeft: 32, background: '#F0F4F8' }} />
@@ -425,11 +425,12 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
         </div>
       </div>
 
-      <div style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
+      <div className="im-table-wrapper" style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         {loading ? (
           <AdminTableSkeleton rowCount={5} columnCount={7} />
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 580 }}>
             <thead>
               <tr style={{ background: '#0F3D5E' }}>
                 {[
@@ -495,7 +496,8 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
                 <tr><td colSpan={7} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
               )}
             </tbody>
-          </table>
+            </table>
+          </div>
         )}
 
         {totalPages > 1 && (
@@ -808,6 +810,16 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
         onSelectMultiple={handleMediaSelectMultiple}
         multiple={mediaPickerTarget === 'gallery'}
       />
+      <style>{`
+        @media (max-width: 767px) {
+          .im-table-wrapper {
+            overflow-x: auto !important;
+          }
+          .im-table-wrapper table {
+            min-width: 560px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

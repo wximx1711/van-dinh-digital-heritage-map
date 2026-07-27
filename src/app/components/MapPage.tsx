@@ -439,10 +439,38 @@ export function MapPage({ onNavigate }: MapPageProps) {
     [siteMap, typeLabels, lang, t, handleViewDetails, handleGetDirections, tripContextMap],
   );
 
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
   return (
-    <div style={{ display: 'flex', height: 'calc(100vh - 120px)', background: '#F0F4F8' }}>
+    <div style={{ display: 'flex', height: 'calc(100vh - 120px)', background: '#F0F4F8', position: 'relative' }}>
+      {/* Mobile sidebar toggle button */}
+      <button
+        onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        className="show-mobile"
+        style={{
+          display: 'none', position: 'absolute', top: 8, left: 8, zIndex: 25,
+          padding: '8px 10px', borderRadius: 6, border: 'none',
+          background: '#0F3D5E', color: 'white', cursor: 'pointer',
+          alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 600,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+        }}
+        aria-label={lang === 'vi' ? 'Mở bộ lọc' : 'Open filters'}
+      >
+        <Filter size={14} />
+        <span>{t('common.filter')}</span>
+      </button>
+
+      {/* Mobile sidebar backdrop */}
+      {mobileSidebarOpen && (
+        <div
+          className="show-mobile"
+          style={{ display: 'none', position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.4)', zIndex: 19 }}
+          onClick={() => setMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
-      <div style={{
+      <div className={`${mobileSidebarOpen ? 'map-sidebar-overlay' : ''}`} style={{
         width: showFilters ? 300 : 48, minWidth: showFilters ? 300 : 48,
         background: 'white', borderRight: '1px solid rgba(15,61,94,0.1)',
         display: 'flex', flexDirection: 'column',
@@ -454,15 +482,17 @@ export function MapPage({ onNavigate }: MapPageProps) {
         }}>
           {showFilters && (
             <span style={{ color: 'white', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Filter size={14} /> {t('common.filter')}
+              <Filter size={14} /> <span className="hide-mobile">{t('common.filter')}</span>
             </span>
           )}
-          <button
-            onClick={() => setShowFilters(!showFilters)}
-            style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', padding: 4 }}
-          >
-            {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-          </button>
+          <div style={{ display: 'flex', gap: 4 }}>
+            <button
+              onClick={() => { setShowFilters(!showFilters); setMobileSidebarOpen(false); }}
+              style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.8)', cursor: 'pointer', padding: 4 }}
+            >
+              {showFilters ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+          </div>
         </div>
 
         {showFilters && (
@@ -643,7 +673,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
           onDayChange={handleTripDayChange}
         />
 
-        <div role="radiogroup" aria-label={lang === 'vi' ? 'Loại bản đồ' : 'Map type'} style={{
+        <div role="radiogroup" aria-label={lang === 'vi' ? 'Loại bản đồ' : 'Map type'} className="map-type-controls" style={{
           position: 'absolute', top: 12, right: 12, zIndex: 10,
           display: 'flex', borderRadius: 8, overflow: 'hidden',
           boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
@@ -658,8 +688,9 @@ export function MapPage({ onNavigate }: MapPageProps) {
               onClick={() => setMapType(id)}
               role="radio"
               aria-checked={mapType === id}
+              className="touch-target"
               style={{
-                padding: '6px 12px', border: 'none', fontSize: 11,
+                padding: '6px 12px', border: 'none', fontSize: 'clamp(10px, 2.5vw, 11px)',
                 fontWeight: mapType === id ? 700 : 500,
                 background: mapType === id ? '#0F3D5E' : 'white',
                 color: mapType === id ? 'white' : '#5d7a8c',
@@ -671,13 +702,13 @@ export function MapPage({ onNavigate }: MapPageProps) {
           ))}
         </div>
 
-        <div style={{
+        <div className="map-location-controls" style={{
           position: 'absolute', bottom: 16, right: 16, zIndex: 10,
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
         }}>
           <style>{`@keyframes locate-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
           {locationError && (
-            <div style={{
+            <div className="hide-mobile" style={{
               padding: '6px 10px', borderRadius: 6, background: '#FDEDEC',
               color: '#E74C3C', fontSize: 11, fontWeight: 600, maxWidth: 200,
               textAlign: 'center', boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
@@ -690,8 +721,9 @@ export function MapPage({ onNavigate }: MapPageProps) {
             onClick={locateUser}
             disabled={isLocating}
             aria-label={lang === 'vi' ? 'Vị trí của tôi' : 'My Location'}
+            className="touch-target"
             style={{
-              width: 40, height: 40, borderRadius: 8,
+              width: 44, height: 44, borderRadius: 8,
               background: 'white', border: 'none',
               boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -712,7 +744,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
           </button>
         </div>
 
-        <div style={{
+        <div className="map-info-controls" style={{
           position: 'absolute', bottom: 16, left: 16, zIndex: 10,
           display: 'flex', flexDirection: 'column', gap: 8,
           alignItems: 'flex-start', pointerEvents: 'none',
@@ -726,20 +758,20 @@ export function MapPage({ onNavigate }: MapPageProps) {
               padding: '8px 14px', borderRadius: 8,
               background: 'rgba(255,255,255,0.95)',
               boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
-              maxWidth: 280, pointerEvents: 'auto',
+              maxWidth: 260, pointerEvents: 'auto',
             }}>
               <div style={{
                 width: 8, height: 8, borderRadius: '50%',
                 background: '#D4A017', flexShrink: 0,
               }} />
-              <div>
+              <div style={{ minWidth: 0 }}>
                 <div style={{
                   fontSize: 10, fontWeight: 700, color: '#D4A017',
                   textTransform: 'uppercase', letterSpacing: 0.3, marginBottom: 1,
                 }}>
                   {lang === 'vi' ? 'Gần nhất' : 'Nearest'}
                 </div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#0F3D5E', lineHeight: 1.3 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#0F3D5E', lineHeight: 1.3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {nearestHeritage.name}
                 </div>
                 <div style={{ fontSize: 11, color: '#5d7a8c' }}>
@@ -756,6 +788,36 @@ export function MapPage({ onNavigate }: MapPageProps) {
       {showQr && selectedSite && (
         <QrModal site={selectedSite} onClose={() => setShowQr(false)} lang={lang} />
       )}
+      <style>{`
+        @media (max-width: 767px) {
+          .map-sidebar-overlay {
+            position: absolute !important;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 20;
+            width: 280px !important;
+            min-width: 280px !important;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.2);
+          }
+          .map-type-controls {
+            top: 48px !important;
+            left: 8px !important;
+            right: auto !important;
+          }
+          .map-location-controls {
+            bottom: 60px !important;
+            right: 8px !important;
+          }
+          .map-info-controls {
+            bottom: 60px !important;
+            left: 8px !important;
+          }
+        }
+        @media (min-width: 768px) {
+          .show-mobile { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

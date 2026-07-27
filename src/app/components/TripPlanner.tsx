@@ -222,7 +222,7 @@ export function TripPlanner({
         <span>{lang === 'vi' ? 'Đóng' : 'Close'}</span>
       </button>
 
-      <div ref={panelRef} style={{
+      <div ref={panelRef} className="trip-planner-panel" style={{
         position: 'absolute',
         top: 0,
         right: 0,
@@ -727,8 +727,12 @@ export function TripPlanner({
       </div>
 
       <style>{`
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .trip-planner-label { display: none; }
+  .trip-planner-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 }
 @media print {
   .trip-planner-print { display: block !important; }

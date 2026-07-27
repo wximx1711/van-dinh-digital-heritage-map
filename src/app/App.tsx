@@ -8,6 +8,7 @@ import { MapPage } from './components/MapPage';
 import { HeritageDetail } from './components/HeritageDetail';
 import { LoginPage } from './components/LoginPage';
 import { AdminDashboard } from './components/AdminDashboard';
+import { SystemSettingsProvider } from './components/SystemSettingsContext';
 import { RelicsPage } from './components/RelicsPage';
 
 import { IntangiblePage } from './components/IntangiblePage';
@@ -345,7 +346,9 @@ export default function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <AppInner />
+        <SystemSettingsProvider>
+          <AppInner />
+        </SystemSettingsProvider>
       </AuthProvider>
     </LanguageProvider>
   );

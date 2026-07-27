@@ -173,7 +173,7 @@ export function HeritageCategoriesManagement({ onDirtyChange }: HeritageCategori
         </button>
       </div>
 
-      <div style={{
+      <div className="hcm-filters" style={{
         background: 'white', borderRadius: 10, padding: '14px 16px', marginBottom: 16,
         display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
         boxShadow: '0 1px 6px rgba(15,61,94,0.06)',
@@ -190,7 +190,8 @@ export function HeritageCategoriesManagement({ onDirtyChange }: HeritageCategori
         {loading ? (
           <AdminTableSkeleton rowCount={6} columnCount={6} />
         ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <div style={{ overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 520 }}>
             <thead>
               <tr style={{ background: '#0F3D5E' }}>
                 {['ID', lang === 'vi' ? 'Mã' : 'Code', lang === 'vi' ? 'Tên (VI)' : 'Name (VI)', lang === 'vi' ? 'Tên (EN)' : 'Name (EN)', lang === 'vi' ? 'Icon' : 'Icon', lang === 'vi' ? 'Thao tác' : 'Actions'].map(h => (
@@ -227,6 +228,7 @@ export function HeritageCategoriesManagement({ onDirtyChange }: HeritageCategori
               )}
             </tbody>
           </table>
+          </div>
         )}
         {totalPages > 1 && (
           <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(15,61,94,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -330,6 +332,17 @@ export function HeritageCategoriesManagement({ onDirtyChange }: HeritageCategori
           </div>
         </div>
       )}
+      <style>{`
+        @media (max-width: 767px) {
+          .hcm-filters {
+            flex-direction: column !important;
+          }
+          .hcm-filters > div {
+            width: 100% !important;
+            min-width: 100% !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

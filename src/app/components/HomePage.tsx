@@ -41,7 +41,7 @@ const handleSearch = () => {
   return (
     <div style={{ background: 'white' }}>
       {/* Hero Section */}
-      <section style={{ position: 'relative', minHeight: 520, overflow: 'hidden' }}>
+      <section className="hero-section" style={{ position: 'relative', minHeight: 520, overflow: 'hidden' }}>
         {/* Background */}
         <div style={{
           position: 'absolute', inset: 0,
@@ -57,9 +57,9 @@ const handleSearch = () => {
         {/* Decorative gold border bottom */}
         <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4, background: 'linear-gradient(90deg, transparent, #D4A017 20%, #D4A017 80%, transparent)' }} />
 
-        <div style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '80px 24px 100px', textAlign: 'center' }}>
+        <div className="hero-content" style={{ position: 'relative', maxWidth: 1280, margin: '0 auto', padding: '80px 24px 100px', textAlign: 'center' }}>
           {/* Decorative top label */}
-          <div style={{
+          <div className="hide-mobile" style={{
             display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 20,
             padding: '6px 16px', borderRadius: 20,
             background: 'rgba(212,160,23,0.2)', border: '1px solid rgba(212,160,23,0.4)',
@@ -71,18 +71,18 @@ const handleSearch = () => {
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#D4A017', display: 'inline-block' }} />
           </div>
 
-          <h1 style={{
+          <h1 className="text-responsive-hero" style={{
             color: 'white', fontSize: 'clamp(28px, 4vw, 48px)',
             fontFamily: 'Merriweather, serif', fontWeight: 900, marginBottom: 16, lineHeight: 1.2,
           }}>
             {t('site.title')}
           </h1>
-          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 16, maxWidth: 600, margin: '0 auto 36px', lineHeight: 1.7 }}>
+          <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 'clamp(14px, 2.5vw, 16px)', maxWidth: 600, margin: '0 auto 36px', lineHeight: 1.7, paddingLeft: 8, paddingRight: 8 }}>
             {t('site.subtitle')}
           </p>
 
           {/* Search bar */}
-          <div style={{ display: 'flex', maxWidth: 560, margin: '0 auto', gap: 0 }}>
+          <div className="hero-search-bar" style={{ display: 'flex', maxWidth: 560, margin: '0 auto', gap: 0 }}>
             <div style={{ flex: 1, position: 'relative' }}>
               <Search size={18} style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#5d7a8c' }} />
               <input
@@ -93,17 +93,18 @@ const handleSearch = () => {
                 style={{
                   width: '100%', padding: '14px 14px 14px 44px',
                   borderRadius: '8px 0 0 8px', border: 'none', outline: 'none',
-                  fontSize: 14, background: 'white',
+                  fontSize: 'clamp(13px, 3.5vw, 14px)', background: 'white',
                   boxSizing: 'border-box',
                 }}
               />
             </div>
             <button
               onClick={handleSearch}
+              className="touch-target"
               style={{
                 padding: '0 24px', borderRadius: '0 8px 8px 0',
                 background: '#D4A017', border: 'none', color: 'white',
-                fontSize: 14, fontWeight: 600, cursor: 'pointer',
+                fontSize: 'clamp(13px, 3.5vw, 14px)', fontWeight: 600, cursor: 'pointer',
                 whiteSpace: 'nowrap',
               }}
             >
@@ -121,6 +122,7 @@ const handleSearch = () => {
               <button
                 key={btn.page}
                 onClick={() => onNavigate(btn.page)}
+                className="touch-target"
                 style={{
                   padding: '8px 18px', borderRadius: 6,
                   background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.25)',
@@ -144,11 +146,11 @@ const handleSearch = () => {
       </section>
 
       {/* Stats Cards */}
-      <section style={{ background: 'white', padding: '0 24px' }}>
-        <div style={{
+      <section style={{ background: 'white', padding: '0 16px' }}>
+        <div className="stats-grid" style={{
           maxWidth: 1280, margin: '0 auto',
-          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
-          gap: 16, transform: 'translateY(-48px)',
+          display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gap: 12, transform: 'translateY(-48px)',
         }}>
           {stats.map((stat) => (
             <div
@@ -191,7 +193,7 @@ const handleSearch = () => {
       {/* Map Preview Section */}
       <section style={{ background: '#F0F4F8', padding: '40px 24px 60px', marginTop: -32 }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 24 }}>
+          <div className="map-preview-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 24 }}>
             <div>
               <div style={{ color: '#D4A017', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
                 {lang === 'vi' ? 'Khám phá' : 'Explore'}
@@ -273,22 +275,22 @@ const handleSearch = () => {
       </section>
 
       {/* Featured Heritage */}
-      <section style={{ padding: '60px 24px' }}>
+      <section style={{ padding: 'clamp(32px, 5vw, 60px) 16px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ color: '#D4A017', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <div style={{ color: '#D4A017', fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
               {lang === 'vi' ? 'Di sản tiêu biểu' : 'Outstanding Heritage'}
             </div>
-            <h2 style={{ color: '#0F3D5E', fontSize: 28, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 12px' }}>
+            <h2 className="text-responsive-h2" style={{ color: '#0F3D5E', fontSize: 'clamp(22px, 4vw, 28px)', fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 12px' }}>
               {t('featured.title')}
             </h2>
-            <p style={{ color: '#5d7a8c', fontSize: 15, maxWidth: 560, margin: '0 auto' }}>
+            <p style={{ color: '#5d7a8c', fontSize: 'clamp(13px, 2.5vw, 15px)', maxWidth: 560, margin: '0 auto', paddingLeft: 8, paddingRight: 8 }}>
               {t('featured.subtitle')}
             </p>
             <div style={{ background: 'linear-gradient(90deg, transparent, #D4A017, transparent)', height: 2, maxWidth: 100, margin: '16px auto 0' }} />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
+          <div className="featured-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 24 }}>
             {heritageSites.slice(0, 6).map((site) => (
               <div
                 key={site.id}
@@ -393,16 +395,16 @@ const handleSearch = () => {
       </section>
 
       {/* Intangible Heritage */}
-      <section style={{ background: '#F0F4F8', padding: '60px 24px' }}>
+      <section style={{ background: '#F0F4F8', padding: 'clamp(32px, 5vw, 60px) 16px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <div style={{ color: '#D4A017', fontSize: 12, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <div style={{ color: '#D4A017', fontSize: 'clamp(11px, 2.5vw, 12px)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 8 }}>
               {lang === 'vi' ? 'Phi vật thể' : 'Intangible'}
             </div>
-            <h2 style={{ color: '#0F3D5E', fontSize: 28, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 12px' }}>
+            <h2 className="text-responsive-h2" style={{ color: '#0F3D5E', fontSize: 'clamp(22px, 4vw, 28px)', fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 12px' }}>
               {t('intangible.title')}
             </h2>
-            <p style={{ color: '#5d7a8c', fontSize: 15, maxWidth: 560, margin: '0 auto' }}>
+            <p style={{ color: '#5d7a8c', fontSize: 'clamp(13px, 2.5vw, 15px)', maxWidth: 560, margin: '0 auto', paddingLeft: 8, paddingRight: 8 }}>
               {t('intangible.subtitle')}
             </p>
             <div style={{ background: 'linear-gradient(90deg, transparent, #D4A017, transparent)', height: 2, maxWidth: 100, margin: '16px auto 0' }} />
@@ -480,8 +482,8 @@ const handleSearch = () => {
       </section>
 
       {/* CTA Section */}
-      <section style={{
-        padding: '60px 24px',
+      <section className="cta-section" style={{
+        padding: 'clamp(40px, 5vw, 60px) 16px',
         background: 'linear-gradient(135deg, #0F3D5E 0%, #1A5276 100%)',
         position: 'relative', overflow: 'hidden',
       }}>
@@ -524,6 +526,29 @@ const handleSearch = () => {
           </div>
         </div>
       </section>
+
+      <style>{`
+        @media (max-width: 640px) {
+          .stats-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 10px !important;
+          }
+          .featured-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .map-preview-header {
+            flex-direction: column !important;
+            align-items: center !important;
+            gap: 12px !important;
+            text-align: center !important;
+          }
+        }
+        @media (min-width: 641px) and (max-width: 1024px) {
+          .featured-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

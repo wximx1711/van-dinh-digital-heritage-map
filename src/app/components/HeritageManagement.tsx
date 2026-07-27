@@ -516,7 +516,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
         </button>
       </div>
 
-      <div style={{ background: 'white', borderRadius: 10, padding: '14px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
+      <div className="hm-filters" style={{ background: 'white', borderRadius: 10, padding: '14px 16px', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
           <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#5d7a8c' }} />
           <input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder={t('hm.search')} style={{ ...inputStyle, paddingLeft: 32, background: '#F0F4F8' }} />
@@ -539,8 +539,9 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
         </div>
       </div>
 
-      <div style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <div className="hm-table-wrapper" style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
+        <div className="hm-table-scroll" style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 640 }}>
           <thead>
             <tr style={{ background: '#0F3D5E' }}>
               {[t('hm.id'), t('hm.name'), t('hm.classification'), t('hm.type'), t('hm.status'), lang === 'vi' ? 'Video' : 'Video', t('hm.updated'), t('hm.actions')].map(h => (
@@ -605,10 +606,11 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
             )}
           </tbody>
         </table>
+        </div>
 
         {totalPages > 1 && (
-          <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(15,61,94,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 12, color: '#5d7a8c' }}>
+          <div className="hm-pagination" style={{ padding: '12px 16px', borderTop: '1px solid rgba(15,61,94,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span className="hide-pagination-label" style={{ fontSize: 12, color: '#5d7a8c' }}>
               {lang === 'vi' ? `Hiển thị ${(page-1)*PER_PAGE+1}–${Math.min(page*PER_PAGE, filtered.length)} trong ${filtered.length}` : `Showing ${(page-1)*PER_PAGE+1}–${Math.min(page*PER_PAGE, filtered.length)} of ${filtered.length}`}
             </span>
             <div style={{ display: 'flex', gap: 4 }}>
@@ -977,6 +979,32 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
           ? (lang === 'vi' ? 'Chọn ảnh đại diện' : 'Select Thumbnail')
           : (lang === 'vi' ? 'Chọn ảnh cho thư viện' : 'Select Gallery Images')}
       />
+      <style>{`
+        @media (max-width: 767px) {
+          .hm-filters {
+            flex-direction: column !important;
+          }
+          .hm-filters > div,
+          .hm-filters > select,
+          .hm-filters > input {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+          }
+          .hm-pagination {
+            flex-direction: column !important;
+            gap: 8px !important;
+            align-items: flex-start !important;
+          }
+          .hm-table-scroll {
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+          }
+          .hide-pagination-label {
+            font-size: 11px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

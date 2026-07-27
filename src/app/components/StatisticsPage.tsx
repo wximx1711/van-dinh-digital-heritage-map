@@ -105,7 +105,7 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
 
       <div style={{ maxWidth: 1280, margin: '0 auto', padding: '24px', transform: 'translateY(-24px)' }}>
         {/* Summary cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: 12, marginBottom: 24 }}>
+        <div className="stats-summary-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: 10, marginBottom: 20 }}>
           {summaryCards.map(card => (
             <div key={card.label} style={{
               background: 'white', borderRadius: 10, padding: '16px',
@@ -127,7 +127,7 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
         </div>
 
         {/* Charts row */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
+        <div className="stats-charts-row" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
           {/* Classification pie chart */}
           <div style={{ background: 'white', borderRadius: 12, padding: '20px', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
             <h3 style={{ color: '#0F3D5E', fontSize: 15, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 16px' }}>
@@ -265,6 +265,16 @@ export function StatisticsPage({ onNavigate }: StatisticsPageProps) {
             : `Statistics data updated from Van Dinh cultural heritage management system`}
         </div>
       </div>
+      <style>{`
+        @media (max-width: 767px) {
+          .stats-charts-row {
+            grid-template-columns: 1fr !important;
+          }
+          .stats-summary-grid {
+            grid-template-columns: repeat(2, 1fr) !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

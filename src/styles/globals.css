@@ -1,0 +1,190 @@
+/* ===== GLOBAL RESPONSIVE STYLES ===== */
+
+html {
+  overflow-x: hidden;
+}
+body {
+  overflow-x: hidden;
+  width: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Responsive table wrapper */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide / show at breakpoints */
+@media (max-width: 767px) {
+  .hide-mobile { display: none !important; }
+  .show-mobile-block { display: block !important; }
+  .show-mobile-flex { display: flex !important; }
+  .show-mobile-inline { display: inline !important; }
+}
+
+@media (min-width: 768px) {
+  .show-mobile-block,
+  .show-mobile-flex,
+  .show-mobile-inline {
+    display: none !important;
+  }
+}
+
+/* Tablet breakpoint */
+@media (max-width: 1024px) {
+  .hide-tablet { display: none !important; }
+  .show-tablet-block { display: block !important; }
+  .show-tablet-flex { display: flex !important; }
+}
+
+@media (min-width: 1025px) {
+  .show-tablet-block,
+  .show-tablet-flex {
+    display: none !important;
+  }
+}
+
+/* Touch-friendly minimum sizing */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Responsive container padding */
+@media (max-width: 767px) {
+  .container-pad {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
+/* Responsive font sizes */
+@media (max-width: 767px) {
+  .text-responsive-hero {
+    font-size: clamp(1.5rem, 7vw, 2rem) !important;
+  }
+  .text-responsive-h2 {
+    font-size: clamp(1.2rem, 5vw, 1.5rem) !important;
+  }
+  .text-responsive-body {
+    font-size: clamp(0.8rem, 3.5vw, 0.95rem) !important;
+  }
+}
+
+/* Responsive grid overrides */
+@media (max-width: 767px) {
+  .grid-2-col-mobile {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .grid-1-col-mobile {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Admin sidebar overlay for mobile */
+@media (max-width: 900px) {
+  .admin-sidebar-overlay {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 500;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+  }
+  .admin-sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 499;
+  }
+}
+
+/* Map page responsive */
+@media (max-width: 767px) {
+  .map-sidebar-overlay {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 20;
+    width: 280px !important;
+    min-width: 280px !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.2);
+  }
+}
+
+/* Trip planner responsive */
+@media (max-width: 767px) {
+  .trip-planner-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .trip-planner-btn-label {
+    display: none !important;
+  }
+}
+
+/* Image gallery responsive */
+@media (max-width: 767px) {
+  .gallery-main-image {
+    height: 240px !important;
+  }
+  .gallery-thumbnails {
+    gap: 6px !important;
+    padding: 8px !important;
+  }
+  .gallery-thumb {
+    width: 56px !important;
+    height: 44px !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .gallery-main-image {
+    height: 320px !important;
+  }
+}
+
+/* InfoCard sidebar responsive */
+@media (max-width: 767px) {
+  .detail-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+}
+
+/* Hero section responsive */
+@media (max-width: 767px) {
+  .hero-section {
+    min-height: 400px !important;
+  }
+  .hero-content {
+    padding: 48px 16px 64px !important;
+  }
+  .hero-search-bar {
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .hero-search-bar input {
+    border-radius: 8px !important;
+  }
+  .hero-search-bar button {
+    border-radius: 8px !important;
+    width: 100% !important;
+    padding: 12px !important;
+  }
+}
+
+/* CTA section responsive */
+@media (max-width: 767px) {
+  .cta-section {
+    padding: 40px 16px !important;
+  }
+}

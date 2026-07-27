@@ -1,5 +1,6 @@
 ﻿import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
+import { useSystemSettings } from './SystemSettingsContext';
 import { apiGet, apiPut, apiPost, apiDelete } from '../services/api';
 import { Save, Check, AlertTriangle, Upload, Plus, Pencil, Trash2, X, ArrowUp, ArrowDown, EyeOff, Eye } from 'lucide-react';
 import { getImageUrl } from '../utils/url';
@@ -23,6 +24,7 @@ interface RelatedLink {
 
 export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManagementProps) {
   const { lang, t } = useLanguage();
+  const { refreshSettings } = useSystemSettings();
   const [form, setForm] = useState({
     websiteName: '', logoUrl: '', footerText: '',
     contactEmail: '', phone: '', address: '',
@@ -186,6 +188,7 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
     setSaving(true);
     try {
       await apiPut('/system-settings', form);
+      refreshSettings();
       saveSnapshot();
       unsaved.markClean();
       showToast(lang === 'vi' ? 'Đã lưu cài đặt' : 'Settings saved');

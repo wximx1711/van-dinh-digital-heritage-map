@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
-import { apiGet } from '../services/api';
+import { useSystemSettings } from './SystemSettingsContext';
 import {
   Map, BookOpen, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
 } from 'lucide-react';
@@ -17,17 +17,10 @@ interface HeaderProps {
 export function Header({ currentPage, onNavigate }: HeaderProps) {
   const { lang, setLang, t } = useLanguage();
   const auth = useAuth();
+  const { settings } = useSystemSettings();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [hotline, setHotline] = useState<string | null>(null);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-
-  useEffect(() => {
-    apiGet<{ phone?: string; logoUrl?: string }>('/system-settings')
-      .then(data => { setHotline(data?.phone ?? null); setLogoUrl(data?.logoUrl ?? null); })
-      .catch(() => { setHotline(null); setLogoUrl(null); });
-  }, []);
 
   const displayName = auth.user?.fullName ?? auth.user?.username ?? '';
   const initials = displayName
@@ -55,44 +48,44 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
 
   return (
     <header style={{ background: '#0F3D5E', position: 'sticky', top: 0, zIndex: 100, boxShadow: '0 2px 12px rgba(15,61,94,0.4)' }}>
-      {/* Top strip */}
-      <div style={{ background: '#0a2d47', borderBottom: '1px solid rgba(212,160,23,0.2)' }}>
+      {/* Top strip - hidden on mobile */}
+      <div className="hide-mobile" style={{ background: '#0a2d47', borderBottom: '1px solid rgba(212,160,23,0.2)' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto', padding: '4px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>
+          <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {lang === 'vi' ? 'Cổng thông tin di sản văn hóa xã Vân Đình, Ứng Hòa, Hà Nội' : 'Van Dinh Cultural Heritage Portal, Ung Hoa, Hanoi'}
           </span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12 }}>
-              {lang === 'vi' ? 'Đường dây nóng: ' : 'Hotline: '}{hotline ?? '--'}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexShrink: 0 }}>
+            <span style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, whiteSpace: 'nowrap' }}>
+              {lang === 'vi' ? 'Đường dây nóng: ' : 'Hotline: '}{settings?.phone || '--'}
             </span>
           </div>
         </div>
       </div>
 
       {/* Main header */}
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 72 }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '0 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 64, gap: 8 }}>
         {/* Logo & title */}
         <button
           onClick={() => onNavigate('home')}
-          style={{ display: 'flex', alignItems: 'center', gap: 12, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', minWidth: 0, flex: '1 1 auto', overflow: 'hidden' }}
         >
           <div style={{
-            width: 48, height: 48, borderRadius: 8,
-            background: logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
+            width: 40, height: 40, borderRadius: 8,
+            background: settings?.logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             flexShrink: 0, overflow: 'hidden',
           }}>
-            {logoUrl ? (
-              <LazyImage src={getImageUrl(logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
+            {settings?.logoUrl ? (
+              <LazyImage src={getImageUrl(settings.logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
             ) : (
-              <Landmark size={26} color="white" />
+              <Landmark size={22} color="white" />
             )}
           </div>
-          <div>
-            <div style={{ color: '#D4A017', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, lineHeight: 1.2 }}>
+          <div style={{ minWidth: 0, overflow: 'hidden' }}>
+            <div style={{ color: '#D4A017', fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {lang === 'vi' ? 'Ủy ban nhân dân xã Vân Đình' : 'Van Dinh Commune People\'s Committee'}
             </div>
-            <div style={{ color: 'white', fontSize: 15, fontWeight: 700, lineHeight: 1.3, fontFamily: 'Merriweather, serif' }}>
+            <div style={{ color: 'white', fontSize: 14, fontWeight: 700, lineHeight: 1.3, fontFamily: 'Merriweather, serif', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {lang === 'vi' ? 'Bản đồ số Di sản Văn hóa' : 'Digital Heritage Map'}
             </div>
           </div>
@@ -137,22 +130,23 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
         </nav>
 
         {/* Right controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
           {/* Language switch */}
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
+              className="touch-target"
               style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '6px 10px', borderRadius: 6,
+                display: 'flex', alignItems: 'center', gap: 4,
+                padding: '6px 8px', borderRadius: 6,
                 border: '1px solid rgba(212,160,23,0.4)',
                 background: 'transparent', color: '#D4A017',
-                fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
               }}
             >
-              <Globe size={14} />
-              {lang.toUpperCase()}
-              <ChevronDown size={12} />
+              <Globe size={13} />
+              <span className="hide-mobile">{lang.toUpperCase()}</span>
+              <ChevronDown size={10} />
             </button>
             {dropdownOpen && (
               <div style={{
@@ -164,6 +158,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
                   <button
                     key={l}
                     onClick={() => { setLang(l); setDropdownOpen(false); }}
+                    className="touch-target"
                     style={{
                       display: 'flex', alignItems: 'center', gap: 8,
                       width: '100%', padding: '10px 16px', border: 'none', cursor: 'pointer',
@@ -188,12 +183,13 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
             <div style={{ position: 'relative' }}>
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="touch-target"
                 style={{
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  padding: '5px 12px 5px 5px', borderRadius: 20,
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  padding: '4px 8px 4px 4px', borderRadius: 20,
                   background: 'rgba(255,255,255,0.12)',
                   border: '1px solid rgba(212,160,23,0.3)',
-                  color: 'white', fontSize: 13, fontWeight: 500,
+                  color: 'white', fontSize: 12, fontWeight: 500,
                   cursor: 'pointer', whiteSpace: 'nowrap',
                 }}
               >
@@ -205,8 +201,8 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
                 }}>
                   {initials}
                 </div>
-                <span style={{ maxWidth: 100, overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</span>
-                <ChevronDown size={11} style={{ color: '#D4A017', flexShrink: 0 }} />
+                <span className="hide-mobile" style={{ maxWidth: 80, overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</span>
+                <ChevronDown size={10} style={{ color: '#D4A017', flexShrink: 0 }} />
               </button>
               {userMenuOpen && (
                 <div style={{
@@ -217,6 +213,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
                 }}>
                   <button
                     onClick={() => { setUserMenuOpen(false); onNavigate('admin'); }}
+                    className="touch-target"
                     style={{
                       width: '100%', padding: '10px 16px', border: 'none', cursor: 'pointer',
                       background: 'white', color: '#0F3D5E', fontSize: 13,
@@ -230,6 +227,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
                   <div style={{ borderTop: '1px solid rgba(15,61,94,0.08)' }}>
                     <button
                       onClick={handleLogoutClick}
+                      className="touch-target"
                       style={{
                         width: '100%', padding: '10px 16px', border: 'none', cursor: 'pointer',
                         background: 'white', color: '#E74C3C', fontSize: 13,
@@ -247,28 +245,31 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
           ) : (
             <button
               onClick={() => onNavigate('login')}
+              className="touch-target"
               style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '7px 16px', borderRadius: 6,
+                display: 'flex', alignItems: 'center', gap: 4,
+                padding: '6px 12px', borderRadius: 6,
                 background: 'linear-gradient(135deg, #D4A017, #B8860B)',
-                border: 'none', color: 'white', fontSize: 13, fontWeight: 600,
+                border: 'none', color: 'white', fontSize: 12, fontWeight: 600,
                 cursor: 'pointer', whiteSpace: 'nowrap',
                 boxShadow: '0 2px 8px rgba(212,160,23,0.4)',
               }}
             >
-              <LogIn size={14} />
-              {t('nav.login')}
+              <LogIn size={13} />
+              <span className="hide-mobile">{t('nav.login')}</span>
             </button>
           )}
 
           {/* Mobile menu button */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
+            className="show-mobile touch-target"
             style={{
               display: 'none', padding: 8, borderRadius: 6, border: 'none',
               background: 'rgba(255,255,255,0.1)', color: 'white', cursor: 'pointer',
+              alignItems: 'center', justifyContent: 'center',
             }}
-            className="show-mobile"
+            aria-label={mobileOpen ? (lang === 'vi' ? 'Đóng menu' : 'Close menu') : (lang === 'vi' ? 'Mở menu' : 'Open menu')}
           >
             {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
@@ -277,14 +278,15 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div style={{ background: '#0a2d47', borderTop: '1px solid rgba(212,160,23,0.2)', padding: '8px 24px 16px' }}>
+        <div style={{ background: '#0a2d47', borderTop: '1px solid rgba(212,160,23,0.2)', padding: '4px 16px 16px', maxHeight: 'calc(100vh - 64px)', overflowY: 'auto' }}>
           {navItems.map((item) => (
             <button
               key={item.key}
               onClick={() => { onNavigate(item.key); setMobileOpen(false); }}
+              className="touch-target"
               style={{
                 display: 'flex', alignItems: 'center', gap: 8,
-                width: '100%', padding: '10px 12px', borderRadius: 6, border: 'none',
+                width: '100%', padding: '12px 12px', borderRadius: 6, border: 'none',
                 background: currentPage === item.key ? 'rgba(212,160,23,0.15)' : 'transparent',
                 color: currentPage === item.key ? '#D4A017' : 'rgba(255,255,255,0.85)',
                 fontSize: 14, fontWeight: 500, cursor: 'pointer', textAlign: 'left',
@@ -301,6 +303,9 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
         @media (max-width: 900px) {
           .hidden-mobile { display: none !important; }
           .show-mobile { display: flex !important; }
+        }
+        @media (min-width: 901px) {
+          .show-mobile { display: none !important; }
         }
       `}</style>
     </header>

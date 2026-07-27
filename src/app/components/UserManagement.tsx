@@ -261,7 +261,7 @@ export function UserManagement({ onDirtyChange }: UserManagementProps) {
         </button>
       </div>
 
-      <div style={{
+      <div className="um-filters" style={{
         background: 'white', borderRadius: 10, padding: '14px 16px', marginBottom: 16,
         display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap',
         boxShadow: '0 1px 6px rgba(15,61,94,0.06)',
@@ -275,12 +275,13 @@ export function UserManagement({ onDirtyChange }: UserManagementProps) {
         </div>
       </div>
 
-      <div style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
+      <div className="um-table-wrapper" style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         {loading ? (
           <AdminTableSkeleton rowCount={6} columnCount={8} />
         ) : (
           <>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 640 }}>
               <thead>
                 <tr style={{ background: '#0F3D5E' }}>
                   {[
@@ -367,6 +368,7 @@ export function UserManagement({ onDirtyChange }: UserManagementProps) {
                 )}
               </tbody>
             </table>
+            </div>
             {totalPages > 1 && (
               <div style={{ padding: '12px 16px', borderTop: '1px solid rgba(15,61,94,0.06)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: 12, color: '#5d7a8c' }}>
@@ -567,6 +569,19 @@ export function UserManagement({ onDirtyChange }: UserManagementProps) {
           </div>
         </div>
       )}
+      <style>{`
+        @media (max-width: 767px) {
+          .um-table-wrapper {
+            overflow-x: auto !important;
+          }
+          .um-table-wrapper table {
+            min-width: 600px !important;
+          }
+          .um-filters {
+            flex-direction: column !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

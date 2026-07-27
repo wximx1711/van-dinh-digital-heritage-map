@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-26T03:42:04Z
+    GENERATED: 2026-07-27T04:10:52Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -482,7 +482,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 434 rows
+-- [ActivityLogs]: 440 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -918,9 +918,15 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10395, 3, N'UPDATE', N'Heritage', 10029, N'VĐHN-DT-055', '2026-07-26T03:37:24.5564447', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10396, 3, N'UPDATE', N'Heritage', 10029, N'VĐHN-DT-055', '2026-07-26T03:39:13.1257275', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10397, 3, N'UPDATE', N'Heritage', 10029, N'VĐHN-DT-055', '2026-07-26T03:41:10.2934322', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10398, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-27T01:55:22.5946039', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10399, 3, N'CREATE', N'Heritage', 10035, N'VĐHN-DT-061', '2026-07-27T02:42:19.8787836', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10400, 3, N'CREATE', N'Heritage', 10036, N'VĐHN-DT-061', '2026-07-27T02:42:19.8787948', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10401, 3, N'DELETE', N'Heritage', 10035, N'h07c5d9e9', '2026-07-27T02:44:38.3372130', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10402, 3, N'DELETE', N'Heritage', 10036, N'h0b595c9c', '2026-07-27T02:44:40.6228306', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10403, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T04:03:39.3437896', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10397);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10403);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -947,7 +953,7 @@ GO
 DBCC CHECKIDENT ([HeritageCategories], RESEED, 9);
 GO
 
--- [Heritage]: 62 rows
+-- [Heritage]: 64 rows
 SET IDENTITY_INSERT [Heritage] ON;
 INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (1, N'heff617cc', N'VĐHN-DT-001', 2, N'CHÙA BÀ CHÈ (BÀ TRÀ TỰ)', N'CHÙA BÀ CHÈ (BÀ TRÀ TỰ)', N'chùa-bà-chè-bà-trà-tự', N'city', N'active', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', N'63 Đ. Quang Trung, Vân Đình, Hà Nội, Việt Nam', 20.72903680, 105.77182720, N'1. Thông tin hành chính & Xếp hạng pháp lý
 Tên di tích thống nhất: Chùa Ba Chè (hoặc Chùa Bà Chè).
@@ -4975,9 +4981,275 @@ Rituals: Offering incense and releasing lanterns on the riverbank to pay tribute
 Demarcation: The protected area includes the section of the embankment and the waterfront directly related to the historical site. The placement of boundary markers must comply with regulations that do not affect the flow of water and the safety of the dikes.
 
 Current situation: The authorities need to pay attention to erecting commemorative markers/signs to help people identify the area, while also maintaining environmental hygiene along the riverbanks and preventing sand mining or encroachment on wharves and docks.', N'/uploads/images/542eab9798294f2cbda531688305ecf1.jpg', N'Thế ki 18', N'xã Vân Đình', N'/api/qr/heritage/h2be04402', N'https://maps.app.goo.gl/2tqaoJxmbrF9MNNv9', 0, NULL, 3, '2026-07-23T09:06:53.5552011', '2026-07-23T09:07:19.0137441');
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10035, N'h07c5d9e9', N'VĐHN-DT-061', 7, N'Nhà Cổ Văn Ông', N'Nhà Cổ Văn Ông', N'nhà-cổ-văn-ông', N'city', N'active', N'PQ6M+44M, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', N'PQ6M+44M, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', 20.74542430, 105.70832310, N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', NULL, N'Thế kỉ 18', N'xã Vân Đình', N'/api/qr/heritage/h07c5d9e9', N'https://maps.app.goo.gl/GfLU16DmVQ2ddnR3A', 1, '2026-07-27T02:44:38.3251673', 3, '2026-07-27T02:42:18.8033411', NULL);
+INSERT [Heritage] ([HeritageId],[PublicId],[Code],[CategoryId],[NameVi],[NameEn],[Slug],[Classification],[Status],[AddressVi],[AddressEn],[Latitude],[Longitude],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[ThumbnailUrl],[YearBuilt],[Guardian],[QrCodeUrl],[GoogleMapUrl],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (10036, N'h0b595c9c', N'VĐHN-DT-061', 7, N'Nhà Cổ Văn Ông', N'Nhà Cổ Văn Ông', N'nhà-cổ-văn-ông', N'city', N'active', N'PQ6M+44M, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', N'PQ6M+44M, Tảo Khê, Vân Đình, Hà Nội, Việt Nam', 20.74542430, 105.70832310, N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', N'he website logo in System Settings is broken, while all other uploaded images (heritage images, gallery images, videos, documents, etc.) are working correctly.
+
+Current behavior:
+- Heritage images load normally.
+- Media library works normally.
+- Uploads for other modules work normally.
+- Only the website logo is broken in:
+  - Admin Settings
+  - Public Header
+  - Public Footer
+- Browser shows:
+  GET /uploads/images/<filename>.jpeg 404 (Not Found)
+
+This means the issue is isolated to the System Settings logo implementation.
+
+Your task is to find and fix the ROOT CAUSE instead of applying temporary workarounds.
+
+Requirements:
+
+1. Investigate the complete logo workflow:
+   - Upload logo
+   - Save settings
+   - Store physical file
+   - Save logo path
+   - Retrieve settings
+   - Display logo
+
+2. Compare the logo upload implementation with the heritage image upload implementation, since heritage images already work correctly.
+
+3. Verify whether the logo file is:
+   - actually uploaded,
+   - saved to the correct directory,
+   - persisted correctly,
+   - returned correctly by the Settings API.', NULL, N'Thế kỉ 18', N'xã Vân Đình', N'/api/qr/heritage/h0b595c9c', N'https://maps.app.goo.gl/GfLU16DmVQ2ddnR3A', 1, '2026-07-27T02:44:40.6159866', 3, '2026-07-27T02:42:18.9532511', NULL);
 SET IDENTITY_INSERT [Heritage] OFF;
 GO
-DBCC CHECKIDENT ([Heritage], RESEED, 10034);
+DBCC CHECKIDENT ([Heritage], RESEED, 10036);
 GO
 
 -- [HeritageDocuments]: 27 rows
@@ -5607,7 +5879,7 @@ INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder]
 INSERT [HeritageImages] ([ImageId],[HeritageId],[ImageUrl],[Caption],[SortOrder],[UploadedAt]) VALUES (10618, 10029, N'/uploads/images/36b9f86207f842bea36bf343bf860a49.jpg', NULL, 3, '2026-07-26T03:41:10.2844818');
 SET IDENTITY_INSERT [HeritageImages] OFF;
 GO
-DBCC CHECKIDENT ([HeritageImages], RESEED, 10618);
+DBCC CHECKIDENT ([HeritageImages], RESEED, 10620);
 GO
 
 -- [HeritageVideos]: 1 rows
@@ -5844,7 +6116,7 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
--- [MediaFiles]: 637 rows
+-- [MediaFiles]: 668 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -6483,9 +6755,40 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (702, N'/uploads/images/36b9f86207f842bea36bf343bf860a49.jpg', N'IMG_1663.jpg', 3200472, N'image', '2026-07-26T03:40:32.5464286');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (703, N'/uploads/images/4a2cf6aa05494fddb15403eea0f1a309.jpg', N'IMG_1668.jpg', 4184447, N'image', '2026-07-26T03:40:36.4674865');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (704, N'/uploads/images/59078b3f3233406e802905242fe156d1.png', N'image_2026-07-26_104100504.png', 966844, N'image', '2026-07-26T03:41:00.5841464');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (705, N'/uploads/images/e0c157ba96d24ab4a659216c7073cf8c.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T01:56:18.7510062');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (706, N'/uploads/images/c6eb8d261f01433d906e1216d0a10faa.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T01:56:40.1205430');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (707, N'/uploads/images/787049ba381947359f5fdf51a6f375ca.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T01:57:42.6078219');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (708, N'/uploads/images/7b07424cc7644f6a85c78791e674558d.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:11:00.3986781');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (709, N'/uploads/images/64afb38bc78a4a06a64c198236bd62f1.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:11:22.5606690');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (710, N'/uploads/images/de71272f04d34672a4925300ea6a5282.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:12:23.0256529');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (711, N'/uploads/images/ac215d08f50e4476a6b90886fdde642c.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:19:52.3904338');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (712, N'/uploads/images/fa74ee1106924b548ef89d7cbdda90fd.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:20:22.3328862');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (714, N'/uploads/images/73aaf2e4901d469496079f89c293e18e.jpg', N'IMG_1663.jpg', 3200472, N'image', '2026-07-27T02:43:26.8477009');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (715, N'/uploads/images/891b6b4d1e74420680fd9a56f05e92e5.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:54:02.7344912');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (716, N'/uploads/images/6432a42e13f5433b9fca3edd4f06cd83.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:54:22.1722086');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (717, N'/uploads/images/e1829687f9374f31921e0b6fb288ad06.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:56:29.3399610');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (718, N'/uploads/images/fd400b94c32c4c858a87cc522db1c45f.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T02:56:46.1034796');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (719, N'/uploads/images/44e0511a6a7e4c189e47351d77c7a15e.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:04:39.4325384');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (720, N'/uploads/images/a973057dbd7e426cb6e16db1f24dad37.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:07:34.7679868');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (721, N'/uploads/images/ac259461549848a58cdc66e40e6296fe.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:30:34.6581391');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (722, N'/uploads/images/e278a3cd20894a68bb2d22a357f78b0c.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:41:00.7691735');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (723, N'/uploads/images/7c3b0c9a82b440a9a05eee2020118646.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:41:16.0088873');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (724, N'/uploads/images/477c868950234778b794a0efdfa9787f.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:41:48.2183027');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (725, N'/uploads/images/cf0fb8ca0c4341a581f3e3ed5048da59.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:43:23.7234014');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (726, N'/uploads/images/5ff76d36cfea454097184014ba2eb4de.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:46:26.4593649');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (727, N'/uploads/images/79e6f70e13644db99d684c4a873cd5b8.jpg', N'IMG_1668.HEIC', 4184400, N'image', '2026-07-27T03:46:47.2889356');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (728, N'/uploads/images/c503e83796024c7f90d9e4026ba1a709.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:46:53.9524993');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (729, N'/uploads/images/a39c1ae94e9749cfb772f2cc6c734c1f.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:50:14.5430127');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (730, N'/uploads/images/5032a04c62704e5d84eb31403ec2d5b9.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:51:07.0913917');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (731, N'/uploads/images/809d2a29360442369428e6e3cff72bf9.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T03:53:47.2538855');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (732, N'/uploads/images/b21d6b9cbd1c48b0b2ce0038079d335d.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T03:59:20.4221833');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (733, N'/uploads/images/ea5cf19ac1ab4c24bbd36c88c859cf62.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T03:59:40.0100311');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (734, N'/uploads/images/cd883b6475d54f1fb069d1e275a70861.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T04:00:42.2953315');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (735, N'/uploads/images/71cba0de968f41d58363fa3ba9e9ec6c.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T04:05:14.9756874');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (736, N'/uploads/images/16afe8f45eb547faabd74d7b007fea66.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T04:05:37.1952492');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 704);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 736);
 GO
 
 -- [RelatedLinks]: 1 rows
@@ -6498,7 +6801,7 @@ GO
 
 -- [SystemSettings]: 1 rows
 SET IDENTITY_INSERT [SystemSettings] ON;
-INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl]) VALUES (1, N'Bản đồ số Di sản Văn hóa Vân Đình', N'/uploads/images/a68b12b9e2294c23acc59b187247ba3c.jpeg', N'Bản đồ số Di sản Văn hóa Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-07-19T12:21:06.8245073', N'');
+INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl]) VALUES (1, N'Bản đồ số Di sản Văn hóa Vân Đình', N'', N'Bản đồ số Di sản Văn hóa Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-07-27T04:03:39.3335703', N'');
 SET IDENTITY_INSERT [SystemSettings] OFF;
 GO
 DBCC CHECKIDENT ([SystemSettings], RESEED, 1);
