@@ -44,6 +44,10 @@ builder.Services.AddAntiforgery(options =>
     options.Cookie.Name = csrfOptions.CookieName;
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
+    if (builder.Environment.IsProduction())
+    {
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    }
 });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -88,6 +92,10 @@ builder.Services.AddSession(options =>
     options.IdleTimeout = TimeSpan.FromHours(sessionOptions.IdleTimeoutHours);
     options.Cookie.HttpOnly = true;
     options.Cookie.SameSite = SameSiteMode.Lax;
+    if (builder.Environment.IsProduction())
+    {
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    }
 });
 
 builder.Services
@@ -96,7 +104,15 @@ builder.Services
     {
         options.Cookie.Name = authCookieOptions.CookieName;
         options.Cookie.HttpOnly = true;
-        options.Cookie.SameSite = SameSiteMode.Lax;
+        if (builder.Environment.IsProduction())
+        {
+            options.Cookie.SameSite = SameSiteMode.Strict;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        }
+        else
+        {
+            options.Cookie.SameSite = SameSiteMode.Lax;
+        }
         options.LoginPath = authCookieOptions.LoginPath;
         options.AccessDeniedPath = authCookieOptions.AccessDeniedPath;
         options.Events.OnRedirectToLogin = context =>
@@ -142,6 +158,10 @@ if (app.Environment.IsDevelopment())
         options.DocumentTitle = swaggerOptions.DocumentTitle;
         options.RoutePrefix = swaggerOptions.RoutePrefix;
     });
+}
+else
+{
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useSystemSettings } from './SystemSettingsContext';
 import { LazyImage } from './LazyImage';
-import { getImageUrl } from '../utils/url';
+import { getImageUrl, getLogoUrl } from '../utils/url';
 import { Eye, EyeOff, LogIn, ArrowLeft, Landmark, Globe } from 'lucide-react';
 import type { UserInfo } from '../../core/types';
 
@@ -182,7 +182,7 @@ const handleLogin = async () => {
               boxShadow: '0 4px 16px rgba(212,160,23,0.4)', overflow: 'hidden',
             }}>
               {settings?.logoUrl ? (
-                <LazyImage src={getImageUrl(settings.logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16 }} />
+                <LazyImage src={getLogoUrl(settings.logoUrl, settings.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16 }} />
               ) : (
                 <Landmark size={30} color="white" />
               )}

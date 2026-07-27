@@ -3,7 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useSystemSettings } from './SystemSettingsContext';
 import { apiGet, apiPut, apiPost, apiDelete } from '../services/api';
 import { Save, Check, AlertTriangle, Upload, Plus, Pencil, Trash2, X, ArrowUp, ArrowDown, EyeOff, Eye } from 'lucide-react';
-import { getImageUrl } from '../utils/url';
+import { getImageUrl, getLogoUrl } from '../utils/url';
 import { FormSkeleton } from './Skeleton';
 import { LazyImage } from './LazyImage';
 import { uploadFileWithProgress } from '../services/uploadService';
@@ -24,7 +24,7 @@ interface RelatedLink {
 
 export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManagementProps) {
   const { lang, t } = useLanguage();
-  const { refreshSettings } = useSystemSettings();
+  const { refreshSettings, updateSettings, settings: contextSettings } = useSystemSettings();
   const [form, setForm] = useState({
     websiteName: '', logoUrl: '', footerText: '',
     contactEmail: '', phone: '', address: '',
@@ -188,6 +188,7 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
     setSaving(true);
     try {
       await apiPut('/system-settings', form);
+      updateSettings({ ...form, updatedAt: new Date().toISOString() });
       refreshSettings();
       saveSnapshot();
       unsaved.markClean();
@@ -265,7 +266,7 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
           <div>
             <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>{lang === 'vi' ? 'Logo' : 'Logo'}</label>
             <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              {form.logoUrl && <LazyImage src={getImageUrl(form.logoUrl)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />}
+              {form.logoUrl && <LazyImage src={getLogoUrl(form.logoUrl, contextSettings?.updatedAt)} alt="" style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover' }} />}
               <label style={{
                 display: 'inline-flex', alignItems: 'center', gap: 4,
                 padding: '7px 14px', borderRadius: 6, background: uploading ? '#5d7a8c' : '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600,

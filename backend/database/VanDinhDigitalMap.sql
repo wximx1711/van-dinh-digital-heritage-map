@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-27T04:10:52Z
+    GENERATED: 2026-07-27T07:26:13Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -482,7 +482,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 440 rows
+-- [ActivityLogs]: 460 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -924,9 +924,29 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10401, 3, N'DELETE', N'Heritage', 10035, N'h07c5d9e9', '2026-07-27T02:44:38.3372130', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10402, 3, N'DELETE', N'Heritage', 10036, N'h0b595c9c', '2026-07-27T02:44:40.6228306', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10403, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T04:03:39.3437896', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10404, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-27T05:38:19.6850149', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10405, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-27T05:38:26.1089145', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10406, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-27T05:49:57.2452374', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10407, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-27T05:50:07.3310348', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10408, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T05:51:42.6703021', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10409, 2, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T05:51:42.8896455', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10410, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T05:51:54.7185571', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10411, 2, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T05:51:54.7983784', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10412, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T05:53:02.5661203', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10413, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:01:04.5769952', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10414, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:01:38.6819376', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10415, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:03:25.6952173', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10416, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:03:50.1252509', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10417, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:04:29.9427188', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10418, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:05:14.3250360', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10419, 2, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T06:05:27.3961750', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10420, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:06:13.2622534', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10421, 2, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T06:06:26.3098957', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10422, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:06:47.2585348', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10423, 2, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T06:06:47.3404302', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10403);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10423);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -6116,7 +6136,7 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
--- [MediaFiles]: 668 rows
+-- [MediaFiles]: 687 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -6786,9 +6806,28 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (734, N'/uploads/images/cd883b6475d54f1fb069d1e275a70861.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T04:00:42.2953315');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (735, N'/uploads/images/71cba0de968f41d58363fa3ba9e9ec6c.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T04:05:14.9756874');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (736, N'/uploads/images/16afe8f45eb547faabd74d7b007fea66.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T04:05:37.1952492');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (737, N'/uploads/images/ff16eeb435304bb698d4921523229316.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T04:11:27.2249790');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (738, N'/uploads/images/a60be5012f0348259365b4e62bcd6280.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T04:21:32.5663565');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (739, N'/uploads/images/9b19023cd9b54a20bf6e1ee440025c4f.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T05:05:45.5790953');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (740, N'/uploads/images/99db585d9cf043bbbdd9ce5cf9cfca48.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T05:34:01.1085946');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (741, N'/uploads/images/4b18e7943a974e3aa4369768d672983f.png', N'test-logo.png', 246, N'image', '2026-07-27T05:51:42.7617014');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (742, N'/uploads/images/634a1beca4d9483e90e66c7dfd0beeca.png', N'test-logo.png', 246, N'image', '2026-07-27T05:53:02.6891401');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (743, N'/uploads/images/e679416bb4f54b58a70c7259226f6cad.png', N'test-logo.png', 246, N'image', '2026-07-27T06:04:01.2089928');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (744, N'/uploads/images/bbc44a0d4566499eb3d58d12cf4ba0b4.png', N'test-logo.png', 246, N'image', '2026-07-27T06:04:39.9829217');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (745, N'/uploads/images/ba1b555e789d450fb641f6bf18299e11.png', N'test-logo.png', 246, N'image', '2026-07-27T06:05:24.3820568');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (746, N'/uploads/images/d1b7101663b740e7b7652e57d9e48146.png', N'test-logo.png', 246, N'image', '2026-07-27T06:06:23.2779794');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (747, N'/uploads/images/28d2bbcf6c90456c8defbe44538de767.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T06:10:59.2028688');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (748, N'/uploads/images/588d0cab60ae4e7f9f029f11e0ccf8e5.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T06:13:17.5067943');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (749, N'/uploads/images/862feb6c08034fd683b02b9f07cc6361.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T06:35:08.3851234');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (750, N'/uploads/images/6a83d566a43044c180b5a259131eaae3.png', N'image_2026-07-27_134116647.png', 467252, N'image', '2026-07-27T06:41:16.6916541');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (751, N'/uploads/images/76a028fd33b24e54991883e6c3a83dd8.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T06:41:41.8129956');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (752, N'/uploads/images/452ad0fe701448ad8000a7626ac31342.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T06:43:04.9315408');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (753, N'/uploads/images/f420301014554758a77234fa8ab94ced.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T06:54:59.4977150');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (754, N'/uploads/images/3334f790e16b49efaaf6d21badfa7e12.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T06:55:55.3169919');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (755, N'/uploads/images/d340b77145fa4264babf7ef427f93a46.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T06:57:07.1982567');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 736);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 755);
 GO
 
 -- [RelatedLinks]: 1 rows
@@ -6801,7 +6840,7 @@ GO
 
 -- [SystemSettings]: 1 rows
 SET IDENTITY_INSERT [SystemSettings] ON;
-INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl]) VALUES (1, N'Bản đồ số Di sản Văn hóa Vân Đình', N'', N'Bản đồ số Di sản Văn hóa Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-07-27T04:03:39.3335703', N'');
+INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl]) VALUES (1, N'Bản đồ số Di sản Văn hóa Vân Đình', N'', N'Bản đồ số Di sản Văn hóa Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-07-27T06:06:47.3380390', N'');
 SET IDENTITY_INSERT [SystemSettings] OFF;
 GO
 DBCC CHECKIDENT ([SystemSettings], RESEED, 1);

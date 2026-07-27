@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import { LazyImage } from './LazyImage';
-import { getImageUrl } from '../utils/url';
+import { getImageUrl, getLogoUrl } from '../utils/url';
 
 interface HeaderProps {
   currentPage: string;
@@ -76,7 +76,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
             flexShrink: 0, overflow: 'hidden',
           }}>
             {settings?.logoUrl ? (
-              <LazyImage src={getImageUrl(settings.logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+              <LazyImage src={getLogoUrl(settings.logoUrl, settings.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
             ) : (
               <Landmark size={22} color="white" />
             )}

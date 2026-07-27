@@ -1,24 +1,37 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { LanguageProvider, useLanguage } from './components/LanguageContext';
 import { AuthProvider, useAuth } from './components/AuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { HomePage } from './components/HomePage';
-import { MapPage } from './components/MapPage';
-import { HeritageDetail } from './components/HeritageDetail';
 import { LoginPage } from './components/LoginPage';
-import { AdminDashboard } from './components/AdminDashboard';
 import { SystemSettingsProvider } from './components/SystemSettingsContext';
-import { RelicsPage } from './components/RelicsPage';
-
-import { IntangiblePage } from './components/IntangiblePage';
-import { IntangibleHeritageDetail } from './components/IntangibleHeritageDetail';
-import { StatisticsPage } from './components/StatisticsPage';
 import { NotFoundPage } from './components/NotFoundPage';
 import { Skeleton } from './components/Skeleton';
 import { apiGet, apiPost } from './services/api';
 import { getImageUrl } from './utils/url';
 import type { UserInfo, AboutPageData } from '../core/types';
+
+const MapPage = lazy(() => import('./components/MapPage').then(m => ({ default: m.MapPage })));
+const HeritageDetail = lazy(() => import('./components/HeritageDetail').then(m => ({ default: m.HeritageDetail })));
+const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const RelicsPage = lazy(() => import('./components/RelicsPage').then(m => ({ default: m.RelicsPage })));
+const IntangiblePage = lazy(() => import('./components/IntangiblePage').then(m => ({ default: m.IntangiblePage })));
+const IntangibleHeritageDetail = lazy(() => import('./components/IntangibleHeritageDetail').then(m => ({ default: m.IntangibleHeritageDetail })));
+const StatisticsPage = lazy(() => import('./components/StatisticsPage').then(m => ({ default: m.StatisticsPage })));
+
+function PageLoader({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', minHeight: 300, background: '#F0F4F8' }}>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        <div style={{ width: 32, height: 32, borderRadius: '50%', border: '3px solid rgba(15,61,94,0.2)', borderTopColor: '#0F3D5E', animation: 'spin 0.8s linear infinite' }} />
+      </div>
+    }>
+      {children}
+    </Suspense>
+  );
+}
 
 type Page =
   | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
@@ -297,7 +310,7 @@ function AppInner() {
           </button>
         </div>
         <div style={{ flex: 1, overflow: 'hidden' }}>
-          <AdminDashboard onNavigate={navigate} onLogout={handleLogout} />
+          <PageLoader><AdminDashboard onNavigate={navigate} onLogout={handleLogout} /></PageLoader>
         </div>
       </div>
     );
@@ -309,7 +322,7 @@ function AppInner() {
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
         <Header currentPage={page} onNavigate={navigate} />
         <div style={{ flex: 1, overflow: 'hidden' }}>
-          <MapPage onNavigate={navigate} />
+          <PageLoader><MapPage onNavigate={navigate} /></PageLoader>
         </div>
       </div>
     );
@@ -318,11 +331,11 @@ function AppInner() {
   const renderContent = () => {
     switch (page) {
       case 'home': return <HomePage onNavigate={navigate} />;
-      case 'relics': return <RelicsPage onNavigate={navigate} searchQuery={searchQuery} />;
-      case 'intangible': return <IntangiblePage onNavigate={navigate} />;
-      case 'statistics': return <StatisticsPage onNavigate={navigate} />;
-      case 'heritage-detail': return <HeritageDetail siteId={heritageSiteId} onNavigate={navigate} />;
-      case 'intangible-detail': return <IntangibleHeritageDetail itemId={intangibleId} onNavigate={navigate} />;
+      case 'relics': return <PageLoader><RelicsPage onNavigate={navigate} searchQuery={searchQuery} /></PageLoader>;
+      case 'intangible': return <PageLoader><IntangiblePage onNavigate={navigate} /></PageLoader>;
+      case 'statistics': return <PageLoader><StatisticsPage onNavigate={navigate} /></PageLoader>;
+      case 'heritage-detail': return <PageLoader><HeritageDetail siteId={heritageSiteId} onNavigate={navigate} /></PageLoader>;
+      case 'intangible-detail': return <PageLoader><IntangibleHeritageDetail itemId={intangibleId} onNavigate={navigate} /></PageLoader>;
 
       case 'about': return <AboutPage onNavigate={navigate} />;
       case 'contact': return <ContactPage onNavigate={navigate} />;

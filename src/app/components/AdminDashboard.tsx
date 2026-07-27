@@ -6,7 +6,7 @@ import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTy
 import { ConfirmDialog } from './ConfirmDialog';
 import { fetchStatisticsOverview } from '../services/statisticsService';
 
-import { getImageUrl } from '../utils/url';
+import { getImageUrl, getLogoUrl } from '../utils/url';
 import {
   LayoutDashboard, Building2, BookOpen, ImageIcon,
   Users, Settings, Bell, LogOut, ChevronRight, Star,
@@ -215,7 +215,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
             overflow: 'hidden',
           }}>
             {settings?.logoUrl ? (
-              <LazyImage src={getImageUrl(settings.logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
+              <LazyImage src={getLogoUrl(settings.logoUrl, settings.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
             ) : (
               <Landmark size={18} color="white" />
             )}

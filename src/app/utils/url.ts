@@ -12,6 +12,16 @@ export function getImageUrl(url: string | null | undefined): string {
   return url;
 }
 
+export function getLogoUrl(logoUrl: string | null | undefined, updatedAt?: string): string {
+  const base = getImageUrl(logoUrl);
+  if (!base) return '';
+  if (updatedAt) {
+    const sep = base.includes('?') ? '&' : '?';
+    return `${base}${sep}v=${new Date(updatedAt).getTime()}`;
+  }
+  return base;
+}
+
 export function handleImgError(e: React.SyntheticEvent<HTMLImageElement>): void {
   const img = e.currentTarget;
   img.style.display = 'none';

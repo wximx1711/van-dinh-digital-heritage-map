@@ -3,7 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useSystemSettings } from './SystemSettingsContext';
 import { LazyImage } from './LazyImage';
 import { apiGet } from '../services/api';
-import { getImageUrl } from '../utils/url';
+import { getImageUrl, getLogoUrl } from '../utils/url';
 import { Landmark, MapPin, Phone, Mail, Facebook, Youtube, Globe } from 'lucide-react';
 
 interface FooterProps {
@@ -55,7 +55,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 overflow: 'hidden',
               }}>
                 {s?.logoUrl ? (
-                  <LazyImage src={getImageUrl(s.logoUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 6 }} />
+                  <LazyImage src={getLogoUrl(s.logoUrl, s.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 6 }} />
                 ) : (
                   <Landmark size={20} color="white" />
                 )}
