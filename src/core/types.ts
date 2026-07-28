@@ -28,7 +28,7 @@ export interface HeritageSite {
 
 export interface MapMarker {
   id: string;
-  position: google.maps.LatLngLiteral;
+  position: { lat: number; lng: number };
   label?: string;
   type?: HeritageType;
   classification?: Classification;

@@ -1,30 +1,23 @@
 import { haversineDistance } from '../utils/geo';
-import type { HeritageSite, HeritageType } from '../../core/types';
+import type { HeritageSite, HeritageType, Classification } from '../../core/types';
+import { getRouteMatrix, getRouteGeometry, clearRouteCache } from './routingService';
+import type { TransportProfile } from './routingService';
 
-const UBND_XA_COORDS = { lat: 20.755, lng: 105.855 };
+export const VAN_DINH_ORIGIN = { lat: 20.755, lng: 105.855 };
 
 const DAY_COLORS = [
-  '#E74C3C',
-  '#2980B9',
-  '#27AE60',
-  '#D4A017',
-  '#8E44AD',
-  '#D35400',
-  '#16A085',
+  '#E74C3C', '#2980B9', '#27AE60', '#D4A017',
+  '#8E44AD', '#D35400', '#16A085',
 ];
 
-const AVG_SPEED_KMH = 30;
-const VISIT_DURATION_MINUTES = 45;
+export const VISIT_DURATION: Record<string, number> = {
+  dinh: 45, chua: 40, den: 30, mieu: 25, phu: 35,
+  quan: 30, nhacu: 45, nhatho: 30, lang: 35,
+};
 
-function fmtTime(minutes: number): string {
-  const h = Math.floor(minutes / 60);
-  const m = Math.round(minutes % 60);
-  return h > 0 ? `${h}h${m > 0 ? m + 'ph' : ''}` : `${m}ph`;
-}
-
-function fmtDist(km: number): string {
-  return km < 1 ? `${(km * 1000).toFixed(0)}m` : `${km.toFixed(1)}km`;
-}
+const CLASSIFICATION_SCORE: Record<string, number> = {
+  national: 3, city: 2, unranked: 1,
+};
 
 export interface TripDestination {
   siteId: string;
@@ -37,6 +30,10 @@ export interface TripDestination {
   distanceFromPrev: number;
   distanceFromStart: number;
   estimatedArrival: string;
+  visitDuration: number;
+  departureTime: string;
+  travelTime: number;
+  routeFromPrev?: [number, number][];
 }
 
 export interface DayItinerary {
@@ -45,6 +42,7 @@ export interface DayItinerary {
   color: string;
   totalDistance: number;
   totalDuration: number;
+  routeGeometry: [number, number][];
 }
 
 export interface TripPlan {
@@ -52,235 +50,316 @@ export interface TripPlan {
   totalSites: number;
   totalDistance: number;
   totalDuration: number;
+  startTime: string;
+  endTime: string;
+  totalVisitTime: number;
+  totalTravelTime: number;
+  transportMode: TransportProfile;
+  origin: { lat: number; lng: number };
 }
 
-export { fmtTime, fmtDist, AVG_SPEED_KMH, VISIT_DURATION_MINUTES, UBND_XA_COORDS };
+export function fmtTime(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = Math.round(minutes % 60);
+  return h > 0 ? `${h}h${m > 0 ? m + 'ph' : ''}` : `${m}ph`;
+}
 
-function addMinutesToTime(baseMinutes: number, addMinutes: number): string {
-  const total = baseMinutes + addMinutes;
+export function fmtDist(meters: number): string {
+  const km = meters / 1000;
+  return km < 1 ? `${Math.round(meters)}m` : `${km.toFixed(1)}km`;
+}
+
+export { VAN_DINH_ORIGIN as UBND_XA_COORDS, VISIT_DURATION as VISIT_DURATION_MINUTES };
+
+export type TripType = 'half-day' | 'one-day' | 'full-day';
+
+export interface PlannerConfig {
+  sites: HeritageSite[];
+  origin: { lat: number; lng: number };
+  destinationCount: number;
+  transportMode: TransportProfile;
+  tripType: TripType;
+  onProgress?: (step: string) => void;
+}
+
+const TRIP_TYPE_LIMITS: Record<TripType, number> = {
+  'half-day': 240,
+  'one-day': 480,
+  'full-day': 600,
+};
+
+function timeToMinutes(timeStr: string): number {
+  const [h, m] = timeStr.split(':').map(Number);
+  return h * 60 + m;
+}
+
+function minutesToTime(minutes: number): string {
+  const total = Math.round(minutes);
   const h = Math.floor(total / 60) % 24;
   const m = total % 60;
   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
 }
 
-function timeToMinutes(timeStr: string): number {
-  const parts = timeStr.split(':');
-  return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
-}
-
-export function generateTripPlan(
+function selectCandidates(
   sites: HeritageSite[],
-  numDays: number,
-): TripPlan {
-  const validSites = sites.filter(
+  origin: { lat: number; lng: number },
+  count: number,
+): (HeritageSite & { lat: number; lon: number })[] {
+  const valid = sites.filter(
     (s): s is HeritageSite & { lat: number; lon: number } =>
       s.lat !== null && s.lon !== null,
   );
 
-  if (validSites.length === 0 || numDays < 1) {
-    return { days: [], totalSites: 0 };
-  }
-
-  const categories: HeritageType[] = [
-    'dinh', 'chua', 'den', 'mieu', 'phu',
-    'quan', 'nhacu', 'nhatho', 'lang',
-  ];
-
-  const categoryOrder = new Map<HeritageType, number>();
-  categories.forEach((c, i) => categoryOrder.set(c, i));
-
-  const classScore: Record<string, number> = {
-    national: 3,
-    city: 2,
-    unranked: 1,
-  };
-
-  const scored = validSites.map((s) => ({
+  const scored = valid.map(s => ({
     site: s,
-    classificationScore: classScore[s.classification] ?? 1,
-    distToUbnd: haversineDistance(
-      UBND_XA_COORDS.lat, UBND_XA_COORDS.lng,
-      s.lat, s.lon,
-    ),
+    score: (CLASSIFICATION_SCORE[s.classification] ?? 1) * 10000
+      - haversineDistance(origin.lat, origin.lng, s.lat, s.lon),
   }));
 
-  scored.sort((a, b) => {
-    if (b.classificationScore !== a.classificationScore) {
-      return b.classificationScore - a.classificationScore;
-    }
-    return a.distToUbnd - b.distToUbnd;
-  });
+  scored.sort((a, b) => b.score - a.score);
 
-  const visited = new Set<string>();
-  const days: DayItinerary[] = [];
-  let lastCategoryOrder = -1;
+  const selected: (HeritageSite & { lat: number; lon: number })[] = [];
+  const seenTypes = new Set<HeritageType>();
+  const batch = Math.min(count * 2, scored.length);
 
-  for (let dayIdx = 0; dayIdx < numDays; dayIdx++) {
-    const remainingTotal = validSites.length - visited.size;
-    const remainingDays = numDays - dayIdx;
-    const targetCount = Math.max(
-      1,
-      Math.min(5, Math.ceil(remainingTotal / remainingDays)),
-    );
-
-    const destinations: TripDestination[] = [];
-    let currentPos = UBND_XA_COORDS;
-    let dayLastCat = lastCategoryOrder;
-    let dayLastCat2 = -1;
-    let dayTotalDist = 0;
-
-    const dayDestPositions: { lat: number; lng: number }[] = [UBND_XA_COORDS];
-
-    for (let slot = 0; slot < targetCount; slot++) {
-      const unvisited = scored.filter((s) => !visited.has(s.site.id));
-      if (unvisited.length === 0) break;
-
-      const best = pickNext(unvisited, currentPos, dayLastCat, dayLastCat2, categoryOrder);
-      if (!best) break;
-
-      const s = best.site;
-      const distFromPrev = haversineDistance(
-        currentPos.lat, currentPos.lng, s.lat, s.lon,
-      );
-      dayTotalDist += distFromPrev;
-
-      visited.add(s.id);
-      dayDestPositions.push({ lat: s.lat, lng: s.lon });
-      destinations.push({
-        siteId: s.id,
-        nameVi: s.nameVi,
-        nameEn: s.nameEn,
-        type: s.type,
-        classification: s.classification,
-        order: slot + 1,
-        position: { lat: s.lat, lng: s.lon },
-        distanceFromPrev: distFromPrev,
-        distanceFromStart: 0,
-        estimatedArrival: '',
-      });
-
-      currentPos = { lat: s.lat, lng: s.lon };
-      dayLastCat2 = dayLastCat;
-      dayLastCat = categoryOrder.get(s.type) ?? -1;
-    }
-
-    if (destinations.length > 0) {
-      const travelTimeMin = (dayTotalDist / AVG_SPEED_KMH) * 60;
-      const visitTimeMin = destinations.length * VISIT_DURATION_MINUTES;
-      const totalDayMin = travelTimeMin + visitTimeMin;
-
-      let runningMinutes = 8 * 60;
-      let cumulativeDist = 0;
-      for (let di = 0; di < destinations.length; di++) {
-        const d = destinations[di];
-        const segDist = d.distanceFromPrev;
-        if (di > 0) {
-          runningMinutes += Math.round((segDist / AVG_SPEED_KMH) * 60);
-        }
-        cumulativeDist += segDist;
-        d.distanceFromStart = cumulativeDist;
-        d.estimatedArrival = addMinutesToTime(8 * 60, runningMinutes - 8 * 60);
-        runningMinutes += VISIT_DURATION_MINUTES;
-      }
-
-      days.push({
-        day: dayIdx + 1,
-        destinations,
-        color: DAY_COLORS[dayIdx % DAY_COLORS.length],
-        totalDistance: dayTotalDist,
-        totalDuration: totalDayMin,
-      });
-      lastCategoryOrder = dayLastCat;
+  for (let i = 0; i < batch && selected.length < count; i++) {
+    const s = scored[i].site;
+    if (!seenTypes.has(s.type) || selected.length < count - 1) {
+      selected.push(s);
+      seenTypes.add(s.type);
     }
   }
 
-  const unvisitedRemaining = scored.filter((s) => !visited.has(s.site.id));
-  if (unvisitedRemaining.length > 0 && days.length > 0) {
-    for (const item of unvisitedRemaining) {
-      const s = item.site;
-      const lastDay = days[days.length - 1];
-      if (lastDay.destinations.length < 5) {
-        const nextOrder = lastDay.destinations.length + 1;
-        const prevPos = lastDay.destinations.length > 0
-          ? lastDay.destinations[lastDay.destinations.length - 1].position
-          : UBND_XA_COORDS;
-        const distFromPrev = haversineDistance(prevPos.lat, prevPos.lng, s.lat, s.lon);
-        const lastDest = lastDay.destinations[lastDay.destinations.length - 1];
-        const prevArrivalMinutes = lastDest ? timeToMinutes(lastDest.estimatedArrival) : 8 * 60;
-        const travelMin = Math.round((distFromPrev / AVG_SPEED_KMH) * 60);
-        const arrivalMinutes = prevArrivalMinutes + VISIT_DURATION_MINUTES + travelMin;
-
-        lastDay.totalDistance += distFromPrev;
-        lastDay.totalDuration += travelMin + VISIT_DURATION_MINUTES;
-        lastDay.destinations.push({
-          siteId: s.id,
-          nameVi: s.nameVi,
-          nameEn: s.nameEn,
-          type: s.type,
-          classification: s.classification,
-          order: nextOrder,
-          position: { lat: s.lat, lng: s.lon },
-          distanceFromPrev: distFromPrev,
-          distanceFromStart: lastDest ? lastDest.distanceFromStart + distFromPrev : distFromPrev,
-          estimatedArrival: addMinutesToTime(0, arrivalMinutes),
-        });
-        visited.add(s.id);
-      } else {
-        const dayDist = haversineDistance(UBND_XA_COORDS.lat, UBND_XA_COORDS.lng, s.lat, s.lon);
-        const travelMin = Math.round((dayDist / AVG_SPEED_KMH) * 60);
-        days.push({
-          day: days.length + 1,
-          destinations: [{
-            siteId: s.id,
-            nameVi: s.nameVi,
-            nameEn: s.nameEn,
-            type: s.type,
-            classification: s.classification,
-            order: 1,
-            position: { lat: s.lat, lng: s.lon },
-            distanceFromPrev: dayDist,
-            distanceFromStart: dayDist,
-            estimatedArrival: addMinutesToTime(8 * 60, travelMin),
-          }],
-          color: DAY_COLORS[days.length % DAY_COLORS.length],
-          totalDistance: dayDist,
-          totalDuration: travelMin + VISIT_DURATION_MINUTES,
-        });
-        visited.add(s.id);
-      }
-    }
+  while (selected.length < count && selected.length < scored.length) {
+    selected.push(scored[selected.length].site);
   }
 
-  const totalDistance = days.reduce((sum, d) => sum + d.totalDistance, 0);
-  const totalDuration = days.reduce((sum, d) => sum + d.totalDuration, 0);
-
-  return { days, totalSites: visited.size, totalDistance, totalDuration };
+  return selected;
 }
 
-function pickNext(
-  candidates: { site: HeritageSite & { lat: number; lon: number }; classificationScore: number }[],
-  currentPos: { lat: number; lng: number },
-  lastCat: number,
-  lastCat2: number,
-  categoryOrder: Map<HeritageType, number>,
-): { site: HeritageSite & { lat: number; lon: number } } | null {
-  let best: { site: HeritageSite & { lat: number; lon: number }; score: number } | null = null;
+function nearestNeighbor(
+  matrix: number[][],
+  startIdx: number,
+  count: number,
+  priorityScores: number[],
+): number[] {
+  const visited = new Set<number>();
+  const order: number[] = [];
+  let current = startIdx;
+  visited.add(current);
+  order.push(current);
 
-  for (const c of candidates) {
-    const s = c.site;
-    const dist = haversineDistance(currentPos.lat, currentPos.lng, s.lat, s.lon);
-    const cat = categoryOrder.get(s.type) ?? -1;
-    const sameAsLast = cat === lastCat ? 5 : 0;
-    const sameAsLast2 = cat === lastCat2 ? 3 : 0;
-    const classificationBonus = c.classificationScore * 1000;
-    const score = dist + sameAsLast * 0.5 + sameAsLast2 * 0.3 - classificationBonus;
+  for (let step = 0; step < count; step++) {
+    let bestIdx = -1;
+    let bestCost = Infinity;
+    for (let j = 1; j < matrix.length; j++) {
+      if (visited.has(j)) continue;
+      const travelCost = matrix[current][j];
+      const priorityBonus = priorityScores[j] / 1000;
+      const cost = travelCost - priorityBonus;
+      if (cost < bestCost) {
+        bestCost = cost;
+        bestIdx = j;
+      }
+    }
+    if (bestIdx === -1) break;
+    visited.add(bestIdx);
+    order.push(bestIdx);
+    current = bestIdx;
+  }
 
-    if (best === null || score < best.score) {
-      best = { site: s, score };
+  return order;
+}
+
+function twoOptImprovement(
+  order: number[],
+  matrix: number[][],
+): number[] {
+  let improved = true;
+  const n = order.length;
+  let best = order.slice();
+
+  while (improved) {
+    improved = false;
+    for (let i = 1; i < n - 1; i++) {
+      for (let k = i + 1; k < n; k++) {
+        const newOrder = best.slice(0, i).concat(
+          best.slice(i, k + 1).reverse(),
+          best.slice(k + 1),
+        );
+
+        const oldCost = matrix[best[i - 1]][best[i]]
+          + (k + 1 < n ? matrix[best[k]][best[k + 1]] : 0);
+        const newCost = matrix[best[i - 1]][best[k]]
+          + (k + 1 < n ? matrix[best[i]][best[k + 1]] : 0);
+
+        if (newCost < oldCost) {
+          best = newOrder;
+          improved = true;
+        }
+      }
     }
   }
 
   return best;
 }
 
+export async function generateTripPlan(config: PlannerConfig): Promise<TripPlan> {
+  const {
+    sites, origin, destinationCount, transportMode,
+    tripType, onProgress,
+  } = config;
 
+  onProgress?.('Selecting heritage sites...');
+  const candidates = selectCandidates(sites, origin, destinationCount);
+
+  if (candidates.length === 0) {
+    return emptyPlan(origin, transportMode);
+  }
+
+  const count = Math.min(candidates.length, destinationCount);
+  const selected = candidates.slice(0, count);
+  const allPoints = [origin, ...selected.map(s => ({ lat: s.lat, lng: s.lon }))];
+
+  onProgress?.('Fetching route data from OSRM...');
+  let matrix: { durations: number[][]; distances: number[][] };
+
+  try {
+    matrix = await getRouteMatrix(allPoints, transportMode);
+  } catch {
+    onProgress?.('Using estimated distances (OSRM unavailable)...');
+    const n = allPoints.length;
+    const durations: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
+    const distances: number[][] = Array.from({ length: n }, () => Array(n).fill(0));
+    for (let i = 0; i < n; i++) {
+      for (let j = 0; j < n; j++) {
+        if (i === j) continue;
+        const d = haversineDistance(
+          allPoints[i].lat, allPoints[i].lng,
+          allPoints[j].lat, allPoints[j].lng,
+        ) * 1000;
+        distances[i][j] = d;
+        durations[i][j] = d / (transportMode === 'walking' ? 1.4 : transportMode === 'cycling' ? 15 : 40) * 3.6;
+      }
+    }
+    matrix = { durations, distances };
+  }
+
+  onProgress?.('Optimizing route order...');
+  const priorityScores = [0, ...selected.map(s => CLASSIFICATION_SCORE[s.classification] ?? 1)];
+  let order = nearestNeighbor(matrix.durations, 0, count, priorityScores);
+  order = twoOptImprovement(order, matrix.durations);
+
+  const orderedSites = order.slice(1).map(idx => selected[idx - 1]);
+
+  onProgress?.('Building route geometry...');
+  const orderedPoints = [origin, ...orderedSites.map(s => ({ lat: s.lat, lng: s.lon }))];
+
+  let routeGeometry: [number, number][] = [];
+  try {
+    const routeResult = await getRouteGeometry(orderedPoints, transportMode);
+    routeGeometry = routeResult.geometry;
+  } catch {
+    routeGeometry = orderedPoints.map(p => [p.lat, p.lng] as [number, number]);
+  }
+
+  onProgress?.('Building timeline...');
+  const destinations: TripDestination[] = [];
+  const maxMinutes = TRIP_TYPE_LIMITS[tripType];
+  let currentMinutes = 8 * 60;
+  let totalTravelSec = 0;
+  let totalVisitMin = 0;
+  let totalDistM = 0;
+  const startTime = minutesToTime(currentMinutes);
+  let segmentGeometries: [number, number][] = [orderedPoints[0] ? [orderedPoints[0].lat, orderedPoints[0].lng] : [0, 0]];
+
+  for (let i = 0; i < orderedSites.length; i++) {
+    const site = orderedSites[i];
+    const fromIdx = order[i];
+    const toIdx = order[i + 1];
+    const travelTimeSec = matrix.durations[fromIdx]?.[toIdx] ?? 0;
+    const travelDistM = matrix.distances[fromIdx]?.[toIdx] ?? 0;
+    const travelTimeMin = Math.round(travelTimeSec / 60);
+    const visitMin = VISIT_DURATION[site.type] ?? 40;
+
+    if (i > 0) {
+      currentMinutes += travelTimeMin;
+    }
+    totalTravelSec += travelTimeSec;
+    totalDistM += travelDistM;
+
+    if (currentMinutes + visitMin > 8 * 60 + maxMinutes && i > 0) break;
+
+    const arrivalTime = minutesToTime(currentMinutes);
+    currentMinutes += visitMin;
+    totalVisitMin += visitMin;
+    const departureTime = minutesToTime(currentMinutes);
+
+    if (routeGeometry.length > 1) {
+      const legStart = Math.round((i / orderedSites.length) * routeGeometry.length);
+      const legEnd = Math.round(((i + 1) / orderedSites.length) * routeGeometry.length);
+      const legGeo = routeGeometry.slice(legStart, legEnd);
+      segmentGeometries.push(...legGeo);
+    }
+
+    destinations.push({
+      siteId: site.id,
+      nameVi: site.nameVi,
+      nameEn: site.nameEn,
+      type: site.type,
+      classification: site.classification,
+      order: i + 1,
+      position: { lat: site.lat, lng: site.lon },
+      distanceFromPrev: travelDistM,
+      distanceFromStart: totalDistM,
+      estimatedArrival: arrivalTime,
+      visitDuration: visitMin,
+      departureTime,
+      travelTime: travelTimeMin,
+    });
+  }
+
+  const endTime = minutesToTime(currentMinutes);
+  const totalDurationMin = currentMinutes - timeToMinutes(startTime);
+
+  const fullRouteGeo = routeGeometry.length > 1
+    ? routeGeometry
+    : orderedPoints.map(p => [p.lat, p.lng] as [number, number]);
+
+  return {
+    days: [{
+      day: 1,
+      destinations,
+      color: DAY_COLORS[0],
+      totalDistance: totalDistM,
+      totalDuration: totalDurationMin,
+      routeGeometry: fullRouteGeo,
+    }],
+    totalSites: destinations.length,
+    totalDistance: totalDistM,
+    totalDuration: totalDurationMin,
+    startTime,
+    endTime,
+    totalVisitTime: totalVisitMin,
+    totalTravelTime: Math.round(totalTravelSec / 60),
+    transportMode: transportMode,
+    origin,
+  };
+}
+
+function emptyPlan(origin: { lat: number; lng: number }, mode: TransportProfile): TripPlan {
+  return {
+    days: [],
+    totalSites: 0,
+    totalDistance: 0,
+    totalDuration: 0,
+    startTime: '08:00',
+    endTime: '08:00',
+    totalVisitTime: 0,
+    totalTravelTime: 0,
+    transportMode: mode,
+    origin,
+  };
+}
+
+export { clearRouteCache };

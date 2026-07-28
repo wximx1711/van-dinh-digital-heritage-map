@@ -2,14 +2,14 @@ import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useTypeLabels, useClassificationLabels } from '../../presentation/hooks/useHeritageData';
 import { classificationColors } from '../constants';
-import { generateTripPlan } from '../services/tripPlannerService';
+import { generateTripPlan, fmtDist, fmtTime, VAN_DINH_ORIGIN } from '../services/tripPlannerService';
+import { clearRouteCache } from '../services/routingService';
 import type { HeritageSite } from '../../core/types';
-import type { TripPlan, TripDestination } from '../services/tripPlannerService';
-import { fmtDist, fmtTime } from '../services/tripPlannerService';
+import type { TripPlan, TripDestination, TripType } from '../services/tripPlannerService';
+import type { TransportProfile } from '../services/routingService';
 import {
-  MapPin, Route, ChevronRight, ChevronLeft,
-  RotateCcw, Navigation, Printer, Clipboard, Download,
-  Sun, Clock
+  MapPin, Route, RotateCcw, Navigation, Printer, Clipboard, Download,
+  Sun, Clock, Bike, Car, PersonStanding, Loader2, AlertCircle, X,
 } from 'lucide-react';
 
 interface TripPlannerProps {
@@ -22,25 +22,38 @@ interface TripPlannerProps {
   onDayChange: (day: number) => void;
 }
 
-const DAY_OPTIONS = [1, 2, 3, 4, 5, 6, 7];
-const PANEL_WIDTH = 360;
+const DESTINATION_OPTIONS = [3, 4, 5, 6, 7, 8];
+const TRIP_TYPE_OPTIONS: { key: TripType; icon: string; labelVi: string; labelEn: string }[] = [
+  { key: 'half-day', icon: '🌅', labelVi: 'Nửa ngày', labelEn: 'Half Day' },
+  { key: 'one-day', icon: '☀️', labelVi: 'Một ngày', labelEn: 'One Day' },
+  { key: 'full-day', icon: '🌙', labelVi: 'Cả ngày', labelEn: 'Full Day' },
+];
+const MODE_OPTIONS: { key: TransportProfile; icon: React.ReactNode; labelVi: string; labelEn: string }[] = [
+  { key: 'driving', icon: <Car size={16} />, labelVi: 'Xe máy', labelEn: 'Motorbike' },
+  { key: 'cycling', icon: <Bike size={16} />, labelVi: 'Xe đạp', labelEn: 'Cycling' },
+  { key: 'walking', icon: <PersonStanding size={16} />, labelVi: 'Đi bộ', labelEn: 'Walking' },
+];
 
 export function TripPlanner({
   heritageSites,
   plan,
-  activeDay,
   onGenerate,
   onReset,
   onFocusSite,
-  onDayChange,
 }: TripPlannerProps) {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const typeLabels = useTypeLabels();
   const classificationLabels = useClassificationLabels();
 
-  const [numDays, setNumDays] = useState(1);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [destinationCount, setDestinationCount] = useState(5);
+  const [tripType, setTripType] = useState<TripType>('one-day');
+  const [transportMode, setTransportMode] = useState<TransportProfile>('driving');
+  const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const [copyMsg, setCopyMsg] = useState('');
+  const [showConfig, setShowConfig] = useState(true);
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -50,44 +63,82 @@ export function TripPlanner({
     }
   }, [copyMsg]);
 
-  const activeItinerary = useMemo(() => {
-    if (!plan) return null;
-    return plan.days.find((d) => d.day === activeDay) ?? null;
-  }, [plan, activeDay]);
+  useEffect(() => {
+    if (!panelOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPanelOpen(false);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [panelOpen]);
 
-  const handleGenerate = useCallback(() => {
-    const tripPlan = generateTripPlan(heritageSites, numDays);
-    onGenerate(tripPlan);
-  }, [heritageSites, numDays, onGenerate]);
+  const handleGenerate = useCallback(async () => {
+    setLoading(true);
+    setLoadingStep(lang === 'vi' ? 'Đang chuẩn bị...' : 'Preparing...');
+    setError(null);
+
+    try {
+      const result = await generateTripPlan({
+        sites: heritageSites,
+        origin: VAN_DINH_ORIGIN,
+        destinationCount,
+        transportMode,
+        tripType,
+        onProgress: (step) => setLoadingStep(step),
+      });
+      onGenerate(result);
+      setShowConfig(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Unknown error');
+    } finally {
+      setLoading(false);
+    }
+  }, [heritageSites, destinationCount, transportMode, tripType, lang, onGenerate]);
 
   const handleReset = useCallback(() => {
-    setNumDays(1);
+    setDestinationCount(5);
+    setTripType('one-day');
+    setTransportMode('driving');
+    setError(null);
+    setShowConfig(true);
+    clearRouteCache();
     onReset();
   }, [onReset]);
+
+  const handleRegenerate = useCallback(async () => {
+    clearRouteCache();
+    await handleGenerate();
+  }, [handleGenerate]);
 
   const handleFocus = useCallback((siteId: string) => {
     onFocusSite(siteId);
   }, [onFocusSite]);
 
-  const handlePrevDay = useCallback(() => {
-    if (!plan) return;
-    const prev = Math.max(1, activeDay - 1);
-    if (prev !== activeDay && plan.days.some(d => d.day === prev)) {
-      onDayChange(prev);
-    }
-  }, [plan, activeDay, onDayChange]);
-
-  const handleNextDay = useCallback(() => {
-    if (!plan) return;
-    const next = activeDay + 1;
-    if (plan.days.some(d => d.day === next)) {
-      onDayChange(next);
-    }
-  }, [plan, activeDay, onDayChange]);
-
   const handlePrint = useCallback(() => {
     window.print();
   }, []);
+
+  const handleExportPdf = useCallback(() => {
+    if (!plan) return;
+    const printWin = window.open('', '_blank');
+    if (!printWin) return;
+    const lines: string[] = [];
+    for (const day of plan.days) {
+      lines.push(`<h2 style="color:#0F3D5E;border-bottom:2px solid ${day.color};padding-bottom:4px;">${lang === 'vi' ? `Hành trình` : `Itinerary`}</h2>`);
+      lines.push('<div style="margin:8px 0 12px;">');
+      for (const d of day.destinations) {
+        const name = lang === 'vi' ? d.nameVi : d.nameEn;
+        const typeLabel = typeLabels[d.type]?.[lang] ?? d.type;
+        lines.push(`<div style="margin-bottom:8px;padding:8px;background:#F0F4F8;border-radius:6px;"><strong>${d.order}. ${name}</strong><br/><span style="color:#5d7a8c;font-size:12px;">${typeLabel} — ${d.estimatedArrival} - ${d.departureTime}</span></div>`);
+      }
+      lines.push('</div>');
+    }
+    lines.push(`<hr/><p style="font-size:13px;font-weight:600;">${lang === 'vi' ? 'Tổng:' : 'Total:'} ${fmtDist(plan.totalDistance)} · ${fmtTime(plan.totalDuration)} · ${plan.totalSites} ${lang === 'vi' ? 'di tích' : 'sites'}</p>`);
+    printWin.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${lang === 'vi' ? 'Lịch trình tham quan' : 'Trip Itinerary'}</title><style>body{font-family:sans-serif;max-width:700px;margin:0 auto;padding:24px;color:#1a2332;}@media print{body{padding:0;}}</style></head><body>${lines.join('\n')}</body></html>`);
+    printWin.document.close();
+    printWin.focus();
+    setTimeout(() => { printWin.print(); }, 300);
+  }, [plan, lang, typeLabels]);
 
   const handleCopyToClipboard = useCallback(() => {
     if (!plan) return;
@@ -96,20 +147,20 @@ export function TripPlanner({
     lines.push('='.repeat(40));
     lines.push('');
     for (const day of plan.days) {
-      lines.push(lang === 'vi' ? `Ngày ${day.day}` : `Day ${day.day}`);
-      lines.push('-'.repeat(20));
       for (const d of day.destinations) {
         const name = lang === 'vi' ? d.nameVi : d.nameEn;
         const typeLabel = typeLabels[d.type]?.[lang] ?? d.type;
-        lines.push(`  ${d.order}. ${name} (${typeLabel}) - ${d.estimatedArrival}`);
+        lines.push(`  ${d.order}. ${name} (${typeLabel})`);
+        lines.push(`     ${lang === 'vi' ? 'Đến:' : 'Arrive:'} ${d.estimatedArrival} - ${lang === 'vi' ? 'Đi:' : 'Leave:'} ${d.departureTime}`);
+        if (d.distanceFromPrev > 0) {
+          lines.push(`     ${lang === 'vi' ? 'Di chuyển:' : 'Travel:'} ${fmtDist(d.distanceFromPrev)} (${d.travelTime} ${lang === 'vi' ? 'phút' : 'min'})`);
+        }
       }
-      lines.push(`  ${lang === 'vi' ? 'Khoảng cách:' : 'Distance:'} ${fmtDist(day.totalDistance)}`);
-      lines.push(`  ${lang === 'vi' ? 'Thời gian:' : 'Duration:'} ${fmtTime(day.totalDuration)}`);
-      lines.push('');
     }
+    lines.push('');
     lines.push(`${lang === 'vi' ? 'Tổng khoảng cách:' : 'Total distance:'} ${fmtDist(plan.totalDistance)}`);
     lines.push(`${lang === 'vi' ? 'Tổng thời gian:' : 'Total duration:'} ${fmtTime(plan.totalDuration)}`);
-    lines.push(`${lang === 'vi' ? 'Tổng số di tích:' : 'Total sites:'} ${plan.totalSites}`);
+    lines.push(`${lang === 'vi' ? 'Số di tích:' : 'Sites:'} ${plan.totalSites}`);
 
     navigator.clipboard.writeText(lines.join('\n')).then(
       () => setCopyMsg(lang === 'vi' ? 'Đã sao chép!' : 'Copied!'),
@@ -117,63 +168,29 @@ export function TripPlanner({
     );
   }, [plan, lang, typeLabels]);
 
-  const handleExportPdf = useCallback(() => {
-    const printWin = window.open('', '_blank');
-    if (!printWin || !plan) return;
-    const lines: string[] = [];
-    for (const day of plan.days) {
-      lines.push(`<h2 style="color:#0F3D5E;border-bottom:2px solid ${day.color};padding-bottom:4px;">${lang === 'vi' ? `Ngày ${day.day}` : `Day ${day.day}`}</h2>`);
-      lines.push('<ol style="margin:8px 0 12px;padding-left:20px;">');
-      for (const d of day.destinations) {
-        const name = lang === 'vi' ? d.nameVi : d.nameEn;
-        const typeLabel = typeLabels[d.type]?.[lang] ?? d.type;
-        const classLabel = classificationLabels[d.classification as keyof typeof classificationLabels]?.[lang] ?? d.classification;
-        lines.push(`<li style="margin-bottom:4px;"><strong>${name}</strong> — ${typeLabel} (${classLabel}) <span style="color:#5d7a8c;font-size:12px;">— ${d.estimatedArrival}</span></li>`);
-      }
-      lines.push('</ol>');
-      lines.push(`<p style="font-size:12px;color:#5d7a8c;">${lang === 'vi' ? 'Khoảng cách:' : 'Distance:'} ${fmtDist(day.totalDistance)} &middot; ${lang === 'vi' ? 'Thời gian:' : 'Duration:'} ${fmtTime(day.totalDuration)}</p>`);
-    }
-    lines.push(`<hr/><p style="font-size:13px;font-weight:600;">${lang === 'vi' ? 'Tổng:' : 'Total:'} ${fmtDist(plan.totalDistance)} &middot; ${fmtTime(plan.totalDuration)} &middot; ${plan.totalSites} ${lang === 'vi' ? 'di tích' : 'sites'}</p>`);
-
-    printWin.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${lang === 'vi' ? 'Lịch trình tham quan' : 'Trip Itinerary'}</title><style>body{font-family:sans-serif;max-width:700px;margin:0 auto;padding:24px;color:#1a2332;}ol li{line-height:1.6;}@media print{body{padding:0;}}</style></head><body>${lines.join('\n')}</body></html>`);
-    printWin.document.close();
-    printWin.focus();
-    setTimeout(() => { printWin.print(); }, 300);
-  }, [plan, lang, typeLabels, classificationLabels]);
-
   const handleClose = useCallback(() => {
     setPanelOpen(false);
   }, []);
 
-  const hasPrev = plan && plan.days.some(d => d.day === activeDay - 1);
-  const hasNext = plan && plan.days.some(d => d.day === activeDay + 1);
+  const togglePanel = useCallback(() => {
+    setPanelOpen(prev => !prev);
+  }, []);
 
   if (!panelOpen) {
     return (
       <button
-        onClick={() => setPanelOpen(true)}
+        onClick={togglePanel}
         aria-label={lang === 'vi' ? 'Lập lịch trình' : 'Trip Planner'}
         title={lang === 'vi' ? 'Lập lịch trình' : 'Trip Planner'}
         className="trip-planner-btn"
         style={{
-          position: 'absolute',
-          bottom: 60,
-          left: 16,
-          zIndex: 12,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          padding: '10px 16px',
-          borderRadius: 8,
-          background: '#0F3D5E',
-          border: 'none',
-          color: 'white',
-          fontSize: 13,
-          fontWeight: 700,
-          cursor: 'pointer',
-          boxShadow: '0 4px 12px rgba(15,61,94,0.35)',
-          fontFamily: 'inherit',
-          transition: 'transform 0.15s, box-shadow 0.15s',
+          position: 'fixed', bottom: 80, right: 16, zIndex: 1000,
+          display: 'flex', alignItems: 'center', gap: 6,
+          padding: '10px 16px', borderRadius: 8,
+          background: plan ? '#D4A017' : '#0F3D5E', border: 'none',
+          color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer',
+          boxShadow: plan ? '0 4px 12px rgba(212,160,23,0.35)' : '0 4px 12px rgba(15,61,94,0.35)',
+          fontFamily: 'inherit', transition: 'transform 0.15s, box-shadow 0.15s',
         }}
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-1px)';
@@ -181,12 +198,14 @@ export function TripPlanner({
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = '0 4px 12px rgba(15,61,94,0.35)';
+          e.currentTarget.style.boxShadow = plan ? '0 4px 12px rgba(212,160,23,0.35)' : '0 4px 12px rgba(15,61,94,0.35)';
         }}
       >
         <Route size={16} />
         <span className="trip-planner-label">
-          {lang === 'vi' ? 'Lập lịch trình' : 'Trip Planner'}
+          {plan
+            ? (lang === 'vi' ? `Lịch trình (${plan.totalSites} điểm)` : `Trip (${plan.totalSites} stops)`)
+            : (lang === 'vi' ? 'Lập lịch trình' : 'Trip Planner')}
         </span>
       </button>
     );
@@ -194,202 +213,275 @@ export function TripPlanner({
 
   return (
     <>
-      <button
-        onClick={handleClose}
-        aria-label={lang === 'vi' ? 'Đóng lịch trình' : 'Close planner'}
-        title={lang === 'vi' ? 'Đóng lịch trình' : 'Close planner'}
+      <div
         style={{
-          position: 'absolute',
-          bottom: 60,
-          left: 16,
-          zIndex: 12,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          padding: '8px 12px',
-          borderRadius: 8,
-          background: '#5d7a8c',
-          border: 'none',
-          color: 'white',
-          fontSize: 12,
-          fontWeight: 600,
-          cursor: 'pointer',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
-          fontFamily: 'inherit',
+          position: 'absolute', inset: 0, zIndex: 1000,
+          background: 'rgba(0,0,0,0.35)', cursor: 'pointer',
         }}
-      >
-        <ChevronRight size={14} />
-        <span>{lang === 'vi' ? 'Đóng' : 'Close'}</span>
-      </button>
+        onClick={handleClose}
+      />
 
       <div ref={panelRef} className="trip-planner-panel" style={{
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        width: PANEL_WIDTH,
-        maxWidth: '100%',
-        height: '100%',
-        zIndex: 15,
-        background: 'white',
-        boxShadow: '-4px 0 16px rgba(0,0,0,0.12)',
-        display: 'flex',
-        flexDirection: 'column',
+        position: 'absolute', top: 0, left: 0,
+        width: 380, maxWidth: '100%', height: '100%',
+        zIndex: 1001, background: 'white',
+        boxShadow: '4px 0 16px rgba(0,0,0,0.12)',
+        display: 'flex', flexDirection: 'column',
         fontFamily: "'Be Vietnam Pro', sans-serif",
       }}>
-        {/* Header */}
         <div style={{
-          padding: '12px 14px',
-          background: '#0F3D5E',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          flexShrink: 0,
+          padding: '14px 16px', background: '#0F3D5E',
+          display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', flexShrink: 0,
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <Route size={16} color="#D4A017" />
-            <span style={{ color: 'white', fontSize: 14, fontWeight: 700 }}>
+            <Route size={18} color="#D4A017" />
+            <span style={{ color: 'white', fontSize: 15, fontWeight: 700 }}>
               {lang === 'vi' ? 'Lập lịch trình' : 'Trip Planner'}
             </span>
           </div>
           <div style={{ display: 'flex', gap: 4 }}>
+            {plan && (
+              <button
+                onClick={handleRegenerate}
+                disabled={loading}
+                title={lang === 'vi' ? 'Tạo lại' : 'Regenerate'}
+                style={{
+                  background: 'rgba(255,255,255,0.1)', border: 'none',
+                  color: 'rgba(255,255,255,0.7)', cursor: loading ? 'not-allowed' : 'pointer',
+                  padding: '4px 8px', borderRadius: 4,
+                  fontSize: 11, display: 'flex', alignItems: 'center', gap: 4,
+                  fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
+                }}
+              >
+                <RotateCcw size={11} />
+                {lang === 'vi' ? 'Tạo lại' : 'Regen'}
+              </button>
+            )}
             <button
               onClick={handleReset}
+              disabled={loading}
               title={lang === 'vi' ? 'Đặt lại' : 'Reset'}
               style={{
-                background: 'rgba(255,255,255,0.1)',
-                border: 'none',
-                color: 'rgba(255,255,255,0.7)',
-                cursor: 'pointer',
-                padding: '4px 8px',
-                borderRadius: 4,
-                fontSize: 11,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 4,
-                fontFamily: 'inherit',
+                background: 'rgba(255,255,255,0.1)', border: 'none',
+                color: 'rgba(255,255,255,0.7)', cursor: loading ? 'not-allowed' : 'pointer',
+                padding: '4px 8px', borderRadius: 4,
+                fontSize: 11, display: 'flex', alignItems: 'center', gap: 4,
+                fontFamily: 'inherit', opacity: loading ? 0.5 : 1,
               }}
             >
               <RotateCcw size={11} />
               {lang === 'vi' ? 'Đặt lại' : 'Reset'}
             </button>
+            <button
+              onClick={handleClose}
+              aria-label={lang === 'vi' ? 'Đóng' : 'Close'}
+              title={lang === 'vi' ? 'Đóng' : 'Close'}
+              style={{
+                background: 'rgba(255,255,255,0.15)', border: 'none',
+                color: 'white', cursor: 'pointer',
+                width: 28, height: 28, borderRadius: 4,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'inherit',
+              }}
+            >
+              <X size={14} />
+            </button>
           </div>
         </div>
 
-        {/* Content */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '10px 14px' }}>
-          {/* Pre-generation: day selector */}
-          {!plan && (
-            <div>
-              <label style={{
-                display: 'block',
-                fontSize: 11,
-                fontWeight: 700,
-                color: '#0F3D5E',
-                textTransform: 'uppercase',
-                letterSpacing: 0.5,
-                marginBottom: 8,
-              }}>
-                {lang === 'vi' ? 'Thời gian' : 'Trip Duration'}
-              </label>
-              <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                {DAY_OPTIONS.map((d) => (
-                  <button
-                    key={d}
-                    onClick={() => setNumDays(d)}
-                    style={{
-                      padding: '6px 12px',
-                      borderRadius: 6,
-                      border: numDays === d ? '2px solid #0F3D5E' : '1px solid rgba(15,61,94,0.15)',
-                      background: numDays === d ? '#EBF5FB' : 'white',
-                      color: numDays === d ? '#0F3D5E' : '#5d7a8c',
-                      fontSize: 12,
-                      fontWeight: numDays === d ? 700 : 500,
-                      cursor: 'pointer',
-                      fontFamily: 'inherit',
-                      minWidth: 36,
-                      textAlign: 'center',
-                    }}
-                  >
-                    {d}{lang === 'vi' ? ' ngày' : 'd'}
-                  </button>
-                ))}
+        <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px' }}>
+          {loading && (
+            <div style={{
+              display: 'flex', flexDirection: 'column', alignItems: 'center',
+              justifyContent: 'center', padding: '40px 20px', gap: 12,
+            }}>
+              <Loader2 size={32} style={{ animation: 'trip-spin 1s linear infinite', color: '#0F3D5E' }} />
+              <div style={{ fontSize: 13, color: '#5d7a8c', fontWeight: 600, textAlign: 'center' }}>
+                {loadingStep}
               </div>
+              <div style={{ fontSize: 11, color: '#cbced4', textAlign: 'center' }}>
+                {lang === 'vi' ? 'Đang tải dữ liệu từ OSRM...' : 'Fetching route data from OSRM...'}
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div style={{
+              padding: '10px 12px', borderRadius: 6, background: '#FDEDEC',
+              color: '#E74C3C', fontSize: 12, fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12,
+            }}>
+              <AlertCircle size={14} />
+              {error}
+            </div>
+          )}
+
+          {!loading && showConfig && !plan && (
+            <div>
               <div style={{
-                marginTop: 10,
-                padding: '8px 10px',
-                borderRadius: 6,
-                background: '#F0F4F8',
-                fontSize: 11,
-                color: '#5d7a8c',
-                lineHeight: 1.5,
+                padding: '10px 12px', borderRadius: 8, background: '#F0F4F8',
+                marginBottom: 14, border: '1px solid rgba(15,61,94,0.08)',
               }}>
-                <div style={{ fontWeight: 600, color: '#0F3D5E', marginBottom: 2 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 700, color: '#0F3D5E',
+                  marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6,
+                }}>
+                  <MapPin size={13} />
                   {lang === 'vi' ? 'Điểm xuất phát' : 'Starting Point'}
                 </div>
-                <div>{lang === 'vi' ? 'UBND xã Vân Đình' : 'Van Dinh Commune PC'}</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2332' }}>
+                  {lang === 'vi' ? 'UBND xã Vân Đình' : 'Van Dinh Commune PC'}
+                </div>
                 <div style={{ fontSize: 10, color: '#5d7a8c', marginTop: 2 }}>
-                  {lang === 'vi' ? '(Điểm xuất phát cố định)' : '(Fixed starting location)'}
+                  {VAN_DINH_ORIGIN.lat.toFixed(4)}, {VAN_DINH_ORIGIN.lng.toFixed(4)}
                 </div>
               </div>
+
+              <div style={{ marginBottom: 14 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 700, color: '#0F3D5E',
+                  textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8,
+                }}>
+                  {lang === 'vi' ? 'Thời gian' : 'Trip Duration'}
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {TRIP_TYPE_OPTIONS.map(opt => (
+                    <button
+                      key={opt.key}
+                      onClick={() => setTripType(opt.key)}
+                      style={{
+                        flex: 1, padding: '8px 6px', borderRadius: 8,
+                        border: tripType === opt.key ? '2px solid #0F3D5E' : '1px solid rgba(15,61,94,0.12)',
+                        background: tripType === opt.key ? '#EBF5FB' : 'white',
+                        color: tripType === opt.key ? '#0F3D5E' : '#5d7a8c',
+                        fontSize: 11, fontWeight: tripType === opt.key ? 700 : 500,
+                        cursor: 'pointer', fontFamily: 'inherit',
+                        textAlign: 'center', transition: 'all 0.15s',
+                      }}
+                    >
+                      <div style={{ fontSize: 16, marginBottom: 2 }}>{opt.icon}</div>
+                      <div>{lang === 'vi' ? opt.labelVi : opt.labelEn}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 14 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 700, color: '#0F3D5E',
+                  textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8,
+                }}>
+                  {lang === 'vi' ? 'Số điểm đến' : 'Destinations'}
+                </div>
+                <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                  {DESTINATION_OPTIONS.map(n => (
+                    <button
+                      key={n}
+                      onClick={() => setDestinationCount(n)}
+                      style={{
+                        width: 44, height: 36, borderRadius: 6,
+                        border: destinationCount === n ? '2px solid #0F3D5E' : '1px solid rgba(15,61,94,0.12)',
+                        background: destinationCount === n ? '#EBF5FB' : 'white',
+                        color: destinationCount === n ? '#0F3D5E' : '#5d7a8c',
+                        fontSize: 13, fontWeight: destinationCount === n ? 700 : 500,
+                        cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div style={{ marginBottom: 14 }}>
+                <div style={{
+                  fontSize: 11, fontWeight: 700, color: '#0F3D5E',
+                  textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 8,
+                }}>
+                  {lang === 'vi' ? 'Phương tiện' : 'Transport'}
+                </div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {MODE_OPTIONS.map(opt => (
+                    <button
+                      key={opt.key}
+                      onClick={() => setTransportMode(opt.key)}
+                      style={{
+                        flex: 1, padding: '8px 6px', borderRadius: 8,
+                        border: transportMode === opt.key ? '2px solid #D4A017' : '1px solid rgba(15,61,94,0.12)',
+                        background: transportMode === opt.key ? '#FFF9EB' : 'white',
+                        color: transportMode === opt.key ? '#B8860B' : '#5d7a8c',
+                        fontSize: 11, fontWeight: transportMode === opt.key ? 700 : 500,
+                        cursor: 'pointer', fontFamily: 'inherit',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        gap: 4, transition: 'all 0.15s',
+                      }}
+                    >
+                      {opt.icon}
+                      <span>{lang === 'vi' ? opt.labelVi : opt.labelEn}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <button
                 onClick={handleGenerate}
+                disabled={loading}
                 style={{
-                  width: '100%',
-                  marginTop: 10,
-                  padding: '10px',
-                  borderRadius: 8,
-                  border: 'none',
-                  background: '#D4A017',
-                  color: 'white',
-                  fontSize: 13,
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                  fontFamily: 'inherit',
-                  boxShadow: '0 3px 8px rgba(212,160,23,0.3)',
+                  width: '100%', padding: '12px', borderRadius: 8,
+                  border: 'none', background: loading ? '#cbced4' : '#D4A017',
+                  color: 'white', fontSize: 14, fontWeight: 700,
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  gap: 6, fontFamily: 'inherit',
+                  boxShadow: loading ? 'none' : '0 3px 8px rgba(212,160,23,0.3)',
+                  transition: 'all 0.15s',
+                  opacity: heritageSites.length === 0 ? 0.5 : 1,
                 }}
               >
-                <Navigation size={14} />
+                <Navigation size={16} />
                 {lang === 'vi' ? 'Tạo lịch trình' : 'Generate Trip'}
               </button>
             </div>
           )}
 
-          {/* Post-generation */}
-          {plan && (
+          {!loading && plan && plan.totalSites > 0 && (
             <>
-              {/* Trip Summary Card */}
               <div style={{
-                padding: '10px 12px',
-                borderRadius: 8,
+                padding: '12px 14px', borderRadius: 10,
                 background: 'linear-gradient(135deg, #0F3D5E 0%, #1A5276 100%)',
-                color: 'white',
-                marginBottom: 10,
+                color: 'white', marginBottom: 12,
               }}>
-                <div style={{ fontSize: 12, fontWeight: 700, marginBottom: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{
+                  fontSize: 12, fontWeight: 700, marginBottom: 8,
+                  display: 'flex', alignItems: 'center', gap: 6,
+                }}>
                   <Sun size={14} />
-                  {lang === 'vi' ? 'Tổng quan lịch trình' : 'Trip Summary'}
+                  {lang === 'vi' ? 'Tổng quan' : 'Summary'}
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px', fontSize: 11 }}>
-                  <span>{lang === 'vi' ? 'Số ngày:' : 'Days:'}</span>
-                  <span style={{ fontWeight: 600, textAlign: 'right' }}>{plan.days.length}</span>
-                  <span>{lang === 'vi' ? 'Di tích:' : 'Sites:'}</span>
+                <div style={{
+                  display: 'grid', gridTemplateColumns: '1fr 1fr',
+                  gap: '3px 16px', fontSize: 11,
+                }}>
+                  <span style={{ opacity: 0.7 }}>{lang === 'vi' ? 'Bắt đầu:' : 'Start:'}</span>
+                  <span style={{ fontWeight: 600, textAlign: 'right' }}>{plan.startTime}</span>
+                  <span style={{ opacity: 0.7 }}>{lang === 'vi' ? 'Kết thúc:' : 'End:'}</span>
+                  <span style={{ fontWeight: 600, textAlign: 'right' }}>{plan.endTime}</span>
+                  <span style={{ opacity: 0.7 }}>{lang === 'vi' ? 'Di tích:' : 'Sites:'}</span>
                   <span style={{ fontWeight: 600, textAlign: 'right' }}>{plan.totalSites}</span>
-                  <span>{lang === 'vi' ? 'Tổng KC:' : 'Total Dist:'}</span>
+                  <span style={{ opacity: 0.7 }}>{lang === 'vi' ? 'Di chuyển:' : 'Travel:'}</span>
+                  <span style={{ fontWeight: 600, textAlign: 'right' }}>{fmtTime(plan.totalTravelTime)}</span>
+                  <span style={{ opacity: 0.7 }}>{lang === 'vi' ? 'Tham quan:' : 'Visit:'}</span>
+                  <span style={{ fontWeight: 600, textAlign: 'right' }}>{fmtTime(plan.totalVisitTime)}</span>
+                  <span style={{ opacity: 0.7 }}>{lang === 'vi' ? 'Khoảng cách:' : 'Distance:'}</span>
                   <span style={{ fontWeight: 600, textAlign: 'right' }}>{fmtDist(plan.totalDistance)}</span>
-                  <span>{lang === 'vi' ? 'Tổng TG:' : 'Total Time:'}</span>
+                  <span style={{ opacity: 0.7 }}>{lang === 'vi' ? 'Tổng TG:' : 'Total:'}</span>
                   <span style={{ fontWeight: 600, textAlign: 'right' }}>{fmtTime(plan.totalDuration)}</span>
                 </div>
               </div>
 
-              {/* Export buttons */}
-              <div style={{ display: 'flex', gap: 4, marginBottom: 10, flexWrap: 'wrap' }}>
-                <button
-                  onClick={handlePrint}
-                  title={lang === 'vi' ? 'In lịch trình' : 'Print itinerary'}
+              <div style={{ display: 'flex', gap: 4, marginBottom: 12, flexWrap: 'wrap' }}>
+                <button onClick={handlePrint} title={lang === 'vi' ? 'In' : 'Print'}
                   style={{
                     flex: 1, padding: '5px 8px', borderRadius: 5,
                     border: '1px solid rgba(15,61,94,0.15)', background: 'white',
@@ -400,9 +492,7 @@ export function TripPlanner({
                 >
                   <Printer size={12} /> {lang === 'vi' ? 'In' : 'Print'}
                 </button>
-                <button
-                  onClick={handleExportPdf}
-                  title={lang === 'vi' ? 'Xuất PDF' : 'Export PDF'}
+                <button onClick={handleExportPdf} title="PDF"
                   style={{
                     flex: 1, padding: '5px 8px', borderRadius: 5,
                     border: '1px solid rgba(15,61,94,0.15)', background: 'white',
@@ -413,9 +503,7 @@ export function TripPlanner({
                 >
                   <Download size={12} /> PDF
                 </button>
-                <button
-                  onClick={handleCopyToClipboard}
-                  title={lang === 'vi' ? 'Sao chép' : 'Copy to clipboard'}
+                <button onClick={handleCopyToClipboard} title={lang === 'vi' ? 'Sao chép' : 'Copy'}
                   style={{
                     flex: 1, padding: '5px 8px', borderRadius: 5,
                     border: '1px solid rgba(15,61,94,0.15)', background: 'white',
@@ -426,7 +514,10 @@ export function TripPlanner({
                 >
                   <Clipboard size={12} />
                   {copyMsg ? (
-                    <span style={{ position: 'absolute', top: -20, right: 0, fontSize: 9, color: '#27AE60', fontWeight: 700, whiteSpace: 'nowrap' }}>
+                    <span style={{
+                      position: 'absolute', top: -20, right: 0,
+                      fontSize: 9, color: '#27AE60', fontWeight: 700, whiteSpace: 'nowrap',
+                    }}>
                       {copyMsg}
                     </span>
                   ) : null}
@@ -434,310 +525,208 @@ export function TripPlanner({
                 </button>
               </div>
 
-              {/* Day tabs */}
               <div style={{
-                display: 'flex',
-                gap: 4,
-                marginBottom: 8,
-                flexWrap: 'wrap',
-                alignItems: 'center',
+                marginBottom: 12, padding: '8px 10px', borderRadius: 6,
+                background: '#F0F4F8', display: 'flex',
+                justifyContent: 'space-between', alignItems: 'center',
               }}>
-                {plan.days.map((day) => (
-                  <button
-                    key={day.day}
-                    onClick={() => onDayChange(day.day)}
-                    style={{
-                      padding: '4px 8px',
-                      borderRadius: 5,
-                      border: activeDay === day.day ? `2px solid ${day.color}` : '1px solid rgba(15,61,94,0.12)',
-                      background: activeDay === day.day ? '#EBF5FB' : 'white',
-                      color: activeDay === day.day ? day.color : '#5d7a8c',
-                      fontSize: 11,
-                      fontWeight: activeDay === day.day ? 700 : 500,
-                      cursor: 'pointer',
-                      fontFamily: 'inherit',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 3,
-                    }}
-                  >
-                    <span style={{
-                      width: 7, height: 7, borderRadius: '50%',
-                      background: day.color, display: 'inline-block', flexShrink: 0,
-                    }} />
-                    {lang === 'vi' ? `Ngày ${day.day}` : `Day ${day.day}`}
-                    <span style={{ fontSize: 9, opacity: 0.7 }}>({day.destinations.length})</span>
-                  </button>
-                ))}
+                <div style={{ fontSize: 11, color: '#5d7a8c' }}>
+                  {lang === 'vi' ? 'Số điểm' : 'Stops'}
+                </div>
+                <div style={{ fontSize: 18, fontWeight: 700, color: '#0F3D5E' }}>
+                  {plan.totalSites}
+                </div>
               </div>
 
-              {/* Previous / Next day navigation */}
-              {activeItinerary && (
-                <div style={{ display: 'flex', gap: 4, marginBottom: 8 }}>
-                  <button
-                    onClick={handlePrevDay}
-                    disabled={!hasPrev}
-                    style={{
-                      flex: 1, padding: '5px 8px', borderRadius: 5,
-                      border: '1px solid rgba(15,61,94,0.12)',
-                      background: hasPrev ? 'white' : '#F0F4F8',
-                      color: hasPrev ? '#0F3D5E' : '#cbced4',
-                      fontSize: 11, fontWeight: 600, cursor: hasPrev ? 'pointer' : 'not-allowed',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                      fontFamily: 'inherit',
-                    }}
-                  >
-                    <ChevronLeft size={12} />
-                    {lang === 'vi' ? 'Ngày trước' : 'Previous'}
-                  </button>
-                  <button
-                    onClick={handleNextDay}
-                    disabled={!hasNext}
-                    style={{
-                      flex: 1, padding: '5px 8px', borderRadius: 5,
-                      border: '1px solid rgba(15,61,94,0.12)',
-                      background: hasNext ? 'white' : '#F0F4F8',
-                      color: hasNext ? '#0F3D5E' : '#cbced4',
-                      fontSize: 11, fontWeight: 600, cursor: hasNext ? 'pointer' : 'not-allowed',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                      fontFamily: 'inherit',
-                    }}
-                  >
-                    {lang === 'vi' ? 'Ngày tiếp' : 'Next'}
-                    <ChevronRight size={12} />
-                  </button>
-                </div>
-              )}
-
-              {/* Daily Summary Card */}
-              {activeItinerary && (
+              <div className="trip-timeline" style={{ position: 'relative', paddingLeft: 32, marginBottom: 8 }}>
                 <div style={{
-                  padding: '8px 10px',
-                  borderRadius: 6,
+                  position: 'absolute', left: 14, top: 8, bottom: 8,
+                  width: 2, background: '#D4A017', opacity: 0.25,
+                  borderRadius: 1,
+                }} />
+
+                <div style={{
+                  position: 'relative', marginBottom: 12,
+                  padding: '8px 10px', borderRadius: 6,
                   background: '#F0F4F8',
-                  marginBottom: 10,
-                  display: 'flex',
-                  gap: 12,
-                  fontSize: 11,
-                  color: '#5d7a8c',
-                  borderLeft: `3px solid ${activeItinerary.color}`,
                 }}>
-                  <div>
-                    <div style={{ fontWeight: 600, color: '#0F3D5E', marginBottom: 1 }}>
-                      {lang === 'vi' ? 'Điểm' : 'Sites'}
-                    </div>
-                    <div style={{ fontWeight: 700, fontSize: 16, color: activeItinerary.color }}>
-                      {activeItinerary.destinations.length}
-                    </div>
+                  <div style={{
+                    position: 'absolute', left: -22, top: 9,
+                    width: 20, height: 20, borderRadius: '50%',
+                    background: '#D4A017', color: 'white',
+                    display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: 9,
+                    fontWeight: 700, zIndex: 1,
+                    boxShadow: '0 0 0 3px white',
+                  }}>
+                    <MapPin size={10} />
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: '#0F3D5E', marginBottom: 1 }}>
-                      {lang === 'vi' ? 'KC' : 'Dist'}
-                    </div>
-                    <div style={{ fontWeight: 700, fontSize: 16, color: activeItinerary.color }}>
-                      {fmtDist(activeItinerary.totalDistance)}
-                    </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#0F3D5E' }}>
+                    {plan.startTime}
                   </div>
-                  <div>
-                    <div style={{ fontWeight: 600, color: '#0F3D5E', marginBottom: 1 }}>
-                      {lang === 'vi' ? 'TG' : 'Time'}
-                    </div>
-                    <div style={{ fontWeight: 700, fontSize: 16, color: activeItinerary.color }}>
-                      {fmtTime(activeItinerary.totalDuration)}
-                    </div>
+                  <div style={{ fontSize: 12, color: '#1a2332', fontWeight: 500 }}>
+                    {lang === 'vi' ? 'UBND xã Vân Đình' : 'Van Dinh Commune PC'}
                   </div>
                 </div>
-              )}
 
-              {/* Timeline */}
-              {activeItinerary && (
-                <div>
-                  <div style={{
-                    fontSize: 11,
-                    fontWeight: 700,
-                    color: activeItinerary.color,
-                    marginBottom: 8,
-                    paddingBottom: 4,
-                    borderBottom: `2px solid ${activeItinerary.color}`,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                  }}>
-                    <MapPin size={13} />
-                    {lang === 'vi'
-                      ? `Ngày ${activeItinerary.day} - ${activeItinerary.destinations.length} điểm`
-                      : `Day ${activeItinerary.day} - ${activeItinerary.destinations.length} stops`}
-                  </div>
-
-                  {/* Vertical timeline */}
-                  <div style={{ position: 'relative', paddingLeft: 28 }}>
-                    {/* Vertical line */}
-                    <div style={{
-                      position: 'absolute',
-                      left: 11,
-                      top: 4,
-                      bottom: 4,
-                      width: 2,
-                      background: activeItinerary.color,
-                      opacity: 0.3,
-                      borderRadius: 1,
-                    }} />
-
-                    {activeItinerary.destinations.map((dest, idx) => (
-                      <div
-                        key={dest.siteId}
-                        onClick={() => handleFocus(dest.siteId)}
-                        style={{
-                          position: 'relative',
-                          marginBottom: idx < activeItinerary.destinations.length - 1 ? 6 : 0,
-                          padding: '8px 8px 8px 0',
-                          borderRadius: 6,
-                          cursor: 'pointer',
-                          transition: 'background 0.15s',
-                          marginLeft: 4,
-                        }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F4F8'; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
-                      >
-                        {/* Numbered circle */}
-                        <div style={{
-                          position: 'absolute',
-                          left: -22,
-                          top: 8,
-                          width: 22,
-                          height: 22,
-                          borderRadius: '50%',
-                          background: activeItinerary.color,
-                          color: 'white',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: 10,
-                          fontWeight: 700,
-                          zIndex: 1,
-                          boxShadow: `0 0 0 3px white`,
+                {plan.days[0]?.destinations.map((dest, idx) => (
+                  <div key={dest.siteId}>
+                    {idx > 0 && (
+                      <div style={{
+                        marginLeft: -18, padding: '4px 0 4px 24px',
+                        fontSize: 10, color: '#5d7a8c',
+                        display: 'flex', alignItems: 'center', gap: 4,
+                      }}>
+                        <span style={{
+                          display: 'inline-flex', alignItems: 'center', gap: 2,
+                          background: '#F0F4F8', padding: '1px 6px', borderRadius: 3,
                         }}>
-                          {dest.order}
-                        </div>
-
-                        {/* Content */}
-                        <div style={{ marginLeft: 0 }}>
-                          {/* Arrival time */}
-                          <div style={{
-                            fontSize: 9,
-                            color: '#5d7a8c',
-                            fontWeight: 600,
-                            marginBottom: 2,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 3,
-                          }}>
-                            <Clock size={9} />
-                            {dest.estimatedArrival}
-                          </div>
-
-                          {/* Heritage name */}
-                          <div style={{
-                            fontSize: 12,
-                            fontWeight: 600,
-                            color: '#0F3D5E',
-                            lineHeight: 1.3,
-                            marginBottom: 4,
-                          }}>
-                            {lang === 'vi' ? dest.nameVi : dest.nameEn}
-                          </div>
-
-                          {/* Badges row */}
-                          <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexWrap: 'wrap' }}>
-                            <span style={{
-                              fontSize: 9,
-                              padding: '1px 5px',
-                              borderRadius: 3,
-                              background: '#EBF5FB',
-                              color: '#0F3D5E',
-                              fontWeight: 600,
-                            }}>
-                              {typeLabels[dest.type]?.[lang] ?? dest.type}
-                            </span>
-                            <span style={{
-                              fontSize: 9,
-                              padding: '1px 5px',
-                              borderRadius: 3,
-                              background: classificationColors[dest.classification as keyof typeof classificationColors] + '22',
-                              color: classificationColors[dest.classification as keyof typeof classificationColors],
-                              fontWeight: 600,
-                            }}>
-                              {classificationLabels[dest.classification as keyof typeof classificationLabels]?.[lang] ?? dest.classification}
-                            </span>
-                            <span style={{
-                              fontSize: 9,
-                              color: '#5d7a8c',
-                              fontWeight: 500,
-                            }}>
-                              {fmtDist(dest.distanceFromPrev)}
-                            </span>
-                          </div>
-                        </div>
+                          <Clock size={9} />
+                          {dest.travelTime} {lang === 'vi' ? 'ph' : 'min'}
+                        </span>
+                        <span>{fmtDist(dest.distanceFromPrev)}</span>
                       </div>
-                    ))}
-                  </div>
+                    )}
 
-                  {/* Day distance summary */}
+                    <div
+                      onClick={() => handleFocus(dest.siteId)}
+                      style={{
+                        position: 'relative', padding: '8px 10px',
+                        borderRadius: 6, cursor: 'pointer',
+                        transition: 'background 0.15s', marginBottom: 0,
+                      }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = '#F0F4F8'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
+                    >
+                      <div style={{
+                        position: 'absolute', left: -22, top: 9,
+                        width: 22, height: 22, borderRadius: '50%',
+                        background: '#0F3D5E', color: 'white',
+                        display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', fontSize: 10,
+                        fontWeight: 700, zIndex: 1,
+                        boxShadow: '0 0 0 3px white',
+                      }}>
+                        {dest.order}
+                      </div>
+
+                      <div style={{
+                        fontSize: 10, color: '#D4A017', fontWeight: 700,
+                        marginBottom: 2, display: 'flex', alignItems: 'center', gap: 3,
+                      }}>
+                        <Clock size={9} />
+                        {dest.estimatedArrival} - {dest.departureTime}
+                      </div>
+
+                      <div style={{
+                        fontSize: 13, fontWeight: 600, color: '#0F3D5E',
+                        lineHeight: 1.3, marginBottom: 4,
+                      }}>
+                        {lang === 'vi' ? dest.nameVi : dest.nameEn}
+                      </div>
+
+                      <div style={{
+                        display: 'flex', alignItems: 'center', gap: 4,
+                        flexWrap: 'wrap',
+                      }}>
+                        <span style={{
+                          fontSize: 9, padding: '1px 5px', borderRadius: 3,
+                          background: '#EBF5FB', color: '#0F3D5E', fontWeight: 600,
+                        }}>
+                          {typeLabels[dest.type]?.[lang] ?? dest.type}
+                        </span>
+                        <span style={{
+                          fontSize: 9, padding: '1px 5px', borderRadius: 3,
+                          background: '#E8F8F0', color: '#27AE60', fontWeight: 600,
+                        }}>
+                          {lang === 'vi' ? `${dest.visitDuration} ph` : `${dest.visitDuration} min`}
+                        </span>
+                        <span style={{
+                          fontSize: 9, color: '#5d7a8c', fontWeight: 500,
+                        }}>
+                          {classificationLabels[dest.classification as keyof typeof classificationLabels]?.[lang] ?? dest.classification}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+                <div style={{
+                  position: 'relative', marginTop: 8,
+                  padding: '8px 10px', borderRadius: 6,
+                  background: '#F0F4F8',
+                }}>
                   <div style={{
-                    marginTop: 8,
-                    padding: '8px 10px',
-                    borderRadius: 6,
-                    background: '#F0F4F8',
-                    fontSize: 11,
-                    color: '#5d7a8c',
-                    display: 'flex',
-                    justifyContent: 'space-between',
+                    position: 'absolute', left: -22, top: 9,
+                    width: 20, height: 20, borderRadius: '50%',
+                    background: '#27AE60', color: 'white',
+                    display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', fontSize: 9,
+                    fontWeight: 700, zIndex: 1,
+                    boxShadow: '0 0 0 3px white',
                   }}>
-                    <span>{lang === 'vi' ? 'Khoảng cách:' : 'Distance:'} <strong style={{ color: '#0F3D5E' }}>{fmtDist(activeItinerary.totalDistance)}</strong></span>
-                    <span>{lang === 'vi' ? 'Thời gian:' : 'Duration:'} <strong style={{ color: '#0F3D5E' }}>{fmtTime(activeItinerary.totalDuration)}</strong></span>
+                    <MapPin size={10} />
+                  </div>
+                  <div style={{ fontSize: 11, fontWeight: 700, color: '#0F3D5E' }}>
+                    {plan.endTime}
+                  </div>
+                  <div style={{ fontSize: 12, color: '#5d7a8c', fontWeight: 500 }}>
+                    {lang === 'vi' ? 'Kết thúc' : 'Finish'}
                   </div>
                 </div>
-              )}
+              </div>
             </>
+          )}
+
+          {!loading && plan && plan.totalSites === 0 && (
+            <div style={{
+              padding: '20px', textAlign: 'center', color: '#5d7a8c', fontSize: 13,
+            }}>
+              {lang === 'vi'
+                ? 'Không có đủ di tích hợp lệ để tạo lịch trình.'
+                : 'Not enough valid sites to generate an itinerary.'}
+            </div>
           )}
         </div>
 
-        {/* Hidden printable content */}
         <div style={{ display: 'none' }} className="trip-planner-print">
-          {plan && (
-            <div>
-              <h1>{lang === 'vi' ? 'LỊCH TRÌNH THAM QUAN' : 'TRIP ITINERARY'}</h1>
-              <p>{lang === 'vi' ? `Tổng số: ${plan.totalSites} di tích, ${plan.days.length} ngày` : `Total: ${plan.totalSites} sites, ${plan.days.length} days`}</p>
-              {plan.days.map(day => (
-                <div key={day.day}>
-                  <h2>{lang === 'vi' ? `Ngày ${day.day}` : `Day ${day.day}`}</h2>
-                  <ol>
-                    {day.destinations.map(d => (
-                      <li key={d.siteId}>
-                        {lang === 'vi' ? d.nameVi : d.nameEn} — {typeLabels[d.type]?.[lang] ?? d.type} — {d.estimatedArrival}
-                      </li>
-                    ))}
-                  </ol>
-                  <p>{lang === 'vi' ? `Khoảng cách: ${fmtDist(day.totalDistance)}` : `Distance: ${fmtDist(day.totalDistance)}`} | {lang === 'vi' ? `Thời gian: ${fmtTime(day.totalDuration)}` : `Duration: ${fmtTime(day.totalDuration)}`}</p>
+          {plan && plan.days.map(day => (
+            <div key={day.day}>
+              <h2 style={{ color: '#0F3D5E' }}>{lang === 'vi' ? 'Lịch trình' : 'Itinerary'}</h2>
+              {day.destinations.map(d => (
+                <div key={d.siteId} style={{ marginBottom: 8, padding: 8, background: '#F0F4F8', borderRadius: 6 }}>
+                  <strong>{d.order}. {lang === 'vi' ? d.nameVi : d.nameEn}</strong><br />
+                  <span style={{ color: '#5d7a8c', fontSize: 12 }}>
+                    {typeLabels[d.type]?.[lang] ?? d.type} — {d.estimatedArrival} - {d.departureTime}
+                  </span>
                 </div>
               ))}
             </div>
-          )}
+          ))}
         </div>
       </div>
 
       <style>{`
-@media (max-width: 767px) {
-  .trip-planner-label { display: none; }
-  .trip-planner-panel {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-}
-@media print {
-  .trip-planner-print { display: block !important; }
-}
-`}</style>
+        @keyframes trip-spin {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @media (max-width: 767px) {
+          .trip-planner-label { display: none; }
+          .trip-planner-panel {
+            width: 100% !important;
+            max-width: 100% !important;
+            left: 0 !important;
+          }
+          .trip-planner-btn {
+            bottom: 116px !important;
+            right: 8px !important;
+          }
+        }
+        @media print {
+          .trip-planner-print { display: block !important; }
+        }
+      `}</style>
     </>
   );
 }

@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-27T07:50:29Z
+    GENERATED: 2026-07-28T02:23:50Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -482,7 +482,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 460 rows
+-- [ActivityLogs]: 461 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -944,9 +944,10 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10421, 2, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T06:06:26.3098957', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10422, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-07-27T06:06:47.2585348', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10423, 2, N'UPDATE', N'SystemSettings', 1, NULL, '2026-07-27T06:06:47.3404302', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10424, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-07-28T01:40:06.2793379', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10423);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10424);
 GO
 
 -- [ContactMessages]: 1 rows

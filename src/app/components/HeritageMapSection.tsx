@@ -3,7 +3,7 @@ import { Search, X, Crosshair, Navigation } from 'lucide-react';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useTypeLabels } from '../../presentation/hooks/useHeritageData';
 import { useHeritageMapMarkers } from '../../presentation/hooks/useHeritageMapMarkers';
-import { haversineDistance, openGoogleMapsDirections } from '../utils/geo';
+import { haversineDistance, openDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { Skeleton } from './Skeleton';
@@ -13,7 +13,6 @@ import { HERITAGE_TYPES } from '../constants';
 import type { MapMarker, HeritageType } from '../../core/types';
 
 interface HeritageMapSectionProps {
-  apiKey: string;
   onNavigate: (page: string, id?: string) => void;
   className?: string;
 }
@@ -25,7 +24,7 @@ const PLACEHOLDER_IMG = 'data:image/svg+xml,' + encodeURIComponent(
   '</svg>',
 );
 
-export function HeritageMapSection({ apiKey, onNavigate, className }: HeritageMapSectionProps) {
+export function HeritageMapSection({ onNavigate, className }: HeritageMapSectionProps) {
   const { lang, t } = useLanguage();
   const { data: sites } = useHeritageSites();
   const { markers, loading, error } = useHeritageMapMarkers();
@@ -36,7 +35,7 @@ export function HeritageMapSection({ apiKey, onNavigate, className }: HeritageMa
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
   const [mapType, setMapType] = useState<'roadmap' | 'satellite' | 'hybrid'>('roadmap');
 
-  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
 
@@ -145,7 +144,7 @@ export function HeritageMapSection({ apiKey, onNavigate, className }: HeritageMa
   const handleGetDirections = useCallback((siteId: string) => {
     const site = siteMap.get(siteId);
     if (!site) return;
-    openGoogleMapsDirections(site.lat, site.lon);
+    openDirections(site.lat, site.lon);
   }, [siteMap]);
 
   const nearestHeritage = useMemo(() => {
@@ -403,13 +402,12 @@ export function HeritageMapSection({ apiKey, onNavigate, className }: HeritageMa
         {visibleCount > 0 ? (
           <>
             <GoogleMapView
-              apiKey={apiKey}
               markers={filteredMarkers}
               selectedMarkerId={effectiveSelectedId}
               onMarkerClick={handleMarkerClick}
               onInfoWindowClose={handleInfoWindowClose}
               renderInfoWindow={renderInfoWindow}
-              mapTypeId={mapType}
+              mapType={mapType}
               userLocation={userLocation}
               highlightedMarkerId={highlightedMarkerId}
             />

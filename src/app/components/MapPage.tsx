@@ -2,7 +2,7 @@ import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useTypeLabels, useClassificationLabels } from '../../presentation/hooks/useHeritageData';
 import { useHeritageMapMarkers } from '../../presentation/hooks/useHeritageMapMarkers';
-import { haversineDistance, openGoogleMapsDirections } from '../utils/geo';
+import { haversineDistance, openDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
 import { GoogleMapView } from './GoogleMapView';
 import { CategoryLegend } from './CategoryLegend';
@@ -14,7 +14,7 @@ import type { HeritageSite, HeritageType, Classification, MapMarker } from '../.
 import type { TripPlan } from '../services/tripPlannerService';
 import {
   X, QrCode, Navigation, RotateCcw, Search,
-  Filter, ChevronDown, ChevronUp, Crosshair
+  Filter, ChevronDown, ChevronUp, Crosshair, Satellite
 } from 'lucide-react';
 
 interface MapPageProps {
@@ -114,12 +114,12 @@ export function MapPage({ onNavigate }: MapPageProps) {
 
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
   const [mapType, setMapType] = useState<'roadmap' | 'satellite' | 'hybrid'>('roadmap');
-  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [tripPlan, setTripPlan] = useState<TripPlan | null>(null);
   const [tripVisibleDay, setTripVisibleDay] = useState<number | null>(null);
-  const [tripFocusPosition, setTripFocusPosition] = useState<google.maps.LatLngLiteral | null>(null);
+  const [tripFocusPosition, setTripFocusPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [tripFitBoundsKey, setTripFitBoundsKey] = useState(0);
   const mountedRef = useRef(true);
   const langRef = useRef(lang);
@@ -129,8 +129,6 @@ export function MapPage({ onNavigate }: MapPageProps) {
     mountedRef.current = true;
     return () => { mountedRef.current = false; };
   }, []);
-
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
   const siteMap = useMemo(() => {
     const map = new Map<string, HeritageSite>();
@@ -234,7 +232,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const handleGetDirections = useCallback((siteId: string) => {
     const site = siteMap.get(siteId);
     if (!site) return;
-    openGoogleMapsDirections(site.lat, site.lon);
+    openDirections(site.lat, site.lon);
   }, [siteMap]);
 
   const visibleSites = useMemo(
@@ -261,7 +259,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
     if (!tripPlan) return [];
     const markers: Array<{
       id: string;
-      position: google.maps.LatLngLiteral;
+      position: { lat: number; lng: number };
       orderNumber: number;
       dayIndex: number;
       color: string;
@@ -284,7 +282,11 @@ export function MapPage({ onNavigate }: MapPageProps) {
     if (!tripPlan) return [];
     return tripPlan.days.map((day) => ({
       dayIndex: day.day,
-      path: day.destinations.map((d) => d.position),
+      path: day.routeGeometry && day.routeGeometry.length > 0
+        ? day.routeGeometry
+            .filter(p => Array.isArray(p) && p.length >= 2 && Number.isFinite(p[0]) && Number.isFinite(p[1]))
+            .map(p => ({ lat: p[0], lng: p[1] }))
+        : day.destinations.map((d) => d.position),
       color: day.color,
     }));
   }, [tripPlan]);
@@ -339,10 +341,11 @@ export function MapPage({ onNavigate }: MapPageProps) {
 
       const imgSrc = site.image ? getImageUrl(site.image) : PLACEHOLDER_IMG;
       const categoryLabel = typeLabels[site.type]?.[lang] ?? site.type;
-      const description = lang === 'vi' ? site.descriptionVi : site.descriptionEn;
-      const truncated =
-        description.length > 120 ? description.slice(0, 120).trimEnd() + '…' : description;
+      const address = lang === 'vi' ? site.addressVi : site.addressEn;
       const tripCtx = tripContextMap.get(marker.id);
+
+      const statusLabelKey = `hm.status_${site.status}` as const;
+      const statusLabel = t(statusLabelKey);
 
       return (
         <div style={{ maxWidth: 260, fontFamily: "'Be Vietnam Pro', sans-serif" }}>
@@ -364,7 +367,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
               </span>
             </div>
           )}
-          <div style={{ width: '100%', height: 110, overflow: 'hidden', borderRadius: 8, marginBottom: 10, background: '#F0F4F8' }}>
+          <div style={{ width: '100%', aspectRatio: '16/9', overflow: 'hidden', borderRadius: 8, marginBottom: 10, background: '#F0F4F8' }}>
             <LazyImage
               src={imgSrc}
               alt={lang === 'vi' ? site.nameVi : site.nameEn}
@@ -375,23 +378,31 @@ export function MapPage({ onNavigate }: MapPageProps) {
               }}
             />
           </div>
-          <div style={{ marginBottom: 6 }}>
+          <div style={{ display: 'flex', gap: 4, marginBottom: 6, flexWrap: 'wrap' }}>
             <span style={{
               display: 'inline-block', padding: '2px 8px', borderRadius: 10,
               fontSize: 10, fontWeight: 700, background: '#EBF5FB', color: '#0F3D5E',
             }}>
               {categoryLabel}
             </span>
+            <span style={{
+              display: 'inline-block', padding: '2px 8px', borderRadius: 10,
+              fontSize: 10, fontWeight: 600, background: '#E8F8F0', color: '#27AE60',
+            }}>
+              {statusLabel}
+            </span>
           </div>
           <h3 style={{
-            margin: '0 0 6px', fontSize: 14, fontWeight: 700, color: '#0F3D5E',
+            margin: '0 0 4px', fontSize: 14, fontWeight: 700, color: '#0F3D5E',
             lineHeight: 1.3, fontFamily: 'Merriweather, serif',
           }}>
             {lang === 'vi' ? site.nameVi : site.nameEn}
           </h3>
-          <p style={{ margin: '0 0 10px', fontSize: 12, color: '#5d7a8c', lineHeight: 1.5 }}>
-            {truncated}
-          </p>
+          {address && (
+            <p style={{ margin: '0 0 10px', fontSize: 11, color: '#5d7a8c', lineHeight: 1.4 }}>
+              {address}
+            </p>
+          )}
           <div style={{ display: 'flex', gap: 6 }}>
             <button
               onClick={() => handleGetDirections(site.id)}
@@ -420,17 +431,6 @@ export function MapPage({ onNavigate }: MapPageProps) {
               }}
             >
               {t('map.viewdetail')}
-            </button>
-            <button
-              onClick={() => setShowQr(true)}
-              style={{
-                padding: '8px 10px', borderRadius: 6,
-                border: '1px solid rgba(15,61,94,0.2)',
-                background: 'white', color: '#0F3D5E', fontSize: 11, cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}
-            >
-              <QrCode size={14} />
             </button>
           </div>
         </div>
@@ -613,13 +613,12 @@ export function MapPage({ onNavigate }: MapPageProps) {
       {/* Map area */}
       <div style={{ flex: 1, position: 'relative', overflow: 'hidden' }}>
         <GoogleMapView
-          apiKey={apiKey}
           markers={filteredMarkers}
           selectedMarkerId={effectiveSelectedId}
           onMarkerClick={handleMarkerClick}
           onInfoWindowClose={handleInfoWindowClose}
           renderInfoWindow={renderInfoWindow}
-          mapTypeId={mapType}
+          mapType={mapType}
           userLocation={userLocation}
           highlightedMarkerId={highlightedMarkerId}
           tripRouteMarkers={tripRouteMarkers}

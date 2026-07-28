@@ -1,6 +1,10 @@
 import { useMemo, useCallback, useRef, useEffect, useState } from 'react';
-import { useJsApiLoader, GoogleMap, Marker, InfoWindow, Polyline } from '@react-google-maps/api';
-import { MarkerClusterer } from '@googlemaps/markerclusterer';
+import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, Polyline, CircleMarker, useMap, useMapEvents } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet.markercluster';
+import 'leaflet.markercluster/dist/MarkerCluster.css';
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css';
 import { classificationColors } from '../constants';
 import { getIconDataUri, hasSvgIcon, emojiFallbacks } from '../heritageIcons';
 import type { MapMarker, HeritageType, Classification } from '../../core/types';
@@ -8,7 +12,7 @@ import type { ReactNode } from 'react';
 
 interface TripRouteMarker {
   id: string;
-  position: google.maps.LatLngLiteral;
+  position: { lat: number; lng: number };
   orderNumber: number;
   dayIndex: number;
   color: string;
@@ -16,58 +20,203 @@ interface TripRouteMarker {
 
 interface TripPolyline {
   dayIndex: number;
-  path: google.maps.LatLngLiteral[];
+  path: { lat: number; lng: number }[];
   color: string;
 }
 
-interface GoogleMapViewProps {
-  apiKey: string;
+interface LeafletMapViewProps {
   markers?: MapMarker[];
   selectedMarkerId?: string | null;
   onMarkerClick?: (id: string) => void;
   onInfoWindowClose?: () => void;
   renderInfoWindow?: (marker: MapMarker) => ReactNode;
-  mapTypeId?: 'roadmap' | 'satellite' | 'hybrid' | 'terrain';
-  userLocation?: google.maps.LatLngLiteral | null;
+  mapType?: 'roadmap' | 'satellite' | 'hybrid';
+  userLocation?: { lat: number; lng: number } | null;
   highlightedMarkerId?: string | null;
   className?: string;
   tripRouteMarkers?: TripRouteMarker[];
   tripPolylines?: TripPolyline[];
   visibleDay?: number | null;
   onTripMarkerClick?: (id: string) => void;
-  focusPosition?: google.maps.LatLngLiteral | null;
+  focusPosition?: { lat: number; lng: number } | null;
   fitTripBoundsKey?: number;
 }
 
-const VAN_DINH_CENTER: google.maps.LatLngLiteral = {
-  lat: 20.755,
-  lng: 105.855,
-};
-
-const DEFAULT_ZOOM = 15;
-
-const containerStyle = {
-  width: '100%',
-  height: '100%',
-};
-
-const mapOptions: google.maps.MapOptions = {
-  streetViewControl: false,
-  mapTypeControl: false,
-  fullscreenControl: false,
-  clickableIcons: false,
-};
-
+const VAN_DINH_CENTER: [number, number] = [20.755, 105.855];
+const DEFAULT_ZOOM = 13;
 const DAY_MARKER_SIZES = [32, 30, 28, 26, 24, 22, 20];
 
+function pinSvg(type: HeritageType, classificationColor: string, highlighted: boolean): string {
+  const body = highlighted
+    ? `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D4A017" stroke-width="2.5"/>`
+    : `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D0D0D0" stroke-width="1"/>`;
+  const iconContent = hasSvgIcon(type)
+    ? `<image href="${getIconDataUri(type)}" x="2" y="2" width="24" height="24" preserveAspectRatio="xMidYMid meet"/>`
+    : (() => {
+        const scale = type === 'den' || type === 'lang' ? 0.5 : 1;
+        const fontSize = Math.round(16 * scale);
+        const y = Math.round(14 + (21 - 14) * scale);
+        return `<text x="14" y="${y}" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="${fontSize}">${emojiFallbacks[type] ?? '?'}</text>`;
+      })();
+  return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 40">
+      ${body}
+      ${iconContent}
+      <rect x="6" y="28" width="16" height="5" rx="2.5" fill="${classificationColor}"/>
+    </svg>`
+  )}`;
+}
+
+function getLeafletIcon(type?: HeritageType, classification?: Classification, highlighted?: boolean): L.Icon {
+  const c = classification ? classificationColors[classification] : '#999';
+  return L.icon({
+    iconUrl: pinSvg(type!, c, !!highlighted),
+    iconSize: [28, 40],
+    iconAnchor: [14, 38],
+  });
+}
+
+function createTripMarkerIcon(orderNumber: number, color: string): L.DivIcon {
+  return L.divIcon({
+    className: '',
+    html: `<div style="width:${DAY_MARKER_SIZES[0]}px;height:${DAY_MARKER_SIZES[0]}px;border-radius:50%;background:${color};color:white;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;border:3px solid white;box-shadow:0 2px 4px rgba(0,0,0,0.3);">${orderNumber}</div>`,
+    iconSize: [DAY_MARKER_SIZES[0], DAY_MARKER_SIZES[0]],
+    iconAnchor: [DAY_MARKER_SIZES[0] / 2, DAY_MARKER_SIZES[0] / 2],
+  });
+}
+
+const tileLayers: Record<string, string> = {
+  roadmap: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  hybrid: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+};
+
+const tileAttribution = {
+  roadmap: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  satellite: '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+  hybrid: '&copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+};
+
+function MapController({
+  focusPosition,
+  fitTripBoundsKey,
+  filteredTripMarkers,
+  markers,
+  onInfoWindowClose,
+}: {
+  focusPosition?: { lat: number; lng: number } | null;
+  fitTripBoundsKey?: number;
+  filteredTripMarkers: TripRouteMarker[];
+  markers: MapMarker[];
+  onInfoWindowClose?: () => void;
+}) {
+  const map = useMap();
+  const focusPosRef = useRef<{ lat: number; lng: number } | null>(null);
+  const fitTripKeyRef = useRef<number>(0);
+  const markersKeyRef = useRef<string>('');
+  const fitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useMapEvents({
+    click: () => onInfoWindowClose?.(),
+  });
+
+  useEffect(() => {
+    if (!focusPosition) return;
+    if (
+      focusPosRef.current &&
+      focusPosRef.current.lat === focusPosition.lat &&
+      focusPosRef.current.lng === focusPosition.lng
+    ) return;
+    focusPosRef.current = focusPosition;
+    map.setView([focusPosition.lat, focusPosition.lng], 17, { animate: true });
+  }, [map, focusPosition]);
+
+  useEffect(() => {
+    if (fitTripBoundsKey === undefined || fitTripBoundsKey === fitTripKeyRef.current) return;
+    fitTripKeyRef.current = fitTripBoundsKey;
+
+    const positions = filteredTripMarkers.map(m => [m.position.lat, m.position.lng] as [number, number]);
+    if (positions.length === 0) return;
+
+    if (positions.length === 1) {
+      map.setView(positions[0], 17, { animate: true });
+    } else {
+      const bounds = L.latLngBounds(positions);
+      map.fitBounds(bounds, { padding: [60, 60] });
+    }
+  }, [map, fitTripBoundsKey, filteredTripMarkers]);
+
+  useEffect(() => {
+    if (markers.length === 0) return;
+    const key = markers.map((m) => `${m.id}:${m.position.lat},${m.position.lng}`).join('|');
+    if (key === markersKeyRef.current) return;
+    markersKeyRef.current = key;
+
+    if (fitTimerRef.current !== null) clearTimeout(fitTimerRef.current);
+    fitTimerRef.current = setTimeout(() => {
+      if (markers.length === 1) {
+        map.setView([markers[0].position.lat, markers[0].position.lng], 17, { animate: true });
+      } else {
+        const bounds = L.latLngBounds(markers.map(m => [m.position.lat, m.position.lng]));
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }
+      fitTimerRef.current = null;
+    }, 100);
+    return () => {
+      if (fitTimerRef.current !== null) {
+        clearTimeout(fitTimerRef.current);
+        fitTimerRef.current = null;
+      }
+    };
+  }, [map, markers]);
+
+  return null;
+}
+
+function splitMarkers(markers: MapMarker[], highlightedId: string | null): { regular: MapMarker[]; highlighted: MapMarker[] } {
+  const regular: MapMarker[] = [];
+  const highlighted: MapMarker[] = [];
+  for (const m of markers) {
+    if (m.id === highlightedId) highlighted.push(m);
+    else regular.push(m);
+  }
+  return { regular, highlighted };
+}
+
+function SelectedMarkerPopup({ marker, renderInfoWindow, onInfoWindowClose }: {
+  marker: MapMarker | { id: string; position: { lat: number; lng: number } };
+  renderInfoWindow?: (marker: MapMarker) => ReactNode;
+  onInfoWindowClose?: () => void;
+}) {
+  const markerRef = useRef<L.Marker>(null);
+
+  useEffect(() => {
+    const leafletMarker = markerRef.current;
+    if (leafletMarker) {
+      leafletMarker.openPopup();
+    }
+  }, [marker.id]);
+
+  return (
+    <Marker
+      ref={markerRef}
+      position={[marker.position.lat, marker.position.lng]}
+      icon={L.divIcon({ className: '', iconSize: [0, 0] })}
+    >
+      <Popup onClose={onInfoWindowClose}>
+        {renderInfoWindow?.(marker)}
+      </Popup>
+    </Marker>
+  );
+}
+
 export function GoogleMapView({
-  apiKey,
   markers = [],
   selectedMarkerId,
   onMarkerClick,
   onInfoWindowClose,
   renderInfoWindow,
-  mapTypeId,
+  mapType = 'roadmap',
   userLocation,
   highlightedMarkerId,
   className,
@@ -77,35 +226,16 @@ export function GoogleMapView({
   onTripMarkerClick,
   focusPosition,
   fitTripBoundsKey,
-}: GoogleMapViewProps) {
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: apiKey,
-  });
-
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [clustererVersion, setClustererVersion] = useState(0);
-  const clustererRef = useRef<MarkerClusterer | null>(null);
-  const markerMapRef = useRef<Map<string, google.maps.Marker>>(new Map());
+}: LeafletMapViewProps) {
+  const [clusterGroup, setClusterGroup] = useState<L.MarkerClusterGroup | null>(null);
+  const [clusterVersion, setClusterVersion] = useState(0);
+  const markerMapRef = useRef<Map<string, L.Marker>>(new Map());
   const onMarkerClickRef = useRef(onMarkerClick);
   const onInfoWindowCloseRef = useRef(onInfoWindowClose);
   const onTripMarkerClickRef = useRef(onTripMarkerClick);
   onMarkerClickRef.current = onMarkerClick;
   onInfoWindowCloseRef.current = onInfoWindowClose;
   onTripMarkerClickRef.current = onTripMarkerClick;
-
-  const mapCenter = useMemo(() => VAN_DINH_CENTER, []);
-
-  const selectedMarker = useMemo(
-    () => {
-      const fromMarkers = markers.find((m) => m.id === selectedMarkerId);
-      if (fromMarkers) return fromMarkers;
-      const fromTrip = tripRouteMarkers.find((m) => m.id === selectedMarkerId);
-      if (fromTrip) return { id: fromTrip.id, position: fromTrip.position };
-      return null;
-    },
-    [markers, tripRouteMarkers, selectedMarkerId],
-  );
 
   const filteredTripMarkers = useMemo(
     () => {
@@ -125,70 +255,45 @@ export function GoogleMapView({
     [tripPolylines, visibleDay],
   );
 
-  const handleMapClick = useCallback(() => {
-    onInfoWindowCloseRef.current?.();
+  const selectedMarker = useMemo(
+    () => {
+      const fromMarkers = markers.find((m) => m.id === selectedMarkerId);
+      if (fromMarkers) return fromMarkers;
+      const fromTrip = tripRouteMarkers.find((m) => m.id === selectedMarkerId);
+      if (fromTrip) return { id: fromTrip.id, position: fromTrip.position };
+      return null;
+    },
+    [markers, tripRouteMarkers, selectedMarkerId],
+  );
+
+  const { regular: regularMarkers, highlighted: highlightedMarkers } = useMemo(
+    () => splitMarkers(markers, highlightedMarkerId),
+    [markers, highlightedMarkerId],
+  );
+
+  const handleClusterReady = useCallback((event: L.LeafletEvent) => {
+    const map = event.target;
+    const mcg = L.markerClusterGroup({
+      chunkedLoading: true,
+      maxClusterRadius: 50,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      zoomToBoundsOnClick: true,
+      disableClusteringAtZoom: 16,
+    });
+    mcg.addTo(map);
+    setClusterGroup(mcg);
+    setClusterVersion(v => v + 1);
   }, []);
 
-  const handleMapLoad = useCallback((map: google.maps.Map) => {
-    setMap(map);
-  }, []);
-
-  function pinSvg(type: HeritageType, classificationColor: string, highlighted: boolean): string {
-    const body = highlighted
-      ? `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D4A017" stroke-width="2.5"/>`
-      : `<path d="M14 2 C7 2 3 8 3 15 C3 24 14 38 14 38 C14 38 25 24 25 15 C25 8 21 2 14 2Z" fill="white" stroke="#D0D0D0" stroke-width="1"/>`;
-    const iconContent = hasSvgIcon(type)
-      ? `<image href="${getIconDataUri(type)}" x="2" y="2" width="24" height="24" preserveAspectRatio="xMidYMid meet"/>`
-      : (() => {
-          const scale = type === 'den' || type === 'lang' ? 0.5 : 1;
-          const fontSize = Math.round(16 * scale);
-          const y = Math.round(14 + (21 - 14) * scale);
-          return `<text x="14" y="${y}" text-anchor="middle" font-family="'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif" font-size="${fontSize}">${emojiFallbacks[type] ?? '?'}</text>`;
-        })();
-    return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
-      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 40">
-        ${body}
-        ${iconContent}
-        <rect x="6" y="28" width="16" height="5" rx="2.5" fill="${classificationColor}"/>
-      </svg>`
-    )}`;
-  }
-
-  // Called only after google.maps is available (inside guarded effects).
-  function getMarkerIcon(type?: HeritageType, classification?: Classification, highlighted?: boolean): google.maps.Icon | undefined {
-    if (!type) return undefined;
-    const c = classification ? classificationColors[classification] : '#999';
-    return {
-      url: pinSvg(type, c, !!highlighted),
-      scaledSize: new google.maps.Size(28, 40),
-      anchor: new google.maps.Point(14, 38),
-    };
-  }
-
-  // Create/destroy MarkerClusterer when map instance becomes available
   useEffect(() => {
-    if (!map) return;
-    const clusterer = new MarkerClusterer({ map });
-    clustererRef.current = clusterer;
-    setClustererVersion(v => v + 1);
-    return () => {
-      clusterer.clearMarkers();
-      clustererRef.current = null;
-      markerMapRef.current.clear();
-    };
-  }, [map]);
+    if (!clusterGroup) return;
 
-  // Sync heritage markers with the clusterer
-  useEffect(() => {
-    const clusterer = clustererRef.current;
-    if (!clusterer) return;
-
+    const mcg = clusterGroup;
     const markerMap = markerMapRef.current;
     const newIds = new Set(markers.map((m) => m.id));
-    const curHighlighted = highlightedMarkerId;
 
-    // Remove markers that no longer exist in the list
-    const toRemove: google.maps.Marker[] = [];
+    const toRemove: L.Marker[] = [];
     for (const [id, marker] of markerMap) {
       if (!newIds.has(id)) {
         toRemove.push(marker);
@@ -196,257 +301,114 @@ export function GoogleMapView({
       }
     }
 
-    // Track listener removers for proper cleanup
-    const cleanups: (() => void)[] = [];
-
-    // Add or update markers
-    const toAdd: google.maps.Marker[] = [];
+    const toAdd: L.Marker[] = [];
     for (const m of markers) {
       let marker = markerMap.get(m.id);
-      const isHighlighted = curHighlighted === m.id;
-      const icon = getMarkerIcon(m.type, m.classification, isHighlighted);
+      const icon = getLeafletIcon(m.type, m.classification, m.id === highlightedMarkerId);
 
       if (marker) {
-        marker.setPosition(m.position);
-        marker.setLabel(m.label ?? null);
-        marker.setIcon(icon ?? null);
-        marker.setZIndex(isHighlighted ? 200 : null);
+        marker.setLatLng([m.position.lat, m.position.lng]);
+        marker.setIcon(icon);
+        marker.setZIndexOffset(m.id === highlightedMarkerId ? 200 : 0);
       } else {
-        marker = new google.maps.Marker({
-          position: m.position,
-          label: m.label,
-          icon: icon,
-          zIndex: isHighlighted ? 200 : undefined,
+        marker = L.marker([m.position.lat, m.position.lng], { icon, zIndexOffset: m.id === highlightedMarkerId ? 200 : 0 });
+        const id = m.id;
+        marker.on('click', () => {
+          onMarkerClickRef.current?.(id);
         });
         markerMap.set(m.id, marker);
         toAdd.push(marker);
       }
-
-      // Always re-attach click listener (cleaned up by previous run's cleanup)
-      const id = m.id;
-      const listener = marker.addListener('click', () => {
-        onMarkerClickRef.current?.(id);
-      });
-      cleanups.push(() => google.maps.event.removeListener(listener));
     }
 
-    if (toRemove.length > 0) {
-      clusterer.removeMarkers(toRemove);
-    }
-    if (toAdd.length > 0) {
-      clusterer.addMarkers(toAdd);
-    }
-
-    return () => {
-      for (const cleanup of cleanups) {
-        cleanup();
-      }
-    };
-  }, [markers, highlightedMarkerId, clustererVersion]);
-
-  // Focus on a specific position (from trip planner timeline click)
-  const focusPosRef = useRef<google.maps.LatLngLiteral | null>(null);
-  useEffect(() => {
-    if (!map || !focusPosition) return;
-    if (
-      focusPosRef.current &&
-      focusPosRef.current.lat === focusPosition.lat &&
-      focusPosRef.current.lng === focusPosition.lng
-    ) return;
-    focusPosRef.current = focusPosition;
-    map.panTo(focusPosition);
-    map.setZoom(17);
-  }, [map, focusPosition]);
-
-  // Fit bounds to trip route when day changes
-  const fitTripKeyRef = useRef<number>(0);
-  useEffect(() => {
-    if (!map) return;
-    if (fitTripBoundsKey === undefined || fitTripBoundsKey === fitTripKeyRef.current) return;
-    fitTripKeyRef.current = fitTripBoundsKey;
-
-    const dayPositions = filteredTripMarkers.map(m => m.position);
-    if (dayPositions.length === 0) return;
-
-    if (dayPositions.length === 1) {
-      map.panTo(dayPositions[0]);
-      map.setZoom(17);
-    } else {
-      const bounds = new google.maps.LatLngBounds();
-      dayPositions.forEach(p => bounds.extend(p));
-      map.fitBounds(bounds, 60);
-    }
-  }, [map, fitTripBoundsKey, filteredTripMarkers]);
-
-  // Auto-fit viewport when the visible marker set changes
-  const markersKeyRef = useRef<string>('');
-  const fitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    if (!map) return;
-    if (markers.length === 0) return;
-
-    const key = markers.map((m) => `${m.id}:${m.position.lat},${m.position.lng}`).join('|');
-    if (key === markersKeyRef.current) return;
-    markersKeyRef.current = key;
-
-    if (fitTimerRef.current !== null) {
-      clearTimeout(fitTimerRef.current);
-    }
-
-    fitTimerRef.current = setTimeout(() => {
-      if (markers.length === 1) {
-        map.panTo(markers[0].position);
-        map.setZoom(17);
-      } else {
-        const bounds = new google.maps.LatLngBounds();
-        markers.forEach((m) => bounds.extend(m.position));
-        map.fitBounds(bounds, 50);
-      }
-      fitTimerRef.current = null;
-    }, 100);
-
-    return () => {
-      if (fitTimerRef.current !== null) {
-        clearTimeout(fitTimerRef.current);
-        fitTimerRef.current = null;
-      }
-    };
-  }, [map, markers]);
-
-  if (loadError) {
-    return (
-      <div
-        className={className}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#F0F4F8',
-          color: '#E74C3C',
-          fontSize: 14,
-          textAlign: 'center',
-          padding: 24,
-        }}
-      >
-        <div>
-          <div style={{ fontSize: 32, marginBottom: 8 }}>⚠️</div>
-          <div style={{ fontWeight: 700, marginBottom: 4, color: '#1a2332' }}>
-            Failed to load Google Maps
-          </div>
-          <div style={{ color: '#5d7a8c' }}>
-            Please check your API key and try again.
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isLoaded) {
-    return (
-      <div
-        className={className}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: '#F0F4F8',
-        }}
-      >
-        <div style={{ textAlign: 'center', color: '#5d7a8c' }}>
-          <style>{`@keyframes gmap-spin { to { transform: rotate(360deg); } }`}</style>
-          <div
-            style={{
-              width: 32,
-              height: 32,
-              borderRadius: '50%',
-              border: '3px solid rgba(15,61,94,0.2)',
-              borderTopColor: '#0F3D5E',
-              animation: 'gmap-spin 0.8s linear infinite',
-              margin: '0 auto 12px',
-            }}
-          />
-          <div style={{ fontSize: 13 }}>Loading map...</div>
-        </div>
-      </div>
-    );
-  }
+    if (toRemove.length > 0) mcg.removeLayers(toRemove);
+    if (toAdd.length > 0) mcg.addLayers(toAdd);
+  }, [markers, highlightedMarkerId, clusterGroup, clusterVersion]);
 
   return (
     <div className={className} style={{ width: '100%', height: '100%' }}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={mapCenter}
+      <MapContainer
+        center={VAN_DINH_CENTER}
         zoom={DEFAULT_ZOOM}
-        mapTypeId={mapTypeId}
-        options={mapOptions}
-        onClick={handleMapClick}
-        onLoad={handleMapLoad}
+        maxZoom={19}
+        style={{ width: '100%', height: '100%' }}
+        zoomControl={true}
+        whenReady={handleClusterReady}
       >
-        {userLocation && (
+        <TileLayer
+          url={tileLayers[mapType]}
+          attribution={tileAttribution[mapType]}
+          maxZoom={19}
+        />
+
+        <MapController
+          focusPosition={focusPosition}
+          fitTripBoundsKey={fitTripBoundsKey}
+          filteredTripMarkers={filteredTripMarkers}
+          markers={markers}
+          onInfoWindowClose={onInfoWindowClose}
+        />
+
+        {filteredTripPolylines.map((pl) => {
+          const validPositions = pl.path
+            .filter(p => p && Number.isFinite(p.lat) && Number.isFinite(p.lng))
+            .map(p => [p.lat, p.lng] as [number, number]);
+          if (validPositions.length < 2) return null;
+          return (
+            <Polyline
+              key={`trip-poly-${pl.dayIndex}`}
+              positions={validPositions}
+              pathOptions={{
+                color: pl.color,
+                weight: 4,
+                opacity: 0.8,
+              }}
+            />
+          );
+        })}
+
+        {filteredTripMarkers
+          .filter(m => m.position && Number.isFinite(m.position.lat) && Number.isFinite(m.position.lng))
+          .map((m) => (
+            <Marker
+              key={`trip-marker-${m.dayIndex}-${m.orderNumber}`}
+              position={[m.position.lat, m.position.lng]}
+              icon={createTripMarkerIcon(m.orderNumber, m.color)}
+              eventHandlers={{
+                click: () => onTripMarkerClickRef.current?.(m.id),
+              }}
+            />
+          ))}
+
+        {highlightedMarkers.map((m) => (
           <Marker
-            position={userLocation}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 8,
+            key={`hl-${m.id}`}
+            position={[m.position.lat, m.position.lng]}
+            icon={getLeafletIcon(m.type, m.classification, true)}
+          />
+        ))}
+
+        {userLocation && (
+          <CircleMarker
+            center={[userLocation.lat, userLocation.lng]}
+            radius={8}
+            pathOptions={{
+              color: '#4285F4',
               fillColor: '#4285F4',
               fillOpacity: 1,
-              strokeColor: '#ffffff',
-              strokeWeight: 3,
+              weight: 3,
             }}
-            zIndex={1000}
           />
         )}
-
-        {filteredTripPolylines.map((pl) => (
-          <Polyline
-            key={`trip-poly-${pl.dayIndex}`}
-            path={pl.path}
-            options={{
-              strokeColor: pl.color,
-              strokeWeight: 4,
-              strokeOpacity: 0.8,
-              zIndex: 5,
-            }}
-          />
-        ))}
-
-        {filteredTripMarkers.map((m) => (
-          <Marker
-            key={`trip-marker-${m.dayIndex}-${m.orderNumber}`}
-            position={m.position}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: DAY_MARKER_SIZES[m.dayIndex] ? DAY_MARKER_SIZES[m.dayIndex] / 2 : 14,
-              fillColor: m.color,
-              fillOpacity: 1,
-              strokeColor: '#FFFFFF',
-              strokeWeight: 3,
-            }}
-            label={{
-              text: String(m.orderNumber),
-              color: '#FFFFFF',
-              fontSize: '11px',
-              fontWeight: 'bold',
-            }}
-            zIndex={10}
-            onClick={() => onTripMarkerClickRef.current?.(m.id)}
-          />
-        ))}
 
         {selectedMarker && renderInfoWindow && (
-          <InfoWindow
-            position={selectedMarker.position}
-            onCloseClick={onInfoWindowClose}
-          >
-            {renderInfoWindow(selectedMarker)}
-          </InfoWindow>
+          <SelectedMarkerPopup
+            marker={selectedMarker}
+            renderInfoWindow={renderInfoWindow}
+            onInfoWindowClose={() => onInfoWindowCloseRef.current?.()}
+          />
         )}
-      </GoogleMap>
+      </MapContainer>
     </div>
   );
 }

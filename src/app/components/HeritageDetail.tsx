@@ -10,7 +10,7 @@ import { InfoCard } from './InfoCard';
 import { ShareSection } from './ShareSection';
 import { RelatedItems } from './RelatedItems';
 import { DetailPageSkeleton, Skeleton } from './Skeleton';
-import { openGoogleMapsDirections } from '../utils/geo';
+import { openDirections } from '../utils/geo';
 import {
   ArrowLeft, MapPin, Calendar, Download, FileText, Image, Info, Clock, User,
   Video, ExternalLink, Globe, Navigation,
@@ -37,13 +37,20 @@ interface DocumentData {
   fileSize: number | null;
 }
 
-function extractGoogleMapsEmbed(url: string): string | null {
+function extractOsmEmbedUrl(url: string): string | null {
   if (!url) return null;
-  const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
   const match = url.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
-  if (match) return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${match[1]},${match[2]}&center=${match[1]},${match[2]}&zoom=15`;
+  if (match) {
+    const lat = parseFloat(match[1]);
+    const lng = parseFloat(match[2]);
+    const margin = 0.01;
+    return `https://www.openstreetmap.org/export/embed.html?bbox=${lng - margin},${lat - margin},${lng + margin},${lat + margin}&layer=mapnik&marker=${lat},${lng}`;
+  }
   const qmatch = url.match(/[?&]q=([^&]+)/);
-  if (qmatch) return `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${encodeURIComponent(qmatch[1])}&zoom=15`;
+  if (qmatch) {
+    const q = qmatch[1];
+    return `https://www.openstreetmap.org/export/embed.html?layer=mapnik&marker=${encodeURIComponent(q)}`;
+  }
   return null;
 }
 
@@ -88,7 +95,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
     return url;
   };
 
-  const embedUrl = site?.googleMapUrl ? extractGoogleMapsEmbed(site.googleMapUrl) : null;
+  const embedUrl = site?.googleMapUrl ? extractOsmEmbedUrl(site.googleMapUrl) : null;
 
   const getSafeLabel = (labels: Record<string, { vi: string; en: string } | undefined> | undefined, key: string): string => {
     if (!labels || !key) return key;
@@ -260,13 +267,13 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                             allowFullScreen
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
-                            title="Google Maps"
+                            title="OpenStreetMap"
                           />
                         </div>
                         <button
-                          onClick={() => openGoogleMapsDirections(site.lat, site.lon)}
+                          onClick={() => openDirections(site.lat, site.lon)}
                           disabled={site.lat === null || site.lon === null}
-                          title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps')}
+                          title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Mở bản đồ' : 'Open Map')}
                           style={{
                             display: 'inline-flex', alignItems: 'center', gap: 6, marginTop: 10,
                             padding: '8px 16px', borderRadius: 6,
@@ -274,7 +281,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                             color: site.lat !== null && site.lon !== null ? 'white' : '#cbced4',
                             fontSize: 12, fontWeight: 600, cursor: site.lat !== null && site.lon !== null ? 'pointer' : 'not-allowed', border: 'none',
                           }}>
-                          <ExternalLink size={13} /> {lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps'}
+                          <ExternalLink size={13} /> {lang === 'vi' ? 'Mở bản đồ' : 'Open Map'}
                         </button>
                       </div>
                     )}
@@ -469,7 +476,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             <div style={{ background: 'white', borderRadius: 12, padding: '16px', boxShadow: '0 2px 12px rgba(15,61,94,0.08)' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <button
-                  onClick={() => openGoogleMapsDirections(site.lat, site.lon)}
+                  onClick={() => openDirections(site.lat, site.lon)}
                   disabled={site.lat === null || site.lon === null}
                   title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Chỉ đường đến đây' : 'Directions')}
                   style={{
@@ -504,14 +511,14 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                     style={{ border: 0, display: 'block' }}
                     allowFullScreen
                     loading="lazy"
-                    title="Google Maps"
+                    title="OpenStreetMap"
                   />
                 </div>
                 <div style={{ padding: '12px', textAlign: 'center' }}>
                   <button
-                    onClick={() => openGoogleMapsDirections(site.lat, site.lon)}
+                    onClick={() => openDirections(site.lat, site.lon)}
                     disabled={site.lat === null || site.lon === null}
-                    title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps')}
+                    title={site.lat === null || site.lon === null ? (lang === 'vi' ? 'Thiếu tọa độ' : 'Missing coordinates') : (lang === 'vi' ? 'Mở bản đồ' : 'Open Map')}
                     style={{
                       display: 'inline-flex', alignItems: 'center', gap: 6,
                       padding: '8px 20px', borderRadius: 8,
@@ -519,7 +526,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                       color: site.lat !== null && site.lon !== null ? 'white' : '#cbced4',
                       fontSize: 13, fontWeight: 600, cursor: site.lat !== null && site.lon !== null ? 'pointer' : 'not-allowed', border: 'none',
                     }}>
-                    <Globe size={14} /> {lang === 'vi' ? 'Mở trong Google Maps' : 'Open in Google Maps'}
+                    <Globe size={14} /> {lang === 'vi' ? 'Mở bản đồ' : 'Open Map'}
                   </button>
                 </div>
               </div>
