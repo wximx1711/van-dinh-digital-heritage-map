@@ -20,6 +20,9 @@ interface TripPlannerProps {
   onReset: () => void;
   onFocusSite: (siteId: string) => void;
   onDayChange: (day: number) => void;
+  customStartPoint?: { lat: number; lng: number } | null;
+  onRequestStartPointSelection?: () => void;
+  onClearStartPoint?: () => void;
 }
 
 const DESTINATION_OPTIONS = [3, 4, 5, 6, 7, 8];
@@ -40,6 +43,9 @@ export function TripPlanner({
   onGenerate,
   onReset,
   onFocusSite,
+  customStartPoint,
+  onRequestStartPointSelection,
+  onClearStartPoint,
 }: TripPlannerProps) {
   const { lang, t } = useLanguage();
   const typeLabels = useTypeLabels();
@@ -80,7 +86,7 @@ export function TripPlanner({
     try {
       const result = await generateTripPlan({
         sites: heritageSites,
-        origin: VAN_DINH_ORIGIN,
+        origin: customStartPoint ?? VAN_DINH_ORIGIN,
         destinationCount,
         transportMode,
         tripType,
@@ -102,8 +108,9 @@ export function TripPlanner({
     setError(null);
     setShowConfig(true);
     clearRouteCache();
+    onClearStartPoint?.();
     onReset();
-  }, [onReset]);
+  }, [onReset, onClearStartPoint]);
 
   const handleRegenerate = useCallback(async () => {
     clearRouteCache();
@@ -330,12 +337,45 @@ export function TripPlanner({
                   <MapPin size={13} />
                   {lang === 'vi' ? 'Điểm xuất phát' : 'Starting Point'}
                 </div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2332' }}>
-                  {lang === 'vi' ? 'UBND xã Vân Đình' : 'Van Dinh Commune PC'}
-                </div>
-                <div style={{ fontSize: 10, color: '#5d7a8c', marginTop: 2 }}>
-                  {VAN_DINH_ORIGIN.lat.toFixed(4)}, {VAN_DINH_ORIGIN.lng.toFixed(4)}
-                </div>
+                {customStartPoint ? (
+                  <>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2332' }}>
+                      {lang === 'vi' ? '📍 Điểm đã chọn trên bản đồ' : '📍 Selected point on map'}
+                    </div>
+                    <div style={{ fontSize: 10, color: '#5d7a8c', marginTop: 2 }}>
+                      {customStartPoint.lat.toFixed(4)}, {customStartPoint.lng.toFixed(4)}
+                    </div>
+                    <button
+                      onClick={onRequestStartPointSelection}
+                      style={{
+                        marginTop: 6, padding: '4px 10px', borderRadius: 5, border: '1px solid #0F3D5E',
+                        background: 'transparent', color: '#0F3D5E', fontSize: 11, fontWeight: 600,
+                        cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      {lang === 'vi' ? 'Đổi điểm' : 'Change'}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2332' }}>
+                      {lang === 'vi' ? 'UBND xã Vân Đình' : 'Van Dinh Commune PC'}
+                    </div>
+                    <div style={{ fontSize: 10, color: '#5d7a8c', marginTop: 2 }}>
+                      {VAN_DINH_ORIGIN.lat.toFixed(4)}, {VAN_DINH_ORIGIN.lng.toFixed(4)}
+                    </div>
+                    <button
+                      onClick={onRequestStartPointSelection}
+                      style={{
+                        marginTop: 6, padding: '4px 10px', borderRadius: 5, border: '1px solid #0F3D5E',
+                        background: 'transparent', color: '#0F3D5E', fontSize: 11, fontWeight: 600,
+                        cursor: 'pointer', fontFamily: 'inherit',
+                      }}
+                    >
+                      {lang === 'vi' ? 'Chọn trên bản đồ' : 'Choose on map'}
+                    </button>
+                  </>
+                )}
               </div>
 
               <div style={{ marginBottom: 14 }}>

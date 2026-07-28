@@ -121,6 +121,8 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const [tripVisibleDay, setTripVisibleDay] = useState<number | null>(null);
   const [tripFocusPosition, setTripFocusPosition] = useState<{ lat: number; lng: number } | null>(null);
   const [tripFitBoundsKey, setTripFitBoundsKey] = useState(0);
+  const [customStartPoint, setCustomStartPoint] = useState<{ lat: number; lng: number } | null>(null);
+  const [selectingStartPoint, setSelectingStartPoint] = useState(false);
   const mountedRef = useRef(true);
   const langRef = useRef(lang);
   langRef.current = lang;
@@ -303,6 +305,8 @@ export function MapPage({ onNavigate }: MapPageProps) {
     setTripPlan(null);
     setTripVisibleDay(null);
     setSelectedMarkerId(null);
+    setCustomStartPoint(null);
+    setSelectingStartPoint(false);
   }, []);
 
   const handleTripFocusSite = useCallback((siteId: string) => {
@@ -332,6 +336,23 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const handleTripDayChange = useCallback((day: number) => {
     setTripVisibleDay(day);
     setTripFitBoundsKey(k => k + 1);
+  }, []);
+
+  const handleRequestStartPointSelection = useCallback(() => {
+    setSelectingStartPoint(true);
+  }, []);
+
+  const handleStartPointSelected = useCallback((coords: { lat: number; lng: number }) => {
+    setCustomStartPoint(coords);
+    setSelectingStartPoint(false);
+  }, []);
+
+  const handleClearStartPoint = useCallback(() => {
+    setCustomStartPoint(null);
+  }, []);
+
+  const handleCancelStartPointSelection = useCallback(() => {
+    setSelectingStartPoint(false);
   }, []);
 
   const renderInfoWindow = useCallback(
@@ -627,7 +648,37 @@ export function MapPage({ onNavigate }: MapPageProps) {
           onTripMarkerClick={handleMarkerClick}
           focusPosition={tripFocusPosition}
           fitTripBoundsKey={tripFitBoundsKey}
+          selectingStartPoint={selectingStartPoint}
+          startPointMarker={customStartPoint}
+          onStartPointSelected={handleStartPointSelected}
+          onCancelStartPointSelection={handleCancelStartPointSelection}
         />
+
+        {selectingStartPoint && (
+          <div style={{
+            position: 'absolute', top: 16, left: '50%', transform: 'translateX(-50%)',
+            zIndex: 1002, background: '#0F3D5E', color: 'white',
+            padding: '10px 20px', borderRadius: 8, fontSize: 13, fontWeight: 600,
+            boxShadow: '0 4px 16px rgba(0,0,0,0.25)',
+            display: 'flex', alignItems: 'center', gap: 10,
+            pointerEvents: 'auto', whiteSpace: 'nowrap',
+          }}>
+            <span>{lang === 'vi' ? '👆 Nhấp vào bản đồ để chọn điểm xuất phát' : '👆 Click the map to select a starting point'}</span>
+            <button
+              onClick={() => setSelectingStartPoint(false)}
+              style={{
+                background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white',
+                cursor: 'pointer', borderRadius: 4, width: 22, height: 22,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 12, fontWeight: 700, padding: 0,
+              }}
+              title={lang === 'vi' ? 'Hủy' : 'Cancel'}
+              aria-label={lang === 'vi' ? 'Hủy chọn điểm' : 'Cancel point selection'}
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {visibleCount === 0 && (
           <div style={{
@@ -670,6 +721,9 @@ export function MapPage({ onNavigate }: MapPageProps) {
           onReset={handleTripReset}
           onFocusSite={handleTripFocusSite}
           onDayChange={handleTripDayChange}
+          customStartPoint={customStartPoint}
+          onRequestStartPointSelection={handleRequestStartPointSelection}
+          onClearStartPoint={handleClearStartPoint}
         />
 
         <div role="radiogroup" aria-label={lang === 'vi' ? 'Loại bản đồ' : 'Map type'} className="map-type-controls" style={{

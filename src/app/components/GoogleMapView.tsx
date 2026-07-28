@@ -40,6 +40,10 @@ interface LeafletMapViewProps {
   onTripMarkerClick?: (id: string) => void;
   focusPosition?: { lat: number; lng: number } | null;
   fitTripBoundsKey?: number;
+  selectingStartPoint?: boolean;
+  startPointMarker?: { lat: number; lng: number } | null;
+  onStartPointSelected?: (coords: { lat: number; lng: number }) => void;
+  onCancelStartPointSelection?: () => void;
 }
 
 const VAN_DINH_CENTER: [number, number] = [20.755, 105.855];
@@ -103,12 +107,18 @@ function MapController({
   filteredTripMarkers,
   markers,
   onInfoWindowClose,
+  selectingStartPoint,
+  onStartPointSelected,
+  onCancelStartPointSelection,
 }: {
   focusPosition?: { lat: number; lng: number } | null;
   fitTripBoundsKey?: number;
   filteredTripMarkers: TripRouteMarker[];
   markers: MapMarker[];
   onInfoWindowClose?: () => void;
+  selectingStartPoint?: boolean;
+  onStartPointSelected?: (coords: { lat: number; lng: number }) => void;
+  onCancelStartPointSelection?: () => void;
 }) {
   const map = useMap();
   const focusPosRef = useRef<{ lat: number; lng: number } | null>(null);
@@ -117,7 +127,17 @@ function MapController({
   const fitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useMapEvents({
-    click: () => onInfoWindowClose?.(),
+    click: () => {
+      if (selectingStartPoint) return;
+      onInfoWindowClose?.();
+    },
+  });
+
+  useMapEvents({
+    click: (e) => {
+      if (!selectingStartPoint) return;
+      onStartPointSelected?.({ lat: e.latlng.lat, lng: e.latlng.lng });
+    },
   });
 
   useEffect(() => {
@@ -226,6 +246,10 @@ export function GoogleMapView({
   onTripMarkerClick,
   focusPosition,
   fitTripBoundsKey,
+  selectingStartPoint,
+  startPointMarker,
+  onStartPointSelected,
+  onCancelStartPointSelection,
 }: LeafletMapViewProps) {
   const [clusterGroup, setClusterGroup] = useState<L.MarkerClusterGroup | null>(null);
   const [clusterVersion, setClusterVersion] = useState(0);
@@ -347,6 +371,9 @@ export function GoogleMapView({
           filteredTripMarkers={filteredTripMarkers}
           markers={markers}
           onInfoWindowClose={onInfoWindowClose}
+          selectingStartPoint={selectingStartPoint}
+          onStartPointSelected={onStartPointSelected}
+          onCancelStartPointSelection={onCancelStartPointSelection}
         />
 
         {filteredTripPolylines.map((pl) => {
@@ -387,6 +414,23 @@ export function GoogleMapView({
             icon={getLeafletIcon(m.type, m.classification, true)}
           />
         ))}
+
+        {startPointMarker && Number.isFinite(startPointMarker.lat) && Number.isFinite(startPointMarker.lng) && (
+          <Marker
+            position={[startPointMarker.lat, startPointMarker.lng]}
+            icon={L.divIcon({
+              className: '',
+              iconSize: [28, 28],
+              html: '<div style="width:28px;height:28px;background:#D4A017;border:3px solid white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,0.3);">📍</div>',
+            })}
+          >
+            <Popup>
+              <div style={{ fontSize: 13, fontWeight: 600, color: '#0F3D5E', fontFamily: "'Be Vietnam Pro', sans-serif" }}>
+                Điểm xuất phát / Starting Point
+              </div>
+            </Popup>
+          </Marker>
+        )}
 
         {userLocation && (
           <CircleMarker
