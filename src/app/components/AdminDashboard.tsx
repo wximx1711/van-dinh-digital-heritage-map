@@ -1,16 +1,16 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
-import { useSystemSettings } from './SystemSettingsContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { ConfirmDialog } from './ConfirmDialog';
 import { fetchStatisticsOverview } from '../services/statisticsService';
 
-import { getImageUrl, getLogoUrl } from '../utils/url';
+import { getImageUrl } from '../utils/url';
+import { AppLogo } from './AppLogo';
 import {
   LayoutDashboard, Building2, BookOpen, ImageIcon,
   Users, Settings, Bell, LogOut, ChevronRight, Star,
-  Award, LayoutGrid, RefreshCw, Menu, X, Landmark, Eye, Plus, UserCheck, ChevronDown, List, Info, ClipboardList, QrCode as QrCodeIcon
+  Award, LayoutGrid, RefreshCw, Menu, X, Eye, Plus, UserCheck, ChevronDown, List, Info, ClipboardList, QrCode as QrCodeIcon
 } from 'lucide-react';
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
@@ -36,7 +36,6 @@ type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'ab
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
   const auth = useAuth();
-  const { settings } = useSystemSettings();
   const { data: heritageSites } = useHeritageSites();
   const { data: intangibleHeritage } = useIntangibleHeritage();
   const classificationLabels = useClassificationLabels();
@@ -208,18 +207,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
           borderBottom: '1px solid rgba(255,255,255,0.06)',
           display: 'flex', alignItems: 'center', gap: 10,
         }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 8, flexShrink: 0,
-            background: settings?.logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            overflow: 'hidden',
-          }}>
-            {settings?.logoUrl ? (
-              <LazyImage src={getLogoUrl(settings.logoUrl, settings.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
-            ) : (
-              <Landmark size={18} color="white" />
-            )}
-          </div>
+          <AppLogo size={36} />
           {sidebarOpen && (
             <div>
               <div style={{ color: '#D4A017', fontSize: 9, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.5 }}>

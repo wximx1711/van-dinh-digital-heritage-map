@@ -3,11 +3,10 @@ import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useSystemSettings } from './SystemSettingsContext';
 import {
-  Map, BookOpen, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Landmark, Shield, LogOut, UserCheck
+  Map, BookOpen, Info, Phone, LogIn, Menu, X, Globe, ChevronDown, Shield, LogOut, UserCheck
 } from 'lucide-react';
 import { Skeleton } from './Skeleton';
-import { LazyImage } from './LazyImage';
-import { getImageUrl, getLogoUrl } from '../utils/url';
+import { AppLogo } from './AppLogo';
 
 interface HeaderProps {
   currentPage: string;
@@ -69,18 +68,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
           onClick={() => onNavigate('home')}
           style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', minWidth: 0, flex: '1 1 auto', overflow: 'hidden' }}
         >
-          <div style={{
-            width: 40, height: 40, borderRadius: 8,
-            background: settings?.logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0, overflow: 'hidden',
-          }}>
-            {settings?.logoUrl ? (
-              <LazyImage src={getLogoUrl(settings.logoUrl, settings.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 8 }} />
-            ) : (
-              <Landmark size={22} color="white" />
-            )}
-          </div>
+          <AppLogo />
           <div style={{ minWidth: 0, overflow: 'hidden' }}>
             <div style={{ color: '#D4A017', fontSize: 10, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5, lineHeight: 1.2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {lang === 'vi' ? 'Ủy ban nhân dân xã Vân Đình' : 'Van Dinh Commune People\'s Committee'}

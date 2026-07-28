@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-07-28T02:31:56Z
+    GENERATED: 2026-07-28T03:10:52Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -6137,7 +6137,7 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
--- [MediaFiles]: 687 rows
+-- [MediaFiles]: 692 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -6826,9 +6826,14 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (753, N'/uploads/images/f420301014554758a77234fa8ab94ced.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T06:54:59.4977150');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (754, N'/uploads/images/3334f790e16b49efaaf6d21badfa7e12.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-27T06:55:55.3169919');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (755, N'/uploads/images/d340b77145fa4264babf7ef427f93a46.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-27T06:57:07.1982567');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (756, N'/uploads/images/34e4a3e682744aa6a6d679568e9b002a.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-28T02:33:12.6585165');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (757, N'/uploads/images/af760b90ebea424d9317b034b0d08d28.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-28T02:45:51.5484891');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (758, N'/uploads/images/c66de4c0a0434f32b4f50fd2f0a4a3ba.jpg', N'IMG_1668.HEIC', 4184400, N'image', '2026-07-28T02:46:28.8515847');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (759, N'/uploads/images/d0d2a0ea191b4192b7cf18cf0fbb43c8.jpg', N'680586788_1447338547432958_1396189740770273625_n.jpg', 11638, N'image', '2026-07-28T02:46:32.6316899');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (760, N'/uploads/images/c7b96f5aaabe418c89c5573a2d2680a6.jpeg', N'354bfede4b82572c4a50743e99a47bba~tplv-tiktokx-cropcenter_1080_1080.jpeg', 104715, N'image', '2026-07-28T02:53:38.7014578');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 755);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 760);
 GO
 
 -- [RelatedLinks]: 1 rows

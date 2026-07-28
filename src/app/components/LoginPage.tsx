@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { useLanguage } from './LanguageContext';
-import { useSystemSettings } from './SystemSettingsContext';
-import { LazyImage } from './LazyImage';
-import { getImageUrl, getLogoUrl } from '../utils/url';
-import { Eye, EyeOff, LogIn, ArrowLeft, Landmark, Globe } from 'lucide-react';
+import { AppLogo } from './AppLogo';
+import { Eye, EyeOff, LogIn, ArrowLeft, Globe } from 'lucide-react';
 import type { UserInfo } from '../../core/types';
 
 interface ApiResponse<T> {
@@ -31,7 +29,6 @@ interface LoginPageProps {
 
 export function LoginPage({ onNavigate, onLoginSuccess }: LoginPageProps) {
   const { lang, setLang, t } = useLanguage();
-  const { settings } = useSystemSettings();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -175,18 +172,7 @@ const handleLogin = async () => {
           }}>
             {/* Decorative pattern */}
             <div style={{ position: 'absolute', inset: 0, opacity: 0.05, backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 5 Q25 12 20 20 Q15 12 20 5Z' fill='%23D4A017' /%3E%3C/svg%3E")` }} />
-            <div style={{
-              width: 64, height: 64, borderRadius: 16, margin: '0 auto 12px',
-              background: settings?.logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: '0 4px 16px rgba(212,160,23,0.4)', overflow: 'hidden',
-            }}>
-              {settings?.logoUrl ? (
-                <LazyImage src={getLogoUrl(settings.logoUrl, settings.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 16 }} />
-              ) : (
-                <Landmark size={30} color="white" />
-              )}
-            </div>
+            <AppLogo size={64} containerStyle={{ margin: '0 auto 12px', borderRadius: 16, boxShadow: '0 4px 16px rgba(212,160,23,0.4)' }} imgStyle={{ borderRadius: 16 }} />
             <h2 style={{ color: 'white', fontSize: 20, fontFamily: 'Merriweather, serif', fontWeight: 700, margin: '0 0 4px' }}>
               {t('login.title')}
             </h2>

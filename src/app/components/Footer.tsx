@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useLanguage } from './LanguageContext';
 import { useSystemSettings } from './SystemSettingsContext';
-import { LazyImage } from './LazyImage';
+import { AppLogo } from './AppLogo';
 import { apiGet } from '../services/api';
-import { getImageUrl, getLogoUrl } from '../utils/url';
-import { Landmark, MapPin, Phone, Mail, Facebook, Youtube, Globe } from 'lucide-react';
+import { MapPin, Phone, Mail, Facebook, Youtube, Globe } from 'lucide-react';
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -48,18 +47,7 @@ export function Footer({ onNavigate }: FooterProps) {
           {/* About column */}
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-              <div style={{
-                width: 40, height: 40, borderRadius: 8,
-                background: s?.logoUrl ? 'transparent' : 'linear-gradient(135deg, #D4A017, #B8860B)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                overflow: 'hidden',
-              }}>
-                {s?.logoUrl ? (
-                  <LazyImage src={getLogoUrl(s.logoUrl, s.updatedAt)} alt="" style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: 6 }} />
-                ) : (
-                  <Landmark size={20} color="white" />
-                )}
-              </div>
+              <AppLogo />
               <div>
                 <div style={{ color: '#D4A017', fontSize: 10, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>
                   {lang === 'vi' ? 'Cổng thông tin' : 'Information Portal'}
