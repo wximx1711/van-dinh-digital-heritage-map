@@ -118,16 +118,16 @@ public sealed record HeritageRequest(
     [Required]
     string? GoogleMapUrl,
 
-    [Required, MinLength(30)]
+    [Required]
     string? DescriptionVi,
 
-    [Required, MinLength(30)]
+    [Required]
     string? DescriptionEn,
 
-    [Required, MinLength(50)]
+    [Required]
     string? HistoryVi,
 
-    [Required, MinLength(50)]
+    [Required]
     string? HistoryEn,
 
     [Required]

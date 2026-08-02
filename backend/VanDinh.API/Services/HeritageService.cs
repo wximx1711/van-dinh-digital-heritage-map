@@ -12,6 +12,7 @@ public interface IHeritageService
     HeritageDto? Get(string id);
     Task<HeritageDto> CreateAsync(HeritageRequest request, long userId);
     Task<HeritageDto?> UpdateAsync(string id, HeritageRequest request);
+    Task<HeritageDto?> DuplicateAsync(string id, long userId);
     bool Delete(string id);
 }
 
@@ -116,15 +117,15 @@ public sealed class HeritageService(
         if (string.IsNullOrWhiteSpace(request.AddressEn) || request.AddressEn.Trim().Length < 5 || request.AddressEn.Trim().Length > 300)
             errors.Add("Address (English) must be between 5 and 300 characters.");
 
-        if (string.IsNullOrWhiteSpace(request.DescriptionVi) || request.DescriptionVi.Trim().Length < 30)
-            errors.Add("Description (Vietnamese) must be at least 30 characters.");
-        if (string.IsNullOrWhiteSpace(request.DescriptionEn) || request.DescriptionEn.Trim().Length < 30)
-            errors.Add("Description (English) must be at least 30 characters.");
+        if (string.IsNullOrWhiteSpace(request.DescriptionVi))
+            errors.Add("Description (Vietnamese) is required.");
+        if (string.IsNullOrWhiteSpace(request.DescriptionEn))
+            errors.Add("Description (English) is required.");
 
-        if (string.IsNullOrWhiteSpace(request.HistoryVi) || request.HistoryVi.Trim().Length < 50)
-            errors.Add("History (Vietnamese) must be at least 50 characters.");
-        if (string.IsNullOrWhiteSpace(request.HistoryEn) || request.HistoryEn.Trim().Length < 50)
-            errors.Add("History (English) must be at least 50 characters.");
+        if (string.IsNullOrWhiteSpace(request.HistoryVi))
+            errors.Add("History (Vietnamese) is required.");
+        if (string.IsNullOrWhiteSpace(request.HistoryEn))
+            errors.Add("History (English) is required.");
 
         if (string.IsNullOrWhiteSpace(request.Image))
             errors.Add("Thumbnail image is required.");
@@ -141,14 +142,29 @@ public sealed class HeritageService(
         logger.LogInformation("=== CREATE FLOW START: Heritage ===");
         logger.LogInformation("[1/8] Controller received request: NameVi={NameVi}, NameEn={NameEn}, Code={Code}", request.NameVi, request.NameEn, request.Code);
 
+        // Step 1: DTO Validation (strict HTTP create path only).
+        // The bulk importer uses CreateCoreAsync directly because the import
+        // data intentionally leaves optional fields empty.
+        logger.LogInformation("[2/8] DTO validation starting...");
+        ValidateHeritageRequest(request);
+        logger.LogInformation("[2/8] DTO validation passed.");
+
+        return await CreateCoreAsync(request, userId);
+    }
+
+    /// <summary>
+    /// Shared heritage creation pipeline used by both CreateAsync (HTTP)
+    /// and the one-time bulk importer. Does NOT apply the strict HTTP
+    /// validation so sparse import records (empty descriptions, history,
+    /// addresses, maps, media) can be created. All business rules that
+    /// matter at persistence time (category existence, unique filtered
+    /// index on GoogleMapUrl, generated identifiers, QR URL, audit
+    /// fields) are enforced here identically for both callers.
+    /// </summary>
+    internal async Task<HeritageDto> CreateCoreAsync(HeritageRequest request, long userId)
+    {
         try
         {
-            // Step 1: DTO Validation
-            logger.LogInformation("[2/8] DTO validation starting...");
-            ValidateHeritageRequest(request);
-            logger.LogInformation("[2/8] DTO validation passed.");
-
-            // Step 2: Category lookup
             // Step 2b: Extract coordinates from Google Maps URL
             logger.LogInformation("[2b/8] Extracting coordinates from Google Maps URL...");
             var (extractedLat, extractedLng) = await coordinateExtractor.ExtractCoordinatesAsync(request.GoogleMapUrl);
@@ -162,18 +178,6 @@ public sealed class HeritageService(
             logger.LogInformation("[3/8] Looking up category: Type={Type}", request.Type);
             var category = repository.FindCategory(request.Type) ?? throw new InvalidOperationException("Category not found.");
             logger.LogInformation("[3/8] Category found: Id={Id}, Code={Code}", category.CategoryId, category.Code);
-
-            // Step 3: Uniqueness checks (triggers Heritages query - materialization point)
-            logger.LogInformation("[4/8] Checking uniqueness — this triggers Heritages materialization...");
-            if (repository.Heritages.Any(h => h.NameVi == request.NameVi))
-                throw new InvalidOperationException("A heritage site with this Vietnamese name already exists.");
-            logger.LogInformation("[4/8] NameVi unique check passed.");
-            if (repository.Heritages.Any(h => h.NameEn == request.NameEn))
-                throw new InvalidOperationException("A heritage site with this English name already exists.");
-            logger.LogInformation("[4/8] NameEn unique check passed.");
-            if (!string.IsNullOrWhiteSpace(request.GoogleMapUrl) && repository.Heritages.Any(h => h.GoogleMapUrl == request.GoogleMapUrl))
-                throw new InvalidOperationException("This Google Maps URL is already used by another heritage site.");
-            logger.LogInformation("[4/8] GoogleMapUrl unique check passed.");
 
             // Step 4: DTO → Entity mapping
             logger.LogInformation("[5/8] Mapping HeritageRequest → Heritage entity...");
@@ -277,13 +281,6 @@ public sealed class HeritageService(
         var category = repository.FindCategory(request.Type);
         if (category is null) return null;
 
-        if (repository.Heritages.Any(h => h.NameVi == request.NameVi && h.PublicId != id))
-            throw new InvalidOperationException("A heritage site with this Vietnamese name already exists.");
-        if (repository.Heritages.Any(h => h.NameEn == request.NameEn && h.PublicId != id))
-            throw new InvalidOperationException("A heritage site with this English name already exists.");
-        if (!string.IsNullOrWhiteSpace(request.GoogleMapUrl) && repository.Heritages.Any(h => h.GoogleMapUrl == request.GoogleMapUrl && h.PublicId != id))
-            throw new InvalidOperationException("This Google Maps URL is already used by another heritage site.");
-
         var heritage = repository.FindHeritage(id);
         if (heritage is null) return null;
 
@@ -331,6 +328,98 @@ public sealed class HeritageService(
 
         ReconcileImages(id, request.Image, request.ImageUrls);
 
+        return heritage.ToDto(repository);
+    }
+
+    public async Task<HeritageDto?> DuplicateAsync(string id, long userId)
+    {
+        var source = repository.FindHeritage(id);
+        if (source is null) return null;
+
+        logger.LogInformation("=== DUPLICATE FLOW START: Heritage {PublicId} ===", id);
+
+        // Snapshot active heritages once: used for unique-name and code generation
+        var heritages = repository.Heritages;
+
+        var nameVi = GenerateUniqueName(source.NameVi, heritages.Select(h => h.NameVi));
+        var nameEn = GenerateUniqueName(source.NameEn, heritages.Select(h => h.NameEn));
+        logger.LogInformation("DUPLICATE: Generated names NameVi={NameVi}, NameEn={NameEn}", nameVi, nameEn);
+
+        var heritage = new Heritage
+        {
+            PublicId = GeneratePublicId(),
+            Code = GenerateNextCode(heritages),
+            CategoryId = source.CategoryId,
+            NameVi = nameVi,
+            NameEn = nameEn,
+            Slug = Slugify(nameEn),
+            Classification = source.Classification,
+            Status = source.Status,
+            AddressVi = source.AddressVi,
+            AddressEn = source.AddressEn,
+            Latitude = source.Latitude,
+            Longitude = source.Longitude,
+            DescriptionVi = source.DescriptionVi,
+            DescriptionEn = source.DescriptionEn,
+            HistoryVi = source.HistoryVi,
+            HistoryEn = source.HistoryEn,
+            ThumbnailUrl = source.ThumbnailUrl,
+            YearBuilt = source.YearBuilt,
+            Guardian = source.Guardian,
+            CreatedBy = userId,
+            // The unique filtered index on GoogleMapUrl prevents two active
+            // records sharing the same link; the copy keeps its coordinates
+            // and the administrator can paste a new share link while editing.
+            GoogleMapUrl = null
+        };
+        heritage.QrCodeUrl = $"/api/qr/heritage/{heritage.PublicId}";
+
+        await repository.ExecuteInTransactionAsync(async () =>
+        {
+            repository.AddHeritage(heritage);
+
+            foreach (var image in source.Images.OrderBy(i => i.SortOrder))
+            {
+                repository.AddImage(heritage.PublicId, new HeritageImage
+                {
+                    ImageUrl = image.ImageUrl,
+                    Caption = image.Caption,
+                    SortOrder = image.SortOrder
+                });
+            }
+
+            // AddImage sets ThumbnailUrl to the first gallery image;
+            // restore the source thumbnail so the copy is an exact replica.
+            if (!string.Equals(heritage.ThumbnailUrl, source.ThumbnailUrl, StringComparison.OrdinalIgnoreCase))
+            {
+                heritage.ThumbnailUrl = source.ThumbnailUrl;
+                repository.SaveChanges();
+            }
+
+            foreach (var video in source.Videos)
+            {
+                repository.AddVideo(heritage.PublicId, new HeritageVideo
+                {
+                    Title = video.Title,
+                    VideoType = video.VideoType,
+                    VideoUrl = video.VideoUrl,
+                    ThumbnailUrl = video.ThumbnailUrl
+                });
+            }
+
+            foreach (var document in source.Documents)
+            {
+                repository.AddDocument(heritage.PublicId, new HeritageDocument
+                {
+                    FileName = document.FileName,
+                    FileUrl = document.FileUrl,
+                    FileType = document.FileType,
+                    FileSize = document.FileSize
+                });
+            }
+        });
+
+        logger.LogInformation("=== DUPLICATE FLOW COMPLETE: Heritage {PublicId} ===", heritage.PublicId);
         return heritage.ToDto(repository);
     }
 
@@ -435,5 +524,45 @@ public sealed class HeritageService(
     {
         var chars = value.ToLowerInvariant().Select(ch => char.IsLetterOrDigit(ch) ? ch : '-').ToArray();
         return string.Join('-', new string(chars).Split('-', StringSplitOptions.RemoveEmptyEntries));
+    }
+
+    private static readonly System.Text.RegularExpressions.Regex CopySuffixRegex = new(
+        @"\s*\(Copy(?:\s+\d+)?\)\s*$",
+        System.Text.RegularExpressions.RegexOptions.IgnoreCase | System.Text.RegularExpressions.RegexOptions.Compiled);
+
+    private static string GenerateUniqueName(string name, IEnumerable<string> existingNames)
+    {
+        const int maxNameLength = 200;
+
+        var trimmed = (name ?? "").Trim();
+        var match = CopySuffixRegex.Match(trimmed);
+        var stem = match.Success ? trimmed[..match.Index].TrimEnd() : trimmed;
+
+        var existing = existingNames
+            .Where(n => !string.IsNullOrWhiteSpace(n))
+            .Select(n => n.Trim())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var number = 1;
+        while (true)
+        {
+            var suffix = number == 1 ? " (Copy)" : $" (Copy {number})";
+            var baseStem = stem.Length + suffix.Length <= maxNameLength ? stem : stem[..Math.Max(0, maxNameLength - suffix.Length)];
+            var candidate = $"{baseStem}{suffix}";
+            if (!existing.Contains(candidate)) return candidate;
+            number++;
+        }
+    }
+
+    internal static string GenerateNextCode(IEnumerable<Heritage> heritages)
+    {
+        const string prefix = "VĐHN-DT-";
+        var maxNum = heritages
+            .Select(h => h.Code)
+            .Where(c => c.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+            .Select(c => int.TryParse(c[prefix.Length..], out var n) ? n : 0)
+            .DefaultIfEmpty(0)
+            .Max();
+        return $"{prefix}{(maxNum + 1).ToString().PadLeft(3, '0')}";
     }
 }

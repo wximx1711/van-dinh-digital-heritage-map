@@ -245,7 +245,7 @@ public sealed class ActivityLog
     public string? Description { get; set; }
     public string? IpAddress { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    public User? User { get; set; }
+    public User User { get; set; } = null!;
 }
 
 public sealed class SystemSetting

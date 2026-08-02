@@ -119,6 +119,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'hm.edit': { vi: 'Chỉnh sửa', en: 'Edit' },
   'hm.delete': { vi: 'Xóa', en: 'Delete' },
   'hm.view': { vi: 'Xem', en: 'View' },
+  'hm.duplicate': { vi: 'Nhân bản', en: 'Duplicate' },
   'hm.search': { vi: 'Tìm kiếm di tích...', en: 'Search heritage...' },
   'hm.status_active': { vi: 'Đang hoạt động', en: 'Active' },
   'hm.status_maintenance': { vi: 'Đang trùng tu', en: 'Under Renovation' },

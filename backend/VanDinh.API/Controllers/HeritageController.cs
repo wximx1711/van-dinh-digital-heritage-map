@@ -117,6 +117,41 @@ public sealed class HeritageController(
     }
 
     /// <summary>
+    /// Duplicate an existing heritage site, creating a new independent record.
+    /// </summary>
+    /// <param name="id">The public ID of the heritage site to duplicate (e.g., h001).</param>
+    /// <returns>The newly created heritage site details</returns>
+    [Authorize(Roles = "MANAGER")]
+    [HttpPost("{id:minlength(1)}/duplicate")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Duplicate([FromRoute] string id)
+    {
+        try
+        {
+            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var item = await service.DuplicateAsync(id, userId);
+            if (item is null) return ApiResponse.NotFound("Heritage item not found.");
+            logs.Log(User, "DUPLICATE", "Heritage", repository.FindHeritage(item.Id)?.HeritageId, item.Code);
+            return ApiResponse.Success(item, "Heritage duplicated successfully.", StatusCodes.Status201Created);
+        }
+        catch (InvalidOperationException ex)
+        {
+            controllerLogger.LogError(ex, "InvalidOperationException in HeritageController.Duplicate: {Msg}", ex.Message);
+            return ApiResponse.Error(ex.Message);
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+        {
+            controllerLogger.LogError(ex, "DbUpdateException in HeritageController.Duplicate: {Msg}", ex.Message);
+            return ApiResponse.Error("Duplicate failed: the copy conflicts with existing data.", null, StatusCodes.Status409Conflict);
+        }
+        catch (Exception ex)
+        {
+            controllerLogger.LogError(ex, "Unexpected error in HeritageController.Duplicate: {Msg}", ex.Message);
+            return ApiResponse.Error("Duplicate failed.", null, StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    /// <summary>
     /// Soft delete a heritage site (marks as deleted).
     /// </summary>
     [Authorize(Roles = "MANAGER")]

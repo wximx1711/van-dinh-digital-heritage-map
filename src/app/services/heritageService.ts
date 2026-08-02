@@ -68,8 +68,18 @@ export async function fetchHeritageSites(): Promise<HeritageSite[]> {
   if (cached) return cached;
 
   return dedupeFetch(CACHE_KEY_HERITAGE_SITES, async () => {
-    const result = await apiGet<HeritageSearchResult>('/heritage?pageSize=100');
-    const sites = result.data.map(toHeritageSite);
+    const pageSize = 100;
+    const allDtos: HeritageDto[] = [];
+    let page = 1;
+    let totalRecords = Number.POSITIVE_INFINITY;
+    while (allDtos.length < totalRecords) {
+      const result = await apiGet<HeritageSearchResult>(`/heritage?page=${page}&pageSize=${pageSize}`);
+      allDtos.push(...result.data);
+      if (result.data.length === 0) break;
+      totalRecords = result.totalRecords;
+      page++;
+    }
+    const sites = allDtos.map(toHeritageSite);
     setCache(CACHE_KEY_HERITAGE_SITES, sites);
     return sites;
   });
@@ -93,6 +103,13 @@ export async function createHeritageSite(data: Record<string, unknown>): Promise
 export async function updateHeritageSite(id: string, data: Record<string, unknown>): Promise<HeritageSite> {
   if (!id || !id.trim()) throw new Error('Cannot update: heritage ID is empty');
   const dto = await apiPut<HeritageDto>(`/heritage/${encodeURIComponent(id)}`, data);
+  clearCache(CACHE_KEY_HERITAGE_SITES);
+  return toHeritageSite(dto);
+}
+
+export async function duplicateHeritageSite(id: string): Promise<HeritageSite> {
+  if (!id || !id.trim()) throw new Error('Cannot duplicate: heritage ID is empty');
+  const dto = await apiPost<HeritageDto>(`/heritage/${encodeURIComponent(id)}/duplicate`);
   clearCache(CACHE_KEY_HERITAGE_SITES);
   return toHeritageSite(dto);
 }

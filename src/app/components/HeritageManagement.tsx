@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
-import { createHeritageSite, updateHeritageSite, deleteHeritageSite } from '../services/heritageService';
+import { createHeritageSite, updateHeritageSite, deleteHeritageSite, duplicateHeritageSite } from '../services/heritageService';
 import { apiPost, apiDelete, apiGet } from '../services/api';
 import { uploadFileWithProgress } from '../services/uploadService';
 import type { HeritageSite, Classification, HeritageType, HeritageStatus } from '../../core/types';
@@ -13,7 +13,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import {
   Plus, Search, Filter, Eye, Pencil, Trash2, X, Upload, QrCode,
   ChevronLeft, ChevronRight, MapPin, Check, AlertTriangle,   GripVertical,
-  FileText, Image as ImageIcon, Download
+  FileText, Image as ImageIcon, Download, Copy
 } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import { LazyImage } from './LazyImage';
@@ -62,6 +62,8 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
   const [formMode, setFormMode] = useState<FormMode>(null);
   const [editSite, setEditSite] = useState<HeritageSite | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [duplicateId, setDuplicateId] = useState<string | null>(null);
+  const [duplicating, setDuplicating] = useState(false);
   const [page, setPage] = useState(1);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -169,6 +171,24 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
     }
   };
 
+  const handleDuplicate = async (id: string) => {
+    if (duplicating) return;
+    setDuplicating(true);
+    try {
+      const created = await duplicateHeritageSite(id);
+      setDuplicateId(null);
+      setSites(prev => [...prev, created]);
+      showToast(lang === 'vi' ? 'Đã nhân bản di tích thành công' : 'Heritage duplicated successfully.');
+      refetch();
+      await openEdit(created);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : (lang === 'vi' ? 'Lỗi khi nhân bản di tích' : 'Failed to duplicate heritage site');
+      showToast(msg, 'error');
+    } finally {
+      setDuplicating(false);
+    }
+  };
+
   const loadMedia = async (siteId: string) => {
     setLoadingDocs(true);
     let loadedDocs: DocumentAttachment[] = [];
@@ -271,14 +291,10 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
     if (!editSite.image) errors.image = lang === 'vi' ? 'Ảnh đại diện là bắt buộc' : 'Thumbnail image is required';
 
     if (!editSite.descriptionVi.trim()) errors.descriptionVi = lang === 'vi' ? 'Mô tả (VI) là bắt buộc' : 'Description (VI) is required';
-    else if (editSite.descriptionVi.trim().length < 30) errors.descriptionVi = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
     if (!editSite.descriptionEn.trim()) errors.descriptionEn = lang === 'vi' ? 'Mô tả (EN) là bắt buộc' : 'Description (EN) is required';
-    else if (editSite.descriptionEn.trim().length < 30) errors.descriptionEn = lang === 'vi' ? 'Tối thiểu 30 ký tự' : 'Minimum 30 characters';
 
     if (!editSite.historyVi.trim()) errors.historyVi = lang === 'vi' ? 'Lịch sử (VI) là bắt buộc' : 'History (VI) is required';
-    else if (editSite.historyVi.trim().length < 50) errors.historyVi = lang === 'vi' ? 'Tối thiểu 50 ký tự' : 'Minimum 50 characters';
     if (!editSite.historyEn.trim()) errors.historyEn = lang === 'vi' ? 'Lịch sử (EN) là bắt buộc' : 'History (EN) is required';
-    else if (editSite.historyEn.trim().length < 50) errors.historyEn = lang === 'vi' ? 'Tối thiểu 50 ký tự' : 'Minimum 50 characters';
 
     if (editSite.guardian && editSite.guardian.length > 150) errors.guardian = lang === 'vi' ? 'Tối đa 150 ký tự' : 'Max 150 characters';
 
@@ -594,6 +610,9 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
                     <button onClick={() => openEdit(site)}
                       style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid rgba(15,61,94,0.15)', background: 'white', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#D4A017' }}
                       title={t('hm.edit')}><Pencil size={12} /></button>
+                    <button onClick={() => setDuplicateId(site.id)}
+                      style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid rgba(39,174,96,0.25)', background: '#EAF9F0', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#27AE60' }}
+                      title={t('hm.duplicate')}><Copy size={12} /></button>
                     <button onClick={() => setDeleteId(site.id)}
                       style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid rgba(231,76,60,0.2)', background: '#FDEDEC', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#E74C3C' }}
                       title={t('hm.delete')}><Trash2 size={12} /></button>
@@ -930,6 +949,21 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Duplicate confirm */}
+      {duplicateId && (
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 600 }}>
+          <div style={{ background: 'white', borderRadius: 12, padding: '28px', maxWidth: 360, width: '90%', textAlign: 'center', boxShadow: '0 24px 64px rgba(0,0,0,0.25)' }}>
+            <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#EAF9F0', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px', color: '#27AE60' }}><Copy size={24} /></div>
+            <h3 style={{ color: '#0F3D5E', fontSize: 16, marginBottom: 8 }}>{lang === 'vi' ? 'Nhân bản di tích' : 'Duplicate Heritage'}</h3>
+            <p style={{ color: '#5d7a8c', fontSize: 13, marginBottom: 20 }}>{lang === 'vi' ? 'Tạo bản sao của di tích này?' : 'Create a copy of this heritage?'}</p>
+            <div style={{ display: 'flex', gap: 10, justifyContent: 'center' }}>
+              <button onClick={() => setDuplicateId(null)} disabled={duplicating} style={{ padding: '9px 20px', borderRadius: 8, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#5d7a8c', fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>{t('common.cancel')}</button>
+              <button onClick={() => handleDuplicate(duplicateId)} disabled={duplicating} style={{ padding: '9px 20px', borderRadius: 8, background: '#27AE60', border: 'none', color: 'white', fontSize: 13, fontWeight: 600, cursor: duplicating ? 'default' : 'pointer' }}>{t('hm.duplicate')}</button>
             </div>
           </div>
         </div>

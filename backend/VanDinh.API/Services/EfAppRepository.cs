@@ -651,6 +651,25 @@ public sealed class EfAppRepository : IAppRepository
 
     public void SaveChanges() => _context.SaveChanges();
 
+    public async Task ExecuteInTransactionAsync(Func<Task> action)
+    {
+        var strategy = _context.Database.CreateExecutionStrategy();
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                await action();
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        });
+    }
+
     // ── Diagnostic methods ──────────────────────────────────────────
 
     public string? GetDatabaseName()

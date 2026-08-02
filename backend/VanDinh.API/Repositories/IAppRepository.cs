@@ -78,6 +78,9 @@ public interface IAppRepository
     ActivityLog AddLog(ActivityLog log);
     void SaveChanges();
 
+    // ── Transaction support ─────────────────────────────────────────
+    Task ExecuteInTransactionAsync(Func<Task> action);
+
     // ── Diagnostic methods ──────────────────────────────────────────
     string? GetDatabaseName();
     string? GetDatabaseServer();

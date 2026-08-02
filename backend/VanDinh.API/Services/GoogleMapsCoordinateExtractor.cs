@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.RegularExpressions;
 
 namespace VanDinh.API.Services;
@@ -65,19 +66,22 @@ public sealed partial class GoogleMapsCoordinateExtractor(
     private static (double? Latitude, double? Longitude) ExtractFromUrl(string url)
     {
         var match = AtSignPattern().Match(url);
-        if (match.Success && double.TryParse(match.Groups[1].Value, out var lat1) && double.TryParse(match.Groups[2].Value, out var lng1))
+        if (match.Success && TryParseCoord(match.Groups[1].Value, out var lat1) && TryParseCoord(match.Groups[2].Value, out var lng1))
             return (lat1, lng1);
 
         match = QueryQPattern().Match(url);
-        if (match.Success && double.TryParse(match.Groups[1].Value, out var lat2) && double.TryParse(match.Groups[2].Value, out var lng2))
+        if (match.Success && TryParseCoord(match.Groups[1].Value, out var lat2) && TryParseCoord(match.Groups[2].Value, out var lng2))
             return (lat2, lng2);
 
         match = QueryLlPattern().Match(url);
-        if (match.Success && double.TryParse(match.Groups[1].Value, out var lat3) && double.TryParse(match.Groups[2].Value, out var lng3))
+        if (match.Success && TryParseCoord(match.Groups[1].Value, out var lat3) && TryParseCoord(match.Groups[2].Value, out var lng3))
             return (lat3, lng3);
 
         return (null, null);
     }
+
+    private static bool TryParseCoord(string value, out double result) =>
+        double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out result);
 
     [GeneratedRegex(@"@(-?\d+\.?\d*),(-?\d+\.?\d*)")]
     private static partial Regex AtSignPattern();
