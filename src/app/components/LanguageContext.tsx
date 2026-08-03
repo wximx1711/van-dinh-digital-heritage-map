@@ -105,6 +105,7 @@ const translations: Record<string, Record<Lang, string>> = {
   'admin.about': { vi: 'Trang giới thiệu', en: 'About Page' },
   'admin.activity_logs': { vi: 'Nhật ký hoạt động', en: 'Activity Logs' },
   'admin.contact_messages': { vi: 'Tin nhắn liên hệ', en: 'Contact Messages' },
+  'admin.form_filling': { vi: 'Điền biểu mẫu tự động', en: 'Automatic Form Filling' },
   'admin.recent_updates': { vi: 'Cập nhật gần đây', en: 'Recent Updates' },
   'admin.welcome': { vi: 'Xin chào, Quản trị viên', en: 'Welcome, Administrator' },
   // Heritage management table

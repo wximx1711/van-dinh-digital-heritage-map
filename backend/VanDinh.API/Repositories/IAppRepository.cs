@@ -19,6 +19,7 @@ public interface IAppRepository
     IQueryable<IntangibleHeritage> IntangibleHeritagesUntracked { get; }
     IQueryable<ActivityLog> ActivityLogsUntracked { get; }
     IQueryable<User> UsersUntracked { get; }
+    IQueryable<ServiceEvaluation> ServiceEvaluationsUntracked { get; }
 
     void AddAboutPageHistory(AboutPageHistory history);
 
@@ -74,6 +75,10 @@ public interface IAppRepository
     ContactMessage AddContactMessage(ContactMessage item);
     void UpdateContactMessage(ContactMessage item);
     void DeleteContactMessage(long id);
+
+    ServiceEvaluation AddEvaluation(ServiceEvaluation item);
+    ServiceEvaluation? FindEvaluation(long id);
+    void DeleteEvaluation(long id);
 
     ActivityLog AddLog(ActivityLog log);
     void SaveChanges();

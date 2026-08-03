@@ -310,3 +310,25 @@ public sealed class MediaFile
     public string MediaType { get; set; } = "";
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 }
+
+/// <summary>
+/// Public service satisfaction evaluation collected from kiosk/QR terminals.
+/// TargetType is one of: "service" (public services in general), "heritage" (tangible),
+/// "intangible" (intangible heritage). TargetId stores the public ID of the evaluated
+/// heritage/intangible item (null for "service").
+/// </summary>
+public sealed class ServiceEvaluation
+{
+    public long Id { get; set; }
+    [Required, MaxLength(20)]
+    public string TargetType { get; set; } = "";
+    [MaxLength(50)]
+    public string? TargetId { get; set; }
+    [Required, Range(1, 5)]
+    public int Score { get; set; }
+    [MaxLength(1000)]
+    public string? Comment { get; set; }
+    [MaxLength(150)]
+    public string? DeviceName { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}

@@ -10,7 +10,7 @@ import { AppLogo } from './AppLogo';
 import {
   LayoutDashboard, Building2, BookOpen, ImageIcon,
   Users, Settings, Bell, LogOut, ChevronRight, Star,
-  Award, LayoutGrid, RefreshCw, Menu, X, Eye, Plus, UserCheck, ChevronDown, List, Info, ClipboardList, QrCode as QrCodeIcon
+  Award, LayoutGrid, RefreshCw, Menu, X, Eye, Plus, UserCheck, ChevronDown, List, Info, ClipboardList, QrCode as QrCodeIcon, FileSpreadsheet
 } from 'lucide-react';
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
@@ -24,6 +24,7 @@ import { QrManagement } from './QrManagement';
 import { SystemSettingsManagement } from './SystemSettingsManagement';
 import { ContactMessagesManagement } from './ContactMessagesManagement';
 import { ActivityLogPage } from './ActivityLogPage';
+import { FormFillingManagement } from './FormFillingManagement';
 import { LazyImage } from './LazyImage';
 
 interface AdminDashboardProps {
@@ -31,7 +32,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'contact-messages';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'contact-messages' | 'form-filling';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -84,6 +85,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} /> },
     { key: 'users', label: t('admin.users'), icon: <Users size={16} /> },
     { key: 'activity-logs', label: t('admin.activity_logs'), icon: <ClipboardList size={16} /> },
+    { key: 'form-filling', label: t('admin.form_filling'), icon: <FileSpreadsheet size={16} /> },
   ];
 
   const managerNavItems = [
@@ -96,6 +98,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'qr', label: lang === 'vi' ? 'QR Code' : 'QR Code', icon: <QrCodeIcon size={16} /> },
     { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} /> },
     { key: 'contact-messages', label: t('admin.contact_messages'), icon: <List size={16} /> },
+    { key: 'form-filling', label: t('admin.form_filling'), icon: <FileSpreadsheet size={16} /> },
   ];
 
   const navItems = auth.isAdmin ? adminNavItems : managerNavItems;
@@ -600,6 +603,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           {section === 'qr' && <QrManagement />}
           {section === 'settings' && <SystemSettingsManagement onDirtyChange={handleDirtyChange} />}
           {section === 'contact-messages' && <ContactMessagesManagement />}
+          {section === 'form-filling' && <FormFillingManagement />}
 
           {section === 'activity-logs' && <ActivityLogPage />}
         </div>

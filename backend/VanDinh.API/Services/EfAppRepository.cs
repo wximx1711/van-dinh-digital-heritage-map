@@ -642,6 +642,31 @@ public sealed class EfAppRepository : IAppRepository
         }
     }
 
+    public IQueryable<ServiceEvaluation> ServiceEvaluationsUntracked => _context.ServiceEvaluations
+        .AsNoTracking();
+
+    public ServiceEvaluation AddEvaluation(ServiceEvaluation item)
+    {
+        item.CreatedAt = DateTime.UtcNow;
+        _context.ServiceEvaluations.Add(item);
+        _context.SaveChanges();
+        return item;
+    }
+
+    public ServiceEvaluation? FindEvaluation(long id) => _context.ServiceEvaluations
+        .AsNoTracking()
+        .FirstOrDefault(x => x.Id == id);
+
+    public void DeleteEvaluation(long id)
+    {
+        var item = _context.ServiceEvaluations.Find(id);
+        if (item is not null)
+        {
+            _context.ServiceEvaluations.Remove(item);
+            _context.SaveChanges();
+        }
+    }
+
     public ActivityLog AddLog(ActivityLog log)
     {
         _context.ActivityLogs.Add(log);

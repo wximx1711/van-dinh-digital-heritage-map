@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VanDinh.API.Data;
 
@@ -11,9 +12,11 @@ using VanDinh.API.Data;
 namespace VanDinh.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260803033515_AddMailMergeJobs")]
+    partial class AddMailMergeJobs
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -908,55 +911,6 @@ namespace VanDinh.API.Migrations
                         .IsUnique();
 
                     b.ToTable("Roles", (string)null);
-                });
-
-            modelBuilder.Entity("VanDinh.API.Models.ServiceEvaluation", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("Comment")
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("SYSUTCDATETIME()");
-
-                    b.Property<string>("DeviceName")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TargetId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("TargetType")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedAt");
-
-                    b.HasIndex("TargetType");
-
-                    b.HasIndex("TargetType", "TargetId");
-
-                    b.ToTable("ServiceEvaluations", null, t =>
-                        {
-                            t.HasCheckConstraint("CK_ServiceEvaluation_Score", "Score BETWEEN 1 AND 5");
-
-                            t.HasCheckConstraint("CK_ServiceEvaluation_TargetType", "TargetType IN ('service', 'heritage', 'intangible')");
-                        });
                 });
 
             modelBuilder.Entity("VanDinh.API.Models.SystemSetting", b =>

@@ -6,6 +6,7 @@ using VanDinh.API.Data;
 using VanDinh.API.Middleware;
 using VanDinh.API.Repositories;
 using VanDinh.API.Services;
+using VanDinh.API.Services.MailMerge;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ var csrfOptions = builder.Configuration.GetSection("Csrf").Get<CsrfOptions>() ??
 var sessionOptions = builder.Configuration.GetSection("Session").Get<AppSessionOptions>() ?? new AppSessionOptions();
 var authCookieOptions = builder.Configuration.GetSection("AuthCookie").Get<AuthCookieOptions>() ?? new AuthCookieOptions();
 var swaggerOptions = builder.Configuration.GetSection("Swagger").Get<SwaggerOptions>() ?? new SwaggerOptions();
+var mailMergeOptions = builder.Configuration.GetSection("MailMerge").Get<MailMergeOptions>() ?? new MailMergeOptions();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection is required.");
@@ -134,7 +136,17 @@ builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IQrCodeService, QrCodeService>();
 builder.Services.AddScoped<IHeritageService, HeritageService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IEvaluationService, EvaluationService>();
+builder.Services.AddScoped<IEvaluationReportExporter, EvaluationReportExporter>();
 builder.Services.AddScoped<IAppRepository, EfAppRepository>();
+builder.Services.AddScoped<IMailMergeJobRepository, EfMailMergeJobRepository>();
+builder.Services.AddSingleton(mailMergeOptions);
+builder.Services.AddSingleton<IMailMergePlaceholderExtractor, MailMergePlaceholderExtractor>();
+builder.Services.AddSingleton<IExcelSheetReader, ExcelSheetReader>();
+builder.Services.AddSingleton<IMailMergeFileNameGenerator, MailMergeFileNameGenerator>();
+builder.Services.AddSingleton<IMailMergeDocumentGenerator, MailMergeDocumentGenerator>();
+builder.Services.AddSingleton<IMailMergeJobRunner, MailMergeJobRunner>();
+builder.Services.AddScoped<IMailMergeService, MailMergeService>();
 builder.Services.AddHttpClient<IGoogleMapsCoordinateExtractor, GoogleMapsCoordinateExtractor>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(10);
@@ -172,6 +184,11 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// The public evaluation kiosk is a dedicated SPA route (/evaluate?type=...&id=...).
+// Serve the SPA shell for this path so QR codes work in production where the
+// frontend is hosted behind the API. All other routes are untouched.
+app.MapFallbackToFile("evaluate", "index.html");
 
 app.MapGet("/api/health", () => Results.Ok(new { status = "ok", application = "Van Dinh Digital Heritage Map", timestamp = DateTime.UtcNow }));
 

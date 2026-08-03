@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-08-02T20:58:05Z
+    GENERATED: 2026-08-03T08:42:06Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -265,6 +265,29 @@ CREATE TABLE [IntangibleHeritage] (
 );
 GO
 
+CREATE TABLE [MailMergeJobs] (
+    [JobId] bigint IDENTITY(1,1),
+    [PublicId] uniqueidentifier NOT NULL,
+    [TemplateFileName] nvarchar(255) NOT NULL,
+    [ExcelFileName] nvarchar(255) NOT NULL,
+    [FilenamePattern] nvarchar(255) NOT NULL,
+    [PlaceholdersJson] nvarchar(MAX) NULL,
+    [MappingJson] nvarchar(MAX) NULL,
+    [TotalRows] int NOT NULL,
+    [SuccessCount] int NOT NULL,
+    [FailedCount] int NOT NULL,
+    [Status] nvarchar(20) NOT NULL,
+    [ErrorsJson] nvarchar(MAX) NULL,
+    [ZipFileName] nvarchar(255) NULL,
+    [CreatedBy] bigint NOT NULL,
+    [CreatedByUsername] nvarchar(100) NOT NULL,
+    [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_MailMergeJobs_CreatedAt] DEFAULT (sysutcdatetime()),
+    [CompletedAt] datetime2(7) NULL,
+    CONSTRAINT [PK_MailMergeJobs] PRIMARY KEY CLUSTERED ([JobId]),
+    CONSTRAINT [IX_MailMergeJobs_PublicId] UNIQUE ([PublicId])
+);
+GO
+
 CREATE TABLE [MediaFiles] (
     [MediaFileId] bigint IDENTITY(1,1),
     [Url] nvarchar(2000) NOT NULL,
@@ -289,6 +312,20 @@ CREATE TABLE [RelatedLinks] (
     CONSTRAINT [PK_RelatedLinks] PRIMARY KEY CLUSTERED ([LinkId]),
     CONSTRAINT [FK_RelatedLinks_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([UserId]),
     CONSTRAINT [FK_RelatedLinks_Users_UpdatedBy] FOREIGN KEY ([UpdatedBy]) REFERENCES [Users]([UserId])
+);
+GO
+
+CREATE TABLE [ServiceEvaluations] (
+    [Id] bigint IDENTITY(1,1),
+    [TargetType] nvarchar(20) NOT NULL,
+    [TargetId] nvarchar(50) NULL,
+    [Score] int NOT NULL,
+    [Comment] nvarchar(1000) NULL,
+    [DeviceName] nvarchar(150) NULL,
+    [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_ServiceEvaluations_CreatedAt] DEFAULT (sysutcdatetime()),
+    CONSTRAINT [PK_ServiceEvaluations] PRIMARY KEY CLUSTERED ([Id]),
+    CONSTRAINT [CK_ServiceEvaluation_Score] CHECK ([Score]>=(1) AND [Score]<=(5)),
+    CONSTRAINT [CK_ServiceEvaluation_TargetType] CHECK ([TargetType]='intangible' OR [TargetType]='heritage' OR [TargetType]='service')
 );
 GO
 
@@ -377,6 +414,15 @@ GO
 CREATE NONCLUSTERED INDEX [IX_IntangibleHeritage_UpdatedBy] ON [IntangibleHeritage]([UpdatedBy]);
 GO
 
+CREATE NONCLUSTERED INDEX [IX_MailMergeJobs_CreatedAt] ON [MailMergeJobs]([CreatedAt]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_MailMergeJobs_CreatedBy] ON [MailMergeJobs]([CreatedBy]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_MailMergeJobs_Status] ON [MailMergeJobs]([Status]);
+GO
+
 CREATE NONCLUSTERED INDEX [IX_MediaFiles_Url] ON [MediaFiles]([Url]);
 GO
 
@@ -389,6 +435,15 @@ GO
 CREATE NONCLUSTERED INDEX [IX_RelatedLinks_UpdatedBy] ON [RelatedLinks]([UpdatedBy]);
 GO
 
+CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_TargetType] ON [ServiceEvaluations]([TargetType]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_CreatedAt] ON [ServiceEvaluations]([CreatedAt]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_TargetType_TargetId] ON [ServiceEvaluations]([TargetType], [TargetId]);
+GO
+
 CREATE NONCLUSTERED INDEX [IX_SystemSettings_UpdatedBy] ON [SystemSettings]([UpdatedBy]);
 GO
 
@@ -396,7 +451,7 @@ GO
 -- SEED AND CURRENT DATA
 -- ========================================
 
--- [__EFMigrationsHistory]: 22 rows
+-- [__EFMigrationsHistory]: 24 rows
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260701052754_InitialCreate', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260702054259_UpdateDatabaseSchema', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260703000000_AddAuditFieldsToIntangibleHeritage', N'10.0.9');
@@ -419,6 +474,8 @@ INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'202607
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260720113724_CheckPendingChanges', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260720125128_UpdateIntangibleHeritageCategoryConstraint', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260720140713_RemoveYearBuiltNumericConstraint', N'10.0.9');
+INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260803033515_AddMailMergeJobs', N'10.0.10');
+INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260803075543_AddServiceEvaluations', N'10.0.10');
 GO
 
 -- [Roles]: 2 rows
@@ -7234,6 +7291,9 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
+-- [MailMergeJobs]: 0 rows
+GO
+
 -- [MediaFiles]: 656 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
@@ -7903,6 +7963,9 @@ INSERT [RelatedLinks] ([LinkId],[Title],[Url],[DisplayOrder],[IsEnabled],[Create
 SET IDENTITY_INSERT [RelatedLinks] OFF;
 GO
 DBCC CHECKIDENT ([RelatedLinks], RESEED, 1);
+GO
+
+-- [ServiceEvaluations]: 0 rows
 GO
 
 -- [SystemSettings]: 1 rows

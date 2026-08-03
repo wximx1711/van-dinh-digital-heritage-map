@@ -23,6 +23,8 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<RelatedLink> RelatedLinks => Set<RelatedLink>();
     public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
     public DbSet<MediaFile> MediaFiles => Set<MediaFile>();
+    public DbSet<MailMergeJob> MailMergeJobs => Set<MailMergeJob>();
+    public DbSet<ServiceEvaluation> ServiceEvaluations => Set<ServiceEvaluation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -41,5 +43,7 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new RelatedLinkConfiguration());
         modelBuilder.ApplyConfiguration(new ContactMessageConfiguration());
         modelBuilder.ApplyConfiguration(new MediaFileConfiguration());
+        modelBuilder.ApplyConfiguration(new MailMergeJobConfiguration());
+        modelBuilder.ApplyConfiguration(new ServiceEvaluationConfiguration());
     }
 }

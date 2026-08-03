@@ -42,3 +42,24 @@ public sealed class SeedAdminOptions
     public string? FullName { get; set; }
     public string? Email { get; set; }
 }
+
+public sealed class MailMergeOptions
+{
+    /// <summary>Maximum size of the uploaded .docx template, in bytes.</summary>
+    public long MaxTemplateFileSize { get; set; } = 30 * 1024 * 1024;
+
+    /// <summary>Maximum size of the uploaded .xlsx data file, in bytes.</summary>
+    public long MaxExcelFileSize { get; set; } = 20 * 1024 * 1024;
+
+    /// <summary>Maximum number of data rows that can be generated in a single job.</summary>
+    public int MaxRows { get; set; } = 5000;
+
+    /// <summary>Maximum number of detailed error messages persisted with a job.</summary>
+    public int MaxStoredErrors { get; set; } = 5000;
+
+    /// <summary>Maximum number of error messages kept in the in-memory live progress.</summary>
+    public int MaxLiveErrors { get; set; } = 200;
+
+    /// <summary>How long generated ZIP files are kept on disk before cleanup (hours).</summary>
+    public int ZipRetentionHours { get; set; } = 24;
+}
