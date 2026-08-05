@@ -8,7 +8,7 @@ namespace VanDinh.API.Data;
 
 public static class DbInitializer
 {
-    public static async Task InitializeAsync(ApplicationDbContext context, IPasswordHasher passwordHasher, IConfiguration configuration)
+    public static async Task InitializeAsync(ApplicationDbContext context, IPasswordHasher passwordHasher, IConfiguration configuration, IHostEnvironment environment)
     {
         await context.Database.MigrateAsync();
 
@@ -22,26 +22,46 @@ public static class DbInitializer
             await context.SaveChangesAsync();
         }
 
-        // Seed default users (idempotent — by username)
+        // Seed default users (idempotent — by username).
         var seedAdmin = configuration.GetSection("SeedAdmin").Get<SeedAdminOptions>();
+        var seedManager = configuration.GetSection("SeedManager").Get<SeedManagerOptions>();
+
+        var adminConfigured = seedAdmin is { Username: not null } && !string.IsNullOrWhiteSpace(seedAdmin.Password);
+        var managerConfigured = seedManager is { Username: not null } && !string.IsNullOrWhiteSpace(seedManager.Password);
+
+        // On a fresh Production database the initial credentials MUST come from
+        // configuration. Seeding the well-known dev fallbacks here would expose
+        // a default admin account (admin/Admin@123 and manager/Manager@123).
+        if (!context.Users.Any() && environment.IsProduction())
+        {
+            if (!adminConfigured)
+                throw new InvalidOperationException(
+                    "A fresh Production database requires the 'SeedAdmin' configuration section (Username/Password). " +
+                    "Set it in appsettings.Production.json or via environment variables, e.g. SeedAdmin__Username / SeedAdmin__Password.");
+
+            if (!managerConfigured)
+                throw new InvalidOperationException(
+                    "A fresh Production database requires the 'SeedManager' configuration section (Username/Password). " +
+                    "Set it in appsettings.Production.json or via environment variables, e.g. SeedManager__Username / SeedManager__Password.");
+        }
 
         var defaultUsers = new[]
         {
             new
             {
-                Username = seedAdmin?.Username ?? "admin",
-                Password = seedAdmin?.Password ?? "Admin@123",
+                Username = ValueOr(seedAdmin?.Username, "admin"),
+                Password = ValueOr(seedAdmin?.Password, "Admin@123"),
                 RoleName = "ADMIN",
-                FullName = seedAdmin?.FullName ?? "System Administrator",
-                Email = seedAdmin?.Email ?? "admin@vandinh.gov.vn"
+                FullName = ValueOr(seedAdmin?.FullName, "System Administrator"),
+                Email = ValueOr(seedAdmin?.Email, "admin@vandinh.gov.vn")
             },
             new
             {
-                Username = "manager",
-                Password = "Manager@123",
+                Username = ValueOr(seedManager?.Username, "manager"),
+                Password = ValueOr(seedManager?.Password, "Manager@123"),
                 RoleName = "MANAGER",
-                FullName = "Heritage Manager",
-                Email = "manager@vandinh.gov.vn"
+                FullName = ValueOr(seedManager?.FullName, "Heritage Manager"),
+                Email = ValueOr(seedManager?.Email, "manager@vandinh.gov.vn")
             }
         };
 
@@ -87,7 +107,7 @@ public static class DbInitializer
         }
 
         var adminUsername = seedAdmin?.Username ?? "admin";
-        var adminUser = context.Users.First(u => u.Username == adminUsername);
+        var adminUser = context.Users.FirstOrDefault(u => u.Username == adminUsername) ?? context.Users.First();
 
         if (!context.SystemSettings.Any())
         {
@@ -123,6 +143,9 @@ public static class DbInitializer
         // Backfill MediaFiles from existing heritage media records
         await BackfillMediaFilesAsync(context);
     }
+
+    private static string ValueOr(string? value, string fallback)
+        => string.IsNullOrWhiteSpace(value) ? fallback : value;
 
     private static async Task BackfillMediaFilesAsync(ApplicationDbContext context)
     {

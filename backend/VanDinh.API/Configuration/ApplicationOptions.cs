@@ -43,6 +43,14 @@ public sealed class SeedAdminOptions
     public string? Email { get; set; }
 }
 
+public sealed class SeedManagerOptions
+{
+    public string? Username { get; set; }
+    public string? Password { get; set; }
+    public string? FullName { get; set; }
+    public string? Email { get; set; }
+}
+
 public sealed class MailMergeOptions
 {
     /// <summary>Maximum size of the uploaded .docx template, in bytes.</summary>

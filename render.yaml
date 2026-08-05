@@ -1,0 +1,45 @@
+# ─────────────────────────────────────────────────────────────
+# Render.com blueprint — managed deployment
+# - backend:  API (Dockerfile, listens on $PORT, health check /api/health)
+# - frontend: SPA served by nginx (frontend.Dockerfile, reverse-proxies /api)
+#
+# Note: the API requires SQL Server. Render does not offer managed SQL
+# Server — point `CONNECTION_STRING` at Azure SQL, Aiven, or a self-hosted
+# instance. Seed credentials must be supplied (the API refuses to start
+# with a fresh DB otherwise).
+# ─────────────────────────────────────────────────────────────
+services:
+  - type: web
+    name: van-dinh-backend
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ASPNETCORE_URLS
+        value: http://0.0.0.0:${PORT}
+      - key: ConnectionStrings__DefaultConnection
+        value: ${CONNECTION_STRING}
+      - key: Cors__AllowedOrigins__0
+        value: ${FRONTEND_ORIGIN}
+      - key: SeedAdmin__Username
+        value: ${SEED_ADMIN_USERNAME}
+      - key: SeedAdmin__Password
+        value: ${SEED_ADMIN_PASSWORD}
+      - key: SeedManager__Username
+        value: ${SEED_MANAGER_USERNAME}
+      - key: SeedManager__Password
+        value: ${SEED_MANAGER_PASSWORD}
+    disk:
+      name: uploads
+      mountPath: /app/wwwroot/uploads
+      sizeGB: 5
+    healthCheckPath: /api/health
+
+  - type: web
+    name: van-dinh-frontend
+    runtime: docker
+    dockerfilePath: ./frontend.Dockerfile
+    envVars:
+      - key: PORT
+        value: 80

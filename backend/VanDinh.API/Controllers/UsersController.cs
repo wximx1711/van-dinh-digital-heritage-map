@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using VanDinh.API.DTOs;
+using VanDinh.API.Repositories;
 using VanDinh.API.Responses;
 using VanDinh.API.Services;
 
@@ -9,7 +11,7 @@ namespace VanDinh.API.Controllers;
 [ApiController]
 [Route("api/users")]
 [Authorize(Roles = "ADMIN")]
-public sealed class UsersController(IUserService service, IActivityLogService logs) : ControllerBase
+public sealed class UsersController(IUserService service, IActivityLogService logs, IAppRepository repository) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 10, [FromQuery] string? name = null, [FromQuery] string? role = null)
@@ -17,21 +19,30 @@ public sealed class UsersController(IUserService service, IActivityLogService lo
         page = Math.Max(1, page);
         pageSize = Math.Clamp(pageSize, 1, 100);
 
-        var allUsers = service.GetAll().AsEnumerable();
+        var query = repository.UsersUntracked;
 
         if (!string.IsNullOrWhiteSpace(name))
         {
-            allUsers = allUsers.Where(u => (u.Username + " " + (u.FullName ?? "")).Contains(name, StringComparison.OrdinalIgnoreCase));
+            var n = name.Trim();
+            query = query.Where(u => u.Username.Contains(n) || (u.FullName != null && u.FullName.Contains(n)));
         }
         if (!string.IsNullOrWhiteSpace(role))
         {
-            allUsers = allUsers.Where(u => u.RoleName.Equals(role, StringComparison.OrdinalIgnoreCase));
+            var r = role.Trim();
+            query = query.Where(u => u.Role != null && u.Role.RoleName == r);
         }
 
-        var userList = allUsers.ToList();
-        var totalRecords = userList.Count;
+        var totalRecords = await query.CountAsync();
         var totalPages = (int)Math.Ceiling(totalRecords / (double)pageSize);
-        var data = userList.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+        var users = await query
+            .OrderBy(u => u.Username)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        var roles = repository.Roles;
+        var data = users.Select(u => u.ToDto(roles)).ToList();
 
         var result = new PagedResult<UserDto>(data, page, pageSize, totalRecords, totalPages);
         return ApiResponse.Success(result);
@@ -55,9 +66,16 @@ public sealed class UsersController(IUserService service, IActivityLogService lo
             return ApiResponse.Error("Validation failed.", errors);
         }
 
-        var user = service.Create(request);
-        logs.Log(User, "CREATE", "Users", user.UserId, user.Username);
-        return ApiResponse.Success(user, "User created successfully.", StatusCodes.Status201Created);
+        try
+        {
+            var user = service.Create(request);
+            logs.Log(User, "CREATE", "Users", user.UserId, user.Username);
+            return ApiResponse.Success(user, "User created successfully.", StatusCodes.Status201Created);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ApiResponse.Error(ex.Message);
+        }
     }
 
     [HttpPut("{id:long}")]
@@ -70,19 +88,32 @@ public sealed class UsersController(IUserService service, IActivityLogService lo
             return ApiResponse.Error("Validation failed.", errors);
         }
 
-        var user = service.Update(id, request);
-        if (user is null) return ApiResponse.NotFound("User not found.");
-        logs.Log(User, "UPDATE", "Users", id, user.Username);
-        return ApiResponse.Success(user, "User updated successfully.");
+        try
+        {
+            var user = service.Update(id, request);
+            if (user is null) return ApiResponse.NotFound("User not found.");
+            logs.Log(User, "UPDATE", "Users", id, user.Username);
+            return ApiResponse.Success(user, "User updated successfully.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ApiResponse.Error(ex.Message);
+        }
     }
 
     [HttpPut("{id:long}/role")]
     [ValidateAntiForgeryToken]
     public IActionResult UpdateRole(long id, UpdateRoleRequest request)
     {
-        var user = service.UpdateRole(id, request.RoleName);
+        if (!string.Equals(request.RoleName, "ADMIN", StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(request.RoleName, "MANAGER", StringComparison.OrdinalIgnoreCase))
+        {
+            return ApiResponse.Error("Role must be ADMIN or MANAGER.");
+        }
+
+        var user = service.UpdateRole(id, request.RoleName.ToUpperInvariant());
         if (user is null) return ApiResponse.NotFound("User not found.");
-        logs.Log(User, "UPDATE_ROLE", "Users", id, request.RoleName);
+        logs.Log(User, "UPDATE_ROLE", "Users", id, request.RoleName.ToUpperInvariant());
         return ApiResponse.Success(user, "Role updated successfully.");
     }
 
@@ -106,9 +137,16 @@ public sealed class UsersController(IUserService service, IActivityLogService lo
             return ApiResponse.Error("Validation failed.", errors);
         }
 
-        if (!service.ResetPassword(id, request.NewPassword)) return ApiResponse.NotFound("User not found.");
-        logs.Log(User, "RESET_PASSWORD", "Users", id);
-        return ApiResponse.Success(null, "Password reset successfully.");
+        try
+        {
+            if (!service.ResetPassword(id, request.NewPassword)) return ApiResponse.NotFound("User not found.");
+            logs.Log(User, "RESET_PASSWORD", "Users", id);
+            return ApiResponse.Success(null, "Password reset successfully.");
+        }
+        catch (InvalidOperationException ex)
+        {
+            return ApiResponse.Error(ex.Message);
+        }
     }
 
     [HttpDelete("{id:long}")]

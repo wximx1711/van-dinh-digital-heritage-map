@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-08-04T06:05:59Z
+    GENERATED: 2026-08-05T16:43:55Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -323,9 +323,18 @@ CREATE TABLE [ServiceEvaluations] (
     [Comment] nvarchar(1000) NULL,
     [DeviceName] nvarchar(150) NULL,
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_ServiceEvaluations_CreatedAt] DEFAULT (sysutcdatetime()),
+    [AdminReply] nvarchar(1000) NULL,
+    [Email] nvarchar(254) NULL,
+    [IsApproved] bit NOT NULL CONSTRAINT [DF_ServiceEvaluations_IsApproved] DEFAULT (CONVERT([bit],(0))),
+    [ReviewerName] nvarchar(150) NULL,
+    [SatisfactionLevel] nvarchar(20) NULL,
+    [Status] nvarchar(20) NOT NULL CONSTRAINT [DF_ServiceEvaluations_Status] DEFAULT (N'pending'),
+    [Title] nvarchar(200) NULL,
     CONSTRAINT [PK_ServiceEvaluations] PRIMARY KEY CLUSTERED ([Id]),
     CONSTRAINT [CK_ServiceEvaluation_Score] CHECK ([Score]>=(1) AND [Score]<=(5)),
-    CONSTRAINT [CK_ServiceEvaluation_TargetType] CHECK ([TargetType]='intangible' OR [TargetType]='heritage' OR [TargetType]='service')
+    CONSTRAINT [CK_ServiceEvaluation_TargetType] CHECK ([TargetType]='intangible' OR [TargetType]='heritage' OR [TargetType]='service'),
+    CONSTRAINT [CK_ServiceEvaluation_SatisfactionLevel] CHECK ([SatisfactionLevel] IS NULL OR ([SatisfactionLevel]='very_unsatisfied' OR [SatisfactionLevel]='unsatisfied' OR [SatisfactionLevel]='neutral' OR [SatisfactionLevel]='satisfied' OR [SatisfactionLevel]='very_satisfied')),
+    CONSTRAINT [CK_ServiceEvaluation_Status] CHECK ([Status]='rejected' OR [Status]='approved' OR [Status]='pending')
 );
 GO
 
@@ -435,13 +444,16 @@ GO
 CREATE NONCLUSTERED INDEX [IX_RelatedLinks_UpdatedBy] ON [RelatedLinks]([UpdatedBy]);
 GO
 
+CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_TargetType_TargetId] ON [ServiceEvaluations]([TargetType], [TargetId]);
+GO
+
 CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_TargetType] ON [ServiceEvaluations]([TargetType]);
 GO
 
 CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_CreatedAt] ON [ServiceEvaluations]([CreatedAt]);
 GO
 
-CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_TargetType_TargetId] ON [ServiceEvaluations]([TargetType], [TargetId]);
+CREATE NONCLUSTERED INDEX [IX_ServiceEvaluations_Status] ON [ServiceEvaluations]([Status]);
 GO
 
 CREATE NONCLUSTERED INDEX [IX_SystemSettings_UpdatedBy] ON [SystemSettings]([UpdatedBy]);
@@ -451,7 +463,7 @@ GO
 -- SEED AND CURRENT DATA
 -- ========================================
 
--- [__EFMigrationsHistory]: 24 rows
+-- [__EFMigrationsHistory]: 25 rows
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260701052754_InitialCreate', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260702054259_UpdateDatabaseSchema', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260703000000_AddAuditFieldsToIntangibleHeritage', N'10.0.9');
@@ -476,6 +488,7 @@ INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'202607
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260720140713_RemoveYearBuiltNumericConstraint', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260803033515_AddMailMergeJobs', N'10.0.10');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260803075543_AddServiceEvaluations', N'10.0.10');
+INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260805081154_AddEvaluationManagementFields', N'10.0.10');
 GO
 
 -- [Roles]: 2 rows
@@ -539,7 +552,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 618 rows
+-- [ActivityLogs]: 628 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -1159,9 +1172,19 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10579, 3, N'DELETE', N'Heritage', 10084, N'h456ce592', '2026-08-04T05:55:10.2210911', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10580, 3, N'DELETE', N'Heritage', 10086, N'hfb26326e', '2026-08-04T05:57:01.1259837', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10581, 3, N'CREATE', N'Heritage', 10104, N'VĐHN-DT-108', '2026-08-04T06:01:52.8334894', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10582, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-05T06:44:41.1853981', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10583, 3, N'LOGOUT', N'Users', NULL, N'User logged out.', '2026-08-05T06:55:30.4822138', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10584, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-05T06:55:38.3931985', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10585, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-05T06:56:29.1514141', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10586, 3, N'GenerateFormFilling', N'MailMergeJob', 1, N'Mail merge job started: Mau_Giay_Moi_Tu_Dong.docx → 100 documents', '2026-08-05T07:26:34.9176835', N'::1');
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10587, 3, N'APPROVE', N'ServiceEvaluations', 1, NULL, '2026-08-05T08:49:13.6893297', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10588, 3, N'LOGOUT', N'Users', NULL, N'User logged out.', '2026-08-05T08:49:56.3765277', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10589, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-05T08:50:04.9885318', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10590, 3, N'APPROVE', N'ServiceEvaluations', 2, NULL, '2026-08-05T08:50:11.7472764', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10591, 3, N'EXPORT', N'Evaluations', NULL, N'Excel evaluation list', '2026-08-05T08:50:27.7981594', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10581);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10591);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -7443,7 +7466,12 @@ GO
 DBCC CHECKIDENT ([IntangibleHeritage], RESEED, 26);
 GO
 
--- [MailMergeJobs]: 0 rows
+-- [MailMergeJobs]: 1 rows
+SET IDENTITY_INSERT [MailMergeJobs] ON;
+INSERT [MailMergeJobs] ([JobId],[PublicId],[TemplateFileName],[ExcelFileName],[FilenamePattern],[PlaceholdersJson],[MappingJson],[TotalRows],[SuccessCount],[FailedCount],[Status],[ErrorsJson],[ZipFileName],[CreatedBy],[CreatedByUsername],[CreatedAt],[CompletedAt]) VALUES (1, N'23883b6e-e7bb-4199-91dd-88915dc41be9', N'Mau_Giay_Moi_Tu_Dong.docx', N'Du_Lieu_Test_Random_100.xlsx', N'{{FullName}}', N'["FullName","DateOfBirth","CitizenId","Address","Phone","Email","MeetingCode","MeetingDate","MeetingTime","Location","Organizer","Department","Subject","Content","HeritageName","Role","Notes"]', N'{"FullName":"FullName","DateOfBirth":"DateOfBirth","CitizenId":"CitizenId","Address":"Address","Phone":"Phone","Email":"Email","MeetingCode":"MeetingCode","MeetingDate":"MeetingDate","MeetingTime":"MeetingTime","Location":"Location","Organizer":"Organizer","Department":"Department","Subject":"Subject","Content":"Content","HeritageName":"HeritageName","Role":"Role","Notes":"Notes"}', 100, 100, 0, N'Completed', N'[]', N'23883b6ee7bb419991dd88915dc41be9.zip', 3, N'kiki', '2026-08-05T07:26:34.8562377', '2026-08-05T07:26:35.2937931');
+SET IDENTITY_INSERT [MailMergeJobs] OFF;
+GO
+DBCC CHECKIDENT ([MailMergeJobs], RESEED, 1);
 GO
 
 -- [MediaFiles]: 699 rows
@@ -8160,7 +8188,13 @@ GO
 DBCC CHECKIDENT ([RelatedLinks], RESEED, 1);
 GO
 
--- [ServiceEvaluations]: 0 rows
+-- [ServiceEvaluations]: 2 rows
+SET IDENTITY_INSERT [ServiceEvaluations] ON;
+INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (1, N'heritage', N'h0d0c0cbc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:03.1271464', NULL, NULL, 1, N'mink', N'very_satisfied', N'approved', N'ok');
+INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (2, N'heritage', N'heff617cc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:53.3774101', NULL, NULL, 1, N'đức', N'very_satisfied', N'approved', NULL);
+SET IDENTITY_INSERT [ServiceEvaluations] OFF;
+GO
+DBCC CHECKIDENT ([ServiceEvaluations], RESEED, 2);
 GO
 
 -- [SystemSettings]: 1 rows

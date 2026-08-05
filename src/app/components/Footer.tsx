@@ -102,6 +102,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 { key: 'relics', label: t('nav.relics') },
                 { key: 'intangible', label: t('nav.intangible') },
                 { key: 'map', label: t('nav.map') },
+                { key: 'evaluate', label: lang === 'vi' ? 'Đánh giá dịch vụ' : 'Rate our service' },
               ].map((link) => (
                 <li key={link.key}>
                   <button

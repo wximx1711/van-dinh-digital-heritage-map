@@ -191,47 +191,8 @@ public sealed class EfAppRepository : IAppRepository
 
     public Heritage AddHeritage(Heritage heritage)
     {
-        _logger.LogInformation("AddHeritage: Adding Heritage entity (PublicId={PublicId}) to context...", heritage.PublicId);
         _context.Heritage.Add(heritage);
-        _logger.LogInformation("AddHeritage: Calling SaveChanges()...");
-        try
-        {
-            _context.SaveChanges();
-            _logger.LogInformation("AddHeritage: SaveChanges() succeeded. HeritageId={HeritageId} assigned.", heritage.HeritageId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "AddHeritage: SaveChanges() FAILED for Heritage (PublicId={PublicId})", heritage.PublicId);
-            MappingExtensions.LogMaterializationError(_logger, ex, "EfAppRepository.AddHeritage.SaveChanges");
-            throw;
-        }
-
-        // TEMPORARY DIAGNOSTIC: Inspect every property after loading
-        try
-        {
-            var reloaded = _context.Heritage
-                .AsNoTracking()
-                .Include(h => h.Images)
-                .Include(h => h.Videos)
-                .Include(h => h.Documents)
-                .FirstOrDefault(h => h.PublicId == heritage.PublicId);
-            if (reloaded is not null)
-            {
-                _logger.LogInformation("AddHeritage: Successfully reloaded Heritage {PublicId} from DB. Inspecting properties...", heritage.PublicId);
-                MappingExtensions.DiagnoseHeritage(reloaded, _logger, "AddHeritage-Reload");
-            }
-            else
-            {
-                _logger.LogWarning("AddHeritage: Could not reload Heritage {PublicId} from DB after SaveChanges.", heritage.PublicId);
-            }
-        }
-        catch (Exception reloadEx)
-        {
-            _logger.LogCritical(reloadEx, "AddHeritage: FAILED to reload Heritage {PublicId} from DB after SaveChanges! This indicates a materialization issue.", heritage.PublicId);
-            MappingExtensions.LogMaterializationError(_logger, reloadEx, "EfAppRepository.AddHeritage.Reload");
-            throw;
-        }
-
+        _context.SaveChanges();
         return heritage;
     }
 
@@ -257,26 +218,10 @@ public sealed class EfAppRepository : IAppRepository
 
     public HeritageImage AddImage(string publicId, HeritageImage image)
     {
-        _logger.LogInformation("AddImage: Loading Heritage {PublicId} with Images navigation (materialization point)...", publicId);
-        Heritage heritage;
-        try
-        {
-            heritage = _context.Heritage
-                .Include(h => h.Images)
-                .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted)
-                ?? throw new InvalidOperationException("Heritage not found.");
-            _logger.LogInformation("AddImage: Heritage {PublicId} loaded successfully (HeritageId={HeritageId}, Images.Count={ImgCount})",
-                publicId, heritage.HeritageId, heritage.Images.Count);
-
-            // TEMPORARY DIAGNOSTIC: Inspect loaded Heritage entity
-            MappingExtensions.DiagnoseHeritage(heritage, _logger, "AddImage-Load");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "AddImage: FAILED to load Heritage {PublicId} from DB!", publicId);
-            MappingExtensions.LogMaterializationError(_logger, ex, "EfAppRepository.AddImage.LoadHeritage");
-            throw;
-        }
+        var heritage = _context.Heritage
+            .Include(h => h.Images)
+            .FirstOrDefault(h => h.PublicId == publicId && !h.IsDeleted)
+            ?? throw new InvalidOperationException("Heritage not found.");
 
         image.HeritageId = heritage.HeritageId;
         if (!heritage.Images.Any())
@@ -284,123 +229,15 @@ public sealed class EfAppRepository : IAppRepository
             heritage.ThumbnailUrl = image.ImageUrl;
             _context.Heritage.Update(heritage);
         }
-        _logger.LogInformation("AddImage: Adding HeritageImage (ImageUrl={ImageUrl}, SortOrder={SortOrder}) to context...", image.ImageUrl, image.SortOrder);
         _context.HeritageImages.Add(image);
-        try
-        {
-            _context.SaveChanges();
-            _logger.LogInformation("AddImage: SaveChanges() succeeded. ImageId={ImageId} assigned.", image.ImageId);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "AddImage: SaveChanges() FAILED for HeritageImage (PublicId={PublicId})", publicId);
-            MappingExtensions.LogMaterializationError(_logger, ex, "EfAppRepository.AddImage.SaveChanges");
-            throw;
-        }
-
-        // TEMPORARY DIAGNOSTIC: Reload and inspect the HeritageImage
-        try
-        {
-            var reloadedImage = _context.HeritageImages.AsNoTracking().FirstOrDefault(i => i.ImageId == image.ImageId);
-            if (reloadedImage is not null)
-            {
-                MappingExtensions.DiagnoseHeritageImage(reloadedImage, _logger, "AddImage-Reload");
-            }
-        }
-        catch (Exception diagEx)
-        {
-            _logger.LogWarning(diagEx, "AddImage: Diagnostic reload failed for ImageId={ImageId} (non-critical)", image.ImageId);
-        }
+        _context.SaveChanges();
 
         return image;
     }
 
     public HeritageImage? FindImageById(long imageId)
     {
-        _logger.LogInformation("FindImageById: Querying table HeritageImages with PK ImageId={ImageId}", imageId);
-
-        // ════════════════════════════════════════════════════════════════
-        // STEP 1 — Raw SQL diagnostic (bypasses EF change tracker)
-        // ════════════════════════════════════════════════════════════════
-        HeritageImage? sqlResult = null;
-        try
-        {
-            sqlResult = _context.HeritageImages
-                .FromSqlRaw("SELECT * FROM HeritageImages WHERE ImageId = {0}", imageId)
-                .AsNoTracking()
-                .FirstOrDefault();
-
-            if (sqlResult is not null)
-            {
-                _logger.LogInformation(
-                    "[STEP 1] SELECT * FROM HeritageImages WHERE ImageId = @imageId — {RowCount} row(s) returned:" +
-                    " ImageId={ImageId}, HeritageId={HeritageId}, ImageUrl={ImageUrl}",
-                    1, sqlResult.ImageId, sqlResult.HeritageId, sqlResult.ImageUrl);
-            }
-            else
-            {
-                _logger.LogWarning("[STEP 1] SELECT * FROM HeritageImages WHERE ImageId = @imageId — 0 rows returned for ImageId={ImageId}", imageId);
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "[STEP 1] Raw SQL query FAILED for ImageId={ImageId}", imageId);
-        }
-
-        // ════════════════════════════════════════════════════════════════
-        // Original EF Find — the method the application actually uses
-        // ════════════════════════════════════════════════════════════════
-        var result = _context.HeritageImages.Find(imageId);
-
-        if (result is null)
-        {
-            _logger.LogWarning("FindImageById: NO record found in HeritageImages for ImageId={ImageId}", imageId);
-
-            // ════════════════════════════════════════════════════════════
-            // STEP 5 — If raw SQL found a row but EF Find() returned null
-            // ════════════════════════════════════════════════════════════
-            if (sqlResult is not null)
-            {
-                _logger.LogWarning(
-                    "[STEP 5] MISMATCH — RAW SQL returned a row but EF Find() returned null for ImageId={ImageId}!" +
-                    " Trying FirstOrDefault alternatives...", imageId);
-
-                // Attempt 1: FirstOrDefault (tracked)
-                var attempt1 = _context.HeritageImages
-                    .FirstOrDefault(x => x.ImageId == imageId);
-                _logger.LogInformation(
-                    "[STEP 5] FirstOrDefault(x => x.ImageId == imageId): {Result}",
-                    attempt1 is null ? "NULL" : $"FOUND — ImageId={attempt1.ImageId}, ImageUrl={attempt1.ImageUrl}, HeritageId={attempt1.HeritageId}");
-
-                // Attempt 2: FirstOrDefault + AsNoTracking (bypasses tracker entirely)
-                var attempt2 = _context.HeritageImages
-                    .AsNoTracking()
-                    .FirstOrDefault(x => x.ImageId == imageId);
-                _logger.LogInformation(
-                    "[STEP 5] FirstOrDefault + AsNoTracking(x => x.ImageId == imageId): {Result}",
-                    attempt2 is null ? "NULL" : $"FOUND — ImageId={attempt2.ImageId}, ImageUrl={attempt2.ImageUrl}, HeritageId={attempt2.HeritageId}");
-
-                if (attempt1 is not null)
-                {
-                    _logger.LogWarning("[STEP 5] CONCLUSION: Find() fails but FirstOrDefault() works. The EF change tracker holds a stale entry. Call _context.Entry(stale).State = EntityState.Detached before Find().");
-                }
-                else if (attempt2 is not null)
-                {
-                    _logger.LogWarning("[STEP 5] CONCLUSION: Only AsNoTracking() works. The entity is likely tracked with wrong key or in a state that blocks Find().");
-                }
-                else
-                {
-                    _logger.LogWarning("[STEP 5] CONCLUSION: All EF Core methods returned null despite SQL Server having the row. Possible connection string mismatch or database context targeting wrong database.");
-                }
-            }
-        }
-        else
-        {
-            _logger.LogInformation("FindImageById: FOUND record ImageId={ImageId}, ImageUrl={ImageUrl}, HeritageId={HeritageId}",
-                result.ImageId, result.ImageUrl, result.HeritageId);
-        }
-
-        return result;
+        return _context.HeritageImages.Find(imageId);
     }
 
     public HeritageVideo? FindVideoById(long videoId)
@@ -437,7 +274,6 @@ public sealed class EfAppRepository : IAppRepository
             .AsNoTracking()
             .Where(mf => mf.MediaType == "image")
             .ToList();
-        _logger.LogInformation("FindAllImageUrls: Loaded {Count} records from table MediaFiles (MediaType=image)", records.Count);
         return records
             .GroupBy(mf => mf.Url)
             .ToDictionary(g => g.Key, g => g.First().MediaFileId);
@@ -656,6 +492,17 @@ public sealed class EfAppRepository : IAppRepository
     public ServiceEvaluation? FindEvaluation(long id) => _context.ServiceEvaluations
         .AsNoTracking()
         .FirstOrDefault(x => x.Id == id);
+
+    public ServiceEvaluation? FindEvaluationTracked(long id) => _context.ServiceEvaluations
+        .FirstOrDefault(x => x.Id == id);
+
+    public void UpdateEvaluation(ServiceEvaluation item)
+    {
+        var existing = _context.ServiceEvaluations.Find(item.Id);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(item);
+        _context.SaveChanges();
+    }
 
     public void DeleteEvaluation(long id)
     {

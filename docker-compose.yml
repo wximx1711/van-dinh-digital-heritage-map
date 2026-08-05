@@ -1,0 +1,73 @@
+name: van-dinh-digital-heritage-map
+
+# ─────────────────────────────────────────────────────────────
+# Production-like stack: SQL Server + ASP.NET Core API + nginx (SPA).
+#
+# Required environment variables (create a `.env` file next to this
+# compose file):
+#   MSSQL_SA_PASSWORD      Strong password for the SQL Server 'sa' account
+#   SEED_ADMIN_USERNAME    Initial administrator username
+#   SEED_ADMIN_PASSWORD    Initial administrator password (strong)
+#   SEED_MANAGER_USERNAME  Initial manager username
+#   SEED_MANAGER_PASSWORD  Initial manager password (strong)
+#
+# The API refuses to start against a fresh database without explicit
+# seed credentials (see DbInitializer).
+# ─────────────────────────────────────────────────────────────
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in .env}
+      MSSQL_PID: Express
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -C -Q 'SELECT 1' -b"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: "Server=db;Database=VanDinhDigitalMap;User Id=sa;Password=${MSSQL_SA_PASSWORD};TrustServerCertificate=True;Encrypt=False"
+      Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN:-http://localhost:8080}
+      Swagger__RoutePrefix: ${SWAGGER_ROUTE_PREFIX:-swagger}
+      SeedAdmin__Username: ${SEED_ADMIN_USERNAME:?Set SEED_ADMIN_USERNAME in .env}
+      SeedAdmin__Password: ${SEED_ADMIN_PASSWORD:?Set SEED_ADMIN_PASSWORD in .env}
+      SeedAdmin__FullName: ${SEED_ADMIN_FULLNAME:-System Administrator}
+      SeedAdmin__Email: ${SEED_ADMIN_EMAIL:-admin@vandinh.gov.vn}
+      SeedManager__Username: ${SEED_MANAGER_USERNAME:?Set SEED_MANAGER_USERNAME in .env}
+      SeedManager__Password: ${SEED_MANAGER_PASSWORD:?Set SEED_MANAGER_PASSWORD in .env}
+      SeedManager__FullName: ${SEED_MANAGER_FULLNAME:-Heritage Manager}
+      SeedManager__Email: ${SEED_MANAGER_EMAIL:-manager@vandinh.gov.vn}
+    volumes:
+      - uploads:/app/wwwroot/uploads
+      - mailmerge-data:/app/App_Data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-8080}:80"
+
+volumes:
+  sqlserver-data:
+  uploads:
+  mailmerge-data:

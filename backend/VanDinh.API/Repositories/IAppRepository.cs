@@ -78,6 +78,8 @@ public interface IAppRepository
 
     ServiceEvaluation AddEvaluation(ServiceEvaluation item);
     ServiceEvaluation? FindEvaluation(long id);
+    ServiceEvaluation? FindEvaluationTracked(long id);
+    void UpdateEvaluation(ServiceEvaluation item);
     void DeleteEvaluation(long id);
 
     ActivityLog AddLog(ActivityLog log);

@@ -9,6 +9,7 @@ import { ImageGallery } from './ImageGallery';
 import { InfoCard } from './InfoCard';
 import { ShareSection } from './ShareSection';
 import { RelatedItems } from './RelatedItems';
+import { EvaluationSection } from './EvaluationSection';
 import { DetailPageSkeleton, Skeleton } from './Skeleton';
 import { openDirections } from '../utils/geo';
 import {
@@ -546,6 +547,9 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
             />
           </div>
         </div>
+
+        {/* Evaluations */}
+        <EvaluationSection targetType="heritage" targetId={site.id} heritageName={name} />
       </div>
       <style>{`
         @media (max-width: 640px) {

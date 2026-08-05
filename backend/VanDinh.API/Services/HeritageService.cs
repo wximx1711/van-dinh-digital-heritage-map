@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using VanDinh.API.DTOs;
 using VanDinh.API.Models;
 using VanDinh.API.Repositories;
@@ -19,7 +18,6 @@ public interface IHeritageService
 public sealed class HeritageService(
     IAppRepository repository,
     IUploadService uploads,
-    ILogger<HeritageService> logger,
     IGoogleMapsCoordinateExtractor coordinateExtractor) : IHeritageService
 {
     private static string? NormalizeSearch(string? value)
@@ -47,7 +45,8 @@ public sealed class HeritageService(
         }
         if (!string.IsNullOrWhiteSpace(classification)) items = items.Where(x => x.Classification == classification);
         if (!string.IsNullOrWhiteSpace(status)) items = items.Where(x => x.Status == status);
-        return items.OrderBy(x => x.Code).Select(x => x.ToDto(repository)).ToList();
+        var categories = repository.Categories;
+        return items.OrderBy(x => x.Code).Select(x => x.ToDto(categories)).ToList();
     }
 
     public IReadOnlyList<HeritageDto> SearchAdvanced(string? query, string? type, string? classification, string? status, string? yearBuilt, string? district)
@@ -74,7 +73,8 @@ public sealed class HeritageService(
                 (x.AddressVi != null && x.AddressVi.Contains(district, StringComparison.OrdinalIgnoreCase)) ||
                 (x.AddressEn != null && x.AddressEn.Contains(district, StringComparison.OrdinalIgnoreCase)));
         }
-        return items.OrderBy(x => x.Code).Select(x => x.ToDto(repository)).ToList();
+        var categories = repository.Categories;
+        return items.OrderBy(x => x.Code).Select(x => x.ToDto(categories)).ToList();
     }
 
     public HeritageDto? Get(string id) => repository.FindHeritage(id)?.ToDto(repository);
@@ -139,16 +139,7 @@ public sealed class HeritageService(
 
     public async Task<HeritageDto> CreateAsync(HeritageRequest request, long userId)
     {
-        logger.LogInformation("=== CREATE FLOW START: Heritage ===");
-        logger.LogInformation("[1/8] Controller received request: NameVi={NameVi}, NameEn={NameEn}, Code={Code}", request.NameVi, request.NameEn, request.Code);
-
-        // Step 1: DTO Validation (strict HTTP create path only).
-        // The bulk importer uses CreateCoreAsync directly because the import
-        // data intentionally leaves optional fields empty.
-        logger.LogInformation("[2/8] DTO validation starting...");
         ValidateHeritageRequest(request);
-        logger.LogInformation("[2/8] DTO validation passed.");
-
         return await CreateCoreAsync(request, userId);
     }
 
@@ -163,115 +154,57 @@ public sealed class HeritageService(
     /// </summary>
     internal async Task<HeritageDto> CreateCoreAsync(HeritageRequest request, long userId)
     {
-        try
+        var (extractedLat, extractedLng) = await coordinateExtractor.ExtractCoordinatesAsync(request.GoogleMapUrl);
+
+        var category = repository.FindCategory(request.Type) ?? throw new InvalidOperationException("Category not found.");
+
+        var publicId = GeneratePublicId();
+        var heritage = new Heritage
         {
-            // Step 2b: Extract coordinates from Google Maps URL
-            logger.LogInformation("[2b/8] Extracting coordinates from Google Maps URL...");
-            var (extractedLat, extractedLng) = await coordinateExtractor.ExtractCoordinatesAsync(request.GoogleMapUrl);
-            if (extractedLat.HasValue && extractedLng.HasValue)
-            {
-                logger.LogInformation("[2b/8] Coordinates extracted: Lat={Lat}, Lng={Lng}", extractedLat, extractedLng);
-            }
-            logger.LogInformation("[2b/8] Coordinate extraction complete.");
+            PublicId = publicId,
+            Code = request.Code,
+            CategoryId = category.CategoryId,
+            NameVi = request.NameVi.Trim(),
+            NameEn = request.NameEn.Trim(),
+            Slug = Slugify(request.NameEn),
+            Classification = request.Classification,
+            Status = request.Status,
+            AddressVi = request.AddressVi?.Trim(),
+            AddressEn = request.AddressEn?.Trim(),
+            DescriptionVi = request.DescriptionVi?.Trim(),
+            DescriptionEn = request.DescriptionEn?.Trim(),
+            HistoryVi = request.HistoryVi?.Trim(),
+            HistoryEn = request.HistoryEn?.Trim(),
+            ThumbnailUrl = request.Image,
+            YearBuilt = request.YearBuilt,
+            Guardian = request.Guardian?.Trim(),
+            CreatedBy = userId,
+            GoogleMapUrl = request.GoogleMapUrl?.Trim(),
+            Latitude = extractedLat.HasValue ? (decimal)extractedLat.Value : null,
+            Longitude = extractedLng.HasValue ? (decimal)extractedLng.Value : null
+        };
+        heritage.QrCodeUrl = $"/api/qr/heritage/{heritage.PublicId}";
 
-            // Step 3: Category lookup
-            logger.LogInformation("[3/8] Looking up category: Type={Type}", request.Type);
-            var category = repository.FindCategory(request.Type) ?? throw new InvalidOperationException("Category not found.");
-            logger.LogInformation("[3/8] Category found: Id={Id}, Code={Code}", category.CategoryId, category.Code);
+        repository.AddHeritage(heritage);
 
-            // Step 4: DTO → Entity mapping
-            logger.LogInformation("[5/8] Mapping HeritageRequest → Heritage entity...");
-            var publicId = GeneratePublicId();
-            var heritage = new Heritage
-            {
-                PublicId = publicId,
-                Code = request.Code,
-                CategoryId = category.CategoryId,
-                NameVi = request.NameVi.Trim(),
-                NameEn = request.NameEn.Trim(),
-                Slug = Slugify(request.NameEn),
-                Classification = request.Classification,
-                Status = request.Status,
-                AddressVi = request.AddressVi?.Trim(),
-                AddressEn = request.AddressEn?.Trim(),
-                DescriptionVi = request.DescriptionVi?.Trim(),
-                DescriptionEn = request.DescriptionEn?.Trim(),
-                HistoryVi = request.HistoryVi?.Trim(),
-                HistoryEn = request.HistoryEn?.Trim(),
-                ThumbnailUrl = request.Image,
-                YearBuilt = request.YearBuilt,
-                Guardian = request.Guardian?.Trim(),
-                CreatedBy = userId,
-                GoogleMapUrl = request.GoogleMapUrl?.Trim(),
-                Latitude = extractedLat.HasValue ? (decimal)extractedLat.Value : null,
-                Longitude = extractedLng.HasValue ? (decimal)extractedLng.Value : null
-            };
-            heritage.QrCodeUrl = $"/api/qr/heritage/{heritage.PublicId}";
-            logger.LogInformation("[5/8] Entity mapped: PublicId={PublicId}, Slug={Slug}", heritage.PublicId, heritage.Slug);
-
-            // Step 5: AddHeritage() + SaveChanges()
-            logger.LogInformation("[6/8] Calling repository.AddHeritage() — this triggers SaveChanges()...");
-            repository.AddHeritage(heritage);
-            logger.LogInformation("[6/8] AddHeritage completed. HeritageId={HeritageId} assigned.", heritage.HeritageId);
-
-            // Step 6: Diagnose entity after load
-            logger.LogInformation("[6/8 - DIAGNOSTIC] Inspecting Heritage entity properties after SaveChanges...");
-            MappingExtensions.DiagnoseHeritage(heritage, logger, "AFTER-SAVE");
-
-            // Step 7: Add thumbnail image
-            if (!string.IsNullOrWhiteSpace(request.Image))
-            {
-                logger.LogInformation("[7/8] Adding thumbnail image: {Url}", request.Image);
-                var img = new HeritageImage { ImageUrl = request.Image, SortOrder = 1 };
-                repository.AddImage(heritage.PublicId, img);
-                logger.LogInformation("[7/8] Thumbnail image added.");
-            }
-
-            // Step 8: Add additional images
-            if (request.ImageUrls?.Length > 0)
-            {
-                logger.LogInformation("[7/8] Adding {Count} additional image(s)...", request.ImageUrls.Length);
-                var sortOrder = 2;
-                foreach (var url in request.ImageUrls)
-                {
-                    if (string.IsNullOrWhiteSpace(url)) continue;
-                    if (url == request.Image) continue;
-                    repository.AddImage(heritage.PublicId, new HeritageImage { ImageUrl = url, SortOrder = sortOrder++ });
-                }
-                logger.LogInformation("[7/8] Additional images added.");
-            }
-
-            // Step 9: Mapping Entity → DTO (triggers Categories query and Images access)
-            logger.LogInformation("[8/8] Mapping Heritage entity → HeritageDto (this may trigger additional queries)...");
-            var dto = heritage.ToDto(repository);
-            logger.LogInformation("[8/8] DTO mapping complete. Returning response.");
-
-            logger.LogInformation("=== CREATE FLOW COMPLETE: Heritage {PublicId} ===", heritage.PublicId);
-            return dto;
-        }
-        catch (Exception ex) when (ex is InvalidOperationException or InvalidCastException)
+        if (!string.IsNullOrWhiteSpace(request.Image))
         {
-            logger.LogCritical("=== EXCEPTION IN HERITAGE CREATE ===");
-            MappingExtensions.LogMaterializationError(logger, ex, "HeritageService.Create");
-
-            // Diagnose any entities already in the repository cache
-            try
-            {
-                var heritages = repository.Heritages;
-                logger.LogInformation("DIAGNOSTIC: Inspecting {Count} loaded Heritage entities from repository...", heritages.Count);
-                foreach (var h in heritages)
-                {
-                    MappingExtensions.DiagnoseHeritage(h, logger, "REPOSITORY-CACHE");
-                }
-            }
-            catch (Exception cacheEx)
-            {
-                logger.LogError(cacheEx, "DIAGNOSTIC: Failed to inspect repository Heritage cache ({Msg})", cacheEx.Message);
-                MappingExtensions.LogMaterializationError(logger, cacheEx, "HeritageService.Create.CacheDiagnostic");
-            }
-
-            throw;
+            var img = new HeritageImage { ImageUrl = request.Image, SortOrder = 1 };
+            repository.AddImage(heritage.PublicId, img);
         }
+
+        if (request.ImageUrls?.Length > 0)
+        {
+            var sortOrder = 2;
+            foreach (var url in request.ImageUrls)
+            {
+                if (string.IsNullOrWhiteSpace(url)) continue;
+                if (url == request.Image) continue;
+                repository.AddImage(heritage.PublicId, new HeritageImage { ImageUrl = url, SortOrder = sortOrder++ });
+            }
+        }
+
+        return heritage.ToDto(repository);
     }
 
     public async Task<HeritageDto?> UpdateAsync(string id, HeritageRequest request)
@@ -336,14 +269,11 @@ public sealed class HeritageService(
         var source = repository.FindHeritage(id);
         if (source is null) return null;
 
-        logger.LogInformation("=== DUPLICATE FLOW START: Heritage {PublicId} ===", id);
-
         // Snapshot active heritages once: used for unique-name and code generation
         var heritages = repository.Heritages;
 
         var nameVi = GenerateUniqueName(source.NameVi, heritages.Select(h => h.NameVi));
         var nameEn = GenerateUniqueName(source.NameEn, heritages.Select(h => h.NameEn));
-        logger.LogInformation("DUPLICATE: Generated names NameVi={NameVi}, NameEn={NameEn}", nameVi, nameEn);
 
         var heritage = new Heritage
         {
@@ -419,7 +349,6 @@ public sealed class HeritageService(
             }
         });
 
-        logger.LogInformation("=== DUPLICATE FLOW COMPLETE: Heritage {PublicId} ===", heritage.PublicId);
         return heritage.ToDto(repository);
     }
 

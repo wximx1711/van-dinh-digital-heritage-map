@@ -3,6 +3,7 @@ import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { intangibleCategoryIcons } from '../constants';
 import { fetchIntangibleHeritageList, createIntangibleHeritage, updateIntangibleHeritage, deleteIntangibleHeritage } from '../services/intangibleService';
+import { fetchHeritageEvaluationSummaries } from '../services/evaluationService';
 import { apiDelete } from '../services/api';
 import { uploadFileWithProgress } from '../services/uploadService';
 import { getImageUrl } from '../utils/url';
@@ -11,8 +12,9 @@ import { ConfirmDialog } from './ConfirmDialog';
 import {
   Plus, Search, Filter, Pencil, Trash2, X, Check, AlertTriangle, Upload,
   ChevronLeft, ChevronRight,
-  Image as ImageIcon, Eye
+  Image as ImageIcon, Eye, Star, MessageSquare
 } from 'lucide-react';
+import type { HeritageEvaluationSummary } from '../../core/types';
 import { AdminTableSkeleton } from './Skeleton';
 import { LazyImage } from './LazyImage';
 
@@ -85,11 +87,13 @@ const emptyItem: IntangibleItem = {
 
 interface IntangibleManagementProps {
   onDirtyChange?: (dirty: boolean) => void;
+  onOpenEvaluations?: (heritageId: string) => void;
 }
 
-export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProps) {
+export function IntangibleManagement({ onDirtyChange, onOpenEvaluations }: IntangibleManagementProps) {
   const { lang, t } = useLanguage();
   const [items, setItems] = useState<IntangibleItem[]>([]);
+  const [evalSummaries, setEvalSummaries] = useState<Record<string, HeritageEvaluationSummary>>({});
   const [search, setSearch] = useState('');
   const [filterCat, setFilterCat] = useState<string>('');
   const [page, setPage] = useState(1);
@@ -120,6 +124,16 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
   useEffect(() => {
     onDirtyChange?.(isDirty);
   }, [isDirty, onDirtyChange]);
+
+  useEffect(() => {
+    fetchHeritageEvaluationSummaries()
+      .then(summaries => {
+        const map: Record<string, HeritageEvaluationSummary> = {};
+        summaries.forEach(s => { map[s.targetId] = s; });
+        setEvalSummaries(map);
+      })
+      .catch(() => {});
+  }, []);
 
   const closeForm = useCallback(() => {
     if (!formMode) return;
@@ -439,6 +453,7 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
                   lang === 'vi' ? 'Thể loại' : 'Category',
                   lang === 'vi' ? 'Mô tả' : 'Description',
                   lang === 'vi' ? 'Video' : 'Video',
+                  lang === 'vi' ? 'Đánh giá' : 'Rating',
                   lang === 'vi' ? 'Ngày tạo' : 'Created',
                   t('hm.actions')
                 ].map(h => (
@@ -477,6 +492,30 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
                       </a>
                     ) : '-'}
                   </td>
+                  <td style={{ padding: '10px 14px' }}>
+                    <button
+                      onClick={() => onOpenEvaluations?.(item.id)}
+                      disabled={!onOpenEvaluations}
+                      title={lang === 'vi' ? 'Xem đánh giá' : 'View ratings'}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: onOpenEvaluations ? 'pointer' : 'default', padding: 0,
+                      }}
+                    >
+                      {(evalSummaries[item.id]?.averageScore ?? 0) > 0 ? (
+                        <>
+                          <Star size={12} style={{ color: '#D4A017', fill: '#D4A017' }} />
+                          <span style={{ fontSize: 11, color: '#0F3D5E', fontWeight: 700 }}>{evalSummaries[item.id]?.averageScore.toFixed(1)}</span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 10, color: '#5d7a8c' }}>
+                            <MessageSquare size={9} /> {evalSummaries[item.id]?.totalEvaluations ?? 0}
+                          </span>
+                        </>
+                      ) : (
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 10, color: '#5d7a8c' }}>
+                          <Star size={11} /> {evalSummaries[item.id]?.totalEvaluations ? evalSummaries[item.id].totalEvaluations : '0'}
+                        </span>
+                      )}
+                    </button>
+                  </td>
                   <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c', whiteSpace: 'nowrap' }}>
                     {item.createdAt ? new Date(item.createdAt).toLocaleDateString(lang === 'vi' ? 'vi-VN' : 'en-US', { year: 'numeric', month: 'short', day: 'numeric' }) : '-'}
                   </td>
@@ -493,7 +532,7 @@ export function IntangibleManagement({ onDirtyChange }: IntangibleManagementProp
                 </tr>
               ))}
               {items.length === 0 && (
-                <tr><td colSpan={7} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
+                <tr><td colSpan={8} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
               )}
             </tbody>
             </table>

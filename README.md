@@ -1,8 +1,8 @@
 # Vân Đình Digital Heritage Map
 
-Interactive web application for exploring and managing the cultural heritage of Vân Đình commune (Ứng Hòa, Hà Nội, Vietnam). Features an interactive Google Map with heritage site markers, detailed heritage profiles, media galleries, admin management, and a trip planner.
+Interactive web application for exploring and managing the cultural heritage of Vân Đình commune (Ứng Hòa, Hà Nội, Vietnam). Features an interactive map with heritage site markers, detailed heritage profiles, media galleries, admin management, and a trip planner.
 
-**Tech stack:** React 18 + TypeScript + Vite 6 + Tailwind CSS 4 (frontend), .NET 10 + ASP.NET Core Web API + EF Core (backend), SQL Server (database), Google Maps JavaScript API, Recharts (charts), Magick.NET (image processing), QRCoder (QR codes), Cookie Authentication.
+**Tech stack:** React 18 + TypeScript + Vite 6 + Tailwind CSS 4 (frontend), .NET 10 + ASP.NET Core Web API + EF Core (backend), SQL Server (database), Leaflet + OpenStreetMap with OSRM for route planning, Recharts (charts), Magick.NET (image processing), QRCoder (QR codes), Cookie Authentication.
 
 ---
 
@@ -16,7 +16,6 @@ Interactive web application for exploring and managing the cultural heritage of 
 | SQL Server | 2019+ (Developer Edition free) |
 | SQL Server Management Studio | Optional — for GUI restore |
 | PowerShell | 5.1+ |
-| Google Maps API Key | With Maps JavaScript API enabled |
 
 ```powershell
 git --version
@@ -25,7 +24,7 @@ node --version          # Expect 18.x or later
 npm --version
 ```
 
----
+> Note: mapping and routing use Leaflet + OpenStreetMap — **no API key is required**.
 
 ## Installation
 
@@ -72,15 +71,8 @@ The API starts at `http://localhost:5109`. Verify by opening `http://localhost:5
 
 ## Frontend Setup
 
-Create a `.env` file in the project root:
-
-```
-VITE_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
-```
-
-Then:
-
 ```powershell
+npm install
 npm run dev
 ```
 
@@ -98,15 +90,10 @@ The Vite dev server proxies `/api` and `/uploads` to the backend at `http://loca
 |---|---|---|
 | `ConnectionStrings:DefaultConnection` | `Server=localhost;Database=VanDinhDigitalMap;Trusted_Connection=True;Encrypt=False` | Uses Windows Auth. Change for SQL Auth. |
 | `Cors:AllowedOrigins` | `["http://localhost:5173"]` | Must match frontend URL |
-| `SeedAdmin:Username` / `Password` | `admin` / `Admin@123` | Development only |
+| `SeedAdmin:Username` / `Password` | `admin` / `Admin@123` | Development fallback only |
+| `SeedManager:Username` / `Password` | `manager` / `Manager@123` | Development fallback only |
 
-**Frontend** (`.env` file — **do not commit**):
-
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_GOOGLE_MAPS_API_KEY` | Yes | Google Maps JavaScript API key |
-
----
+> **Production:** a fresh database **refuses to start** without explicit `SeedAdmin` **and** `SeedManager` credentials (username + password) — the well-known dev defaults are never seeded in Production. Provide them via environment variables (`SeedAdmin__Username`, `SeedAdmin__Password`, `SeedManager__Username`, `SeedManager__Password`).
 
 ## Upload Folder
 
@@ -183,7 +170,7 @@ git push
 | Problem | Solution |
 |---|---|
 | `Invalid object name 'HeritageImages'` | Restore the database: `sqlcmd -S localhost -E -i backend\database\VanDinhDigitalMap.sql` |
-| Google Maps not loading | Create `.env` with `VITE_GOOGLE_MAPS_API_KEY` and ensure the API key has Maps JavaScript API enabled |
+| Map tiles not loading | The map uses the public OpenStreetMap tile server; a blocked/firewalled network can prevent tiles from loading |
 | Backend won't start (port in use) | Change port in `Properties/launchSettings.json` and update `vite.config.ts` proxy target |
 | `Login failed` / connection issues | Edit `ConnectionStrings:DefaultConnection` in `appsettings.Development.json` — use SQL Auth or fix server name |
 | SQL Server not found | Start the SQL Server service or use correct instance name (e.g. `.\SQLEXPRESS` or `(localdb)\MSSQLLocalDB`) |
@@ -192,6 +179,54 @@ git push
 | Blank page / CORS error | Ensure backend runs on port 5109 and frontend on port 5173 |
 
 ---
+
+## Production Deployment
+
+### Docker Compose (recommended)
+
+A complete stack (SQL Server + API + nginx-served SPA) is provided:
+
+```powershell
+# 1. Configure secrets in .env (see .env.example)
+# 2. Start the stack
+docker compose up -d --build
+```
+
+The site is served at `http://localhost:8080` (nginx maps to the frontend;
+`/api` and `/uploads` are reverse-proxied to the API container). Uploaded
+media and generated mail-merge ZIPs are kept in named volumes
+(`uploads`, `mailmerge-data`), and the database in `sqlserver-data`.
+
+Required `.env` variables (the API **will not start** against a fresh database
+without them):
+
+| Variable | Description |
+|---|---|
+| `MSSQL_SA_PASSWORD` | Strong password for SQL Server `sa` |
+| `SEED_ADMIN_USERNAME` / `SEED_ADMIN_PASSWORD` | Initial administrator account |
+| `SEED_MANAGER_USERNAME` / `SEED_MANAGER_PASSWORD` | Initial manager account |
+| `FRONTEND_ORIGIN` | Public origin for the CORS allow-list (default `http://localhost:8080`) |
+
+### Reverse proxy / TLS
+
+`nginx.conf` handles SPA fallback and API proxying. Terminate TLS on your
+edge (nginx host config, Cloudflare, or a load balancer) and forward
+`X-Forwarded-Proto`; the API already trusts forwarded headers so the
+HTTPS redirect and Secure cookies behave correctly.
+
+### Render
+
+`render.yaml` is a blueprint with two web services (API + nginx frontend).
+SQL Server is not available as a Render managed service — point
+`ConnectionStrings__DefaultConnection` at Azure SQL / Aiven / self-hosted
+SQL Server.
+
+### Notes
+
+- The API performs EF migrations automatically at startup (`MigrateAsync`).
+- `/api/health` returns `200 OK` for load-balancer health checks.
+- Log in with the configured `SeedAdmin` account and change the password
+  immediately after the first sign-in.
 
 ## Project Structure
 
@@ -212,7 +247,7 @@ git push
 │   └── install-hooks.ps1                 # Git hook installer
 ├── src/                                  # React frontend
 │   ├── app/
-│   │   ├── components/                   # 37 React components
+│   │   ├── components/                   # React components
 │   │   ├── services/                     # API service layer
 │   │   └── App.tsx                       # Root component
 │   ├── core/types.ts                     # TypeScript type definitions
@@ -222,6 +257,11 @@ git push
 ├── index.html                            # Vite entry HTML
 ├── package.json                          # Frontend dependencies
 ├── vite.config.ts                        # Vite config (proxy, plugins)
+├── Dockerfile                            # Backend API image
+├── frontend.Dockerfile                   # Frontend (nginx) image
+├── docker-compose.yml                    # Full production stack
+├── nginx.conf                            # Production reverse-proxy config
+├── render.yaml                           # Render.com blueprint
 └── .gitignore
 ```
 
@@ -244,4 +284,8 @@ dotnet run           # Start API on :5109
 sqlcmd -S localhost -E -i backend\database\VanDinhDigitalMap.sql   # Restore DB
 .\scripts\export-db.ps1                                            # Export DB snapshot
 .\scripts\install-hooks.ps1                                        # Install pre-commit hook
+
+# Docker
+docker compose up -d --build   # Start the full stack (SQL Server + API + nginx)
+docker compose down            # Stop the stack (volumes are preserved)
 ```

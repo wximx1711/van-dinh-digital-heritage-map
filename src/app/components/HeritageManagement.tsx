@@ -3,9 +3,10 @@ import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
 import { useLanguage } from './LanguageContext';
 import { useHeritageSites, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { createHeritageSite, updateHeritageSite, deleteHeritageSite, duplicateHeritageSite } from '../services/heritageService';
+import { fetchHeritageEvaluationSummaries } from '../services/evaluationService';
 import { apiPost, apiDelete, apiGet } from '../services/api';
 import { uploadFileWithProgress } from '../services/uploadService';
-import type { HeritageSite, Classification, HeritageType, HeritageStatus } from '../../core/types';
+import type { HeritageSite, Classification, HeritageType, HeritageStatus, HeritageEvaluationSummary } from '../../core/types';
 import { classificationColors, statusColors } from '../constants';
 import { getImageUrl } from '../utils/url';
 import { MediaPicker } from './MediaPicker';
@@ -13,7 +14,7 @@ import { ConfirmDialog } from './ConfirmDialog';
 import {
   Plus, Search, Filter, Eye, Pencil, Trash2, X, Upload, QrCode,
   ChevronLeft, ChevronRight, MapPin, Check, AlertTriangle,   GripVertical,
-  FileText, Image as ImageIcon, Download, Copy
+  FileText, Image as ImageIcon, Download, Copy, Star, MessageSquare
 } from 'lucide-react';
 import { Skeleton } from './Skeleton';
 import { LazyImage } from './LazyImage';
@@ -21,6 +22,7 @@ import { LazyImage } from './LazyImage';
 interface HeritageManagementProps {
   onNavigate?: (page: string, id?: string) => void;
   onDirtyChange?: (dirty: boolean) => void;
+  onOpenEvaluations?: (heritageId: string) => void;
 }
 
 type FormMode = 'add' | 'edit' | null;
@@ -48,13 +50,14 @@ function isValidGoogleMapsUrl(url: string): boolean {
   }
 }
 
-export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManagementProps) {
+export function HeritageManagement({ onNavigate, onDirtyChange, onOpenEvaluations }: HeritageManagementProps) {
   const { lang, t } = useLanguage();
   const { data: apiSites, refetch } = useHeritageSites();
   const classificationLabels = useClassificationLabels();
   const typeLabels = useTypeLabels();
   const statusLabels = useStatusLabels();
   const [sites, setSites] = useState<HeritageSite[]>([]);
+  const [evalSummaries, setEvalSummaries] = useState<Record<string, HeritageEvaluationSummary>>({});
   const [search, setSearch] = useState('');
   const [filterCls, setFilterCls] = useState<Classification | 'all'>('all');
   const [filterDistrict, setFilterDistrict] = useState('');
@@ -100,6 +103,16 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
   useEffect(() => {
     onDirtyChange?.(isDirty);
   }, [isDirty, onDirtyChange]);
+
+  useEffect(() => {
+    fetchHeritageEvaluationSummaries()
+      .then(summaries => {
+        const map: Record<string, HeritageEvaluationSummary> = {};
+        summaries.forEach(s => { map[s.targetId] = s; });
+        setEvalSummaries(map);
+      })
+      .catch(() => {});
+  }, []);
 
   const closeForm = useCallback(() => {
     if (!formMode) return;
@@ -560,7 +573,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
         <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 640 }}>
           <thead>
             <tr style={{ background: '#0F3D5E' }}>
-              {[t('hm.id'), t('hm.name'), t('hm.classification'), t('hm.type'), t('hm.status'), lang === 'vi' ? 'Video' : 'Video', t('hm.updated'), t('hm.actions')].map(h => (
+              {[t('hm.id'), t('hm.name'), t('hm.classification'), t('hm.type'), t('hm.status'), lang === 'vi' ? 'Video' : 'Video', lang === 'vi' ? 'Đánh giá' : 'Rating', t('hm.updated'), t('hm.actions')].map(h => (
                 <th key={h} style={{ padding: '12px 14px', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.8)', textAlign: 'left', textTransform: 'uppercase', letterSpacing: 0.4, whiteSpace: 'nowrap' }}>{h}</th>
               ))}
             </tr>
@@ -601,6 +614,30 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
                     </a>
                   ) : '-'}
                 </td>
+                <td style={{ padding: '12px 14px' }}>
+                  <button
+                    onClick={() => onOpenEvaluations?.(site.id)}
+                    disabled={!onOpenEvaluations}
+                    title={lang === 'vi' ? 'Xem đánh giá' : 'View ratings'}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: 5, background: 'none', border: 'none', cursor: onOpenEvaluations ? 'pointer' : 'default', padding: 0,
+                    }}
+                  >
+                    {(evalSummaries[site.id]?.averageScore ?? 0) > 0 ? (
+                      <>
+                        <Star size={12} style={{ color: '#D4A017', fill: '#D4A017' }} />
+                        <span style={{ fontSize: 11, color: '#0F3D5E', fontWeight: 700 }}>{evalSummaries[site.id]?.averageScore.toFixed(1)}</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 2, fontSize: 10, color: '#5d7a8c' }}>
+                          <MessageSquare size={9} /> {evalSummaries[site.id]?.totalEvaluations ?? 0}
+                        </span>
+                      </>
+                    ) : (
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 10, color: '#5d7a8c' }}>
+                        <Star size={11} /> {evalSummaries[site.id]?.totalEvaluations ? evalSummaries[site.id].totalEvaluations : '0'}
+                      </span>
+                    )}
+                  </button>
+                </td>
                 <td style={{ padding: '12px 14px', fontSize: 11, color: '#5d7a8c' }}>{site.updatedAt}</td>
                 <td style={{ padding: '12px 14px' }}>
                   <div style={{ display: 'flex', gap: 4 }}>
@@ -621,7 +658,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange }: HeritageManage
               </tr>
             ))}
             {paginated.length === 0 && (
-              <tr><td colSpan={8} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
+              <tr><td colSpan={9} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
             )}
           </tbody>
         </table>

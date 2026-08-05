@@ -6,3 +6,5 @@ bin/
 obj/
 **/bin/
 **/obj/
+# Runtime-generated mail-merge ZIP exports
+backend/VanDinh.API/App_Data/

@@ -1,0 +1,23 @@
+# Build context (frontend)
+node_modules
+dist
+
+# Build context (backend)
+backend/**/bin
+backend/**/obj
+
+# VCS / IDE / OS
+.git
+.gitignore
+.vscode
+.idea
+*.user
+
+# Secrets & local config
+.env
+.env.*
+appsettings.*.local.json
+
+# User content — must be provided via volumes in production
+backend/VanDinh.API/wwwroot/uploads
+backend/VanDinh.API/App_Data

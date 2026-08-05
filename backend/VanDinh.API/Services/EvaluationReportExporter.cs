@@ -12,6 +12,7 @@ public interface IEvaluationReportExporter
 {
     byte[] ExportExcel(EvaluationStatsDto stats, DateTime? startDate, DateTime? endDate);
     byte[] ExportPdf(EvaluationStatsDto stats, DateTime? startDate, DateTime? endDate);
+    byte[] ExportListExcel(IReadOnlyList<EvaluationListItemDto> items);
 }
 
 /// <summary>
@@ -82,6 +83,47 @@ public sealed class EvaluationReportExporter : IEvaluationReportExporter
         WriteRankingSheet(wb, "Lowest Heritage", stats.LowestHeritages);
         WriteRankingSheet(wb, "Top 10 Intangible", stats.TopIntangible);
         WriteRankingSheet(wb, "Lowest Intangible", stats.LowestIntangible);
+
+        using var stream = new MemoryStream();
+        wb.SaveAs(stream);
+        return stream.ToArray();
+    }
+
+    public byte[] ExportListExcel(IReadOnlyList<EvaluationListItemDto> items)
+    {
+        using var wb = new XLWorkbook();
+        var sheet = wb.Worksheets.Add("Evaluations");
+
+        sheet.Cell(1, 1).Value = "Evaluations";
+        sheet.Range(1, 1, 1, 11).Merge();
+        sheet.Cell(1, 1).Style.Font.Bold = true;
+        sheet.Cell(1, 1).Style.Font.FontSize = 13;
+        sheet.Cell(1, 1).Style.Fill.BackgroundColor = XLColor.FromHtml(Primary);
+        sheet.Cell(1, 1).Style.Font.FontColor = XLColor.FromHtml("#FFFFFF");
+
+        WriteHeader(sheet, 3, ["Id", "Type", "Target ID", "Heritage (VI)", "Heritage (EN)", "Rating", "Satisfaction", "Title", "Reviewer", "Email", "Status", "Reply", "Comment", "Created (UTC)"]);
+
+        for (var i = 0; i < items.Count; i++)
+        {
+            var item = items[i];
+            var row = 4 + i;
+            sheet.Cell(row, 1).Value = item.Id;
+            sheet.Cell(row, 2).Value = item.TargetType;
+            sheet.Cell(row, 3).Value = item.TargetId ?? "";
+            sheet.Cell(row, 4).Value = item.HeritageNameVi ?? "";
+            sheet.Cell(row, 5).Value = item.HeritageNameEn ?? "";
+            sheet.Cell(row, 6).Value = item.Score;
+            sheet.Cell(row, 7).Value = item.SatisfactionLevel ?? "";
+            sheet.Cell(row, 8).Value = item.Title ?? "";
+            sheet.Cell(row, 9).Value = item.ReviewerName ?? "";
+            sheet.Cell(row, 10).Value = item.Email ?? "";
+            sheet.Cell(row, 11).Value = item.Status;
+            sheet.Cell(row, 12).Value = item.AdminReply ?? "";
+            sheet.Cell(row, 13).Value = item.Comment ?? "";
+            sheet.Cell(row, 14).Value = item.CreatedAt.ToString("yyyy-MM-dd HH:mm");
+        }
+
+        sheet.Columns(1, 14).AdjustToContents();
 
         using var stream = new MemoryStream();
         wb.SaveAs(stream);
@@ -258,7 +300,7 @@ public sealed class EvaluationReportExporter : IEvaluationReportExporter
         const int rowHeight = 34;
         var height = 16 + rows.Count * rowHeight;
         const int labelWidth = 64;
-        var maxValue = Math.Max(1, rows.Max(r => r.Value));
+        var maxValue = rows.Count == 0 ? 1 : Math.Max(1, rows.Max(r => r.Value));
         var chartWidth = width - labelWidth - 110;
 
         var sb = new StringBuilder();
@@ -285,7 +327,7 @@ public sealed class EvaluationReportExporter : IEvaluationReportExporter
         const int bottomPad = 24;
         var chartHeight = height - bottomPad;
         var chartWidth = width - labelWidth;
-        var maxValue = Math.Max(1, rows.Max(r => r.Value));
+        var maxValue = rows.Count == 0 ? 1 : Math.Max(1, rows.Max(r => r.Value));
         var gap = 6;
         var barWidth = Math.Max(8, (chartWidth - gap * Math.Max(0, rows.Count - 1)) / Math.Max(1, rows.Count));
 

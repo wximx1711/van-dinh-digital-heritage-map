@@ -73,17 +73,7 @@ public sealed class HeritageController(
         }
         catch (InvalidOperationException ex)
         {
-            controllerLogger.LogError(ex, "InvalidOperationException in HeritageController.Create: {Msg}", ex.Message);
-            var inner = ex.InnerException;
-            var depth = 0;
-            while (inner is not null)
-            {
-                controllerLogger.LogError("InnerException[{Depth}]: {Type} — {Msg}", depth, inner.GetType().FullName, inner.Message);
-                controllerLogger.LogError("InnerException[{Depth}].StackTrace: {Stack}", depth, inner.StackTrace);
-                inner = inner.InnerException;
-                depth++;
-            }
-            MappingExtensions.LogMaterializationError(controllerLogger, ex, "HeritageController.Create");
+            controllerLogger.LogWarning(ex, "HeritageController.Create rejected: {Msg}", ex.Message);
             return ApiResponse.Error(ex.Message);
         }
     }
@@ -136,7 +126,7 @@ public sealed class HeritageController(
         }
         catch (InvalidOperationException ex)
         {
-            controllerLogger.LogError(ex, "InvalidOperationException in HeritageController.Duplicate: {Msg}", ex.Message);
+            controllerLogger.LogWarning(ex, "HeritageController.Duplicate rejected: {Msg}", ex.Message);
             return ApiResponse.Error(ex.Message);
         }
         catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)

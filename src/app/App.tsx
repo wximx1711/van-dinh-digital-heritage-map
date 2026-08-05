@@ -19,6 +19,7 @@ const RelicsPage = lazy(() => import('./components/RelicsPage').then(m => ({ def
 const IntangiblePage = lazy(() => import('./components/IntangiblePage').then(m => ({ default: m.IntangiblePage })));
 const IntangibleHeritageDetail = lazy(() => import('./components/IntangibleHeritageDetail').then(m => ({ default: m.IntangibleHeritageDetail })));
 const StatisticsPage = lazy(() => import('./components/StatisticsPage').then(m => ({ default: m.StatisticsPage })));
+const EvaluationKiosk = lazy(() => import('./components/EvaluationKiosk').then(m => ({ default: m.EvaluationKiosk })));
 
 function PageLoader({ children }: { children: React.ReactNode }) {
   return (
@@ -36,7 +37,7 @@ function PageLoader({ children }: { children: React.ReactNode }) {
 type Page =
   | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
   | 'about' | 'contact' | 'heritage-detail' | 'intangible-detail'
-  | 'login' | 'admin' | '404';
+  | 'login' | 'admin' | 'evaluate' | '404';
 
 function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { lang } = useLanguage();
@@ -239,6 +240,8 @@ function AppInner() {
     } else if (pageParam === 'intangible' && idParam) {
       setIntangibleId(idParam);
       setPage('intangible-detail');
+    } else if (pageParam === 'evaluate') {
+      setPage('evaluate');
     }
   }, []);
 
@@ -285,6 +288,15 @@ function AppInner() {
   // Login page — full screen, no header/footer
   if (page === 'login') {
     return <LoginPage onNavigate={navigate} onLoginSuccess={handleLoginSuccess} />;
+  }
+
+  // Feedback kiosk — full screen, no header/footer (linked via QR code)
+  if (page === 'evaluate') {
+    return (
+      <PageLoader>
+        <EvaluationKiosk />
+      </PageLoader>
+    );
   }
 
   // Admin panel — full screen with compact top bar

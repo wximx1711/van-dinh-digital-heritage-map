@@ -25,6 +25,7 @@ import { SystemSettingsManagement } from './SystemSettingsManagement';
 import { ContactMessagesManagement } from './ContactMessagesManagement';
 import { ActivityLogPage } from './ActivityLogPage';
 import { FormFillingManagement } from './FormFillingManagement';
+import { EvaluationsManagement } from './EvaluationsManagement';
 import { LazyImage } from './LazyImage';
 
 interface AdminDashboardProps {
@@ -32,7 +33,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'contact-messages' | 'form-filling';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'contact-messages' | 'form-filling' | 'evaluations';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -49,9 +50,11 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [notifOpen, setNotifOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [evaluationFilter, setEvaluationFilter] = useState<string | null>(null);
   // Media counts fetched from backend /statistics/overview which queries
   // the MediaFiles table — same source of truth as the Media Library.
   const [mediaCounts, setMediaCounts] = useState({ images: 0, videos: 0, documents: 0 });
+  const [evaluationCounts, setEvaluationCounts] = useState({ totalEvaluations: 0, approvedEvaluations: 0, pendingEvaluations: 0, averageEvaluationScore: 0, averageSatisfaction: 0 });
 
   const handleDirtyChange = useCallback((dirty: boolean) => {
     setFormDirty(dirty);
@@ -86,6 +89,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'users', label: t('admin.users'), icon: <Users size={16} /> },
     { key: 'activity-logs', label: t('admin.activity_logs'), icon: <ClipboardList size={16} /> },
     { key: 'form-filling', label: t('admin.form_filling'), icon: <FileSpreadsheet size={16} /> },
+    { key: 'evaluations', label: lang === 'vi' ? 'Đánh giá' : 'Ratings', icon: <Star size={16} /> },
   ];
 
   const managerNavItems = [
@@ -99,6 +103,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'settings', label: t('admin.settings'), icon: <Settings size={16} /> },
     { key: 'contact-messages', label: t('admin.contact_messages'), icon: <List size={16} /> },
     { key: 'form-filling', label: t('admin.form_filling'), icon: <FileSpreadsheet size={16} /> },
+    { key: 'evaluations', label: lang === 'vi' ? 'Đánh giá' : 'Ratings', icon: <Star size={16} /> },
   ];
 
   const navItems = auth.isAdmin ? adminNavItems : managerNavItems;
@@ -165,7 +170,16 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   useEffect(() => {
     if (section === 'dashboard') {
       fetchStatisticsOverview()
-        .then(data => setMediaCounts({ images: data.totalImages, videos: data.totalVideos, documents: data.totalDocuments }))
+        .then(data => {
+          setMediaCounts({ images: data.totalImages, videos: data.totalVideos, documents: data.totalDocuments });
+          setEvaluationCounts({
+            totalEvaluations: data.totalEvaluations,
+            approvedEvaluations: data.approvedEvaluations,
+            pendingEvaluations: data.pendingEvaluations,
+            averageEvaluationScore: data.averageEvaluationScore,
+            averageSatisfaction: data.averageSatisfaction,
+          });
+        })
         .catch(() => {});
     }
   }, [section]);
@@ -471,6 +485,10 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                   { label: lang === 'vi' ? 'Hình ảnh' : 'Images', value: mediaCounts.images, icon: <ImageIcon size={18} />, color: '#27AE60' },
                   { label: lang === 'vi' ? 'Video' : 'Videos', value: mediaCounts.videos, icon: <RefreshCw size={18} />, color: '#8E44AD' },
                   { label: lang === 'vi' ? 'Tài liệu' : 'Documents', value: mediaCounts.documents, icon: <LayoutGrid size={18} />, color: '#E67E22' },
+                  { label: lang === 'vi' ? 'Đánh giá' : 'Ratings', value: evaluationCounts.totalEvaluations, icon: <Star size={18} />, color: '#D4A017' },
+                  { label: lang === 'vi' ? 'Chờ duyệt' : 'Pending', value: evaluationCounts.pendingEvaluations, icon: <UserCheck size={18} />, color: '#F39C12' },
+                  { label: lang === 'vi' ? 'Điểm TB' : 'Avg Score', value: evaluationCounts.averageEvaluationScore.toFixed(1), icon: <Award size={18} />, color: '#8E44AD' },
+                  { label: lang === 'vi' ? 'Hài lòng TB' : 'Avg Satisf.', value: `${evaluationCounts.averageSatisfaction.toFixed(1)}/5`, icon: <UserCheck size={18} />, color: '#27AE60' },
                 ].map(s => (
                   <div key={s.label} style={{
                     background: 'white', borderRadius: 10, padding: '16px',
@@ -535,6 +553,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
                         { label: lang === 'vi' ? 'Di sản phi vật thể' : 'Intangible Heritage', icon: <BookOpen size={14} />, section: 'intangible' as AdminSection },
                         { label: lang === 'vi' ? 'Danh mục di tích' : 'Categories', icon: <List size={14} />, section: 'categories' as AdminSection },
                         { label: lang === 'vi' ? 'Cài đặt hệ thống' : 'System Settings', icon: <Settings size={14} />, section: 'settings' as AdminSection },
+                        { label: lang === 'vi' ? 'Đánh giá' : 'Ratings', icon: <Star size={14} />, section: 'evaluations' as AdminSection },
                       ] : [
                         { label: lang === 'vi' ? 'Quản lý người dùng' : 'Manage Users', icon: <Users size={14} />, section: 'users' as AdminSection },
                         { label: lang === 'vi' ? 'Nhật ký hoạt động' : 'Activity Logs', icon: <ClipboardList size={14} />, section: 'activity-logs' as AdminSection },
@@ -586,11 +605,11 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           )}
 
           {section === 'heritage' && (
-            <HeritageManagement onNavigate={onNavigate} onDirtyChange={handleDirtyChange} />
+            <HeritageManagement onNavigate={onNavigate} onDirtyChange={handleDirtyChange} onOpenEvaluations={(id) => { setEvaluationFilter(id); setSection('evaluations'); }} />
           )}
 
           {section === 'intangible' && (
-            <IntangibleManagement onDirtyChange={handleDirtyChange} />
+            <IntangibleManagement onDirtyChange={handleDirtyChange} onOpenEvaluations={(id) => { setEvaluationFilter(id); setSection('evaluations'); }} />
           )}
 
           {section === 'users' && (
@@ -604,6 +623,7 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
           {section === 'settings' && <SystemSettingsManagement onDirtyChange={handleDirtyChange} />}
           {section === 'contact-messages' && <ContactMessagesManagement />}
           {section === 'form-filling' && <FormFillingManagement />}
+          {section === 'evaluations' && <EvaluationsManagement initialHeritageFilter={evaluationFilter} onClearHeritageFilter={() => setEvaluationFilter(null)} />}
 
           {section === 'activity-logs' && <ActivityLogPage />}
         </div>

@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using System.Threading.RateLimiting;
 using VanDinh.API.Configuration;
 using VanDinh.API.Data;
 using VanDinh.API.Middleware;
@@ -130,6 +133,19 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddPolicy("login", context =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            context.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 10,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0
+            }));
+});
 builder.Services.AddSingleton<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IActivityLogService, ActivityLogService>();
 builder.Services.AddScoped<IUploadService, UploadService>();
@@ -158,7 +174,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     var hasher = scope.ServiceProvider.GetRequiredService<IPasswordHasher>();
-    await DbInitializer.InitializeAsync(db, hasher, builder.Configuration);
+    await DbInitializer.InitializeAsync(db, hasher, builder.Configuration, app.Environment);
 }
 
 if (app.Environment.IsDevelopment())
@@ -176,9 +192,19 @@ else
     app.UseHsts();
 }
 
+// Trust X-Forwarded-For / X-Forwarded-Proto from the reverse proxy (nginx, load balancer)
+// so HttpsRedirection does not loop, Secure cookies are issued correctly, and the login
+// rate limiter sees the real client IP instead of the proxy address.
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    ForwardLimit = 2
+});
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseCors(corsOptions.PolicyName);
+app.UseRateLimiter();
 app.UseSession();
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthentication();

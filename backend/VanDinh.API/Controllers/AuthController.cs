@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using VanDinh.API.DTOs;
 using VanDinh.API.Repositories;
 using VanDinh.API.Responses;
@@ -18,6 +19,23 @@ namespace VanDinh.API.Controllers;
 [Route("api/auth")]
 public sealed class AuthController(IAppRepository repository, IPasswordHasher hasher, IActivityLogService logs) : ControllerBase
 {
+    // A pre-computed hash of a non-existent password. When the username does not
+    // exist we still run a PBKDF2 verification against this constant so response
+    // timing does not reveal whether an account name is registered.
+    private static readonly string? DummyPasswordHash = CreateDummyHash();
+
+    private static string? CreateDummyHash()
+    {
+        try
+        {
+            return new PasswordHasher().Hash("__invalid_password_probe__");
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
     /// <summary>
     /// Authenticates a user with username and password.
     /// </summary>
@@ -28,6 +46,7 @@ public sealed class AuthController(IAppRepository repository, IPasswordHasher ha
     /// <returns>Login response with user info and role</returns>
     [HttpPost("login")]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting("login")]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         if (!ModelState.IsValid)
@@ -37,12 +56,22 @@ public sealed class AuthController(IAppRepository repository, IPasswordHasher ha
         }
 
         var user = repository.FindUser(request.Username);
-        if (user is null || !user.Status || !hasher.Verify(request.Password, user.PasswordHash))
+
+        if (user is null || !user.Status)
+        {
+            if (DummyPasswordHash is { } dummy)
+            {
+                hasher.Verify(request.Password, dummy);
+            }
+            return ApiResponse.Unauthorized("Invalid username or password.");
+        }
+
+        if (!hasher.Verify(request.Password, user.PasswordHash))
         {
             return ApiResponse.Unauthorized("Invalid username or password.");
         }
 
-        var role = repository.Roles.First(x => x.RoleId == user.RoleId).RoleName;
+        var role = repository.Roles.FirstOrDefault(x => x.RoleId == user.RoleId)?.RoleName ?? "MANAGER";
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
@@ -79,7 +108,8 @@ public sealed class AuthController(IAppRepository repository, IPasswordHasher ha
     [HttpGet("me")]
     public IActionResult Me()
     {
-        var id = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var claim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!long.TryParse(claim, out var id)) return ApiResponse.Unauthorized("Invalid session.");
         var user = repository.FindUser(id);
         if (user is null) return ApiResponse.NotFound("User not found.");
         return ApiResponse.Success(user.ToDto(repository));

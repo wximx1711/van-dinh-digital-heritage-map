@@ -312,10 +312,13 @@ public sealed class MediaFile
 }
 
 /// <summary>
-/// Public service satisfaction evaluation collected from kiosk/QR terminals.
-/// TargetType is one of: "service" (public services in general), "heritage" (tangible),
-/// "intangible" (intangible heritage). TargetId stores the public ID of the evaluated
-/// heritage/intangible item (null for "service").
+/// Public service satisfaction evaluation collected from kiosk/QR terminals and
+/// heritage detail pages. TargetType is one of: "service" (public services in general),
+/// "heritage" (tangible), "intangible" (intangible heritage). TargetId stores the
+/// public ID of the evaluated heritage/intangible item (null for "service").
+/// SatisfactionLevel is one of: "very_satisfied", "satisfied", "neutral",
+/// "unsatisfied", "very_unsatisfied". Status is one of: "pending", "approved",
+/// "rejected" (new submissions start as pending and are moderated by managers).
 /// </summary>
 public sealed class ServiceEvaluation
 {
@@ -326,8 +329,21 @@ public sealed class ServiceEvaluation
     public string? TargetId { get; set; }
     [Required, Range(1, 5)]
     public int Score { get; set; }
+    [MaxLength(20)]
+    public string? SatisfactionLevel { get; set; }
+    [MaxLength(200)]
+    public string? Title { get; set; }
     [MaxLength(1000)]
     public string? Comment { get; set; }
+    [MaxLength(150)]
+    public string? ReviewerName { get; set; }
+    [MaxLength(254)]
+    public string? Email { get; set; }
+    [MaxLength(20)]
+    public string Status { get; set; } = "pending";
+    public bool IsApproved { get; set; }
+    [MaxLength(1000)]
+    public string? AdminReply { get; set; }
     [MaxLength(150)]
     public string? DeviceName { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

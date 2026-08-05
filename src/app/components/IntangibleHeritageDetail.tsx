@@ -5,6 +5,7 @@ import { ImageGallery } from './ImageGallery';
 import { InfoCard } from './InfoCard';
 import { ShareSection } from './ShareSection';
 import { RelatedItems } from './RelatedItems';
+import { EvaluationSection } from './EvaluationSection';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { DetailPageSkeleton } from './Skeleton';
 
@@ -362,6 +363,9 @@ export function IntangibleHeritageDetail({ itemId, onNavigate }: IntangibleHerit
             />
           </div>
         </div>
+
+        {/* Evaluations */}
+        <EvaluationSection targetType="intangible" targetId={item.id} heritageName={name} />
       </div>
     </div>
   );

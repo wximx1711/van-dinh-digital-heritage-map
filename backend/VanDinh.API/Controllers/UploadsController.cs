@@ -41,35 +41,24 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
     {
         try
         {
-            log.LogInformation("--- BACKEND UPLOAD DEBUG ---");
-            log.LogInformation("Request.Path: {Path}", Request.Path);
-            log.LogInformation("Uploaded filename: {Name}", file.FileName);
-            log.LogInformation("Extension: {Ext}", Path.GetExtension(file.FileName).ToLowerInvariant());
-            log.LogInformation("ContentType: {Type}", file.ContentType);
-            log.LogInformation("Target folder: images");
-            log.LogInformation("File length: {Len}", file.Length);
-            log.LogInformation("Allowed extensions: {Exts}", string.Join(", ", ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".heic", ".heif"));
-
-            if (file.Length == 0) { log.LogWarning("VALIDATION FAILED: file is empty"); return ApiResponse.Error("File is empty."); }
-            if (file.Length > 5 * 1024 * 1024) { log.LogWarning("VALIDATION FAILED: file too large ({Len} > {Max})", file.Length, 5 * 1024 * 1024); return ApiResponse.Error("File is too large."); }
+            if (file.Length == 0) return ApiResponse.Error("File is empty.");
+            if (file.Length > 5 * 1024 * 1024) return ApiResponse.Error("File is too large.");
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             var allowedImgs = new[] { ".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".heic", ".heif" };
-            if (!allowedImgs.Contains(ext)) { log.LogWarning("VALIDATION FAILED: extension '{Ext}' not allowed for images", ext); return ApiResponse.Error("File type is not allowed."); }
-            log.LogInformation("VALIDATION PASSED");
+            if (!allowedImgs.Contains(ext)) return ApiResponse.Error("File type is not allowed.");
 
             var result = await uploads.SaveAsync(file, "images", allowedImgs, 5 * 1024 * 1024, cancellationToken);
-            log.LogInformation("Returned HTTP status: 200");
             TrackMediaFile(result, "images");
             return ApiResponse.Success(result, "Image uploaded successfully.");
         }
         catch (InvalidOperationException ex)
         {
-            log.LogWarning("Exception: {Msg}", ex.ToString());
+            log.LogWarning("Image upload rejected: {Msg}", ex.Message);
             return ApiResponse.Error(ex.Message);
         }
         catch (Exception ex)
         {
-            log.LogError("UNEXPECTED EXCEPTION: {Msg}", ex.ToString());
+            log.LogError(ex, "Unexpected error uploading image");
             return ApiResponse.Error("Internal server error.");
         }
     }
@@ -79,35 +68,24 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
     {
         try
         {
-            log.LogInformation("--- BACKEND UPLOAD DEBUG ---");
-            log.LogInformation("Request.Path: {Path}", Request.Path);
-            log.LogInformation("Uploaded filename: {Name}", file.FileName);
-            log.LogInformation("Extension: {Ext}", Path.GetExtension(file.FileName).ToLowerInvariant());
-            log.LogInformation("ContentType: {Type}", file.ContentType);
-            log.LogInformation("Target folder: videos");
-            log.LogInformation("File length: {Len}", file.Length);
-            log.LogInformation("Allowed extensions: {Exts}", string.Join(", ", ".mp4", ".webm", ".mov"));
-
-            if (file.Length == 0) { log.LogWarning("VALIDATION FAILED: file is empty"); return ApiResponse.Error("File is empty."); }
-            if (file.Length > 100 * 1024 * 1024) { log.LogWarning("VALIDATION FAILED: file too large ({Len} > {Max})", file.Length, 100 * 1024 * 1024); return ApiResponse.Error("File is too large."); }
+            if (file.Length == 0) return ApiResponse.Error("File is empty.");
+            if (file.Length > 100 * 1024 * 1024) return ApiResponse.Error("File is too large.");
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             var allowedVids = new[] { ".mp4", ".webm", ".mov" };
-            if (!allowedVids.Contains(ext)) { log.LogWarning("VALIDATION FAILED: extension '{Ext}' not allowed for videos", ext); return ApiResponse.Error("File type is not allowed."); }
-            log.LogInformation("VALIDATION PASSED");
+            if (!allowedVids.Contains(ext)) return ApiResponse.Error("File type is not allowed.");
 
             var result = await uploads.SaveAsync(file, "videos", allowedVids, 100 * 1024 * 1024, cancellationToken);
-            log.LogInformation("Returned HTTP status: 200");
             TrackMediaFile(result, "videos");
             return ApiResponse.Success(result, "Video uploaded successfully.");
         }
         catch (InvalidOperationException ex)
         {
-            log.LogWarning("Exception: {Msg}", ex.ToString());
+            log.LogWarning("Video upload rejected: {Msg}", ex.Message);
             return ApiResponse.Error(ex.Message);
         }
         catch (Exception ex)
         {
-            log.LogError("UNEXPECTED EXCEPTION: {Msg}", ex.ToString());
+            log.LogError(ex, "Unexpected error uploading video");
             return ApiResponse.Error("Internal server error.");
         }
     }
@@ -117,35 +95,24 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
     {
         try
         {
-            log.LogInformation("--- BACKEND UPLOAD DEBUG ---");
-            log.LogInformation("Request.Path: {Path}", Request.Path);
-            log.LogInformation("Uploaded filename: {Name}", file.FileName);
-            log.LogInformation("Extension: {Ext}", Path.GetExtension(file.FileName).ToLowerInvariant());
-            log.LogInformation("ContentType: {Type}", file.ContentType);
-            log.LogInformation("Target folder: documents");
-            log.LogInformation("File length: {Len}", file.Length);
-            log.LogInformation("Allowed extensions: {Exts}", string.Join(", ", ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx"));
-
-            if (file.Length == 0) { log.LogWarning("VALIDATION FAILED: file is empty"); return ApiResponse.Error("File is empty."); }
-            if (file.Length > 30 * 1024 * 1024) { log.LogWarning("VALIDATION FAILED: file too large ({Len} > {Max})", file.Length, 30 * 1024 * 1024); return ApiResponse.Error("File is too large."); }
+            if (file.Length == 0) return ApiResponse.Error("File is empty.");
+            if (file.Length > 30 * 1024 * 1024) return ApiResponse.Error("File is too large.");
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             var allowedDocs = new[] { ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx" };
-            if (!allowedDocs.Contains(ext)) { log.LogWarning("VALIDATION FAILED: extension '{Ext}' not allowed for documents", ext); return ApiResponse.Error("File type is not allowed."); }
-            log.LogInformation("VALIDATION PASSED");
+            if (!allowedDocs.Contains(ext)) return ApiResponse.Error("File type is not allowed.");
 
             var result = await uploads.SaveAsync(file, "documents", allowedDocs, 30 * 1024 * 1024, cancellationToken);
-            log.LogInformation("Returned HTTP status: 200");
             TrackMediaFile(result, "documents");
             return ApiResponse.Success(result, "Document uploaded successfully.");
         }
         catch (InvalidOperationException ex)
         {
-            log.LogWarning("Exception: {Msg}", ex.ToString());
+            log.LogWarning("Document upload rejected: {Msg}", ex.Message);
             return ApiResponse.Error(ex.Message);
         }
         catch (Exception ex)
         {
-            log.LogError("UNEXPECTED EXCEPTION: {Msg}", ex.ToString());
+            log.LogError(ex, "Unexpected error uploading document");
             return ApiResponse.Error("Internal server error.");
         }
     }
@@ -153,28 +120,13 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
     [HttpDelete("images/{mediaFileId:long}")]
     public IActionResult DeleteImage(long mediaFileId)
     {
-        log.LogInformation("--- DeleteImage --- Incoming MediaFileId: {MediaFileId}", mediaFileId);
-
         var mediaFile = repository.FindMediaFileById(mediaFileId);
         if (mediaFile is null)
-        {
-            log.LogWarning("DeleteImage: FindMediaFileById returned NULL for ID {MediaFileId}", mediaFileId);
             return ApiResponse.NotFound($"Media file not found. ID={mediaFileId} does not exist in database.");
-        }
 
-        log.LogInformation("DeleteImage: Matched MediaFiles record — MediaFileId={Id}, Url={Url}, Type={Type}",
-            mediaFile.MediaFileId, mediaFile.Url, mediaFile.MediaType);
-
-        var refCount = repository.CountHeritageReferencesByUrl(mediaFile.Url);
-
-        if (refCount == 0)
+        if (repository.CountHeritageReferencesByUrl(mediaFile.Url) == 0)
         {
-            var fileDeleted = uploads.Delete(mediaFile.Url);
-            log.LogInformation("DeleteImage: uploads.Delete returned {Result} (unused media)", fileDeleted);
-        }
-        else
-        {
-            log.LogInformation("DeleteImage: Media file is referenced by {Count} heritage(s) — keeping physical file", refCount);
+            uploads.Delete(mediaFile.Url);
         }
 
         repository.DeleteMediaFile(mediaFile.MediaFileId);
@@ -185,28 +137,13 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
     [HttpDelete("videos/{mediaFileId:long}")]
     public IActionResult DeleteVideo(long mediaFileId)
     {
-        log.LogInformation("--- DeleteVideo --- Incoming MediaFileId: {MediaFileId}", mediaFileId);
-
         var mediaFile = repository.FindMediaFileById(mediaFileId);
         if (mediaFile is null)
-        {
-            log.LogWarning("DeleteVideo: FindMediaFileById returned NULL for ID {MediaFileId}", mediaFileId);
             return ApiResponse.NotFound($"Media file not found. ID={mediaFileId} does not exist in database.");
-        }
 
-        log.LogInformation("DeleteVideo: Matched MediaFiles record — MediaFileId={Id}, Url={Url}, Type={Type}",
-            mediaFile.MediaFileId, mediaFile.Url, mediaFile.MediaType);
-
-        var refCount = repository.CountHeritageReferencesByUrl(mediaFile.Url);
-
-        if (refCount == 0)
+        if (repository.CountHeritageReferencesByUrl(mediaFile.Url) == 0)
         {
-            var fileDeleted = uploads.Delete(mediaFile.Url);
-            log.LogInformation("DeleteVideo: uploads.Delete returned {Result} (unused media)", fileDeleted);
-        }
-        else
-        {
-            log.LogInformation("DeleteVideo: Media file is referenced by {Count} heritage(s) — keeping physical file", refCount);
+            uploads.Delete(mediaFile.Url);
         }
 
         repository.DeleteMediaFile(mediaFile.MediaFileId);
@@ -217,28 +154,13 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
     [HttpDelete("documents/{mediaFileId:long}")]
     public IActionResult DeleteDocument(long mediaFileId)
     {
-        log.LogInformation("--- DeleteDocument --- Incoming MediaFileId: {MediaFileId}", mediaFileId);
-
         var mediaFile = repository.FindMediaFileById(mediaFileId);
         if (mediaFile is null)
-        {
-            log.LogWarning("DeleteDocument: FindMediaFileById returned NULL for ID {MediaFileId}", mediaFileId);
             return ApiResponse.NotFound($"Media file not found. ID={mediaFileId} does not exist in database.");
-        }
 
-        log.LogInformation("DeleteDocument: Matched MediaFiles record — MediaFileId={Id}, Url={Url}, Type={Type}",
-            mediaFile.MediaFileId, mediaFile.Url, mediaFile.MediaType);
-
-        var refCount = repository.CountHeritageReferencesByUrl(mediaFile.Url);
-
-        if (refCount == 0)
+        if (repository.CountHeritageReferencesByUrl(mediaFile.Url) == 0)
         {
-            var fileDeleted = uploads.Delete(mediaFile.Url);
-            log.LogInformation("DeleteDocument: uploads.Delete returned {Result} (unused media)", fileDeleted);
-        }
-        else
-        {
-            log.LogInformation("DeleteDocument: Media file is referenced by {Count} heritage(s) — keeping physical file", refCount);
+            uploads.Delete(mediaFile.Url);
         }
 
         repository.DeleteMediaFile(mediaFile.MediaFileId);
@@ -258,8 +180,6 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
         if (!Directory.Exists(targetDir))
             return ApiResponse.Success(Array.Empty<object>());
 
-        log.LogInformation("ListFiles: Scanning directory {TargetDir}, folder={Folder}", targetDir, folder);
-
         var dbUrls = folder switch
         {
             "images" => repository.FindAllImageUrls(),
@@ -267,7 +187,6 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
             "documents" => repository.FindAllDocumentUrls(),
             _ => new Dictionary<string, long>()
         };
-        log.LogInformation("ListFiles: dbUrls contains {Count} entries from MediaFiles table", dbUrls.Count);
 
         var files = Directory.GetFiles(targetDir)
             .Select(f =>
@@ -299,8 +218,6 @@ public sealed class UploadsController(IUploadService uploads, IAppRepository rep
             })
             .OrderByDescending(f => f.uploadedAt)
             .ToList();
-
-        log.LogInformation("ListFiles: Returning {Count} files", files.Count);
 
         return ApiResponse.Success(files);
     }

@@ -192,8 +192,159 @@ export interface StatisticsOverview {
   totalImages: number;
   totalVideos: number;
   totalDocuments: number;
+  totalEvaluations: number;
+  pendingEvaluations: number;
+  approvedEvaluations: number;
+  rejectedEvaluations: number;
+  averageEvaluationScore: number;
+  averageSatisfaction: number;
   classificationBreakdown: ClassificationStat[];
   typeBreakdown: TypeStat[];
   statusBreakdown: StatusStat[];
   recentHeritages: RecentHeritageStat[];
+}
+
+// ── Evaluations (service satisfaction / heritage rating) ──────────────
+
+export type EvaluationTargetType = 'service' | 'heritage' | 'intangible';
+export type EvaluationStatus = 'pending' | 'approved' | 'rejected';
+export type SatisfactionLevel = 'very_satisfied' | 'satisfied' | 'neutral' | 'unsatisfied' | 'very_unsatisfied';
+
+export interface EvaluationSubmitPayload {
+  targetType: EvaluationTargetType;
+  targetId?: string;
+  score: number;
+  satisfactionLevel?: SatisfactionLevel;
+  title?: string;
+  comment?: string;
+  reviewerName?: string;
+  email?: string;
+  deviceName?: string;
+}
+
+export interface EvaluationTargetStats {
+  targetType: string;
+  targetId: string;
+  totalEvaluations: number;
+  averageScore: number;
+  ratingDistribution: RatingDistributionItem[];
+  monthlyTrend: EvaluationTrendItem[];
+  recentComments: EvaluationComment[];
+}
+
+export interface RatingDistributionItem {
+  score: number;
+  count: number;
+  percentage: number;
+}
+
+export interface EvaluationTrendItem {
+  month: string;
+  count: number;
+  averageScore: number;
+}
+
+export interface EvaluationComment {
+  id: number;
+  score: number;
+  title: string | null;
+  comment: string | null;
+  reviewerName: string | null;
+  adminReply: string | null;
+  createdAt: string;
+}
+
+export interface EvaluationAdminStats {
+  totalEvaluations: number;
+  averageScore: number;
+  satisfactionRate: number;
+  pendingCount: number;
+  approvedCount: number;
+  rejectedCount: number;
+  todayCount: number;
+}
+
+export interface EvaluationListItem {
+  id: number;
+  targetType: EvaluationTargetType;
+  targetId: string | null;
+  heritageNameVi: string | null;
+  heritageNameEn: string | null;
+  score: number;
+  satisfactionLevel: SatisfactionLevel | null;
+  title: string | null;
+  comment: string | null;
+  reviewerName: string | null;
+  email: string | null;
+  status: EvaluationStatus;
+  isApproved: boolean;
+  adminReply: string | null;
+  createdAt: string;
+}
+
+export interface EvaluationDetail {
+  id: number;
+  targetType: EvaluationTargetType;
+  targetId: string | null;
+  heritageNameVi: string | null;
+  heritageNameEn: string | null;
+  score: number;
+  satisfactionLevel: SatisfactionLevel | null;
+  title: string | null;
+  comment: string | null;
+  reviewerName: string | null;
+  email: string | null;
+  status: EvaluationStatus;
+  isApproved: boolean;
+  adminReply: string | null;
+  createdAt: string;
+  deviceName: string | null;
+}
+
+export interface EvaluationSearchRequest {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  targetType?: string;
+  targetId?: string;
+  rating?: number;
+  satisfactionLevel?: string;
+  status?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  sortBy?: string;
+  sortDirection?: string;
+}
+
+export interface EvaluationOverallStats {
+  summary: {
+    totalEvaluations: number;
+    averageScore: number;
+    satisfactionRate: number;
+    todayCount: number;
+    monthCount: number;
+  };
+  ratingDistribution: RatingDistributionItem[];
+  monthlyTrend: EvaluationTrendItem[];
+  topHeritages: EvaluationTopItem[];
+  lowestHeritages: EvaluationTopItem[];
+  topIntangible: EvaluationTopItem[];
+  lowestIntangible: EvaluationTopItem[];
+}
+
+export interface EvaluationTopItem {
+  id: string;
+  nameVi: string;
+  nameEn: string;
+  averageScore: number;
+  evaluationCount: number;
+}
+
+export interface HeritageEvaluationSummary {
+  targetType: EvaluationTargetType;
+  targetId: string;
+  nameVi: string;
+  nameEn: string;
+  averageScore: number;
+  totalEvaluations: number;
 }

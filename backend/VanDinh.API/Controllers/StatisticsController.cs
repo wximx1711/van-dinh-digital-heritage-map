@@ -48,6 +48,19 @@ public sealed class StatisticsController(IAppRepository repository) : Controller
             .Select(g => new { status = g.Key, count = g.Count() })
             .ToList();
 
+        // ── Evaluation overview (single source for the dashboard cards) ──
+        var evaluations = repository.ServiceEvaluationsUntracked;
+        var totalEvaluations = evaluations.Count();
+        var pendingEvaluations = evaluations.Count(x => x.Status == "pending");
+        var approvedEvaluations = evaluations.Count(x => x.IsApproved);
+        var rejectedEvaluations = evaluations.Count(x => x.Status == "rejected");
+        var evaluationAverage = approvedEvaluations > 0
+            ? Math.Round(evaluations.Where(x => x.IsApproved).Average(x => x.Score), 2)
+            : 0d;
+        var averageSatisfaction = approvedEvaluations > 0
+            ? Math.Round(evaluations.Where(x => x.IsApproved && x.Score >= 4).Count() * 100d / approvedEvaluations, 1)
+            : 0d;
+
         var recentHeritages = heritages
             .OrderByDescending(h => h.UpdatedAt ?? h.CreatedAt)
             .Take(10)
@@ -78,6 +91,12 @@ public sealed class StatisticsController(IAppRepository repository) : Controller
             totalImages,
             totalVideos,
             totalDocuments,
+            totalEvaluations,
+            pendingEvaluations,
+            approvedEvaluations,
+            rejectedEvaluations,
+            averageEvaluationScore = evaluationAverage,
+            averageSatisfaction,
             classificationBreakdown,
             typeBreakdown,
             statusBreakdown,

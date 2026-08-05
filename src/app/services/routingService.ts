@@ -22,6 +22,19 @@ export interface RouteResult {
 const matrixCache = new Map<string, RouteMatrix>();
 const routeCache = new Map<string, RouteResult>();
 
+// Bounded in-memory caches: OSRM results for the trip planner are keyed by
+// coordinates + profile; without a cap a long session can accumulate thousands
+// of entries. 200 entries covers even heavy planner use and keeps memory bounded.
+const MAX_CACHE_ENTRIES = 200;
+
+function cacheSet<T>(cache: Map<string, T>, key: string, value: T): void {
+  if (cache.size >= MAX_CACHE_ENTRIES) {
+    const oldest = cache.keys().next().value;
+    if (oldest !== undefined) cache.delete(oldest);
+  }
+  cache.set(key, value);
+}
+
 function cacheKey(points: { lat: number; lng: number }[], profile: string): string {
   return profile + '|' + points.map(p => `${p.lat.toFixed(5)},${p.lng.toFixed(5)}`).join(';');
 }
@@ -47,7 +60,7 @@ export async function getRouteMatrix(
   if (data.code !== 'Ok') throw new Error(`OSRM error: ${data.code}`);
 
   const result: RouteMatrix = { durations: data.durations, distances: data.distances };
-  matrixCache.set(key, result);
+  cacheSet(matrixCache, key, result);
   return result;
 }
 
@@ -75,7 +88,7 @@ export async function getRouteGeometry(
   );
 
   const result: RouteResult = { distance: route.distance, duration: route.duration, geometry };
-  routeCache.set(key, result);
+  cacheSet(routeCache, key, result);
   return result;
 }
 
