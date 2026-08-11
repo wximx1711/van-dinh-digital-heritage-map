@@ -8,3 +8,10 @@ obj/
 **/obj/
 # Runtime-generated mail-merge ZIP exports
 backend/VanDinh.API/App_Data/
+
+# User-uploaded media (restore from backup if needed)
+backend/VanDinh.API/wwwroot/uploads/
+
+# Test output and runtime logs
+test-results/
+backend/VanDinh.API/*.log
