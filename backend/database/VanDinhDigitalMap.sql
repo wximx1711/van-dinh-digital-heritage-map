@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-08-12T01:01:11Z
+    GENERATED: 2026-08-12T01:34:14Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -552,7 +552,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 628 rows
+-- [ActivityLogs]: 629 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -1182,9 +1182,10 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10589, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-05T08:50:04.9885318', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10590, 3, N'APPROVE', N'ServiceEvaluations', 2, NULL, '2026-08-05T08:50:11.7472764', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10591, 3, N'EXPORT', N'Evaluations', NULL, N'Excel evaluation list', '2026-08-05T08:50:27.7981594', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10592, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-12T01:24:49.8680614', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10591);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10592);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -8188,13 +8189,14 @@ GO
 DBCC CHECKIDENT ([RelatedLinks], RESEED, 1);
 GO
 
--- [ServiceEvaluations]: 2 rows
+-- [ServiceEvaluations]: 3 rows
 SET IDENTITY_INSERT [ServiceEvaluations] ON;
 INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (1, N'heritage', N'h0d0c0cbc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:03.1271464', NULL, NULL, 1, N'mink', N'very_satisfied', N'approved', N'ok');
 INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (2, N'heritage', N'heff617cc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:53.3774101', NULL, NULL, 1, N'đức', N'very_satisfied', N'approved', NULL);
+INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (3, N'heritage', N'heba4c83e', 5, NULL, N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 OPR/134.0.0.0 (Edition std-2)', '2026-08-12T01:24:40.9193710', NULL, N'ok@gmail.com', 0, N'duc', N'very_satisfied', N'pending', N'ok');
 SET IDENTITY_INSERT [ServiceEvaluations] OFF;
 GO
-DBCC CHECKIDENT ([ServiceEvaluations], RESEED, 2);
+DBCC CHECKIDENT ([ServiceEvaluations], RESEED, 3);
 GO
 
 -- [SystemSettings]: 1 rows
