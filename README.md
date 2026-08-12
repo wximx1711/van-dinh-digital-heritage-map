@@ -207,12 +207,62 @@ without them):
 | `SEED_MANAGER_USERNAME` / `SEED_MANAGER_PASSWORD` | Initial manager account |
 | `FRONTEND_ORIGIN` | Public origin for the CORS allow-list (default `http://localhost:8080`) |
 
+### Production on Azure SQL (`docker-compose.azure.yml`)
+
+For the $0/month architecture (Oracle Always Free ARM VM + Azure SQL Database
+Free + Cloudflare Free), use the standalone production compose file. It has
+**no local SQL Server service** — the API connects to Azure SQL:
+
+```bash
+# 1. Configure .env (see .env.example) — REQUIRED variables:
+#    CONNECTION_STRING   Azure SQL connection string, e.g.
+#      Server=tcp:SERVER.database.windows.net,1433;Database=VanDinhDigitalMap;
+#      User ID=...;Password=...;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30
+#    FRONTEND_ORIGIN     Public https origin, e.g. https://map.vandinh.gov.vn
+#    SEED_ADMIN_USERNAME / SEED_ADMIN_PASSWORD
+#    SEED_MANAGER_USERNAME / SEED_MANAGER_PASSWORD
+# 2. Start the stack (frontend on port 80 by default; override with FRONTEND_PORT)
+docker compose -f docker-compose.azure.yml up -d --build
+```
+
+The same persistent volumes (`uploads`, `mailmerge-data`) are used, so the
+production stack shares media with the development stack on the same host.
+
+### Seeding the uploaded media (one-time, required on a fresh host)
+
+`uploads/` is **not** tracked by Git and is excluded from the Docker image
+(see `.dockerignore`), so a fresh deployment starts with an empty media
+volume. Restore the verified media files (698 files in `images/`, `videos/`,
+`documents/`) from your backup — on this machine:
+`E:\van-dinh-backup-2026-08-11\uploads\`.
+
+```bash
+# After the stack is running, copy the media into the backend container
+# (preserves all filenames and the images/videos/documents structure):
+docker compose -f docker-compose.azure.yml cp ./uploads/. \
+  $(docker compose -f docker-compose.azure.yml ps -q backend):/app/wwwroot/uploads/
+
+# or restore straight from the Windows backup:
+docker cp E:\\van-dinh-backup-2026-08-11\\uploads\\. \
+  $(docker compose -f docker-compose.azure.yml ps -q backend):/app/wwwroot/uploads/
+
+# Verify the count on the server:
+docker exec $(docker compose -f docker-compose.azure.yml ps -q backend) \
+  sh -c 'find /app/wwwroot/uploads -type f | wc -l'   # expect: 698
+```
+
+Named volumes survive container recreation and `docker compose down`; they are
+only wiped by `docker compose down -v` (do not use `-v` on production).
+
 ### Reverse proxy / TLS
 
 `nginx.conf` handles SPA fallback and API proxying. Terminate TLS on your
-edge (nginx host config, Cloudflare, or a load balancer) and forward
-`X-Forwarded-Proto`; the API already trusts forwarded headers so the
-HTTPS redirect and Secure cookies behave correctly.
+edge (Cloudflare, or a load balancer) and forward `X-Forwarded-Proto`; the API
+already trusts forwarded headers so the HTTPS redirect, Secure cookies, QR
+URLs and the login rate limiter behave correctly. `nginx.conf` preserves the
+`X-Forwarded-Proto` value received from Cloudflare (so the API sees `https`
+and generates `https://` QR URLs) and falls back to the connection scheme when
+no proxy header is present (local development).
 
 ### Render
 
@@ -239,7 +289,7 @@ SQL Server.
 │       ├── Models/                       # Domain models
 │       ├── Repositories/                 # Data access layer
 │       ├── Services/                     # Business logic layer
-│       ├── wwwroot/uploads/              # Uploaded images & documents (Git-tracked)
+│       ├── wwwroot/uploads/              # Uploaded images & documents (Git-ignored; restore from backup at deploy)
 │       ├── Program.cs                    # Entry point
 │       └── appsettings.json              # Configuration
 ├── scripts/

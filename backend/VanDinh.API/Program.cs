@@ -13,6 +13,15 @@ using VanDinh.API.Services.MailMerge;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Allow request bodies up to 110 MiB so the largest upload (100 MiB video)
+// fits. The per-endpoint application limits (5 MiB image / 100 MiB video /
+// 30 MiB document / 30 MiB mail-merge template) are enforced separately in
+// the controllers and services and remain unchanged.
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Limits.MaxRequestBodySize = 110L * 1024 * 1024;
+});
+
 var corsOptions = builder.Configuration.GetSection("Cors").Get<CorsOptions>() ?? new CorsOptions();
 var csrfOptions = builder.Configuration.GetSection("Csrf").Get<CsrfOptions>() ?? new CsrfOptions();
 var sessionOptions = builder.Configuration.GetSection("Session").Get<AppSessionOptions>() ?? new AppSessionOptions();

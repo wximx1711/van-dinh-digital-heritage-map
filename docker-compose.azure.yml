@@ -1,0 +1,65 @@
+name: van-dinh-digital-heritage-map
+
+# ─────────────────────────────────────────────────────────────
+# Production stack for the $0/month architecture:
+# Oracle Always Free ARM VM + Azure SQL Database Free + Cloudflare Free.
+#
+# Standalone production compose file (do NOT merge with
+# docker-compose.yml): it deliberately has NO local SQL Server
+# `db` service — the API connects to Azure SQL instead.
+#
+# Run:  docker compose -f docker-compose.azure.yml up -d --build
+#
+# Required environment variables (create a `.env` file next to
+# this compose file — see .env.example):
+#   CONNECTION_STRING      Azure SQL connection string
+#                          (Encrypt=True;TrustServerCertificate=False)
+#   FRONTEND_ORIGIN        Public https origin, e.g. https://map.example.gov.vn
+#   SEED_ADMIN_USERNAME    Initial administrator username
+#   SEED_ADMIN_PASSWORD    Initial administrator password (strong)
+#   SEED_MANAGER_USERNAME  Initial manager username
+#   SEED_MANAGER_PASSWORD  Initial manager password (strong)
+#
+# The API refuses to start against a fresh database without
+# explicit seed credentials (see DbInitializer).
+# ─────────────────────────────────────────────────────────────
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: ${CONNECTION_STRING:?Set CONNECTION_STRING (Azure SQL) in .env}
+      Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN:?Set FRONTEND_ORIGIN (public https origin) in .env}
+      Swagger__RoutePrefix: ${SWAGGER_ROUTE_PREFIX:-}
+      SeedAdmin__Username: ${SEED_ADMIN_USERNAME:?Set SEED_ADMIN_USERNAME in .env}
+      SeedAdmin__Password: ${SEED_ADMIN_PASSWORD:?Set SEED_ADMIN_PASSWORD in .env}
+      SeedAdmin__FullName: ${SEED_ADMIN_FULLNAME:-System Administrator}
+      SeedAdmin__Email: ${SEED_ADMIN_EMAIL:-admin@vandinh.gov.vn}
+      SeedManager__Username: ${SEED_MANAGER_USERNAME:?Set SEED_MANAGER_USERNAME in .env}
+      SeedManager__Password: ${SEED_MANAGER_PASSWORD:?Set SEED_MANAGER_PASSWORD in .env}
+      SeedManager__FullName: ${SEED_MANAGER_FULLNAME:-Heritage Manager}
+      SeedManager__Email: ${SEED_MANAGER_EMAIL:-manager@vandinh.gov.vn}
+    volumes:
+      - uploads:/app/wwwroot/uploads
+      - mailmerge-data:/app/App_Data
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-80}:80"
+
+volumes:
+  # Same volume names as the development compose file, so media seeded once is
+  # shared by both stacks on the same host. Volumes survive container
+  # recreation and `docker compose down`; they are only removed by `down -v`.
+  uploads:
+  mailmerge-data:
