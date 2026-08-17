@@ -5,6 +5,7 @@ import { useHeritageSites, useHeritageSite, useTypeLabels, useClassificationLabe
 import { classificationColors, statusColors } from '../constants';
 import { apiGet } from '../services/api';
 import { getImageUrl } from '../utils/url';
+import { sanitizeLocation } from '../utils/uiText';
 import { ImageGallery } from './ImageGallery';
 import { InfoCard } from './InfoCard';
 import { ShareSection } from './ShareSection';
@@ -240,7 +241,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
                         <MapPin size={14} style={{ color: '#D4A017', marginTop: 2 }} />
                         <span style={{ fontSize: 13, color: '#1a2332' }}>
-                          {lang === 'vi' ? site.addressVi : site.addressEn}
+                          {sanitizeLocation(lang === 'vi' ? site.addressVi : site.addressEn)}
                         </span>
                       </div>
                     </div>
@@ -250,7 +251,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                         {lang === 'vi' ? 'Mô tả' : 'Description'}
                       </div>
                       <p style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.7, margin: 0, whiteSpace: 'pre-line' }}>
-                        {lang === 'vi' ? site.descriptionVi || (lang === 'vi' ? 'Chưa có mô tả' : 'No description') : site.descriptionEn || (lang === 'vi' ? 'Chưa có mô tả' : 'No description')}
+                        {lang === 'vi' ? sanitizeLocation(site.descriptionVi) || (lang === 'vi' ? 'Chưa có mô tả' : 'No description') : sanitizeLocation(site.descriptionEn) || (lang === 'vi' ? 'Chưa có mô tả' : 'No description')}
                       </p>
                     </div>
 
@@ -296,7 +297,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                       {lang === 'vi' ? 'Lịch sử' : 'History'}
                     </h3>
                     <p style={{ fontSize: 14, color: '#1a2332', lineHeight: 1.8, whiteSpace: 'pre-line', marginBottom: 24 }}>
-                      {lang === 'vi' ? site.historyVi || 'Chưa có thông tin lịch sử.' : site.historyEn || 'No history information available.'}
+                      {lang === 'vi' ? sanitizeLocation(site.historyVi) || 'Chưa có thông tin lịch sử.' : sanitizeLocation(site.historyEn) || 'No history information available.'}
                     </p>
                   </div>
                 )}
@@ -445,7 +446,7 @@ export function HeritageDetail({ siteId, onNavigate }: HeritageDetailProps) {
                     <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6 }}>
                       <MapPin size={13} style={{ color: '#D4A017', marginTop: 1, flexShrink: 0 }} />
                       <span style={{ fontSize: 12, color: '#5d7a8c', lineHeight: 1.4 }}>
-                        {lang === 'vi' ? site.addressVi : site.addressEn}
+                        {sanitizeLocation(lang === 'vi' ? site.addressVi : site.addressEn)}
                       </span>
                     </div>
                   ),

@@ -224,6 +224,85 @@ public sealed record IntangibleHeritageRequest(
     string? ProposedProtectionMeasures = null,
     string[]? GalleryImages = null);
 
+/// <summary>Memorial site data transfer object.</summary>
+public sealed record MemorialSiteDto(
+    string Id,
+    string Code,
+    string NameVi,
+    string NameEn,
+    string Category,
+    string Classification,
+    string Status,
+    string? OtherNames,
+    string? AddressVi,
+    string? AddressEn,
+    double? Lat,
+    double? Lon,
+    string? GoogleMapUrl,
+    string? DescriptionVi,
+    string? DescriptionEn,
+    string? HistoryVi,
+    string? HistoryEn,
+    string? EventDate,
+    string? CommemorationVi,
+    string? CommemorationEn,
+    string? Image,
+    string? VideoUrl,
+    IReadOnlyList<string>? GalleryImages,
+    string CreatedAt,
+    string? UpdatedAt);
+
+public sealed record MemorialSiteRequest(
+    [Required, StringLength(200, MinimumLength = 5)]
+    string NameVi,
+
+    [Required, StringLength(200, MinimumLength = 5)]
+    string NameEn,
+
+    [Required, RegularExpression(@"^(memorial|victory|military_camp|secret_base|battlefield|revolutionary_event|other)$")]
+    string Category,
+
+    [Required, RegularExpression(@"^(national|provincial|city|unranked)$")]
+    string Classification,
+
+    [Required, RegularExpression(@"^(active|maintenance|closed)$")]
+    string Status,
+
+    string? OtherNames = null,
+
+    [StringLength(300, MinimumLength = 5)]
+    string? AddressVi = null,
+
+    [StringLength(300, MinimumLength = 5)]
+    string? AddressEn = null,
+
+    double? Latitude = null,
+
+    double? Longitude = null,
+
+    string? GoogleMapUrl = null,
+
+    string? DescriptionVi = null,
+
+    string? DescriptionEn = null,
+
+    string? HistoryVi = null,
+
+    string? HistoryEn = null,
+
+    string? EventDate = null,
+
+    string? CommemorationVi = null,
+
+    string? CommemorationEn = null,
+
+    [Required]
+    string? Image = null,
+
+    string? VideoUrl = null,
+
+    string[]? GalleryImages = null);
+
 /// <summary>About page history data transfer object.</summary>
 public sealed record AboutPageHistoryDto(
     long HistoryId,

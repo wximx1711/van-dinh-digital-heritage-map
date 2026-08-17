@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-08-12T05:13:31Z
+    GENERATED: 2026-08-17T15:11:35Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -164,8 +164,8 @@ CREATE TABLE [Heritage] (
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_Heritage_CreatedAt] DEFAULT (sysutcdatetime()),
     [UpdatedAt] datetime2(7) NULL,
     CONSTRAINT [PK_Heritage] PRIMARY KEY CLUSTERED ([HeritageId]),
-    CONSTRAINT [FK_Heritage_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([UserId]),
     CONSTRAINT [FK_Heritage_HeritageCategories_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [HeritageCategories]([CategoryId]),
+    CONSTRAINT [FK_Heritage_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([UserId]),
     CONSTRAINT [CK_Heritage_Classification] CHECK ([Classification]='unranked' OR [Classification]='city' OR [Classification]='national'),
     CONSTRAINT [CK_Heritage_Status] CHECK ([Status]='closed' OR [Status]='maintenance' OR [Status]='active')
 );
@@ -283,8 +283,7 @@ CREATE TABLE [MailMergeJobs] (
     [CreatedByUsername] nvarchar(100) NOT NULL,
     [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_MailMergeJobs_CreatedAt] DEFAULT (sysutcdatetime()),
     [CompletedAt] datetime2(7) NULL,
-    CONSTRAINT [PK_MailMergeJobs] PRIMARY KEY CLUSTERED ([JobId]),
-    CONSTRAINT [IX_MailMergeJobs_PublicId] UNIQUE ([PublicId])
+    CONSTRAINT [PK_MailMergeJobs] PRIMARY KEY CLUSTERED ([JobId])
 );
 GO
 
@@ -296,6 +295,57 @@ CREATE TABLE [MediaFiles] (
     [MediaType] nvarchar(80) NOT NULL,
     [UploadedAt] datetime2(7) NOT NULL CONSTRAINT [DF_MediaFiles_UploadedAt] DEFAULT (sysutcdatetime()),
     CONSTRAINT [PK_MediaFiles] PRIMARY KEY CLUSTERED ([MediaFileId])
+);
+GO
+
+CREATE TABLE [MemorialSites] (
+    [MemorialSiteId] bigint IDENTITY(1,1),
+    [PublicId] nvarchar(20) NOT NULL,
+    [Code] nvarchar(50) NOT NULL,
+    [NameVi] nvarchar(255) NOT NULL,
+    [NameEn] nvarchar(255) NOT NULL,
+    [Slug] nvarchar(255) NOT NULL,
+    [Category] nvarchar(30) NOT NULL,
+    [Classification] nvarchar(20) NOT NULL,
+    [Status] nvarchar(20) NOT NULL,
+    [OtherNames] nvarchar(255) NULL,
+    [AddressVi] nvarchar(500) NULL,
+    [AddressEn] nvarchar(500) NULL,
+    [Latitude] decimal(10,8) NULL,
+    [Longitude] decimal(11,8) NULL,
+    [GoogleMapUrl] nvarchar(1000) NULL,
+    [DescriptionVi] nvarchar(MAX) NULL,
+    [DescriptionEn] nvarchar(MAX) NULL,
+    [HistoryVi] nvarchar(MAX) NULL,
+    [HistoryEn] nvarchar(MAX) NULL,
+    [EventDate] nvarchar(100) NULL,
+    [CommemorationVi] nvarchar(MAX) NULL,
+    [CommemorationEn] nvarchar(MAX) NULL,
+    [ImageUrl] nvarchar(500) NULL,
+    [VideoUrl] nvarchar(500) NULL,
+    [GalleryImages] nvarchar(MAX) NULL,
+    [IsDeleted] bit NOT NULL CONSTRAINT [DF_MemorialSites_IsDeleted] DEFAULT (CONVERT([bit],(0))),
+    [DeletedAt] datetime2(7) NULL,
+    [CreatedBy] bigint NOT NULL,
+    [CreatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_MemorialSites_CreatedAt] DEFAULT (sysutcdatetime()),
+    [UpdatedAt] datetime2(7) NULL,
+    CONSTRAINT [PK_MemorialSites] PRIMARY KEY CLUSTERED ([MemorialSiteId]),
+    CONSTRAINT [FK_MemorialSites_Users_CreatedBy] FOREIGN KEY ([CreatedBy]) REFERENCES [Users]([UserId]),
+    CONSTRAINT [CK_MemorialSites_AddressEn_MinLength] CHECK ([AddressEn] IS NULL OR len(Trim([AddressEn]))>=(5)),
+    CONSTRAINT [CK_MemorialSites_AddressVi_MinLength] CHECK ([AddressVi] IS NULL OR len(Trim([AddressVi]))>=(5)),
+    CONSTRAINT [CK_MemorialSites_Category] CHECK ([Category]='other' OR [Category]='revolutionary_event' OR [Category]='battlefield' OR [Category]='secret_base' OR [Category]='military_camp' OR [Category]='victory' OR [Category]='memorial'),
+    CONSTRAINT [CK_MemorialSites_Classification] CHECK ([Classification]='unranked' OR [Classification]='city' OR [Classification]='provincial' OR [Classification]='national'),
+    CONSTRAINT [CK_MemorialSites_DescriptionEn_MinLength] CHECK ([DescriptionEn] IS NULL OR len(Trim([DescriptionEn]))>=(30)),
+    CONSTRAINT [CK_MemorialSites_DescriptionVi_MinLength] CHECK ([DescriptionVi] IS NULL OR len(Trim([DescriptionVi]))>=(30)),
+    CONSTRAINT [CK_MemorialSites_HistoryEn_MinLength] CHECK ([HistoryEn] IS NULL OR len(Trim([HistoryEn]))>=(50)),
+    CONSTRAINT [CK_MemorialSites_HistoryVi_MinLength] CHECK ([HistoryVi] IS NULL OR len(Trim([HistoryVi]))>=(50)),
+    CONSTRAINT [CK_MemorialSites_NameEn_NotEmpty] CHECK (len(Trim([NameEn]))>=(5)),
+    CONSTRAINT [CK_MemorialSites_NameVi_NotEmpty] CHECK (len(Trim([NameVi]))>=(5)),
+    CONSTRAINT [CK_MemorialSites_Status] CHECK ([Status]='closed' OR [Status]='maintenance' OR [Status]='active'),
+    CONSTRAINT [IX_MemorialSites_NameEn] UNIQUE ([NameEn]),
+    CONSTRAINT [IX_MemorialSites_NameVi] UNIQUE ([NameVi]),
+    CONSTRAINT [IX_MemorialSites_Slug] UNIQUE ([Slug]),
+    CONSTRAINT [IX_MemorialSites_PublicId] UNIQUE ([PublicId])
 );
 GO
 
@@ -331,10 +381,10 @@ CREATE TABLE [ServiceEvaluations] (
     [Status] nvarchar(20) NOT NULL CONSTRAINT [DF_ServiceEvaluations_Status] DEFAULT (N'pending'),
     [Title] nvarchar(200) NULL,
     CONSTRAINT [PK_ServiceEvaluations] PRIMARY KEY CLUSTERED ([Id]),
-    CONSTRAINT [CK_ServiceEvaluation_Score] CHECK ([Score]>=(1) AND [Score]<=(5)),
     CONSTRAINT [CK_ServiceEvaluation_TargetType] CHECK ([TargetType]='intangible' OR [TargetType]='heritage' OR [TargetType]='service'),
     CONSTRAINT [CK_ServiceEvaluation_SatisfactionLevel] CHECK ([SatisfactionLevel] IS NULL OR ([SatisfactionLevel]='very_unsatisfied' OR [SatisfactionLevel]='unsatisfied' OR [SatisfactionLevel]='neutral' OR [SatisfactionLevel]='satisfied' OR [SatisfactionLevel]='very_satisfied')),
-    CONSTRAINT [CK_ServiceEvaluation_Status] CHECK ([Status]='rejected' OR [Status]='approved' OR [Status]='pending')
+    CONSTRAINT [CK_ServiceEvaluation_Status] CHECK ([Status]='rejected' OR [Status]='approved' OR [Status]='pending'),
+    CONSTRAINT [CK_ServiceEvaluation_Score] CHECK ([Score]>=(1) AND [Score]<=(5))
 );
 GO
 
@@ -438,6 +488,24 @@ GO
 CREATE NONCLUSTERED INDEX [IX_MediaFiles_MediaType] ON [MediaFiles]([MediaType]);
 GO
 
+CREATE NONCLUSTERED INDEX [IX_MemorialSites_Code] ON [MemorialSites]([Code]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_MemorialSites_Status] ON [MemorialSites]([Status]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_MemorialSites_Classification] ON [MemorialSites]([Classification]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_MemorialSites_Category] ON [MemorialSites]([Category]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_MemorialSites_CreatedBy] ON [MemorialSites]([CreatedBy]);
+GO
+
+CREATE NONCLUSTERED INDEX [IX_MemorialSites_IsDeleted] ON [MemorialSites]([IsDeleted]);
+GO
+
 CREATE NONCLUSTERED INDEX [IX_RelatedLinks_CreatedBy] ON [RelatedLinks]([CreatedBy]);
 GO
 
@@ -463,7 +531,7 @@ GO
 -- SEED AND CURRENT DATA
 -- ========================================
 
--- [__EFMigrationsHistory]: 25 rows
+-- [__EFMigrationsHistory]: 26 rows
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260701052754_InitialCreate', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260702054259_UpdateDatabaseSchema', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260703000000_AddAuditFieldsToIntangibleHeritage', N'10.0.9');
@@ -489,6 +557,7 @@ INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'202607
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260803033515_AddMailMergeJobs', N'10.0.10');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260803075543_AddServiceEvaluations', N'10.0.10');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260805081154_AddEvaluationManagementFields', N'10.0.10');
+INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260817055923_AddMemorialSites', N'10.0.11');
 GO
 
 -- [Roles]: 2 rows
@@ -552,7 +621,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
 GO
 
--- [ActivityLogs]: 629 rows
+-- [ActivityLogs]: 645 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -1183,9 +1252,25 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10590, 3, N'APPROVE', N'ServiceEvaluations', 2, NULL, '2026-08-05T08:50:11.7472764', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10591, 3, N'EXPORT', N'Evaluations', NULL, N'Excel evaluation list', '2026-08-05T08:50:27.7981594', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10592, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-12T01:24:49.8680614', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10593, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-12T06:22:36.8061648', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10594, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-17T04:01:45.0953960', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10595, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-17T04:59:02.4726589', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10596, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-17T09:25:06.5616339', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10597, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-17T09:25:11.7162558', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10598, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-17T09:25:38.2832521', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10599, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-17T09:25:45.6837867', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10600, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-17T09:26:16.5143398', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10601, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-17T09:26:34.0476323', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10602, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-08-17T09:27:43.3332188', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10603, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-08-17T09:27:56.0836141', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10604, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-08-17T09:28:26.2552969', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10605, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-08-17T09:29:36.1440807', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10606, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-08-17T09:29:51.0669841', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10607, 2, N'LOGIN', N'Users', 2, N'User logged in.', '2026-08-17T09:30:06.8502406', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10608, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-17T14:25:16.1221474', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10592);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10608);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -8179,6 +8264,19 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
 DBCC CHECKIDENT ([MediaFiles], RESEED, 853);
+GO
+
+-- [MemorialSites]: 6 rows
+SET IDENTITY_INSERT [MemorialSites] ON;
+INSERT [MemorialSites] ([MemorialSiteId],[PublicId],[Code],[NameVi],[NameEn],[Slug],[Category],[Classification],[Status],[OtherNames],[AddressVi],[AddressEn],[Latitude],[Longitude],[GoogleMapUrl],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[EventDate],[CommemorationVi],[CommemorationEn],[ImageUrl],[VideoUrl],[GalleryImages],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (1, N'ms0001', N'VĐLN-SKCMKC-001', N'Đình Tảo Khê - Nơi phát lệnh khởi nghĩa giành chính quyền phủ Ứng Hòa', N'Tao Khe Communal House - Where the Insurrection Order for Ung Hoa was Issued', N'đình-tảo-khê-nơi-phát-lệnh-khởi-nghĩa-giành-chính-quyền-phủ-ứng-hòa', N'revolutionary_event', N'unranked', N'active', N'Đình Tảo Khê', N'Thôn Tảo Khê, xã Tảo Dương Văn, thị trấn Vân Đình, huyện Ứng Hòa, thành phố Hà Nội', N'Tao Khe village, Tao Duong Van commune, Van Dinh town, Ung Hoa district, Hanoi city', 20.70846150, 105.77899610, NULL, N'Nơi ghi dấu sự kiện lịch sử quan trọng: chiều ngày 17/8/1945, tại ngôi đình này, đồng chí Đỗ Mười đã trực tiếp phát lệnh khởi nghĩa giành chính quyền phủ Ứng Hòa.', N'The site of a significant historical event: on the afternoon of August 17, 1945, at this communal house, comrade Do Muoi directly issued the order for the uprising to seize power in Ung Hoa prefecture.', N'Đình Tảo Khê là ngôi đình làng cổ của thôn Tảo Khê. Trong Cao trào tiền khởi nghĩa, đình là nơi tập hợp quần chúng, che giấu cán bộ và cất giấu tài liệu, vũ khí của lực lượng Việt Minh. Chiều 17/8/1945, đồng chí Đỗ Mười - đại diện Việt Minh - đã trực tiếp phát lệnh khởi nghĩa giành chính quyền phủ Ứng Hòa ngay tại sân đình, mở đầu cho thắng lợi của Cách mạng tháng Tám ở địa phương.', N'Tao Khe communal house is the ancient village communal house of Tao Khe hamlet. During the pre-insurrection period it was where revolutionary cadres gathered and were sheltered, and where documents and weapons of the Viet Minh forces were hidden. On the afternoon of August 17, 1945, comrade Do Muoi - representing the Viet Minh - directly issued the order for the uprising to seize power in Ung Hoa prefecture in the commune house yard, opening the way for the August Revolution victory in the locality.', N'17/08/1945', N'Địa điểm được chính quyền và Nhân dân địa phương giữ gìn, hằng năm tổ chức các hoạt động dâng hương, tưởng niệm sự kiện lịch sử và giáo dục truyền thống cách mạng cho thế hệ trẻ.', N'The site is preserved by the local authorities and people, with annual offerings and commemorative activities recalling the historic event and educating the young generation about revolutionary tradition.', N'/uploads/images/559e54f4d11540c1864ffa32c4ca16eb.jpg', NULL, NULL, 0, NULL, 1, '2026-08-17T05:59:46.7851620', NULL);
+INSERT [MemorialSites] ([MemorialSiteId],[PublicId],[Code],[NameVi],[NameEn],[Slug],[Category],[Classification],[Status],[OtherNames],[AddressVi],[AddressEn],[Latitude],[Longitude],[GoogleMapUrl],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[EventDate],[CommemorationVi],[CommemorationEn],[ImageUrl],[VideoUrl],[GalleryImages],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (2, N'ms0002', N'VĐLN-SKCMKC-002', N'Chùa Đông Dương - Cơ sở cách mạng nuôi giấu cán bộ cấp cao', N'Dong Duong Pagoda - Revolutionary Base Sheltering Senior Cadres', N'chùa-đông-dương-cơ-sở-cách-mạng-nuôi-giấu-cán-bộ-cấp-cao', N'secret_base', N'unranked', N'active', N'Chùa Đông Dương (Thiên Phúc Tự - Vĩnh Thọ Tự)', N'Thôn Đông Dương, xã Tảo Dương Văn, huyện Ứng Hòa, thành phố Hà Nội', N'Dong Duong village, Tao Duong Van commune, Ung Hoa district, Hanoi city', 20.70736230, 105.78912930, NULL, N'Trong thời kỳ tiền khởi nghĩa và kháng chiến chống thực dân Pháp, chùa là cơ sở bí mật nuôi giấu và che chở an toàn cho nhiều cán bộ cách mạng cấp cao của Đảng và Nhà nước.', N'During the pre-insurrection period and the resistance war against the French colonialists, the pagoda secretly sheltered and protected many senior revolutionary cadres of the Party and State.', N'Làng Đông Dương và khu di tích Đình - Miếu - Chùa Đông Dương là một trong những địa điểm nằm trong hệ thống An Toàn Khu (ATK) bí mật của Xứ ủy Bắc Kỳ. Nơi đây từng nuôi dưỡng, che giấu nhiều cán bộ cách mạng tiền bối như các đồng chí Hoàng Quốc Việt, Hoàng Văn Thụ, Đỗ Mười, Văn Tiến Dũng, Nguyễn Văn Lộc. Tại gian Thượng điện của chùa vẫn còn lưu giữ dấu tích hầm bí mật nơi cán bộ cách mạng từng ẩn náu.', N'Dong Duong village and the Dong Duong communal house - shrine - pagoda complex were among the secret safety zone (ATK) locations of the Bac Ky Party Committee. The site sheltered many senior revolutionary cadres such as comrade Hoang Quoc Viet, Hoang Van Thu, Do Muoi, Van Tien Dung and Nguyen Van Loc. In the Upper Sanctuary of the pagoda, traces of the secret tunnel where revolutionary cadres once hid are still preserved.', N'1945-1954', N'Di tích cách mạng được giữ gìn, là nơi giáo dục truyền thống yêu nước và đón tiếp Nhân dân, du khách về tham quan, dâng hương.', N'The revolutionary site is preserved, serving to educate about patriotic tradition and to welcome people and visitors for visits and offerings.', N'/uploads/images/8ab46954327d4f8a900f512ed8890ca3.jpg', NULL, NULL, 0, NULL, 1, '2026-08-17T05:59:46.7851620', NULL);
+INSERT [MemorialSites] ([MemorialSiteId],[PublicId],[Code],[NameVi],[NameEn],[Slug],[Category],[Classification],[Status],[OtherNames],[AddressVi],[AddressEn],[Latitude],[Longitude],[GoogleMapUrl],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[EventDate],[CommemorationVi],[CommemorationEn],[ImageUrl],[VideoUrl],[GalleryImages],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (3, N'ms0003', N'VĐLN-SKCMKC-003', N'Chùa Hậu Xá - Cơ sở nuôi giấu cán bộ cách mạng (Thái Bình Tự)', N'Hau Xa Pagoda (Thai Binh Tu) - Revolutionary Cadre Shelter Base', N'chùa-hậu-xá-cơ-sở-nuôi-giấu-cán-bộ-cách-mạng-thái-bình-tự', N'secret_base', N'city', N'active', N'Chùa Hậu Xá (Thái Bình Tự)', N'Thôn Hậu Xá, xã Cao Thành, huyện Ứng Hòa, thành phố Hà Nội', N'Hau Xa village, Cao Thanh commune, Ung Hoa district, Hanoi city', 20.72722690, 105.78054630, NULL, N'Thời kỳ chống Pháp, chùa là cơ sở nuôi giấu cán bộ cách mạng, bảo vệ an toàn cho các cuộc họp quan trọng của địa phương; dấu tích hầm bí mật vẫn còn lưu giữ.', N'During the anti-French resistance, the pagoda sheltered revolutionary cadres and safely protected important local meetings; traces of the secret tunnel remain today.', N'Trong những năm kháng chiến chống thực dân Pháp, chùa Hậu Xá trở thành cơ sở nuôi giấu cán bộ cách mạng, nơi diễn ra nhiều cuộc họp quan trọng của phong trào cách mạng địa phương. Phía bên phải tòa Tiền đường hiện vẫn còn lưu giữ nguyên vẹn dấu tích hầm bí mật - minh chứng cho sự mưu trí, dũng cảm của quân và dân nơi đây.', N'During the resistance war against the French colonialists, Hau Xa pagoda became a base sheltering revolutionary cadres and hosting many important meetings of the local revolutionary movement. To the right of the Front Hall, the traces of the secret tunnel are still completely preserved - evidence of the intelligence and courage of the local soldiers and people.', N'1945-1954', N'Dấu tích hầm bí mật tại chùa được bảo tồn nguyên vẹn, địa điểm là điểm tham quan, giáo dục truyền thống cách mạng cho các thế hệ.', N'The secret tunnel traces at the pagoda are fully preserved; the site is a destination for visits and revolutionary-tradition education for all generations.', N'/uploads/images/e300e9d46a99489abe98f69ab9435013.jpg', NULL, NULL, 0, NULL, 1, '2026-08-17T05:59:46.7851620', NULL);
+INSERT [MemorialSites] ([MemorialSiteId],[PublicId],[Code],[NameVi],[NameEn],[Slug],[Category],[Classification],[Status],[OtherNames],[AddressVi],[AddressEn],[Latitude],[Longitude],[GoogleMapUrl],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[EventDate],[CommemorationVi],[CommemorationEn],[ImageUrl],[VideoUrl],[GalleryImages],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (4, N'ms0004', N'VĐLN-SKCMKC-004', N'Cụm Đình - Miếu - Chùa Cao Lãm - Nơi thành lập UBND cách mạng lâm thời phủ Đội Bình', N'Cao Lam Complex - Where the Provisional Revolutionary Committee of Doi Binh Prefecture Was Founded', N'cụm-đình-miếu-chùa-cao-lãm-nơi-thành-lập-ubnd-cách-mạng-lâm-thời-phủ-đội-bình', N'revolutionary_event', N'provincial', N'active', N'Cụm Đình - Miếu - Chùa Cao Lãm', N'Xã Cao Thành, huyện Ứng Hòa, thành phố Hà Nội', N'Cao Thanh commune, Ung Hoa district, Hanoi city', 20.75896640, 105.73630870, NULL, N'Tháng 7/1945, Chi bộ Việt Minh và Ủy ban Nhân dân cách mạng lâm thời phủ Đội Bình được thành lập ngay tại chùa; cụm di tích là nơi lực lượng cách mạng nổ súng giành chính quyền, cắm Quốc kỳ.', N'In July 1945, the Viet Minh cell and the provisional revolutionary committee of Doi Binh prefecture were founded at the pagoda; the complex is where revolutionary forces opened fire to seize power and raised the national flag.', N'Trong những năm Tiền khởi nghĩa, cụm Đình - Miếu - Chùa Cao Lãm là nơi lực lượng cách mạng đứng lên giành chính quyền, cắm Quốc kỳ, lập Ủy ban hành chính lâm thời và cử Chủ tịch lâm thời. Tháng 7/1945, Chi bộ Việt Minh và UBND cách mạng lâm thời phủ Đội Bình được thành lập ngay tại chùa. Năm 1950, di tích bị máy bay thực dân Pháp ném bom, bắn phá nhưng vẫn tiếp tục là cơ sở bí mật nuôi giấu cán bộ cách mạng.', N'During the pre-insurrection years, the Cao Lam communal house - shrine - pagoda complex was where revolutionary forces rose up to seize power, raised the national flag, established the provisional administrative committee and appointed its provisional chairman. In July 1945, the Viet Minh cell and provisional revolutionary committee of Doi Binh prefecture were founded at the pagoda. In 1950, the site was bombed and heavily shelled by French colonial aircraft yet continued to serve as a secret base sheltering revolutionary cadres.', N'07/1945', N'Cụm di tích được xếp hạng Di tích lịch sử - văn hóa cấp tỉnh (Quyết định số 169/QĐ-UBND ngày 22/01/2008), là địa chỉ đỏ giáo dục truyền thống cách mạng của huyện Ứng Hòa.', N'The complex is ranked as a Provincial-level historical and cultural monument (Decision No. 169/QD-UBND dated January 22, 2008) and serves as a red-address site for revolutionary tradition education in Ung Hoa district.', N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', NULL, NULL, 0, NULL, 1, '2026-08-17T05:59:46.7851620', NULL);
+INSERT [MemorialSites] ([MemorialSiteId],[PublicId],[Code],[NameVi],[NameEn],[Slug],[Category],[Classification],[Status],[OtherNames],[AddressVi],[AddressEn],[Latitude],[Longitude],[GoogleMapUrl],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[EventDate],[CommemorationVi],[CommemorationEn],[ImageUrl],[VideoUrl],[GalleryImages],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (5, N'ms0005', N'VĐLN-SKCMKC-005', N'Đình Hậu Xá - Nơi tiễn đưa con em lên đường tòng quân đánh Mỹ', N'Hau Xa Communal House - Where Children Left for the Fight against America', N'đình-hậu-xá-nơi-tiễn-đưa-con-em-lên-đường-tòng-quân-đánh-mỹ', N'memorial', N'unranked', N'active', N'Đình Hậu Xá', N'Thôn Hậu Xá, xã Cao Thành, huyện Ứng Hòa, thành phố Hà Nội', N'Hau Xa village, Cao Thanh commune, Ung Hoa district, Hanoi city', 20.72690620, 105.78298500, NULL, N'Trong kháng chiến chống Mỹ cứu nước, đình là nơi tiễn đưa những người con của làng Hậu Xá lên đường tòng quân; xã Phương Tú đã đóng góp lớn lao với 25 liệt sĩ và 06 Bà mẹ Việt Nam anh hùng.', N'During the resistance war against America, the communal house was where the children of Hau Xa village were sent off to join the army; Phuong Tu commune made great sacrifices with 25 martyrs and 06 Vietnamese Heroic Mothers.', N'Đình Hậu Xá là trung tâm sinh hoạt văn hóa, tín ngưỡng của làng Hậu Xá (xã Cao Thành, nay thuộc huyện Ứng Hòa). Trong kháng chiến chống Mỹ cứu nước, đình là nơi tiễn đưa những người con của làng lên đường tòng quân đánh Mỹ. Cùng với toàn xã, Hậu Xá đã có nhiều đóng góp lớn lao cho hai cuộc kháng chiến với 25 liệt sĩ và 06 Bà mẹ Việt Nam anh hùng.', N'Hau Xa communal house is the cultural and religious center of Hau Xa village (Cao Thanh commune, now Ung Hoa district). During the anti-American resistance, it was where the village''s children were sent off to join the army. Along with the whole commune, Hau Xa contributed greatly to both resistance wars with 25 martyrs and 06 Vietnamese Heroic Mothers.', N'1965-1975', N'Đình vẫn là nơi tổ chức các hoạt động dâng hương tưởng niệm và giáo dục truyền thống yêu nước, đền ơn đáp nghĩa cho các gia đình liệt sĩ, gia đình có công với cách mạng.', N'The communal house remains a venue for memorial offerings and patriotic education and for paying gratitude to families of martyrs and people with revolutionary merits.', N'/uploads/images/8fb6aa04ea7a41df9920ae0c8cf73412.jpg', NULL, NULL, 0, NULL, 1, '2026-08-17T05:59:46.7851620', NULL);
+INSERT [MemorialSites] ([MemorialSiteId],[PublicId],[Code],[NameVi],[NameEn],[Slug],[Category],[Classification],[Status],[OtherNames],[AddressVi],[AddressEn],[Latitude],[Longitude],[GoogleMapUrl],[DescriptionVi],[DescriptionEn],[HistoryVi],[HistoryEn],[EventDate],[CommemorationVi],[CommemorationEn],[ImageUrl],[VideoUrl],[GalleryImages],[IsDeleted],[DeletedAt],[CreatedBy],[CreatedAt],[UpdatedAt]) VALUES (6, N'ms0006', N'VĐLN-SKCMKC-006', N'Bến lội Hoàng Dương - Điểm trung chuyển vượt sông Đáy', N'Hoang Duong Ferry Crossing - Day River Transit Point', N'bến-lội-hoàng-dương-điểm-trung-chuyển-vượt-sông-đáy', N'battlefield', N'unranked', N'active', N'Bến lội Hoàng Dương', N'Thôn Hoàng Dương, xã Sơn Công, huyện Ứng Hòa, thành phố Hà Nội', N'Hoang Duong village, Son Cong commune, Ung Hoa district, Hanoi city', 20.75848140, 105.72085090, NULL, N'Bến lội Hoàng Dương là điểm trung chuyển huyết mạch trên tuyến sông Đáy, nối vùng tự do và vùng tạm chiếm; nơi quân dân ta bí mật vượt sông, vận chuyển vũ khí, tài liệu, đưa đón cán bộ cách mạng.', N'The Hoang Duong ferry crossing was a vital transit point on the Day River line linking liberated and temporarily occupied zones, where our soldiers and people secretly crossed, transported weapons and documents, and escorted revolutionary cadres.', N'Trong kháng chiến chống thực dân Pháp, bến lội Hoàng Dương là điểm trung chuyển huyết mạch trên tuyến sông Đáy. Đây là nơi quân và dân ta bí mật bơi lội vượt sông, vận chuyển vũ khí, tài liệu và đưa đón cán bộ cách mạng an toàn - minh chứng cho tinh thần quả cảm, mưu trí của lực lượng du kích xã Sơn Công.', N'During the resistance against the French colonialists, the Hoang Duong ferry crossing was a vital transit point on the Day River line. It was where our soldiers and people secretly swam across the river, transported weapons and documents, and safely escorted revolutionary cadres - proof of the courage and ingenuity of Son Cong commune''s guerrilla forces.', N'1946-1954', N'Địa điểm được Nhân dân và chính quyền địa phương giữ gìn, là di tích gắn với truyền thống du kích, góp phần giáo dục lịch sử kháng chiến cho thế hệ trẻ.', N'The site is preserved by the local people and authorities as a monument tied to guerrilla tradition, contributing to educating the young generation about resistance history.', NULL, NULL, NULL, 0, NULL, 1, '2026-08-17T05:59:46.7851620', NULL);
+SET IDENTITY_INSERT [MemorialSites] OFF;
+GO
+DBCC CHECKIDENT ([MemorialSites], RESEED, 6);
 GO
 
 -- [RelatedLinks]: 1 rows

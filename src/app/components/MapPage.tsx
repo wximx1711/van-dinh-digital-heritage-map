@@ -4,6 +4,7 @@ import { useHeritageSites, useTypeLabels, useClassificationLabels } from '../../
 import { useHeritageMapMarkers } from '../../presentation/hooks/useHeritageMapMarkers';
 import { haversineDistance, openDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
+import { sanitizeLocation } from '../utils/uiText';
 import { GoogleMapView } from './GoogleMapView';
 import { CategoryLegend } from './CategoryLegend';
 import { LazyImage } from './LazyImage';
@@ -362,7 +363,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
 
       const imgSrc = site.image ? getImageUrl(site.image) : PLACEHOLDER_IMG;
       const categoryLabel = typeLabels[site.type]?.[lang] ?? site.type;
-      const address = lang === 'vi' ? site.addressVi : site.addressEn;
+      const address = sanitizeLocation(lang === 'vi' ? site.addressVi : site.addressEn);
       const tripCtx = tripContextMap.get(marker.id);
 
       const statusLabelKey = `hm.status_${site.status}` as const;

@@ -223,7 +223,7 @@ export function EvaluationKiosk() {
         </div>
 
         <div style={{ background: '#F0F4F8', padding: '12px 32px', textAlign: 'center', color: '#5d7a8c', fontSize: 11 }}>
-          {lang === 'vi' ? 'Cổng đánh giá — Ủy ban Nhân dân xã Vân Đình, huyện Ứng Hòa, Hà Nội' : 'Feedback kiosk — Van Dinh Commune People\'s Committee, Ung Hoa District, Hanoi'}
+          {lang === 'vi' ? 'Cổng đánh giá — Ủy ban Nhân dân xã Vân Đình, Thành phố Hà Nội' : 'Feedback kiosk — Van Dinh Commune People\'s Committee, Hanoi'}
         </div>
       </div>
     </div>

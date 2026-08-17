@@ -4,6 +4,7 @@ import { useSystemSettings } from './SystemSettingsContext';
 import { AppLogo } from './AppLogo';
 import { apiGet } from '../services/api';
 import { MapPin, Phone, Mail, Facebook, Youtube, Globe } from 'lucide-react';
+import { displaySiteTitle, sanitizeLocation } from '../utils/uiText';
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -22,6 +23,8 @@ export function Footer({ onNavigate }: FooterProps) {
   const { settings: s } = useSystemSettings();
   const [relatedLinks, setRelatedLinks] = useState<RelatedLinkData[]>([]);
 
+  const lotusPattern = `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q38 18 30 30 Q22 18 30 5Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M5 30 Q18 38 30 30 Q18 22 5 30Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M55 30 Q42 38 30 30 Q42 22 55 30Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M30 55 Q38 42 30 30 Q22 42 30 55Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3C/svg%3E")`;
+
   useEffect(() => {
     apiGet<RelatedLinkData[]>('/related-links')
       .then(data => setRelatedLinks(data?.filter(l => l.isEnabled).sort((a, b) => a.displayOrder - b.displayOrder) || []))
@@ -39,10 +42,12 @@ export function Footer({ onNavigate }: FooterProps) {
   ];
 
   return (
-    <footer style={{ background: '#071D2E', color: 'rgba(255,255,255,0.8)', marginTop: 'auto' }}>
+    <footer style={{ background: '#071D2E', color: 'rgba(255,255,255,0.8)', marginTop: 'auto', position: 'relative', overflow: 'hidden' }}>
+      {/* Subtle lotus pattern veil */}
+      <div style={{ position: 'absolute', inset: 0, opacity: 0.04, pointerEvents: 'none', backgroundImage: lotusPattern }} />
       <div style={{ background: 'linear-gradient(90deg, transparent, #D4A017 20%, #D4A017 80%, transparent)', height: 2 }} />
 
-      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 24px 24px' }} className="footer-container">
+      <div style={{ maxWidth: 1280, margin: '0 auto', padding: '48px 24px 24px', position: 'relative' }} className="footer-container">
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 32, marginBottom: 32 }} className="footer-grid">
           {/* About column */}
           <div>
@@ -53,14 +58,14 @@ export function Footer({ onNavigate }: FooterProps) {
                   {lang === 'vi' ? 'Cổng thông tin' : 'Information Portal'}
                 </div>
                 <div style={{ color: 'white', fontSize: 13, fontWeight: 700, fontFamily: 'Merriweather, serif' }}>
-                  {s?.websiteName || (lang === 'vi' ? 'Di sản Vân Đình' : 'Van Dinh Heritage')}
+                  {displaySiteTitle(s?.websiteName, lang)}
                 </div>
               </div>
             </div>
             <p style={{ fontSize: 13, lineHeight: 1.7, color: 'rgba(255,255,255,0.6)', marginBottom: 16 }}>
-              {s?.footerText || (lang === 'vi'
-                ? 'Hệ thống số hóa và bảo tồn di sản văn hóa xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.'
-                : 'Digital system for preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi.')}
+              {s?.footerText ? displaySiteTitle(s.footerText, lang) : (lang === 'vi'
+                ? 'Hệ thống số hóa và bảo tồn di sản văn hóa xã Vân Đình, thành phố Hà Nội.'
+                : 'Digital system for preserving cultural heritage of Van Dinh Commune, Hanoi.')}
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
               {socialLinks.map((soc) => (
@@ -69,6 +74,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   href={soc.href}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="icon-chip"
                   style={{
                     width: 34, height: 34, borderRadius: 6,
                     background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.1)',
@@ -107,6 +113,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 <li key={link.key}>
                   <button
                     onClick={() => onNavigate(link.key)}
+                    className="underline-gold"
                     style={{
                       background: 'none', border: 'none', padding: 0,
                       color: 'rgba(255,255,255,0.6)', fontSize: 13, cursor: 'pointer',
@@ -136,7 +143,7 @@ export function Footer({ onNavigate }: FooterProps) {
                     {lang === 'vi' ? 'Địa chỉ' : 'Address'}
                   </div>
                   <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: 12, lineHeight: 1.5 }}>
-                    {s?.address || (lang === 'vi' ? 'Chưa cập nhật' : 'Not set')}
+                    {sanitizeLocation(s?.address) || (lang === 'vi' ? 'Chưa cập nhật' : 'Not set')}
                   </div>
                 </div>
               </div>
@@ -164,6 +171,7 @@ export function Footer({ onNavigate }: FooterProps) {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="underline-gold"
                       style={{
                         color: 'rgba(255,255,255,0.6)', fontSize: 13, textDecoration: 'none',
                         display: 'flex', alignItems: 'center', gap: 6, transition: 'color 0.2s',

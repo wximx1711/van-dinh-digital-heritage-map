@@ -53,6 +53,10 @@ public sealed class EfAppRepository : IAppRepository
         .AsNoTracking()
         .Where(i => !i.IsDeleted);
 
+    public IQueryable<MemorialSite> MemorialSitesUntracked => _context.MemorialSites
+        .AsNoTracking()
+        .Where(i => !i.IsDeleted);
+
     public IQueryable<ActivityLog> ActivityLogsUntracked => _context.ActivityLogs
         .AsNoTracking()
         .Include(l => l.User)
@@ -403,6 +407,49 @@ public sealed class EfAppRepository : IAppRepository
     public void DeleteIntangible(string publicId)
     {
         var item = _context.IntangibleHeritages
+            .FirstOrDefault(i => i.PublicId == publicId && !i.IsDeleted);
+        if (item is null) return;
+        item.IsDeleted = true;
+        item.UpdatedAt = DateTime.UtcNow;
+        _context.SaveChanges();
+    }
+
+    public MemorialSite? FindMemorialSite(string publicId) => _context.MemorialSites
+        .AsNoTracking()
+        .FirstOrDefault(x => x.PublicId == publicId && !x.IsDeleted);
+
+    public MemorialSite AddMemorialSite(MemorialSite item)
+    {
+        if (string.IsNullOrWhiteSpace(item.PublicId))
+        {
+            var existingIds = _context.MemorialSites
+                .Where(i => i.PublicId.StartsWith("ms"))
+                .Select(i => i.PublicId)
+                .ToList();
+            var num = 1;
+            while (existingIds.Contains($"ms{num:D4}")) { num++; }
+            item.PublicId = $"ms{num:D4}";
+        }
+
+        item.CreatedAt = DateTime.UtcNow;
+
+        _context.MemorialSites.Add(item);
+        _context.SaveChanges();
+        return item;
+    }
+
+    public void UpdateMemorialSite(MemorialSite item)
+    {
+        var existing = _context.MemorialSites.Find(item.MemorialSiteId);
+        if (existing is null) return;
+        _context.Entry(existing).CurrentValues.SetValues(item);
+        existing.UpdatedAt = DateTime.UtcNow;
+        _context.SaveChanges();
+    }
+
+    public void DeleteMemorialSite(string publicId)
+    {
+        var item = _context.MemorialSites
             .FirstOrDefault(i => i.PublicId == publicId && !i.IsDeleted);
         if (item is null) return;
         item.IsDeleted = true;

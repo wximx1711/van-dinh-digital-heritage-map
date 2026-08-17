@@ -242,3 +242,405 @@
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
 }
+
+/* ══════════════════════════════════════════════════════════════════
+   Visual polish layer — subtle enhancements shared across public UI.
+   Adds depth, motion and gold accents WITHOUT changing layout or
+   replacing the existing inline-styled design system.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Text selection + keyboard focus in brand colors */
+::selection {
+  background: rgba(212, 160, 23, 0.35);
+  color: #0F3D5E;
+}
+:focus-visible {
+  outline: 2px solid rgba(212, 160, 23, 0.65);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Fade-up entrance (hero content, staggered via -1..-4) */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.7s ease both; }
+.fade-up-1 { animation: fadeUp 0.7s ease 0.1s both; }
+.fade-up-2 { animation: fadeUp 0.7s ease 0.2s both; }
+.fade-up-3 { animation: fadeUp 0.7s ease 0.3s both; }
+.fade-up-4 { animation: fadeUp 0.7s ease 0.4s both; }
+
+/* Slow zoom for hero background images */
+@keyframes kenburns {
+  from { transform: scale(1); }
+  to { transform: scale(1.09); }
+}
+.kenburns {
+  animation: kenburns 20s ease-in-out infinite alternate;
+}
+
+/* Gentle floating for decorative elements */
+@keyframes floatY {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
+}
+.float-slow { animation: floatY 5s ease-in-out infinite; }
+
+/* Gold animated top accent for cards (pairs with card hover lift) */
+.card-accent-gold { position: relative; }
+.card-accent-gold::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  z-index: 2;
+  background: linear-gradient(90deg, #B8860B, #f0c648, #B8860B);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: opacity 0.3s ease, transform 0.4s ease;
+}
+.card-accent-gold:hover::before,
+.card-accent-gold:focus-within::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+/* Image zoom on card hover (wrappers must have overflow hidden) */
+.card-img-zoom > img { transition: transform 0.55s ease; }
+.card-img-zoom:hover > img { transform: scale(1.06); }
+
+/* Soft gradient veil fading in over card imagery on hover */
+.img-veil::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 61, 94, 0) 35%, rgba(15, 61, 94, 0.5) 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+.img-veil:hover::after { opacity: 1; }
+
+/* Dark page-header blocks: subtle lotus pattern + gold bottom line */
+.page-hero { position: relative; overflow: hidden; }
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M20 5 Q25 12 20 20 Q15 12 20 5Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M5 20 Q12 25 20 20 Q12 15 5 20Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M35 20 Q28 25 20 20 Q28 15 35 20Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M20 35 Q25 28 20 20 Q15 28 20 35Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3C/svg%3E");
+  opacity: 0.12;
+}
+.page-hero > * { position: relative; }
+.page-hero::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #D4A017 25%, #D4A017 75%, transparent);
+}
+
+/* Button hover depth */
+.btn-gold-glow {
+  transition: box-shadow 0.25s ease, transform 0.25s ease, filter 0.25s ease;
+}
+.btn-gold-glow:hover {
+  box-shadow: 0 6px 22px rgba(212, 160, 23, 0.45);
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+}
+.btn-navy-lift {
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.btn-navy-lift:hover {
+  box-shadow: 0 8px 24px rgba(15, 61, 94, 0.35);
+  transform: translateY(-2px);
+}
+.btn-outline-glow {
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease;
+}
+.btn-outline-glow:hover {
+  box-shadow: 0 8px 24px rgba(15, 61, 94, 0.18);
+  transform: translateY(-2px);
+}
+
+/* Gold underline sweep for links */
+.underline-gold { position: relative; text-decoration: none; }
+.underline-gold::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: -3px;
+  width: 100%; height: 2px;
+  border-radius: 1px;
+  background: #D4A017;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.3s ease;
+}
+.underline-gold:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Form field focus ring (overrides inline border colors on focus) */
+.field-focus {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.field-focus:focus,
+.field-focus:focus-within {
+  border-color: #D4A017 !important;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.18);
+}
+
+/* Pagination / circular controls */
+.pager-btn {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.pager-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(15, 61, 94, 0.25);
+}
+
+/* Section heading ornament (small rotated gold diamond) */
+.ornament-diamond {
+  width: 8px; height: 8px;
+  background: #D4A017;
+  transform: rotate(45deg);
+  display: inline-block;
+  border-radius: 1.5px;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.15);
+}
+
+/* Social icon chips */
+.icon-chip {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.icon-chip:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(212, 160, 23, 0.3);
+}
+
+/* Respect reduced-motion preferences: disable decorative motion */
+@media (prefers-reduced-motion: reduce) {
+  .kenburns,
+  .fade-up,
+  .fade-up-1,
+  .fade-up-2,
+  .fade-up-3,
+  .fade-up-4,
+  .float-slow,
+  .hero-blob,
+  .text-gold-gradient,
+  .pin-pulse,
+  .bob-slow,
+  .scroll-cue,
+  .glow-pulse {
+    animation: none !important;
+  }
+  .reveal { opacity: 1; transform: none; transition: none !important; }
+  .card-img-zoom > img,
+  .card-accent-gold::before,
+  .btn-gold-glow,
+  .btn-navy-lift,
+  .btn-outline-glow,
+  .icon-chip,
+  .pager-btn,
+  .underline-gold::after,
+  .field-focus,
+  .btn-shine::after,
+  .glass-chip,
+  .culture-card,
+  .culture-icon,
+  .hero-card-media img {
+    transition: none !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   Homepage immersive layer — hero aurora, scroll reveal, cultural
+   ornaments, pin pulses and gold gradient typography.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Drifting aurora blobs behind hero content */
+@keyframes auroraDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(6%, -8%) scale(1.12); }
+  66%  { transform: translate(-5%, 6%) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+  will-change: transform;
+  animation: auroraDrift 18s ease-in-out infinite;
+}
+.hero-blob-gold {
+  background: radial-gradient(circle, rgba(212, 160, 23, 0.38), rgba(212, 160, 23, 0) 70%);
+}
+.hero-blob-navy {
+  background: radial-gradient(circle, rgba(41, 128, 185, 0.45), rgba(41, 128, 185, 0) 70%);
+}
+.hero-blob-teal {
+  background: radial-gradient(circle, rgba(22, 160, 133, 0.3), rgba(22, 160, 133, 0) 70%);
+}
+
+/* Gold gradient display text (title accents) */
+@keyframes goldShimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+.text-gold-gradient {
+  background: linear-gradient(100deg, #f4d98a 0%, #D4A017 30%, #f6e2a8 50%, #B8860B 70%, #f4d98a 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: goldShimmer 6s linear infinite;
+}
+
+/* Scroll-triggered reveal (observe via IntersectionObserver) */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.reveal.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Pulsing map pin for the map preview */
+@keyframes pinPulse {
+  0%   { transform: scale(1); opacity: 0.65; }
+  70%  { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+.pin-pulse {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(212, 160, 23, 0.9);
+  animation: pinPulse 2.2s ease-out infinite;
+}
+
+/* Gentle bobbing for hero ornaments */
+@keyframes bobY {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50%      { transform: translateY(-12px) rotate(-8deg); }
+}
+.bob-slow { animation: bobY 6s ease-in-out infinite; }
+
+/* Scroll-down cue */
+@keyframes scrollCue {
+  0%   { transform: translateY(0); opacity: 0.9; }
+  50%  { transform: translateY(8px); opacity: 0.4; }
+  100% { transform: translateY(0); opacity: 0.9; }
+}
+.scroll-cue {
+  animation: scrollCue 2.4s ease-in-out infinite;
+}
+
+/* Shine sweep across gold buttons on hover */
+.btn-shine { position: relative; overflow: hidden; }
+.btn-shine::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(105deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 80%);
+  transform: skewX(-20deg);
+  transition: left 0.55s ease;
+  pointer-events: none;
+}
+.btn-shine:hover::after { left: 120%; }
+
+/* Gold-framed glass chips for hero quick navigation */
+.glass-chip {
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.glass-chip:hover {
+  background: rgba(212, 160, 23, 0.22);
+  border-color: rgba(212, 160, 23, 0.6);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+}
+
+/* Decorative gold frame corners (hero / map preview) */
+.frame-corner::before,
+.frame-corner::after {
+  content: '';
+  position: absolute;
+  width: 26px; height: 26px;
+  border: 2px solid rgba(212, 160, 23, 0.7);
+  border-radius: 3px;
+  z-index: 2;
+  pointer-events: none;
+}
+.frame-corner::before { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+.frame-corner::after { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+
+/* Cultural identity strip cards */
+.culture-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.culture-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(15, 61, 94, 0.16);
+  border-color: rgba(212, 160, 23, 0.55);
+}
+.culture-icon {
+  transition: transform 0.35s ease;
+}
+.culture-card:hover .culture-icon {
+  transform: rotate(-8deg) scale(1.12);
+}
+
+/* Heritage card image hover lift */
+.hero-card-media { overflow: hidden; }
+.hero-card-media img {
+  transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.hero-card:hover .hero-card-media img { transform: scale(1.08); }
+
+/* Soft breathing glow for CTA gold button */
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 4px 16px rgba(212, 160, 23, 0.35), 0 0 0 0 rgba(212, 160, 23, 0.45); }
+  50%      { box-shadow: 0 4px 24px rgba(212, 160, 23, 0.55), 0 0 0 8px rgba(212, 160, 23, 0); }
+}
+.glow-pulse { animation: glowPulse 3s ease-in-out infinite; }
+
+/* Decorative chevron trail between section headers */
+.culture-trail { display: flex; align-items: center; gap: 8px; }
+.culture-trail::before,
+.culture-trail::after {
+  content: '';
+  height: 1px;
+  width: 46px;
+  background: linear-gradient(90deg, transparent, rgba(212, 160, 23, 0.75));
+}
+.culture-trail::after {
+  background: linear-gradient(90deg, rgba(212, 160, 23, 0.75), transparent);
+}
+
+/* Subtle grid texture for light sections */
+.paper-grid {
+  background-image:
+    linear-gradient(rgba(15, 61, 94, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 61, 94, 0.035) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Global responsive helper — hide decorative elements on mobile */
+@media (max-width: 900px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}

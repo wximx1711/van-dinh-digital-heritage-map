@@ -4,6 +4,7 @@ import { useIntangibleHeritage } from '../../presentation/hooks/useHeritageData'
 import { Play, Eye } from 'lucide-react';
 import { intangibleCategoryIcons } from '../constants';
 import { getImageUrl } from '../utils/url';
+import { sanitizeLocation } from '../utils/uiText';
 
 interface IntangiblePageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -15,7 +16,7 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
 
   return (
     <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>
-      <div style={{ background: '#0F3D5E', padding: '32px 24px 40px' }}>
+      <div className="page-hero" style={{ background: '#0F3D5E', padding: '32px 24px 40px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ color: '#D4A017', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
             {lang === 'vi' ? 'Phi vật thể' : 'Intangible'}
@@ -43,6 +44,7 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
               <div
                 key={item.id}
                 onClick={() => onNavigate('intangible-detail', item.id)}
+                className="card-accent-gold"
                 style={{
                   background: 'white', borderRadius: 12, overflow: 'hidden',
                   boxShadow: '0 2px 12px rgba(15,61,94,0.08)',
@@ -57,7 +59,7 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
                   (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 12px rgba(15,61,94,0.08)';
                 }}
               >
-                <div style={{ position: 'relative', height: 200, background: '#dce8f0', overflow: 'hidden' }}>
+                <div className="card-img-zoom img-veil" style={{ position: 'relative', height: 200, background: '#dce8f0', overflow: 'hidden' }}>
                   {item.image ? (
 <LazyImage 
                       src={getImageUrl(item.image)}
@@ -88,7 +90,7 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
                     color: '#5d7a8c', fontSize: 13, lineHeight: 1.65, margin: '0 0 16px',
                     display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden',
                   }}>
-                    {(lang === 'en' ? (item.descriptionEn || item.descriptionVi) : item.descriptionVi) || (lang === 'vi' ? 'Chưa có mô tả' : 'No description')}
+                    {sanitizeLocation(lang === 'en' ? (item.descriptionEn || item.descriptionVi) : item.descriptionVi) || (lang === 'vi' ? 'Chưa có mô tả' : 'No description')}
                   </p>
                   <div style={{ display: 'flex', gap: 8 }}>
                     {item.videoUrl && (

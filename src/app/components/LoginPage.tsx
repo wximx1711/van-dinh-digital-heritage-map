@@ -319,7 +319,7 @@ const handleLogin = async () => {
 
          {/* Bottom text */}
          <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: 11, marginTop: 16 }}>
-           © {new Date().getFullYear()} {lang === 'vi' ? 'Bản đồ số Di sản Văn hóa Vân Đình' : 'Van Dinh Digital Heritage Map'}
+           © {new Date().getFullYear()} {lang === 'vi' ? 'Bản đồ di sản số' : 'Van Dinh Digital Heritage Map'}
          </p>
        </div>
 

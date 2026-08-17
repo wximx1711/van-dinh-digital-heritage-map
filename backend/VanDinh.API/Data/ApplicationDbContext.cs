@@ -16,6 +16,7 @@ public sealed class ApplicationDbContext : DbContext
     public DbSet<HeritageVideo> HeritageVideos => Set<HeritageVideo>();
     public DbSet<HeritageDocument> HeritageDocuments => Set<HeritageDocument>();
     public DbSet<IntangibleHeritage> IntangibleHeritages => Set<IntangibleHeritage>();
+    public DbSet<MemorialSite> MemorialSites => Set<MemorialSite>();
     public DbSet<ActivityLog> ActivityLogs => Set<ActivityLog>();
     public DbSet<AboutPage> AboutPages => Set<AboutPage>();
     public DbSet<AboutPageHistory> AboutPageHistories => Set<AboutPageHistory>();
@@ -36,6 +37,7 @@ public sealed class ApplicationDbContext : DbContext
         modelBuilder.ApplyConfiguration(new HeritageVideoConfiguration());
         modelBuilder.ApplyConfiguration(new HeritageDocumentConfiguration());
         modelBuilder.ApplyConfiguration(new IntangibleHeritageConfiguration());
+        modelBuilder.ApplyConfiguration(new MemorialSiteConfiguration());
         modelBuilder.ApplyConfiguration(new AboutPageConfiguration());
         modelBuilder.ApplyConfiguration(new AboutPageHistoryConfiguration());
         modelBuilder.ApplyConfiguration(new ActivityLogConfiguration());

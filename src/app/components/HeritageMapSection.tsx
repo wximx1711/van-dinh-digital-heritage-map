@@ -5,6 +5,7 @@ import { useHeritageSites, useTypeLabels } from '../../presentation/hooks/useHer
 import { useHeritageMapMarkers } from '../../presentation/hooks/useHeritageMapMarkers';
 import { haversineDistance, openDirections } from '../utils/geo';
 import { getImageUrl } from '../utils/url';
+import { sanitizeLocation } from '../utils/uiText';
 import { GoogleMapView } from './GoogleMapView';
 import { Skeleton } from './Skeleton';
 import { CategoryLegend } from './CategoryLegend';
@@ -169,7 +170,7 @@ export function HeritageMapSection({ onNavigate, className }: HeritageMapSection
 
       const imgSrc = site.image ? getImageUrl(site.image) : PLACEHOLDER_IMG;
       const categoryLabel = typeLabels[site.type]?.[lang] ?? site.type;
-      const description = lang === 'vi' ? site.descriptionVi : site.descriptionEn;
+      const description = sanitizeLocation(lang === 'vi' ? site.descriptionVi : site.descriptionEn);
       const truncated =
         description.length > 120 ? description.slice(0, 120).trimEnd() + '…' : description;
 

@@ -8,6 +8,7 @@ import { RelatedItems } from './RelatedItems';
 import { EvaluationSection } from './EvaluationSection';
 import { ArrowLeft, ChevronRight } from 'lucide-react';
 import { DetailPageSkeleton } from './Skeleton';
+import { sanitizeLocation } from '../utils/uiText';
 
 interface IntangibleHeritageDetailProps {
   itemId: string;
@@ -159,7 +160,7 @@ export function IntangibleHeritageDetail({ itemId, onNavigate }: IntangibleHerit
                 {hasDescription && (
                   <DetailBlock title={t('intangible.section_description')}>
                     <p style={{ fontSize: 13, color: '#1a2332', lineHeight: 1.7, margin: 0, whiteSpace: 'pre-line' }}>
-                      {lang === 'en' ? (item.descriptionEn || item.descriptionVi) : (item.descriptionVi || item.descriptionEn)}
+                      {lang === 'en' ? sanitizeLocation(item.descriptionEn || item.descriptionVi) : sanitizeLocation(item.descriptionVi || item.descriptionEn)}
                     </p>
                   </DetailBlock>
                 )}
@@ -326,7 +327,7 @@ export function IntangibleHeritageDetail({ itemId, onNavigate }: IntangibleHerit
                 }] : []),
                 ...(item.location ? [{
                   label: t('im.location'),
-                  value: item.location,
+                  value: sanitizeLocation(item.location),
                 }] : []),
                 ...(item.culturalSpace ? [{
                   label: t('im.cultural_space'),

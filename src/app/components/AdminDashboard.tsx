@@ -10,13 +10,14 @@ import { AppLogo } from './AppLogo';
 import {
   LayoutDashboard, Building2, BookOpen, ImageIcon,
   Users, Settings, Bell, LogOut, ChevronRight, Star,
-  Award, LayoutGrid, RefreshCw, Menu, X, Eye, Plus, UserCheck, ChevronDown, List, Info, ClipboardList, QrCode as QrCodeIcon, FileSpreadsheet
+  Award, LayoutGrid, RefreshCw, Menu, X, Eye, Plus, UserCheck, ChevronDown, List, Info, ClipboardList, QrCode as QrCodeIcon, FileSpreadsheet, Landmark
 } from 'lucide-react';
 import { classificationColors } from '../constants';
 import { HeritageManagement } from './HeritageManagement';
 import { UserManagement } from './UserManagement';
 
 import { IntangibleManagement } from './IntangibleManagement';
+import { MemorialSitesManagement } from './MemorialSitesManagement';
 import { HeritageCategoriesManagement } from './HeritageCategoriesManagement';
 import { AboutPageManagement } from './AboutPageManagement';
 import { MediaManagement } from './MediaManagement';
@@ -33,7 +34,7 @@ interface AdminDashboardProps {
   onLogout: () => void;
 }
 
-type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'contact-messages' | 'form-filling' | 'evaluations';
+type AdminSection = 'dashboard' | 'heritage' | 'intangible' | 'memorial-sites' | 'categories' | 'about' | 'media' | 'users' | 'settings' | 'activity-logs' | 'qr' | 'contact-messages' | 'form-filling' | 'evaluations';
 
 export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   const { lang, t } = useLanguage();
@@ -96,6 +97,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
     { key: 'dashboard', label: t('admin.dashboard'), icon: <LayoutDashboard size={16} /> },
     { key: 'heritage', label: t('admin.heritage_mgmt'), icon: <Building2 size={16} /> },
     { key: 'intangible', label: t('admin.intangible_mgmt'), icon: <BookOpen size={16} /> },
+    { key: 'memorial-sites', label: t('admin.memorial_mgmt'), icon: <Landmark size={16} /> },
     { key: 'categories', label: t('admin.categories'), icon: <List size={16} /> },
     { key: 'about', label: t('admin.about'), icon: <Info size={16} /> },
     { key: 'media', label: t('admin.media'), icon: <ImageIcon size={16} /> },
@@ -610,6 +612,10 @@ padding: '2px 7px', borderRadius: 8, fontSize: 9, fontWeight: 700,
 
           {section === 'intangible' && (
             <IntangibleManagement onDirtyChange={handleDirtyChange} onOpenEvaluations={(id) => { setEvaluationFilter(id); setSection('evaluations'); }} />
+          )}
+
+          {section === 'memorial-sites' && (
+            <MemorialSitesManagement onDirtyChange={handleDirtyChange} />
           )}
 
           {section === 'users' && (

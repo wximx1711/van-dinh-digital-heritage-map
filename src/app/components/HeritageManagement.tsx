@@ -590,7 +590,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange, onOpenEvaluation
                     <div>
                       <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{lang === 'vi' ? site.nameVi : site.nameEn}</div>
                       <div style={{ fontSize: 10, color: '#5d7a8c', display: 'flex', alignItems: 'center', gap: 2 }}>
-                        <MapPin size={9} /> {lang === 'vi' ? 'Vân Đình, Ứng Hòa' : 'Van Dinh, Ung Hoa'}
+                        <MapPin size={9} /> {lang === 'vi' ? 'Vân Đình, Thành phố Hà Nội' : 'Van Dinh, Hanoi'}
                       </div>
                     </div>
                   </div>

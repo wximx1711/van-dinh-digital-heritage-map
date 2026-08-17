@@ -106,6 +106,24 @@ public static class MappingExtensions
             item.ExistingProtectionMeasures, item.ProposedProtectionMeasures,
             gallery);
     }
+    public static MemorialSiteDto ToDto(this MemorialSite item)
+    {
+        var gallery = string.IsNullOrWhiteSpace(item.GalleryImages)
+            ? []
+            : System.Text.Json.JsonSerializer.Deserialize<List<string>>(item.GalleryImages) ?? [];
+        return new MemorialSiteDto(
+            item.PublicId, item.Code, item.NameVi, item.NameEn, item.Category,
+            item.Classification, item.Status, item.OtherNames,
+            item.AddressVi, item.AddressEn,
+            item.Latitude.HasValue ? (double)item.Latitude : null,
+            item.Longitude.HasValue ? (double)item.Longitude : null,
+            item.GoogleMapUrl,
+            item.DescriptionVi, item.DescriptionEn,
+            item.HistoryVi, item.HistoryEn,
+            item.EventDate, item.CommemorationVi, item.CommemorationEn,
+            item.ImageUrl, item.VideoUrl, gallery,
+            item.CreatedAt.ToString("yyyy-MM-dd"), item.UpdatedAt?.ToString("yyyy-MM-dd"));
+    }
     public static ActivityLogDto ToDto(this ActivityLog item) => new(item.LogId, item.UserId, item.User?.Username ?? "system", item.User?.Role?.RoleName ?? "", item.Action, item.EntityName, item.EntityId, item.Description, item.IpAddress, item.CreatedAt);
     public static AboutPageDto ToDto(this AboutPage item) => new(item.AboutId, item.TitleVi, item.TitleEn, item.IntroductionVi, item.IntroductionEn, item.MainContentVi, item.MainContentEn, item.BannerImage, item.ContactInfo, item.UpdatedAt);
     public static AboutPageHistoryDto ToDto(this AboutPageHistory item, IReadOnlyDictionary<long, User> userLookup)

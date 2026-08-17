@@ -121,6 +121,55 @@ public sealed class HeritageDocument
     public DateTime UploadedAt { get; set; } = DateTime.UtcNow;
 }
 
+public sealed class MemorialSite
+{
+    public long MemorialSiteId { get; set; }
+    [Required, MaxLength(20)]
+    public string PublicId { get; set; } = "";
+    [Required, MaxLength(50)]
+    public string Code { get; set; } = "";
+    [Required, MinLength(5), MaxLength(200)]
+    public string NameVi { get; set; } = "";
+    [Required, MinLength(5), MaxLength(200)]
+    public string NameEn { get; set; } = "";
+    [Required, MaxLength(255)]
+    public string Slug { get; set; } = "";
+    [Required]
+    public string Category { get; set; } = "memorial";
+    [Required]
+    public string Classification { get; set; } = "provincial";
+    [Required]
+    public string Status { get; set; } = "active";
+    [MaxLength(200)]
+    public string? OtherNames { get; set; }
+    [MinLength(5), MaxLength(300)]
+    public string? AddressVi { get; set; }
+    [MinLength(5), MaxLength(300)]
+    public string? AddressEn { get; set; }
+    public decimal? Latitude { get; set; }
+    public decimal? Longitude { get; set; }
+    public string? GoogleMapUrl { get; set; }
+    [MinLength(30)]
+    public string? DescriptionVi { get; set; }
+    [MinLength(30)]
+    public string? DescriptionEn { get; set; }
+    [MinLength(50)]
+    public string? HistoryVi { get; set; }
+    [MinLength(50)]
+    public string? HistoryEn { get; set; }
+    public string? EventDate { get; set; }
+    public string? CommemorationVi { get; set; }
+    public string? CommemorationEn { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? VideoUrl { get; set; }
+    public string? GalleryImages { get; set; }
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+    public long CreatedBy { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public DateTime? UpdatedAt { get; set; }
+}
+
 public sealed class IntangibleHeritage
 {
     public long IntangibleId { get; set; }

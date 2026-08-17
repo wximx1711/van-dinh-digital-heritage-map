@@ -10,6 +10,7 @@ import { NotFoundPage } from './components/NotFoundPage';
 import { Skeleton } from './components/Skeleton';
 import { apiGet, apiPost } from './services/api';
 import { getImageUrl } from './utils/url';
+import { displaySiteTitle, sanitizeLocation } from './utils/uiText';
 import type { UserInfo, AboutPageData } from '../core/types';
 
 const MapPage = lazy(() => import('./components/MapPage').then(m => ({ default: m.MapPage })));
@@ -18,6 +19,8 @@ const AdminDashboard = lazy(() => import('./components/AdminDashboard').then(m =
 const RelicsPage = lazy(() => import('./components/RelicsPage').then(m => ({ default: m.RelicsPage })));
 const IntangiblePage = lazy(() => import('./components/IntangiblePage').then(m => ({ default: m.IntangiblePage })));
 const IntangibleHeritageDetail = lazy(() => import('./components/IntangibleHeritageDetail').then(m => ({ default: m.IntangibleHeritageDetail })));
+const MemorialSitesPage = lazy(() => import('./components/MemorialSitesPage').then(m => ({ default: m.MemorialSitesPage })));
+const MemorialSiteDetail = lazy(() => import('./components/MemorialSiteDetail').then(m => ({ default: m.MemorialSiteDetail })));
 const StatisticsPage = lazy(() => import('./components/StatisticsPage').then(m => ({ default: m.StatisticsPage })));
 const EvaluationKiosk = lazy(() => import('./components/EvaluationKiosk').then(m => ({ default: m.EvaluationKiosk })));
 
@@ -35,8 +38,8 @@ function PageLoader({ children }: { children: React.ReactNode }) {
 }
 
 type Page =
-  | 'home' | 'relics' | 'intangible' | 'map' | 'statistics'
-  | 'about' | 'contact' | 'heritage-detail' | 'intangible-detail'
+  | 'home' | 'relics' | 'intangible' | 'memorial-sites' | 'map' | 'statistics'
+  | 'about' | 'contact' | 'heritage-detail' | 'intangible-detail' | 'memorial-site-detail'
   | 'login' | 'admin' | 'evaluate' | '404';
 
 function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
@@ -75,11 +78,11 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
     );
   }
 
-  const title = lang === 'vi' ? data.titleVi : data.titleEn;
-  const introduction = lang === 'vi' ? data.introductionVi : data.introductionEn;
-  const mainContent = lang === 'vi' ? data.mainContentVi : data.mainContentEn;
+  const title = displaySiteTitle(lang === 'vi' ? data.titleVi : data.titleEn, lang);
+  const introduction = sanitizeLocation(lang === 'vi' ? data.introductionVi : data.introductionEn);
+  const mainContent = sanitizeLocation(lang === 'vi' ? data.mainContentVi : data.mainContentEn);
   const contact = data.contactInfo;
-  const contactText = contact ? (lang === 'vi' ? `Liên hệ: ${contact}` : `Contact: ${contact}`) : null;
+  const contactText = contact ? (lang === 'vi' ? `Liên hệ: ${sanitizeLocation(contact)}` : `Contact: ${sanitizeLocation(contact)}`) : null;
 
   return (
     <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>
@@ -227,6 +230,7 @@ function AppInner() {
   const [page, setPage] = useState<Page>('home');
   const [heritageSiteId, setHeritageSiteId] = useState<string>('h001');
   const [intangibleId, setIntangibleId] = useState<string>('');
+  const [memorialSiteId, setMemorialSiteId] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const auth = useAuth();
 
@@ -240,6 +244,11 @@ function AppInner() {
     } else if (pageParam === 'intangible' && idParam) {
       setIntangibleId(idParam);
       setPage('intangible-detail');
+    } else if (pageParam === 'memorial-site' && idParam) {
+      setMemorialSiteId(idParam);
+      setPage('memorial-site-detail');
+    } else if (pageParam === 'memorial-sites') {
+      setPage('memorial-sites');
     } else if (pageParam === 'evaluate') {
       setPage('evaluate');
     }
@@ -254,6 +263,7 @@ function AppInner() {
   const navigate = (targetPage: string, id?: string, search?: string) => {
     if (targetPage === 'heritage-detail' && id) setHeritageSiteId(id);
     if (targetPage === 'intangible-detail' && id) setIntangibleId(id);
+    if (targetPage === 'memorial-site-detail' && id) setMemorialSiteId(id);
     if (search !== undefined) {
       setSearchQuery(search);
     } else {
@@ -345,9 +355,11 @@ function AppInner() {
       case 'home': return <HomePage onNavigate={navigate} />;
       case 'relics': return <PageLoader><RelicsPage onNavigate={navigate} searchQuery={searchQuery} /></PageLoader>;
       case 'intangible': return <PageLoader><IntangiblePage onNavigate={navigate} /></PageLoader>;
+      case 'memorial-sites': return <PageLoader><MemorialSitesPage onNavigate={navigate} /></PageLoader>;
       case 'statistics': return <PageLoader><StatisticsPage onNavigate={navigate} /></PageLoader>;
       case 'heritage-detail': return <PageLoader><HeritageDetail siteId={heritageSiteId} onNavigate={navigate} /></PageLoader>;
       case 'intangible-detail': return <PageLoader><IntangibleHeritageDetail itemId={intangibleId} onNavigate={navigate} /></PageLoader>;
+      case 'memorial-site-detail': return <PageLoader><MemorialSiteDetail siteId={memorialSiteId} onNavigate={navigate} /></PageLoader>;
 
       case 'about': return <AboutPage onNavigate={navigate} />;
       case 'contact': return <ContactPage onNavigate={navigate} />;

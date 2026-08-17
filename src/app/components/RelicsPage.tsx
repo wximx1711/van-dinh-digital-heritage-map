@@ -6,6 +6,7 @@ import type { Classification, HeritageType } from '../../core/types';
 import { classificationColors, classificationBackgrounds, statusColors, intangibleCategoryIcons } from '../constants';
 import { getImageUrl } from '../utils/url';
 import { normalizeSearchText } from '../utils/string';
+import { sanitizeLocation } from '../utils/uiText';
 import { Search, Filter, MapPin, Calendar, Eye, RotateCcw, Grid2x2, List, Play } from 'lucide-react';
 
 interface RelicsPageProps {
@@ -70,9 +71,8 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
   const normalizedQuery = normalizeSearchText(search);
 
   const filteredHeritage = heritageSites.filter(s => {
-    if (!search) return true;
     const q = normalizedQuery;
-    const matchSearch = matchHeritageSite(s, q);
+    const matchSearch = !search || matchHeritageSite(s, q);
     const matchCls = filterCls === 'all' || s.classification === filterCls;
     const matchType = filterType === 'all' || s.type === filterType;
     return matchSearch && matchCls && matchType;
@@ -95,7 +95,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
   return (
     <div style={{ background: '#F0F4F8', minHeight: '100vh' }}>
       {/* Page header */}
-      <div style={{ background: '#0F3D5E', padding: '32px 24px 40px' }}>
+      <div className="page-hero" style={{ background: '#0F3D5E', padding: '32px 24px 40px' }}>
         <div style={{ maxWidth: 1280, margin: '0 auto' }}>
           <div style={{ color: '#D4A017', fontSize: 11, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6 }}>
             {lang === 'vi' ? 'Danh mục' : 'Catalog'}
@@ -117,6 +117,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
             <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#5d7a8c' }} />
             <input
               value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
+              className="field-focus"
               placeholder={t('hero.search.placeholder')}
               style={{ width: '100%', padding: '9px 9px 9px 32px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 'clamp(12px, 3vw, 13px)', background: '#F0F4F8', outline: 'none', boxSizing: 'border-box' }}
             />
@@ -126,6 +127,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
           <div className="relics-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <Filter size={13} style={{ color: '#5d7a8c', flexShrink: 0 }} />
             <select value={filterCls} onChange={e => { setFilterCls(e.target.value as Classification | 'all'); setPage(1); }}
+              className="field-focus"
               style={{ padding: '9px 10px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 'clamp(12px, 3vw, 13px)', background: 'white', cursor: 'pointer', outline: 'none', maxWidth: 160 }}>
               <option value="all">{t('common.all')}</option>
               <option value="national">{t('map.national')}</option>
@@ -136,6 +138,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
 
           {/* Type filter */}
           <select value={filterType} onChange={e => { setFilterType(e.target.value as HeritageType | 'all'); setPage(1); }}
+            className="field-focus"
             style={{ padding: '9px 10px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 'clamp(12px, 3vw, 13px)', background: 'white', cursor: 'pointer', outline: 'none', maxWidth: 160 }}>
             <option value="all">{t('common.all')}</option>
             {Object.entries(typeLabels).map(([k, v]) => (
@@ -185,11 +188,12 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20, marginBottom: 24 }}>
                 {(hasSearch ? filteredHeritage : paginated).map(site => (
                   <div key={site.id} onClick={() => onNavigate('heritage-detail', site.id)}
+                    className="card-accent-gold"
                     style={{ background: 'white', borderRadius: 12, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 2px 10px rgba(15,61,94,0.07)', transition: 'transform 0.25s, box-shadow 0.25s' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(15,61,94,0.15)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 10px rgba(15,61,94,0.07)'; }}
                   >
-                    <div style={{ position: 'relative', height: 180, background: '#dce8f0' }}>
+                    <div className="card-img-zoom img-veil" style={{ position: 'relative', height: 180, background: '#dce8f0' }}>
                       <LazyImage src={getImageUrl(site.image)} alt={lang === 'vi' ? site.nameVi : site.nameEn} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       <div style={{ position: 'absolute', top: 10, left: 10, padding: '3px 10px', borderRadius: 20, fontSize: 11, fontWeight: 700, background: classificationBackgrounds[site.classification], color: classificationColors[site.classification] }}>
                         {classificationLabels[site.classification][lang]}
@@ -228,12 +232,12 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
                 {paginated.map(site => (
                   <div key={site.id} onClick={() => onNavigate('heritage-detail', site.id)}
-                    className="relics-list-item"
+                    className="relics-list-item card-accent-gold"
                     style={{ background: 'white', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 2px 8px rgba(15,61,94,0.06)', display: 'flex', transition: 'box-shadow 0.2s' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 6px 20px rgba(15,61,94,0.12)'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 2px 8px rgba(15,61,94,0.06)'; }}
                   >
-                    <div style={{ width: 120, height: 90, background: '#dce8f0', flexShrink: 0 }}>
+                    <div className="card-img-zoom img-veil" style={{ width: 120, height: 90, background: '#dce8f0', flexShrink: 0 }}>
                       <LazyImage src={getImageUrl(site.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     <div className="relics-list-content" style={{ flex: 1, padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -248,7 +252,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
                         </div>
                         <h3 style={{ color: '#0F3D5E', fontSize: 14, fontWeight: 700, margin: '0 0 4px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{lang === 'vi' ? site.nameVi : site.nameEn}</h3>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                          <span style={{ fontSize: 11, color: '#5d7a8c', display: 'flex', alignItems: 'center', gap: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><MapPin size={10} />{lang === 'vi' ? site.addressVi.split(',').slice(-2).join(',') : site.addressEn.split(',').slice(-2).join(',')}</span>
+                          <span style={{ fontSize: 11, color: '#5d7a8c', display: 'flex', alignItems: 'center', gap: 3, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}><MapPin size={10} />{lang === 'vi' ? sanitizeLocation(site.addressVi).split(',').slice(-2).join(',') : sanitizeLocation(site.addressEn).split(',').slice(-2).join(',')}</span>
                         </div>
                       </div>
                       <button className="hide-mobile" style={{ padding: '7px 16px', borderRadius: 7, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 12, fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
@@ -265,7 +269,8 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
               <div style={{ display: 'flex', justifyContent: 'center', gap: 6, paddingBottom: 32 }}>
                 {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
                   <button key={p} onClick={() => { setPage(p); window.scrollTo(0, 0); }}
-                    style={{ width: 36, height: 36, borderRadius: 8, border: '1.5px solid', borderColor: page === p ? '#0F3D5E' : 'rgba(15,61,94,0.15)', background: page === p ? '#0F3D5E' : 'white', color: page === p ? 'white' : '#5d7a8c', cursor: 'pointer', fontSize: 13, fontWeight: page === p ? 700 : 400 }}>
+                    className="pager-btn"
+                    style={{ width: 36, height: 36, borderRadius: 8, border: '1.5px solid', borderColor: page === p ? '#0F3D5E' : 'rgba(15,61,94,0.15)', background: page === p ? 'linear-gradient(135deg, #0F3D5E, #1A5276)' : 'white', color: page === p ? 'white' : '#5d7a8c', cursor: 'pointer', fontSize: 13, fontWeight: page === p ? 700 : 400 }}>
                     {p}
                   </button>
                 ))}
@@ -321,7 +326,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
                       {lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}
                     </h3>
                     <p style={{ color: '#5d7a8c', fontSize: 12, lineHeight: 1.5, margin: '0 0 14px', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                      {lang === 'en' ? (item.descriptionEn || item.descriptionVi) : item.descriptionVi}
+                      {lang === 'en' ? sanitizeLocation(item.descriptionEn || item.descriptionVi) : sanitizeLocation(item.descriptionVi)}
                     </p>
                     <div style={{ display: 'flex', gap: 8 }}>
                       {item.videoUrl ? (
@@ -355,7 +360,7 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
         {/* No results */}
         {totalResults === 0 && (
           <div style={{ textAlign: 'center', padding: '60px 20px', color: '#5d7a8c' }}>
-            <div style={{ fontSize: 48, marginBottom: 12 }}>🔍</div>
+            <div style={{ width: 64, height: 64, borderRadius: '50%', margin: '0 auto 16px', fontSize: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, rgba(212,160,23,0.18), rgba(212,160,23,0.06))', border: '1px solid rgba(212,160,23,0.3)', boxShadow: '0 6px 20px rgba(212,160,23,0.12)' }}>🔍</div>
             <p style={{ fontSize: 15 }}>
               {hasSearch
                 ? (lang === 'vi'

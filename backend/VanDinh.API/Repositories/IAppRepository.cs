@@ -63,6 +63,12 @@ public interface IAppRepository
     void UpdateIntangible(IntangibleHeritage item);
     void DeleteIntangible(string publicId);
 
+    IQueryable<MemorialSite> MemorialSitesUntracked { get; }
+    MemorialSite? FindMemorialSite(string publicId);
+    MemorialSite AddMemorialSite(MemorialSite item);
+    void UpdateMemorialSite(MemorialSite item);
+    void DeleteMemorialSite(string publicId);
+
     IReadOnlyList<RelatedLink> RelatedLinks { get; }
 
     RelatedLink? FindRelatedLink(int id);
