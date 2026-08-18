@@ -661,7 +661,7 @@ public sealed class EfAppRepository : IAppRepository
 
     public int CountHeritageReferencesByUrl(string url)
     {
-        return _context.Heritage
+        var heritageRefs = _context.Heritage
             .AsNoTracking()
             .Count(h => !h.IsDeleted && (
                 h.ThumbnailUrl == url ||
@@ -669,6 +669,15 @@ public sealed class EfAppRepository : IAppRepository
                 h.Videos.Any(v => v.VideoUrl == url) ||
                 h.Documents.Any(d => d.FileUrl == url)
             ));
+
+        var settings = _context.SystemSettings.AsNoTracking().FirstOrDefault();
+        var settingsRefs = settings is not null && (
+            settings.HomeBackgroundImageUrl == url ||
+            settings.HomeBackgroundVideoUrl == url ||
+            settings.HomeBackgroundVideoPosterUrl == url
+        ) ? 1 : 0;
+
+        return heritageRefs + settingsRefs;
     }
 
     public string? RemoveImageFromHeritage(string publicId, long imageId)

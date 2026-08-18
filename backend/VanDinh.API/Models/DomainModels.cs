@@ -311,6 +311,10 @@ public sealed class SystemSetting
     public string? FacebookUrl { get; set; }
     public string? TiktokUrl { get; set; }
     public string? YoutubeUrl { get; set; }
+    public string? HomeBackgroundType { get; set; }
+    public string? HomeBackgroundImageUrl { get; set; }
+    public string? HomeBackgroundVideoUrl { get; set; }
+    public string? HomeBackgroundVideoPosterUrl { get; set; }
     public long? UpdatedBy { get; set; }
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 }

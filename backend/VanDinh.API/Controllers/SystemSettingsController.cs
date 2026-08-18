@@ -37,6 +37,10 @@ public sealed class SystemSettingsController(IAppRepository repository, IActivit
         repository.SystemSetting.FacebookUrl = request.FacebookUrl;
         repository.SystemSetting.TiktokUrl = request.TiktokUrl;
         repository.SystemSetting.YoutubeUrl = request.YoutubeUrl;
+        repository.SystemSetting.HomeBackgroundType = request.HomeBackgroundType;
+        repository.SystemSetting.HomeBackgroundImageUrl = request.HomeBackgroundImageUrl;
+        repository.SystemSetting.HomeBackgroundVideoUrl = request.HomeBackgroundVideoUrl;
+        repository.SystemSetting.HomeBackgroundVideoPosterUrl = request.HomeBackgroundVideoPosterUrl;
         repository.SystemSetting.UpdatedAt = DateTime.UtcNow;
         repository.SaveChanges();
         logs.Log(User, "UPDATE", "SystemSettings", repository.SystemSetting.SettingId);

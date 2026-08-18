@@ -20,6 +20,10 @@ public sealed class SystemSettingConfiguration : IEntityTypeConfiguration<System
         builder.Property(x => x.FacebookUrl).HasColumnType("nvarchar(500)");
         builder.Property(x => x.TiktokUrl).HasColumnType("nvarchar(500)");
         builder.Property(x => x.YoutubeUrl).HasColumnType("nvarchar(500)");
+        builder.Property(x => x.HomeBackgroundType).HasColumnType("nvarchar(20)");
+        builder.Property(x => x.HomeBackgroundImageUrl).HasColumnType("nvarchar(500)");
+        builder.Property(x => x.HomeBackgroundVideoUrl).HasColumnType("nvarchar(500)");
+        builder.Property(x => x.HomeBackgroundVideoPosterUrl).HasColumnType("nvarchar(500)");
         builder.Property(x => x.UpdatedBy);
         builder.Property(x => x.UpdatedAt).HasColumnType("datetime2").HasDefaultValueSql("SYSUTCDATETIME()");
 

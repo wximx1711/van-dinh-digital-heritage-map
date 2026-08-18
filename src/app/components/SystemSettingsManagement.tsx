@@ -2,9 +2,13 @@
 import { useLanguage } from './LanguageContext';
 import { useSystemSettings } from './SystemSettingsContext';
 import { apiGet, apiPut, apiPost, apiDelete } from '../services/api';
-import { Save, Check, AlertTriangle, Plus, Pencil, Trash2, X, ArrowUp, ArrowDown, EyeOff, Eye } from 'lucide-react';
+import { Save, Check, AlertTriangle, Plus, Pencil, Trash2, X, ArrowUp, ArrowDown, EyeOff, Eye, Upload, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
 import { FormSkeleton } from './Skeleton';
 import { useUnsavedChanges } from '../hooks/useUnsavedChanges';
+import { uploadFileWithProgress } from '../services/uploadService';
+import { getImageUrl } from '../utils/url';
+import { MediaPicker } from './MediaPicker';
+import { LazyImage } from './LazyImage';
 
 interface SystemSettingsManagementProps {
   onDirtyChange?: (dirty: boolean) => void;
@@ -26,10 +30,16 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
     websiteName: '', logoUrl: '', footerText: '',
     contactEmail: '', phone: '', address: '',
     facebookUrl: '', tiktokUrl: '', youtubeUrl: '',
+    homeBackgroundType: '', homeBackgroundImageUrl: '',
+    homeBackgroundVideoUrl: '', homeBackgroundVideoPosterUrl: '',
   });
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
+  const [bgUploading, setBgUploading] = useState<'image' | 'video' | 'poster' | null>(null);
+  const [bgUploadProgress, setBgUploadProgress] = useState(0);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [mediaPickerTarget, setMediaPickerTarget] = useState<'image' | 'poster' | null>(null);
   const initialSnapshotRef = useRef<string | null>(null);
 
   // Related Links state
@@ -73,6 +83,10 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
         facebookUrl: data.facebookUrl || '',
         tiktokUrl: data.tiktokUrl || '',
         youtubeUrl: data.youtubeUrl || '',
+        homeBackgroundType: data.homeBackgroundType || '',
+        homeBackgroundImageUrl: data.homeBackgroundImageUrl || '',
+        homeBackgroundVideoUrl: data.homeBackgroundVideoUrl || '',
+        homeBackgroundVideoPosterUrl: data.homeBackgroundVideoPosterUrl || '',
       };
       setForm(newForm);
       initialSnapshotRef.current = JSON.stringify(newForm);
@@ -194,6 +208,41 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
     }
   };
 
+  const handleBackgroundUpload = async (e: React.ChangeEvent<HTMLInputElement>, target: 'image' | 'video' | 'poster') => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setBgUploading(target);
+    setBgUploadProgress(0);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const result = await uploadFileWithProgress({
+        path: target === 'video' ? '/uploads/videos' : '/uploads/images',
+        formData,
+        onProgress: setBgUploadProgress,
+      });
+      if (target === 'image') setForm(s => ({ ...s, homeBackgroundImageUrl: result.url }));
+      else if (target === 'video') setForm(s => ({ ...s, homeBackgroundVideoUrl: result.url }));
+      else setForm(s => ({ ...s, homeBackgroundVideoPosterUrl: result.url }));
+      showToast(lang === 'vi' ? 'Tải lên thành công' : 'Upload successful');
+    } catch {
+      showToast(lang === 'vi' ? 'Tải lên thất bại' : 'Upload failed', 'error');
+    } finally {
+      setBgUploading(null);
+      setBgUploadProgress(0);
+    }
+  };
+
+  const openBackgroundPicker = (target: 'image' | 'poster') => {
+    setMediaPickerTarget(target);
+    setShowMediaPicker(true);
+  };
+
+  const handleBackgroundSelect = (url: string) => {
+    if (mediaPickerTarget === 'poster') setForm(s => ({ ...s, homeBackgroundVideoPosterUrl: url }));
+    else setForm(s => ({ ...s, homeBackgroundImageUrl: url }));
+  };
+
   const inputStyle = {
     width: '100%', padding: '9px 12px', borderRadius: 6,
     border: '1.5px solid rgba(15,61,94,0.15)', fontSize: 13,
@@ -263,6 +312,172 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
             <input style={inputStyle} value={form.youtubeUrl} onChange={e => setForm(s => ({ ...s, youtubeUrl: e.target.value }))} />
           </div>
         </div>
+        {/* HomePage Background */}
+        <div style={{ borderTop: '1px solid rgba(15,61,94,0.1)', marginBottom: 20, paddingTop: 20 }}>
+          <h2 style={{ color: '#0F3D5E', margin: '0 0 4px', fontSize: 18, fontFamily: 'Merriweather, serif' }}>
+            {lang === 'vi' ? 'Nền trang chủ' : 'HomePage Background'}
+          </h2>
+          <p style={{ color: '#5d7a8c', fontSize: 12, margin: '0 0 16px' }}>
+            {lang === 'vi' ? 'Chọn ảnh hoặc video làm nền trang chủ. Nếu chưa cấu hình sẽ dùng nền mặc định.' : 'Choose an image or video as the homepage background. Defaults to the built-in background when not configured.'}
+          </p>
+
+          <div style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
+            <button onClick={() => setForm(s => ({ ...s, homeBackgroundType: 'image' }))}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6,
+                background: form.homeBackgroundType !== 'video' ? '#0F3D5E' : 'white',
+                border: `1px solid ${form.homeBackgroundType !== 'video' ? '#0F3D5E' : 'rgba(15,61,94,0.2)'}`,
+                color: form.homeBackgroundType !== 'video' ? 'white' : '#0F3D5E',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+              }}>
+              <ImageIcon size={14} /> {lang === 'vi' ? 'Ảnh nền' : 'Image'}
+            </button>
+            <button onClick={() => setForm(s => ({ ...s, homeBackgroundType: 'video' }))}
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6,
+                background: form.homeBackgroundType === 'video' ? '#0F3D5E' : 'white',
+                border: `1px solid ${form.homeBackgroundType === 'video' ? '#0F3D5E' : 'rgba(15,61,94,0.2)'}`,
+                color: form.homeBackgroundType === 'video' ? 'white' : '#0F3D5E',
+                fontSize: 12, fontWeight: 600, cursor: 'pointer',
+              }}>
+              <VideoIcon size={14} /> {lang === 'vi' ? 'Video nền' : 'Video'}
+            </button>
+          </div>
+
+          {form.homeBackgroundType !== 'video' ? (
+            <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
+              <div style={{
+                width: 320, height: 140, borderRadius: 8, overflow: 'hidden',
+                background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+              }}>
+                {form.homeBackgroundImageUrl ? <LazyImage src={getImageUrl(form.homeBackgroundImageUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  : <ImageIcon size={32} style={{ color: '#5d7a8c', opacity: 0.5 }} />}
+              </div>
+              <div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  <label style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 6,
+                    padding: '8px 16px', borderRadius: 6,
+                    background: '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600,
+                    cursor: bgUploading !== null ? 'wait' : 'pointer', opacity: bgUploading !== null ? 0.7 : 1,
+                  }}>
+                    <Upload size={14} />
+                    {bgUploading === 'image' ? `${bgUploadProgress}%` : (lang === 'vi' ? 'Chọn ảnh' : 'Choose Image')}
+                    <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={e => handleBackgroundUpload(e, 'image')} disabled={bgUploading !== null} />
+                  </label>
+                  <div onClick={() => openBackgroundPicker('image')}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                    <ImageIcon size={14} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
+                  </div>
+                  {form.homeBackgroundImageUrl && (
+                    <button onClick={() => setForm(s => ({ ...s, homeBackgroundImageUrl: '' }))} style={{
+                      padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(231,76,60,0.3)',
+                      background: '#FDEDEC', color: '#E74C3C', fontSize: 12, cursor: 'pointer',
+                    }}>
+                      {lang === 'vi' ? 'Xóa ảnh' : 'Remove Image'}
+                    </button>
+                  )}
+                </div>
+                {bgUploading === 'image' && (
+                  <div style={{ marginTop: 8, width: 320, height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ width: `${bgUploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+                  </div>
+                )}
+                <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB'}</p>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <div style={{
+                width: 320, height: 170, borderRadius: 8, overflow: 'hidden',
+                background: '#0d1b2a', border: '1px solid rgba(15,61,94,0.1)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12,
+              }}>
+                {form.homeBackgroundVideoUrl ? (
+                  <video key={form.homeBackgroundVideoUrl} src={getImageUrl(form.homeBackgroundVideoUrl)} poster={form.homeBackgroundVideoPosterUrl ? getImageUrl(form.homeBackgroundVideoPosterUrl) : undefined} controls muted playsInline style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : form.homeBackgroundImageUrl ? (
+                  <LazyImage src={getImageUrl(form.homeBackgroundImageUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <VideoIcon size={32} style={{ color: '#5d7a8c', opacity: 0.5 }} />
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+                <label style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  padding: '8px 16px', borderRadius: 6,
+                  background: '#0F3D5E', color: 'white', fontSize: 12, fontWeight: 600,
+                  cursor: bgUploading !== null ? 'wait' : 'pointer', opacity: bgUploading !== null ? 0.7 : 1,
+                }}>
+                  <Upload size={14} />
+                  {bgUploading === 'video' ? `${bgUploadProgress}%` : (lang === 'vi' ? 'Chọn video' : 'Choose Video')}
+                  <input type="file" accept="video/mp4,video/webm,video/quicktime,.mp4,.webm,.mov" style={{ display: 'none' }} onChange={e => handleBackgroundUpload(e, 'video')} disabled={bgUploading !== null} />
+                </label>
+                {form.homeBackgroundVideoUrl && (
+                  <button onClick={() => setForm(s => ({ ...s, homeBackgroundVideoUrl: '' }))} style={{
+                    padding: '8px 16px', borderRadius: 6, border: '1px solid rgba(231,76,60,0.3)',
+                    background: '#FDEDEC', color: '#E74C3C', fontSize: 12, cursor: 'pointer',
+                  }}>
+                    {lang === 'vi' ? 'Xóa video' : 'Remove Video'}
+                  </button>
+                )}
+              </div>
+              {bgUploading === 'video' && (
+                <div style={{ marginTop: 8, width: 320, height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+                  <div style={{ width: `${bgUploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+                </div>
+              )}
+              <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'MP4, WebM, MOV — tối đa 100MB' : 'MP4, WebM, MOV — max 100MB'}</p>
+
+              <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start', marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(15,61,94,0.08)' }}>
+                <div style={{
+                  width: 120, height: 68, borderRadius: 6, overflow: 'hidden',
+                  background: '#dce8f0', border: '1px solid rgba(15,61,94,0.1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                }}>
+                  {form.homeBackgroundVideoPosterUrl ? <LazyImage src={getImageUrl(form.homeBackgroundVideoPosterUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    : <ImageIcon size={20} style={{ color: '#5d7a8c', opacity: 0.5 }} />}
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 5, textTransform: 'uppercase', letterSpacing: 0.3 }}>
+                    {lang === 'vi' ? 'Ảnh đại diện (poster) — tùy chọn' : 'Video Poster (optional)'}
+                  </label>
+                  <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                    <label style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 6,
+                      padding: '7px 12px', borderRadius: 6,
+                      background: '#0F3D5E', color: 'white', fontSize: 11, fontWeight: 600,
+                      cursor: bgUploading !== null ? 'wait' : 'pointer', opacity: bgUploading !== null ? 0.7 : 1,
+                    }}>
+                      <Upload size={13} />
+                      {bgUploading === 'poster' ? `${bgUploadProgress}%` : (lang === 'vi' ? 'Chọn ảnh' : 'Choose Image')}
+                      <input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" style={{ display: 'none' }} onChange={e => handleBackgroundUpload(e, 'poster')} disabled={bgUploading !== null} />
+                    </label>
+                    <div onClick={() => openBackgroundPicker('poster')}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 12px', borderRadius: 6, border: '1px solid rgba(15,61,94,0.2)', background: 'white', color: '#0F3D5E', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>
+                      <ImageIcon size={13} /> {lang === 'vi' ? 'Từ thư viện' : 'From Library'}
+                    </div>
+                    {form.homeBackgroundVideoPosterUrl && (
+                      <button onClick={() => setForm(s => ({ ...s, homeBackgroundVideoPosterUrl: '' }))} style={{
+                        padding: '7px 12px', borderRadius: 6, border: '1px solid rgba(231,76,60,0.3)',
+                        background: '#FDEDEC', color: '#E74C3C', fontSize: 11, cursor: 'pointer',
+                      }}>
+                        {lang === 'vi' ? 'Xóa poster' : 'Remove Poster'}
+                      </button>
+                    )}
+                  </div>
+                  {bgUploading === 'poster' && (
+                    <div style={{ marginTop: 8, width: 200, height: 6, background: '#dce8f0', borderRadius: 3, overflow: 'hidden' }}>
+                      <div style={{ width: `${bgUploadProgress}%`, height: '100%', background: '#D4A017', borderRadius: 3, transition: 'width 0.2s ease' }} />
+                    </div>
+                  )}
+                  <p style={{ fontSize: 10, color: '#cbced4', margin: '6px 0 0' }}>{lang === 'vi' ? 'PNG, JPG, JPEG, WebP, HEIC, HEIF — tối đa 5MB' : 'PNG, JPG, JPEG, WebP, HEIC, HEIF — max 5MB'}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 10, borderTop: '1px solid rgba(15,61,94,0.1)', paddingTop: 16 }}>
           <button onClick={handleSave} disabled={saving}
             style={{
@@ -404,6 +619,13 @@ export function SystemSettingsManagement({ onDirtyChange }: SystemSettingsManage
           </div>
         )}
       </div>
+
+      <MediaPicker
+        open={showMediaPicker}
+        onClose={() => { setShowMediaPicker(false); setMediaPickerTarget(null); }}
+        onSelect={handleBackgroundSelect}
+        title={lang === 'vi' ? 'Chọn ảnh từ thư viện' : 'Select image from library'}
+      />
     </div>
   );
 }

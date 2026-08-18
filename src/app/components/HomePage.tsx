@@ -1,8 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLanguage } from './LanguageContext';
 import { LazyImage } from './LazyImage';
+import { useSystemSettings } from './SystemSettingsContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
+import { useMemorialSites } from '../../presentation/hooks/useMemorialSiteData';
 import { classificationColors, classificationBackgrounds, intangibleCategoryIcons } from '../constants';
+import { memorialCategoryIcons, memorialClassificationBackgrounds, memorialClassificationColors } from '../constants/memorial';
 import { getImageUrl } from '../utils/url';
 import { sanitizeLocation } from '../utils/uiText';
 import {
@@ -14,6 +17,9 @@ import {
 interface HomePageProps {
   onNavigate: (page: string, id?: string, searchQuery?: string) => void;
 }
+
+/* ── Default hero background (final fallback when no background is configured) ── */
+const DEFAULT_HERO_BACKGROUND = 'https://images.unsplash.com/photo-1723065195938-30a5e64036e8?w=1920&h=1080&fit=crop&auto=format';
 
 /* ── Count-up number for stats ─────────────────────────────── */
 function useCountUp(target: number, started: boolean, duration = 1400) {
@@ -90,13 +96,26 @@ function MapNodeNetwork({
 
 export function HomePage({ onNavigate }: HomePageProps) {
   const { lang, t } = useLanguage();
+  const { settings } = useSystemSettings();
   const [searchQuery, setSearchQuery] = useState('');
   const [statsStarted, setStatsStarted] = useState(false);
+  const [videoFailed, setVideoFailed] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
   const statsRef = useRef<HTMLDivElement>(null);
 
+  const bgType = settings?.homeBackgroundType === 'video' ? 'video' : 'image';
+  const bgImageUrl = settings?.homeBackgroundImageUrl || '';
+  const bgVideoUrl = settings?.homeBackgroundVideoUrl || '';
+  const bgPosterUrl = settings?.homeBackgroundVideoPosterUrl || '';
+
+  useEffect(() => {
+    setVideoFailed(false);
+  }, [bgVideoUrl, bgType]);
+
   const { data: heritageSites, loading: sitesLoading } = useHeritageSites();
   const { data: intangibleHeritage } = useIntangibleHeritage();
+  const { data: memorialResult, loading: memorialSitesLoading, error: memorialSitesError } = useMemorialSites({ page: 1, pageSize: 100 });
+  const memorialSites = memorialResult.data;
   const classificationLabels = useClassificationLabels();
   const typeLabels = useTypeLabels();
 
@@ -213,13 +232,27 @@ export function HomePage({ onNavigate }: HomePageProps) {
     <div ref={rootRef} style={{ background: 'white' }}>
       {/* ═══════════════════ HERO ═══════════════════ */}
       <section className="hero-section" style={{ position: 'relative', minHeight: 'clamp(560px, 88vh, 780px)', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
-        {/* Heritage background with slow ken-burns zoom (kept clearly visible) */}
-        <div className="kenburns" style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: `url(https://images.unsplash.com/photo-1723065195938-30a5e64036e8?w=1920&h=1080&fit=crop&auto=format)`,
-          backgroundSize: 'cover', backgroundPosition: 'center',
-          filter: 'brightness(0.9) saturate(1.12) contrast(1.02)',
-        }} />
+        {/* Heritage background media layer (configurable via Settings; falls back to default Unsplash) */}
+        {bgType === 'video' && bgVideoUrl && !videoFailed ? (
+          <video
+            src={getImageUrl(bgVideoUrl)}
+            poster={bgPosterUrl ? getImageUrl(bgPosterUrl) : undefined}
+            autoPlay muted loop playsInline
+            onError={() => setVideoFailed(true)}
+            style={{
+              position: 'absolute', inset: 0, width: '100%', height: '100%',
+              objectFit: 'cover', objectPosition: 'center', pointerEvents: 'none',
+              filter: 'brightness(0.9) saturate(1.12) contrast(1.02)',
+            }}
+          />
+        ) : (
+          <div className="kenburns" style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: `url(${videoFailed && bgPosterUrl ? getImageUrl(bgPosterUrl) : getImageUrl(bgImageUrl || DEFAULT_HERO_BACKGROUND)})`,
+            backgroundSize: 'cover', backgroundPosition: 'center',
+            filter: 'brightness(0.9) saturate(1.12) contrast(1.02)',
+          }} />
+        )}
         {/* Navy-to-transparent gradient (lighter overlay so the heritage image breathes) */}
         <div className="hero-scrim" style={{
           position: 'absolute', inset: 0,

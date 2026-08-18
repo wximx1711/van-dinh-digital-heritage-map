@@ -11,6 +11,10 @@ export interface SystemSettings {
   facebookUrl: string;
   tiktokUrl: string;
   youtubeUrl: string;
+  homeBackgroundType: string;
+  homeBackgroundImageUrl: string;
+  homeBackgroundVideoUrl: string;
+  homeBackgroundVideoPosterUrl: string;
   updatedAt: string;
 }
 
@@ -30,6 +34,10 @@ const defaultSettings: SystemSettings = {
   facebookUrl: '',
   tiktokUrl: '',
   youtubeUrl: '',
+  homeBackgroundType: '',
+  homeBackgroundImageUrl: '',
+  homeBackgroundVideoUrl: '',
+  homeBackgroundVideoPosterUrl: '',
   updatedAt: '',
 };
 
@@ -57,6 +65,10 @@ export function SystemSettingsProvider({ children }: { children: React.ReactNode
         facebookUrl: data.facebookUrl || '',
         tiktokUrl: data.tiktokUrl || '',
         youtubeUrl: data.youtubeUrl || '',
+        homeBackgroundType: data.homeBackgroundType || '',
+        homeBackgroundImageUrl: data.homeBackgroundImageUrl || '',
+        homeBackgroundVideoUrl: data.homeBackgroundVideoUrl || '',
+        homeBackgroundVideoPosterUrl: data.homeBackgroundVideoPosterUrl || '',
         updatedAt: data.updatedAt || '',
       });
     } catch {

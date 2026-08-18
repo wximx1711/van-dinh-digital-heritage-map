@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-08-18T04:52:01Z
+    GENERATED: 2026-08-18T06:32:14Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -466,6 +466,10 @@ CREATE TABLE [SystemSettings] (
     [UpdatedBy] bigint NULL,
     [UpdatedAt] datetime2(7) NOT NULL CONSTRAINT [DF_SystemSettings_UpdatedAt] DEFAULT (sysutcdatetime()),
     [YoutubeUrl] nvarchar(2000) NULL,
+    [HomeBackgroundImageUrl] nvarchar(500) NULL,
+    [HomeBackgroundType] nvarchar(20) NULL,
+    [HomeBackgroundVideoPosterUrl] nvarchar(500) NULL,
+    [HomeBackgroundVideoUrl] nvarchar(500) NULL,
     CONSTRAINT [PK_SystemSettings] PRIMARY KEY CLUSTERED ([SettingId]),
     CONSTRAINT [FK_SystemSettings_Users_UpdatedBy] FOREIGN KEY ([UpdatedBy]) REFERENCES [Users]([UserId])
 );
@@ -617,7 +621,7 @@ GO
 -- SEED AND CURRENT DATA
 -- ========================================
 
--- [__EFMigrationsHistory]: 28 rows
+-- [__EFMigrationsHistory]: 29 rows
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260701052754_InitialCreate', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260702054259_UpdateDatabaseSchema', N'10.0.9');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260703000000_AddAuditFieldsToIntangibleHeritage', N'10.0.9');
@@ -646,6 +650,7 @@ INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'202608
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260816081710_AddRevolutionaryMemorialSites', N'10.0.10');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260817055923_AddMemorialSites', N'10.0.10');
 INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260818041620_AddBusinessCodesToIntangibleAndMemorial', N'10.0.10');
+INSERT [__EFMigrationsHistory] ([MigrationId],[ProductVersion]) VALUES (N'20260818052023_AddHomePageBackgroundSettings', N'10.0.10');
 GO
 
 -- [Roles]: 2 rows
@@ -671,7 +676,7 @@ GO
 
 -- [AboutPage]: 1 rows
 SET IDENTITY_INSERT [AboutPage] ON;
-INSERT [AboutPage] ([AboutId],[BannerImage],[UpdatedBy],[UpdatedAt],[ContactInfo],[IntroductionEn],[IntroductionVi],[MainContentEn],[MainContentVi],[TitleEn],[TitleVi]) VALUES (1, N'/uploads/images/67e12a1aab18499ab100796a8f85e857.jpg', 3, '2026-07-19T11:30:09.7594939', N'Ban Quản lý Hệ thống Bản đồ số Di sản Văn hóa Vân Đình
+INSERT [AboutPage] ([AboutId],[BannerImage],[UpdatedBy],[UpdatedAt],[ContactInfo],[IntroductionEn],[IntroductionVi],[MainContentEn],[MainContentVi],[TitleEn],[TitleVi]) VALUES (1, N'/uploads/images/544815fb23ef41ce8f3adb9292287add.jpg', 3, '2026-08-18T05:03:48.4377963', N'Ban Quản lý Hệ thống Bản đồ số Di sản Văn hóa Vân Đình
 Địa chỉ: Xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội', N'The Van Dinh Digital Cultural Heritage Map is a digital platform designed to support the management, preservation, and promotion of cultural heritage in Van Dinh Commune, Ung Hoa District, Hanoi. The system provides a centralized database of tangible and intangible cultural heritage, integrating digital maps, photographs, historical documentation, and scientific information to facilitate digital transformation in the cultural sector while preserving and promoting local heritage values.', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là nền tảng số được xây dựng nhằm hỗ trợ công tác quản lý, bảo tồn và phát huy giá trị di sản văn hóa trên địa bàn xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội. Hệ thống cung cấp cơ sở dữ liệu tập trung về các di sản văn hóa vật thể và phi vật thể, tích hợp bản đồ số, hình ảnh, tư liệu và thông tin khoa học, góp phần thúc đẩy chuyển đổi số trong lĩnh vực văn hóa theo định hướng của Luật Di sản văn hóa và các chủ trương của Nhà nước về bảo tồn, phát huy giá trị di sản văn hóa.', N'The system provides comprehensive information on tangible and intangible cultural heritage that has been inventoried and digitized within Van Dinh Commune. Each heritage site is displayed on a digital map together with its geographic location, photographs, historical background, architectural and cultural values, preservation status, and related documentation.
 
 Key features include:
@@ -700,16 +705,40 @@ GO
 DBCC CHECKIDENT ([AboutPage], RESEED, 1);
 GO
 
--- [AboutPageHistories]: 2 rows
+-- [AboutPageHistories]: 3 rows
 SET IDENTITY_INSERT [AboutPageHistories] ON;
 INSERT [AboutPageHistories] ([HistoryId],[AboutId],[TitleVi],[TitleEn],[IntroductionVi],[IntroductionEn],[MainContentVi],[MainContentEn],[BannerImage],[ContactInfo],[UpdatedBy],[CreatedAt]) VALUES (1, 1, N'Giới thiệu xã Vân Đình', N'About Van Dinh Commune', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là dự án số hóa và bảo tồn di sản văn hóa của xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.', N'The Van Dinh Digital Heritage Map System is a project for digitizing and preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi City.', N'Với tổng số hơn 10 di tích vật thể và 5 di sản phi vật thể được ghi nhận và số hóa, hệ thống cung cấp đầy đủ thông tin lịch sử, kiến trúc, tọa độ và hình ảnh của từng di sản.', N'With over 10 tangible heritage sites and 5 intangible heritage items documented and digitized, the system provides comprehensive information on history, architecture, coordinates, and images of each heritage site.', NULL, NULL, 1, '2026-07-19T11:26:11.7892823');
 INSERT [AboutPageHistories] ([HistoryId],[AboutId],[TitleVi],[TitleEn],[IntroductionVi],[IntroductionEn],[MainContentVi],[MainContentEn],[BannerImage],[ContactInfo],[UpdatedBy],[CreatedAt]) VALUES (2, 1, N'Giới thiệu xã Vân Đình', N'About Van Dinh Commune', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là dự án số hóa và bảo tồn di sản văn hóa của xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội.', N'The Van Dinh Digital Heritage Map System is a project for digitizing and preserving cultural heritage of Van Dinh Commune, Ung Hoa District, Hanoi City.', N'Với tổng số hơn 10 di tích vật thể và 5 di sản phi vật thể được ghi nhận và số hóa, hệ thống cung cấp đầy đủ thông tin lịch sử, kiến trúc, tọa độ và hình ảnh của từng di sản.', N'With over 10 tangible heritage sites and 5 intangible heritage items documented and digitized, the system provides comprehensive information on history, architecture, coordinates, and images of each heritage site.', N'/uploads/images/67e12a1aab18499ab100796a8f85e857.jpg', NULL, 3, '2026-07-19T11:30:09.7537719');
+INSERT [AboutPageHistories] ([HistoryId],[AboutId],[TitleVi],[TitleEn],[IntroductionVi],[IntroductionEn],[MainContentVi],[MainContentEn],[BannerImage],[ContactInfo],[UpdatedBy],[CreatedAt]) VALUES (3, 1, N'Bản đồ số Di sản Văn hóa Vân Đình', N'Van Dinh Digital Cultural Heritage Map', N'Hệ thống Bản đồ số Di sản Văn hóa Vân Đình là nền tảng số được xây dựng nhằm hỗ trợ công tác quản lý, bảo tồn và phát huy giá trị di sản văn hóa trên địa bàn xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội. Hệ thống cung cấp cơ sở dữ liệu tập trung về các di sản văn hóa vật thể và phi vật thể, tích hợp bản đồ số, hình ảnh, tư liệu và thông tin khoa học, góp phần thúc đẩy chuyển đổi số trong lĩnh vực văn hóa theo định hướng của Luật Di sản văn hóa và các chủ trương của Nhà nước về bảo tồn, phát huy giá trị di sản văn hóa.', N'The Van Dinh Digital Cultural Heritage Map is a digital platform designed to support the management, preservation, and promotion of cultural heritage in Van Dinh Commune, Ung Hoa District, Hanoi. The system provides a centralized database of tangible and intangible cultural heritage, integrating digital maps, photographs, historical documentation, and scientific information to facilitate digital transformation in the cultural sector while preserving and promoting local heritage values.', N'Hệ thống cung cấp thông tin đầy đủ về các di sản văn hóa vật thể và phi vật thể đã được kiểm kê, số hóa trên địa bàn xã Vân Đình. Mỗi di sản được hiển thị trên bản đồ số với vị trí địa lý, hình ảnh, tư liệu, lịch sử hình thành, giá trị kiến trúc, nghệ thuật, văn hóa, hiện trạng bảo tồn và các thông tin liên quan.
+
+Các chức năng chính của hệ thống bao gồm:
+
+Tra cứu thông tin di sản theo tên, loại hình và vị trí.
+Hiển thị vị trí di sản trên bản đồ số với khả năng tìm đường.
+Quản lý và cập nhật dữ liệu di sản theo phân quyền.
+Lưu trữ hình ảnh, tư liệu và hồ sơ khoa học phục vụ công tác bảo tồn.
+Hỗ trợ quảng bá giá trị văn hóa địa phương, giáo dục truyền thống và phát triển du lịch văn hóa.
+Xây dựng cơ sở dữ liệu phục vụ công tác quản lý nhà nước, nghiên cứu và chuyển đổi số trong lĩnh vực di sản văn hóa.
+
+Hệ thống được phát triển nhằm góp phần bảo vệ, lưu giữ lâu dài và phát huy giá trị các di sản văn hóa theo quy định của Luật Di sản văn hóa năm 2024, đồng thời tạo điều kiện thuận lợi để người dân, nhà nghiên cứu, du khách và cơ quan quản lý tiếp cận thông tin một cách chính xác, minh bạch và thuận tiện.', N'The system provides comprehensive information on tangible and intangible cultural heritage that has been inventoried and digitized within Van Dinh Commune. Each heritage site is displayed on a digital map together with its geographic location, photographs, historical background, architectural and cultural values, preservation status, and related documentation.
+
+Key features include:
+
+Searching heritage information by name, category, and location.
+Displaying heritage locations on an interactive digital map with navigation support.
+Managing and updating heritage data through role-based access control.
+Storing photographs, digital archives, and scientific documentation for preservation purposes.
+Supporting cultural promotion, heritage education, and cultural tourism development.
+Building a centralized digital heritage database to assist government agencies, researchers, and the public.
+
+The platform contributes to the long-term preservation and promotion of cultural heritage in accordance with Vietnam''s Cultural Heritage Law while improving public access to reliable and comprehensive heritage information through digital technology.', N'/uploads/images/67e12a1aab18499ab100796a8f85e857.jpg', N'Ban Quản lý Hệ thống Bản đồ số Di sản Văn hóa Vân Đình
+Địa chỉ: Xã Vân Đình, huyện Ứng Hòa, thành phố Hà Nội', 3, '2026-08-18T05:03:48.4050955');
 SET IDENTITY_INSERT [AboutPageHistories] OFF;
 GO
-DBCC CHECKIDENT ([AboutPageHistories], RESEED, 2);
+DBCC CHECKIDENT ([AboutPageHistories], RESEED, 3);
 GO
 
--- [ActivityLogs]: 643 rows
+-- [ActivityLogs]: 647 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -1354,9 +1383,13 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10604, 3, N'DELETE', N'MemorialSite', 4, N'ms0004', '2026-08-18T03:19:57.7745755', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10605, 3, N'DELETE', N'MemorialSite', 5, N'ms0005', '2026-08-18T03:20:00.5125087', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10606, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-18T04:41:11.5127024', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10607, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-18T04:57:29.2175311', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10608, 3, N'UPDATE', N'AboutPage', 1, NULL, '2026-08-18T05:03:48.4425707', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10609, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-08-18T05:31:15.5950589', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10610, 3, N'APPROVE', N'ServiceEvaluations', 3, NULL, '2026-08-18T06:30:24.4667089', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10606);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10610);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -7646,7 +7679,7 @@ GO
 DBCC CHECKIDENT ([MailMergeJobs], RESEED, 1);
 GO
 
--- [MediaFiles]: 705 rows
+-- [MediaFiles]: 707 rows
 SET IDENTITY_INSERT [MediaFiles] ON;
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (1, N'/uploads/documents/0089b523886646bc984445edd6a517f4.pdf', N'lý lịch.pdf', 5419292, N'document', '2026-07-09T13:35:15.5911208');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (2, N'/uploads/images/b23911a7876d4bb3aa94951845935724.jpg', N'IMG_6046.JPG', 3008935, N'image', '2026-07-09T13:49:30.7601993');
@@ -8353,9 +8386,11 @@ INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[Uplo
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (857, N'/uploads/images/bc983565a9a14364b5480397d90ee8bb.jpg', N'IMG_5842.JPG', 3206662, N'image', '2026-08-16T08:35:14.1769186');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (858, N'/uploads/images/544815fb23ef41ce8f3adb9292287add.jpg', N'1782181778941_3778901739963343031_3778901739963343031_f396c3ca9d5021e6f5057b5b1d7b7bf1.jpg', 789832, N'image', '2026-08-18T02:44:05.2582642');
 INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (859, N'/uploads/images/a2940ebef32448ce953cc6b6e7d02211.jpg', N'1782181854016_3778901739963343031_3778901739963343031_0e4ac2474dd1d9455f3e906a9b6cef27.jpg', 1099408, N'image', '2026-08-18T02:44:17.8481331');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (863, N'/uploads/images/d641784be7c94c7ea90c595ccbc5f0b6.jpg', N'IMG_2771.jpg', 3199728, N'image', '2026-08-18T04:57:44.6312638');
+INSERT [MediaFiles] ([MediaFileId],[Url],[FileName],[FileSize],[MediaType],[UploadedAt]) VALUES (864, N'/uploads/images/f6b4dc5ef50c48609e7a26693e8e36de.jpg', N'IMG_2771.jpg', 3199728, N'image', '2026-08-18T05:02:45.0298995');
 SET IDENTITY_INSERT [MediaFiles] OFF;
 GO
-DBCC CHECKIDENT ([MediaFiles], RESEED, 859);
+DBCC CHECKIDENT ([MediaFiles], RESEED, 864);
 GO
 
 -- [MemorialSites]: 8 rows
@@ -8413,7 +8448,7 @@ GO
 SET IDENTITY_INSERT [ServiceEvaluations] ON;
 INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (1, N'heritage', N'h0d0c0cbc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:03.1271464', NULL, NULL, 1, N'mink', N'very_satisfied', N'approved', N'ok');
 INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (2, N'heritage', N'heff617cc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:53.3774101', NULL, NULL, 1, N'đức', N'very_satisfied', N'approved', NULL);
-INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (3, N'heritage', N'heba4c83e', 5, NULL, N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 OPR/134.0.0.0 (Edition std-2)', '2026-08-12T01:24:40.9193710', NULL, N'ok@gmail.com', 0, N'duc', N'very_satisfied', N'pending', N'ok');
+INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (3, N'heritage', N'heba4c83e', 5, NULL, N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 OPR/134.0.0.0 (Edition std-2)', '2026-08-12T01:24:40.9193710', NULL, N'ok@gmail.com', 1, N'duc', N'very_satisfied', N'approved', N'ok');
 SET IDENTITY_INSERT [ServiceEvaluations] OFF;
 GO
 DBCC CHECKIDENT ([ServiceEvaluations], RESEED, 3);
@@ -8421,7 +8456,7 @@ GO
 
 -- [SystemSettings]: 1 rows
 SET IDENTITY_INSERT [SystemSettings] ON;
-INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl]) VALUES (1, N'Bản đồ Di sản số Vân Đình', N'', N'Bản đồ Di sản số Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-08-16T11:05:54.4448765', N'');
+INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl],[HomeBackgroundImageUrl],[HomeBackgroundType],[HomeBackgroundVideoPosterUrl],[HomeBackgroundVideoUrl]) VALUES (1, N'Bản đồ Di sản số Vân Đình', N'', N'Bản đồ Di sản số Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-08-18T05:31:15.5538151', N'', N'/uploads/images/f6b4dc5ef50c48609e7a26693e8e36de.jpg', N'', N'', N'');
 SET IDENTITY_INSERT [SystemSettings] OFF;
 GO
 DBCC CHECKIDENT ([SystemSettings], RESEED, 1);
