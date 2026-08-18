@@ -20,6 +20,7 @@ import { LazyImage } from './LazyImage';
 
 interface IntangibleItem {
   id: string;
+  code: string;
   nameVi: string;
   nameEn: string;
   category: string;
@@ -71,7 +72,7 @@ type FormMode = 'add' | 'edit' | null;
 const categories = ['knowledge', 'festival', 'belief', 'craft'];
 
 const emptyItem: IntangibleItem = {
-  id: '', nameVi: '', nameEn: '', category: 'knowledge',
+  id: '', code: '', nameVi: '', nameEn: '', category: 'knowledge',
   descriptionVi: '', descriptionEn: '', image: '', videoUrl: '',
   otherNames: '', location: '', culturalSpace: '', community: '', representativePersons: '',
   origin: '', originEn: '', formationHistory: '', historicalDevelopment: '',
@@ -441,13 +442,14 @@ export function IntangibleManagement({ onDirtyChange, onOpenEvaluations }: Intan
 
       <div className="im-table-wrapper" style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         {loading ? (
-          <AdminTableSkeleton rowCount={5} columnCount={7} />
+          <AdminTableSkeleton rowCount={5} columnCount={8} />
         ) : (
           <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 580 }}>
             <thead>
               <tr style={{ background: '#0F3D5E' }}>
                 {[
+                  t('hm.id'),
                   lang === 'vi' ? 'Ảnh' : 'Image',
                   lang === 'vi' ? 'Tên' : 'Name',
                   lang === 'vi' ? 'Thể loại' : 'Category',
@@ -466,6 +468,7 @@ export function IntangibleManagement({ onDirtyChange, onOpenEvaluations }: Intan
                 <tr key={item.id} style={{ background: i % 2 === 0 ? 'white' : '#FAFBFD', borderBottom: '1px solid rgba(15,61,94,0.04)' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = '#EBF5FB'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? 'white' : '#FAFBFD'; }}>
+                  <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c', fontWeight: 600, whiteSpace: 'nowrap' }}>{item.code || item.id}</td>
                   <td style={{ padding: '10px 14px' }}>
                     <div style={{ width: 44, height: 34, borderRadius: 4, overflow: 'hidden', background: '#dce8f0' }}>
                       {item.image ? <LazyImage src={getImageUrl(item.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -532,7 +535,7 @@ export function IntangibleManagement({ onDirtyChange, onOpenEvaluations }: Intan
                 </tr>
               ))}
               {items.length === 0 && (
-                <tr><td colSpan={8} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
+                <tr><td colSpan={9} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
               )}
             </tbody>
             </table>

@@ -147,7 +147,7 @@ public sealed record HeritageRequest(
 
 /// <summary>Intangible heritage data transfer object.</summary>
 public sealed record IntangibleHeritageDto(
-    string Id, string NameVi, string NameEn, string Category,
+    string Id, string Code, string NameVi, string NameEn, string Category,
     string? DescriptionVi, string? DescriptionEn,
     string? Image, string? VideoUrl,
     string CreatedAt, string? UpdatedAt,

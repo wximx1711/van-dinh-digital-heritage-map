@@ -241,7 +241,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange, onOpenEvaluation
   const openAdd = () => {
     const newSite = {
       id: '',
-      code: `VĐHN-DT-${String(sites.length + 1).padStart(3, '0')}`,
+      code: '',
       nameVi: '', nameEn: '', type: '' as HeritageType, classification: 'unranked',
       status: 'active', addressVi: '', addressEn: '',
       lat: null, lon: null, googleMapUrl: '',
@@ -287,7 +287,7 @@ export function HeritageManagement({ onNavigate, onDirtyChange, onOpenEvaluation
 
     if (!editSite.yearBuilt.trim()) errors.yearBuilt = lang === 'vi' ? 'Năm xây dựng là bắt buộc' : 'Year built is required';
 
-    if (!editSite.code.trim()) errors.code = lang === 'vi' ? 'Mã di tích là bắt buộc' : 'Code is required';
+    if (editSite.id && !editSite.code.trim()) errors.code = lang === 'vi' ? 'Mã di tích là bắt buộc' : 'Code is required';
 
     if (!editSite.googleMapUrl.trim()) errors.googleMapUrl = lang === 'vi' ? 'Google Maps URL là bắt buộc' : 'Google Maps URL is required';
     else if (!isValidGoogleMapsUrl(editSite.googleMapUrl))

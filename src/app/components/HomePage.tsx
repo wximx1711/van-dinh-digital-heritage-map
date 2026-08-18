@@ -47,6 +47,47 @@ function LotusOrnament({ size = 88, opacity = 0.6 }: { size?: number; opacity?: 
   );
 }
 
+/* ── Decorative digital-map node network (hero side panels) ── */
+function MapNodeNetwork({
+  mirror = false,
+  labelTop = 'VÂN ĐÌNH · HÀ NỘI',
+  labelBottom = '20.8522°N · 105.7632°E',
+}: { mirror?: boolean; labelTop?: string; labelBottom?: string }) {
+  const w = 150;
+  return (
+    <svg width={w} height={250} viewBox={`0 0 ${w} 250`} fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block' }} aria-hidden="true">
+      <g transform={mirror ? `scale(-1, 1) translate(-${w}, 0)` : undefined}>
+        {/* Faint topographic contour lines */}
+        <path d="M6 24 C 44 6, 112 14, 144 2" stroke="rgba(212,160,23,0.5)" strokeWidth="1" strokeLinecap="round" />
+        <path d="M6 48 C 44 30, 112 38, 144 26" stroke="rgba(255,255,255,0.35)" strokeWidth="0.8" strokeLinecap="round" />
+        <path d="M6 72 C 44 54, 112 62, 144 50" stroke="rgba(212,160,23,0.42)" strokeWidth="0.8" strokeLinecap="round" />
+        <path d="M6 196 C 54 218, 106 212, 144 226" stroke="rgba(255,255,255,0.3)" strokeWidth="0.8" strokeLinecap="round" />
+        <path d="M6 222 C 54 240, 106 234, 144 244" stroke="rgba(212,160,23,0.35)" strokeWidth="0.7" strokeLinecap="round" />
+        {/* Map-node connections */}
+        <line x1="22" y1="112" x2="54" y2="96" stroke="rgba(255,255,255,0.55)" strokeWidth="1" />
+        <line x1="54" y1="96" x2="86" y2="128" stroke="rgba(255,255,255,0.45)" strokeWidth="1" strokeDasharray="3 4" />
+        <line x1="86" y1="128" x2="118" y2="104" stroke="rgba(212,160,23,0.6)" strokeWidth="1" />
+        <line x1="118" y1="104" x2="136" y2="148" stroke="rgba(255,255,255,0.4)" strokeWidth="0.8" strokeDasharray="2 4" />
+        {/* Fine dotted route */}
+        <path d="M6 164 C 36 148, 76 172, 108 156 S 138 148, 144 138" stroke="rgba(255,255,255,0.5)" strokeWidth="1" strokeDasharray="1 6" strokeLinecap="round" />
+        {/* Heritage map pin */}
+        <path d="M128 16 C 121.5 23.5, 121.5 32, 128 41 C 134.5 32, 134.5 23.5, 128 16 Z" fill="#D4A017" opacity="0.9" />
+        <circle cx="128" cy="26" r="2.1" fill="#0F3D5E" />
+        {/* Map nodes */}
+        <circle cx="22" cy="112" r="3.2" fill="#D4A017" />
+        <circle cx="54" cy="96" r="2" fill="rgba(255,255,255,0.9)" />
+        <circle className="hero-map-node" cx="86" cy="128" r="3.8" fill="#D4A017" />
+        <circle cx="118" cy="104" r="2.2" fill="rgba(255,255,255,0.8)" />
+        <circle cx="136" cy="148" r="2.4" fill="none" stroke="rgba(212,160,23,0.85)" strokeWidth="1" />
+        <circle cx="126" cy="80" r="1.8" fill="rgba(255,255,255,0.6)" />
+      </g>
+      {/* Cartographic labels (kept upright, never mirrored) */}
+      <text x="2" y="12" fill="rgba(255,255,255,0.5)" fontSize="8.5" letterSpacing="2.2" fontFamily="'JetBrains Mono', Consolas, monospace">{labelTop}</text>
+      <text x="2" y="244" fill="rgba(212,160,23,0.65)" fontSize="8.5" letterSpacing="1.4" fontFamily="'JetBrains Mono', Consolas, monospace">{labelBottom}</text>
+    </svg>
+  );
+}
+
 export function HomePage({ onNavigate }: HomePageProps) {
   const { lang, t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
@@ -183,8 +224,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div className="hero-scrim" style={{
           position: 'absolute', inset: 0,
           background:
-            'linear-gradient(180deg, rgba(7,29,46,0.62) 0%, rgba(15,61,94,0.30) 36%, rgba(15,61,94,0.10) 62%, rgba(7,29,46,0) 100%),' +
-            'radial-gradient(ellipse 78% 66% at 50% 47%, rgba(7,29,46,0.55) 0%, rgba(15,61,94,0.22) 52%, rgba(7,29,46,0) 100%)',
+            'linear-gradient(180deg, rgba(7,29,46,0.68) 0%, rgba(15,61,94,0.30) 36%, rgba(15,61,94,0.10) 62%, rgba(7,29,46,0) 100%),' +
+            'radial-gradient(ellipse 78% 66% at 50% 47%, rgba(7,29,46,0.30) 0%, rgba(15,61,94,0.12) 52%, rgba(7,29,46,0) 100%)',
         }} />
         {/* Faint digital map grid + contours (subtle, never competes with the image) */}
         <div className="hero-digital-grid" style={{
@@ -200,6 +241,18 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <div style={{
           position: 'absolute', inset: 0, opacity: 0.15,
           backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q38 18 30 30 Q22 18 30 5Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M5 30 Q18 38 30 30 Q18 22 5 30Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M55 30 Q42 38 30 30 Q42 22 55 30Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M30 55 Q38 42 30 30 Q22 42 30 55Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3C/svg%3E")`,
+        }} />
+        {/* Central readability halo — soft, edgeless darkening behind hero text */}
+        <div className="hero-content-halo" style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background:
+            'radial-gradient(ellipse 34% 22% at 50% 38%, rgba(212,160,23,0.14) 0%, rgba(212,160,23,0) 70%),' +
+            'radial-gradient(ellipse 66% 62% at 50% 47%, rgba(7,29,46,0.78) 0%, rgba(7,29,46,0.55) 40%, rgba(7,29,46,0.28) 66%, rgba(7,29,46,0) 80%)',
+        }} />
+        {/* Corner vignette */}
+        <div style={{
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse 140% 120% at 50% 40%, transparent 52%, rgba(7,29,46,0.42) 100%)',
         }} />
         {/* Faint map crosshair markers (desktop only) */}
         <div className="hide-mobile" style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
@@ -224,6 +277,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
         <div className="hide-mobile" style={{ position: 'absolute', bottom: 44, right: 22, pointerEvents: 'none', color: 'rgba(212,160,23,0.6)', fontSize: 10, letterSpacing: 1.8, fontFamily: '"JetBrains Mono", Consolas, monospace', lineHeight: 1.7, textAlign: 'right' }}>
           VÂN ĐÌNH · CHUƠNG MỸ · HÀ NỘI
+        </div>
+
+        {/* Digital-map side panels (large screens only) */}
+        <div className="hide-mobile hero-side-panel" style={{ position: 'absolute', top: '50%', left: 'clamp(14px, 2vw, 34px)', transform: 'translateY(-50%)', pointerEvents: 'none', opacity: 0.9 }}>
+          <MapNodeNetwork labelTop="VÂN ĐÌNH · HÀ NỘI" labelBottom="20.8522°N · 105.7632°E" />
+        </div>
+        <div className="hide-mobile hero-side-panel" style={{ position: 'absolute', top: '50%', right: 'clamp(14px, 2vw, 34px)', transform: 'translateY(-50%)', pointerEvents: 'none', opacity: 0.9 }}>
+          <MapNodeNetwork mirror labelTop="DIGITAL HERITAGE MAP" labelBottom="BẢN ĐỒ DI SẢN SỐ" />
         </div>
 
         {/* Floating lotus ornaments (desktop only) */}
@@ -256,7 +317,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <h1 className="text-responsive-hero fade-up-1" style={{
             color: 'white', fontSize: 'clamp(30px, 5vw, 58px)',
             fontFamily: 'Merriweather, serif', fontWeight: 900, marginBottom: 20, lineHeight: 1.16,
-            textShadow: '0 4px 32px rgba(7,29,46,0.6), 0 1px 4px rgba(7,29,46,0.5)',
+            textShadow: '0 2px 4px rgba(7,29,46,0.95), 0 10px 30px rgba(7,29,46,0.7), 0 4px 70px rgba(7,29,46,0.5)',
           }}>
             {lang === 'vi' ? (
               <>
@@ -269,9 +330,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </>
             )}
           </h1>
-          <p className="fade-up-2" style={{ color: 'rgba(255,255,255,0.9)', fontSize: 'clamp(14px, 2.5vw, 17px)', maxWidth: 680, margin: '0 auto 38px', lineHeight: 1.75, paddingLeft: 8, paddingRight: 8, fontWeight: 500, textShadow: '0 2px 16px rgba(7,29,46,0.85)' }}>
+          <p className="fade-up-2" style={{ color: 'rgba(255,255,255,0.95)', fontSize: 'clamp(14px, 2.5vw, 17px)', maxWidth: 680, margin: '0 auto 22px', lineHeight: 1.75, paddingLeft: 8, paddingRight: 8, fontWeight: 500, textShadow: '0 2px 8px rgba(7,29,46,0.95), 0 4px 26px rgba(7,29,46,0.7)' }}>
             {t('site.subtitle')}
           </p>
+
+          {/* Gold hairline ornament between subtitle and search */}
+          <div className="fade-up-2" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 30 }}>
+            <span style={{ width: 64, height: 1, background: 'linear-gradient(90deg, transparent, rgba(212,160,23,0.85))' }} />
+            <span className="ornament-diamond" style={{ width: 7, height: 7 }} />
+            <span style={{ width: 64, height: 1, background: 'linear-gradient(90deg, rgba(212,160,23,0.85), transparent)' }} />
+          </div>
 
           {/* Search bar */}
           <div className="hero-search-bar fade-up-3" style={{ display: 'flex', maxWidth: 580, margin: '0 auto', gap: 0, boxShadow: '0 18px 50px rgba(7,29,46,0.4)', borderRadius: 60, border: '1.5px solid rgba(212,160,23,0.35)', overflow: 'hidden' }}>
@@ -310,6 +378,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               { label: t('nav.map'), page: 'map', icon: '🗺️' },
               { label: t('nav.relics'), page: 'relics', icon: '🏛️' },
               { label: t('nav.intangible'), page: 'intangible', icon: '🎭' },
+              { label: lang === 'vi' ? 'Điểm lưu niệm cách mạng' : 'Memorial Sites', page: 'memorial-sites', icon: <Landmark size={15} /> },
             ].map(btn => (
               <button
                 key={btn.page}
@@ -782,8 +851,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
           0%, 100% { opacity: 0.65; }
           50% { opacity: 1; }
         }
+        .hero-map-node { animation: mapNodePulse 4.5s ease-in-out infinite; }
+        @keyframes mapNodePulse {
+          0%, 100% { opacity: 0.55; }
+          50% { opacity: 1; }
+        }
         @media (prefers-reduced-motion: reduce) {
-          .map-crosshair { animation: none !important; }
+          .map-crosshair, .hero-map-node { animation: none !important; }
+        }
+        @media (max-width: 1599px) {
+          .hero-side-panel { display: none !important; }
         }
         @media (max-width: 640px) {
           .stats-grid {

@@ -88,7 +88,7 @@ public static class MappingExtensions
             ? []
             : System.Text.Json.JsonSerializer.Deserialize<List<string>>(item.GalleryImages) ?? [];
         return new IntangibleHeritageDto(
-            item.PublicId, item.NameVi, item.NameEn, item.Category,
+            item.PublicId, item.Code, item.NameVi, item.NameEn, item.Category,
             item.DescriptionVi, item.DescriptionEn, item.ImageUrl, item.VideoUrl,
             item.CreatedAt.ToString("yyyy-MM-dd"), item.UpdatedAt?.ToString("yyyy-MM-dd"),
             item.OtherNames, item.Location, item.CulturalSpace,

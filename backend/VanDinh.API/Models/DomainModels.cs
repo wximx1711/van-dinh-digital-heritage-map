@@ -175,6 +175,8 @@ public sealed class IntangibleHeritage
     public long IntangibleId { get; set; }
     [Required, MaxLength(20)]
     public string PublicId { get; set; } = "";
+    [Required, MaxLength(50)]
+    public string Code { get; set; } = "";
     [Required, MinLength(5), MaxLength(200)]
     public string NameVi { get; set; } = "";
     [Required, MinLength(5), MaxLength(200)]

@@ -388,6 +388,17 @@ public sealed class EfAppRepository : IAppRepository
             item.PublicId = $"ih{num:D4}";
         }
 
+        if (string.IsNullOrWhiteSpace(item.Code))
+        {
+            var existingCodes = _context.IntangibleHeritages
+                .Where(i => !i.IsDeleted && i.Code.StartsWith("VĐHN-PVT-"))
+                .Select(i => i.Code)
+                .ToList();
+            var num = 1;
+            while (existingCodes.Contains($"VĐHN-PVT-{num:D3}")) { num++; }
+            item.Code = $"VĐHN-PVT-{num:D3}";
+        }
+
         item.CreatedAt = DateTime.UtcNow;
 
         _context.IntangibleHeritages.Add(item);
@@ -429,6 +440,17 @@ public sealed class EfAppRepository : IAppRepository
             var num = 1;
             while (existingIds.Contains($"ms{num:D4}")) { num++; }
             item.PublicId = $"ms{num:D4}";
+        }
+
+        if (string.IsNullOrWhiteSpace(item.Code))
+        {
+            var existingCodes = _context.MemorialSites
+                .Where(i => !i.IsDeleted && i.Code.StartsWith("VĐHN-ĐLN-"))
+                .Select(i => i.Code)
+                .ToList();
+            var num = 1;
+            while (existingCodes.Contains($"VĐHN-ĐLN-{num:D3}")) { num++; }
+            item.Code = $"VĐHN-ĐLN-{num:D3}";
         }
 
         item.CreatedAt = DateTime.UtcNow;

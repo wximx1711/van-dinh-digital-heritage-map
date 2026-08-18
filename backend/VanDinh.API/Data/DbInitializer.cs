@@ -279,7 +279,7 @@ public static class DbInitializer
             context.MemorialSites.Add(new MemorialSite
             {
                 PublicId = publicId,
-                Code = $"VĐLN-SKCMKC-{index - 1:D3}",
+                Code = $"VĐHN-ĐLN-{index - 1:D3}",
                 NameVi = s.NameVi,
                 NameEn = s.NameEn,
                 Slug = uniqueSlug,

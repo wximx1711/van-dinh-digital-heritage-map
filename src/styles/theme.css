@@ -492,11 +492,12 @@
   100% { background-position: 200% 50%; }
 }
 .text-gold-gradient {
-  background: linear-gradient(100deg, #f4d98a 0%, #D4A017 30%, #f6e2a8 50%, #B8860B 70%, #f4d98a 100%);
+  background: linear-gradient(100deg, #f7e2a1 0%, #e0ab2e 30%, #f9e7ad 50%, #c28a12 70%, #f7e2a1 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  text-shadow: 0 1px 2px rgba(7, 29, 46, 0.5), 0 2px 12px rgba(212, 160, 23, 0.22);
   animation: goldShimmer 6s linear infinite;
 }
 

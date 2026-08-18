@@ -16,6 +16,7 @@ public sealed class IntangibleHeritageConfiguration : IEntityTypeConfiguration<I
         builder.HasKey(x => x.IntangibleId);
         builder.Property(x => x.IntangibleId).ValueGeneratedOnAdd();
         builder.Property(x => x.PublicId).HasColumnType("nvarchar(20)").IsRequired();
+        builder.Property(x => x.Code).HasColumnType("nvarchar(50)").IsRequired();
         builder.Property(x => x.NameVi).HasColumnType("nvarchar(255)").IsRequired();
         builder.Property(x => x.NameEn).HasColumnType("nvarchar(255)").IsRequired();
         builder.Property(x => x.Category).HasColumnType("nvarchar(30)").IsRequired();
@@ -66,6 +67,7 @@ public sealed class IntangibleHeritageConfiguration : IEntityTypeConfiguration<I
         builder.Property(x => x.UpdatedAt).HasColumnType("datetime2");
 
         builder.HasIndex(x => x.Category);
+        builder.HasIndex(x => x.Code);
         builder.HasIndex(x => x.PublicId).IsUnique();
         builder.HasIndex(x => x.NameVi).IsUnique().HasFilter("IsDeleted = 0");
         builder.HasIndex(x => x.NameEn).IsUnique().HasFilter("IsDeleted = 0");

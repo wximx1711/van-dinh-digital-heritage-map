@@ -6,6 +6,7 @@ const CACHE_KEY_INTANGIBLE = 'intangibleHeritage';
 
 interface IntangibleHeritageDto {
   id: string;
+  code: string;
   nameVi: string;
   nameEn: string;
   category: string;
@@ -64,6 +65,7 @@ interface IntangibleSearchResult {
 function toIntangibleHeritage(dto: IntangibleHeritageDto): IntangibleHeritage {
   return {
     id: dto.id,
+    code: dto.code,
     nameVi: dto.nameVi,
     nameEn: dto.nameEn,
     category: dto.category as IntangibleHeritage['category'],

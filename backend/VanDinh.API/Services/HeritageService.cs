@@ -162,7 +162,7 @@ public sealed class HeritageService(
         var heritage = new Heritage
         {
             PublicId = publicId,
-            Code = request.Code,
+            Code = GenerateNextCode(repository.Heritages),
             CategoryId = category.CategoryId,
             NameVi = request.NameVi.Trim(),
             NameEn = request.NameEn.Trim(),

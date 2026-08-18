@@ -449,20 +449,21 @@ export function MemorialSitesManagement({ onDirtyChange }: MemorialSitesManageme
 
       <div className="mm-table-wrapper" style={{ background: 'white', borderRadius: 10, overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,61,94,0.06)' }}>
         {loading ? (
-          <AdminTableSkeleton rowCount={5} columnCount={8} />
+          <AdminTableSkeleton rowCount={5} columnCount={9} />
         ) : (
           <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 620 }}>
             <thead>
               <tr style={{ background: '#0F3D5E' }}>
                 {[
+                  t('hm.id'),
                   lang === 'vi' ? 'Ảnh' : 'Image',
-                  lang === 'vi' ? 'Mã điểm' : 'Code',
                   lang === 'vi' ? 'Tên' : 'Name',
                   lang === 'vi' ? 'Loại hình' : 'Category',
                   lang === 'vi' ? 'Xếp hạng' : 'Classification',
                   lang === 'vi' ? 'Trạng thái' : 'Status',
                   lang === 'vi' ? 'Thời gian sự kiện' : 'Event Date',
+                  lang === 'vi' ? 'Video' : 'Video',
                   t('hm.actions')
                 ].map(h => (
                   <th key={h} style={{ padding: '12px 14px', fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,0.8)', textAlign: 'left', textTransform: 'uppercase', letterSpacing: 0.4, whiteSpace: 'nowrap' }}>{h}</th>
@@ -474,14 +475,14 @@ export function MemorialSitesManagement({ onDirtyChange }: MemorialSitesManageme
                 <tr key={item.id} style={{ background: i % 2 === 0 ? 'white' : '#FAFBFD', borderBottom: '1px solid rgba(15,61,94,0.04)' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLTableRowElement).style.background = '#EBF5FB'; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? 'white' : '#FAFBFD'; }}>
+                  <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c', fontWeight: 600, whiteSpace: 'nowrap' }}>{item.code || '-'}</td>
                   <td style={{ padding: '10px 14px' }}>
                     <div style={{ width: 44, height: 34, borderRadius: 4, overflow: 'hidden', background: '#dce8f0' }}>
                       {item.image ? <LazyImage src={getImageUrl(item.image)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         : <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#5d7a8c' }}>-</div>}
                     </div>
                   </td>
-                  <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c', whiteSpace: 'nowrap' }}>{item.code || '-'}</td>
-                  <td style={{ padding: '10px 14px' }}>
+                  <td style={{ padding: '10px 14px', minWidth: 180 }}>
                     <div style={{ fontSize: 12, fontWeight: 700, color: '#0F3D5E' }}>{lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}</div>
                     <div style={{ fontSize: 10, color: '#5d7a8c' }}>{lang === 'vi' ? item.nameEn : item.nameVi}</div>
                   </td>
@@ -505,6 +506,13 @@ export function MemorialSitesManagement({ onDirtyChange }: MemorialSitesManageme
                   <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c', whiteSpace: 'nowrap' }}>
                     {item.eventDate || '-'}
                   </td>
+                  <td style={{ padding: '10px 14px', fontSize: 11, color: '#5d7a8c' }}>
+                    {item.videoUrl ? (
+                      <a href={item.videoUrl} target="_blank" rel="noreferrer" style={{ color: '#D4A017', textDecoration: 'underline', fontSize: 11 }}>
+                        {lang === 'vi' ? 'Xem' : 'Watch'}
+                      </a>
+                    ) : '-'}
+                  </td>
                   <td style={{ padding: '10px 14px' }}>
                     <div style={{ display: 'flex', gap: 4 }}>
                       <button onClick={() => openEdit(item)}
@@ -518,7 +526,7 @@ export function MemorialSitesManagement({ onDirtyChange }: MemorialSitesManageme
                 </tr>
               ))}
               {items.length === 0 && (
-                <tr><td colSpan={8} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
+                <tr><td colSpan={9} style={{ padding: '32px', textAlign: 'center', color: '#5d7a8c', fontSize: 13 }}>{t('common.nodata')}</td></tr>
               )}
             </tbody>
             </table>

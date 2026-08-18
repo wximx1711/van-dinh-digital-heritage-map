@@ -43,6 +43,7 @@ export interface UserInfo {
 
 export interface IntangibleHeritage {
   id: string;
+  code?: string;
   nameVi: string;
   nameEn: string;
   category: 'knowledge' | 'festival' | 'belief' | 'craft';
