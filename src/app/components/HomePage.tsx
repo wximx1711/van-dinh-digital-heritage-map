@@ -137,7 +137,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
     );
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
-  }, [heritageSites, intangibleHeritage]);
+  }, [heritageSites, intangibleHeritage, memorialSites]);
 
   useEffect(() => {
     const stats = statsRef.current;
@@ -806,6 +806,156 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════ MEMORIAL SITES (SKCMKC) ═══════════════════ */}
+      <section style={{ background: '#F0F4F8', padding: 'clamp(48px, 6vw, 72px) 16px', position: 'relative' }}>
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.05, pointerEvents: 'none', backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 5 Q38 18 30 30 Q22 18 30 5Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M5 30 Q18 38 30 30 Q18 22 5 30Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M55 30 Q42 38 30 30 Q42 22 55 30Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3Cpath d='M30 55 Q38 42 30 30 Q22 42 30 55Z' fill='none' stroke='%23D4A017' stroke-width='1'/%3E%3C/svg%3E")` }} />
+        <div style={{ maxWidth: 1280, margin: '0 auto', position: 'relative' }}>
+          {sectionHeading(
+            lang === 'vi' ? 'Lưu niệm' : 'Memorial',
+            t('memorial.title'),
+            t('memorial.subtitle'),
+          )}
+
+          {memorialSitesLoading ? (
+            <div style={{ textAlign: 'center', padding: 40, color: '#5d7a8c', fontSize: 13 }}>
+              {t('common.loading')}…
+            </div>
+          ) : memorialSitesError ? (
+            <div style={{ textAlign: 'center', padding: 40, color: '#E74C3C', fontSize: 13 }}>
+              {t('memorial.errorTitle')}
+            </div>
+          ) : !memorialSites || memorialSites.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: 40, color: '#5d7a8c', fontSize: 13 }}>
+              {t('memorial.empty')}
+            </div>
+          ) : (
+            <>
+              <div className="featured-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 26 }}>
+                {memorialSites.slice(0, 6).map((item, idx) => (
+                  <div key={item.id} className="reveal" style={{ transitionDelay: `${(idx % 3) * 0.08}s` }}>
+                  <div
+                    onClick={() => onNavigate('memorial-site-detail', item.id)}
+                    className="hero-card card-accent-gold"
+                    style={{
+                      background: 'white', borderRadius: 16, overflow: 'hidden',
+                      boxShadow: '0 4px 20px rgba(15,61,94,0.09)',
+                      border: '1px solid rgba(15,61,94,0.08)',
+                      cursor: 'pointer', transition: 'transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease',
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-8px)';
+                      (e.currentTarget as HTMLDivElement).style.boxShadow = '0 24px 50px rgba(15,61,94,0.2)';
+                      (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(212,160,23,0.45)';
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)';
+                      (e.currentTarget as HTMLDivElement).style.boxShadow = '0 4px 20px rgba(15,61,94,0.09)';
+                      (e.currentTarget as HTMLDivElement).style.borderColor = 'rgba(15,61,94,0.08)';
+                    }}
+                  >
+                    {/* Image */}
+                    <div className="hero-card-media img-veil" style={{ position: 'relative', height: 190, overflow: 'hidden', background: '#dce8f0' }}>
+                      <LazyImage
+                        src={getImageUrl(item.image)}
+                        alt={lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                      <div style={{
+                        position: 'absolute', top: 10, left: 10,
+                        padding: '4px 12px', borderRadius: 20, fontSize: 11, fontWeight: 700,
+                        background: memorialClassificationBackgrounds[item.classification],
+                        color: memorialClassificationColors[item.classification],
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+                      }}>
+                        {t(`memorial.classification.${item.classification}`)}
+                      </div>
+                      <div style={{
+                        position: 'absolute', top: 8, right: 12,
+                        fontFamily: 'Merriweather, serif', fontSize: 30, fontWeight: 900,
+                        color: 'rgba(255,255,255,0.9)', textShadow: '0 2px 10px rgba(0,0,0,0.5)',
+                      }}>
+                        {String(idx + 1).padStart(2, '0')}
+                      </div>
+                    </div>
+                    {/* Content */}
+                    <div style={{ padding: '18px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                        <span style={{
+                          padding: '3px 9px', borderRadius: 5, fontSize: 11, fontWeight: 700,
+                          background: '#EBF5FB', color: '#0F3D5E',
+                        }}>
+                          {memorialCategoryIcons[item.category]} {t(`memorial.category.${item.category}`)}
+                        </span>
+                        {item.eventDate && (
+                          <span style={{ color: '#5d7a8c', fontSize: 11, display: 'flex', alignItems: 'center', gap: 3 }}>
+                            <Calendar size={11} /> {item.eventDate}
+                          </span>
+                        )}
+                      </div>
+                      <h3 style={{ color: '#0F3D5E', fontSize: 15.5, fontWeight: 800, margin: '0 0 6px', lineHeight: 1.35, fontFamily: 'Merriweather, serif' }}>
+                        {lang === 'en' ? (item.nameEn || item.nameVi) : item.nameVi}
+                      </h3>
+                      <p style={{ color: '#5d7a8c', fontSize: 12.5, lineHeight: 1.55, margin: '0 0 14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {sanitizeLocation(lang === 'en' ? (item.descriptionEn || item.descriptionVi) : item.descriptionVi)}
+                      </p>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        {item.videoUrl ? (
+                          <a href={item.videoUrl} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} style={{
+                            flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                            padding: '7px 0', borderRadius: 8,
+                            border: '1px solid #0F3D5E', background: 'white',
+                            color: '#0F3D5E', fontSize: 11.5, fontWeight: 600, cursor: 'pointer', textDecoration: 'none',
+                          }}>
+                            <Play size={11} /> {t('intangible.video')}
+                          </a>
+                        ) : (
+                          <div style={{ flex: 1 }} />
+                        )}
+                        <button onClick={e => { e.stopPropagation(); onNavigate('memorial-site-detail', item.id); }} style={{
+                          flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                          padding: '7px 0', borderRadius: 8,
+                          background: '#0F3D5E', border: 'none',
+                          color: 'white', fontSize: 11.5, fontWeight: 600, cursor: 'pointer',
+                        }}>
+                          <Eye size={11} /> {t('memorial.detail')}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  </div>
+                ))}
+              </div>
+
+              {memorialSites.length > 6 && (
+                <div className="reveal" style={{ textAlign: 'center', marginTop: 36 }}>
+                  <button
+                    onClick={() => onNavigate('memorial-sites')}
+                    className="btn-outline-glow btn-shine"
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 8,
+                      padding: '13px 30px', borderRadius: 10,
+                      border: '2px solid #0F3D5E', background: 'white',
+                      color: '#0F3D5E', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+                      transition: 'all 0.2s',
+                    }}
+                    onMouseEnter={e => {
+                      (e.currentTarget as HTMLButtonElement).style.background = '#0F3D5E';
+                      (e.currentTarget as HTMLButtonElement).style.color = 'white';
+                    }}
+                    onMouseLeave={e => {
+                      (e.currentTarget as HTMLButtonElement).style.background = 'white';
+                      (e.currentTarget as HTMLButtonElement).style.color = '#0F3D5E';
+                    }}
+                  >
+                    {t('featured.viewall')} <ChevronRight size={16} />
+                  </button>
+                </div>
+              )}
+            </>
+          )}
         </div>
       </section>
 

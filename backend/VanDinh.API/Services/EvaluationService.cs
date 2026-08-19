@@ -488,30 +488,42 @@ public sealed class EvaluationService(IAppRepository repository) : IEvaluationSe
         IQueryable<ServiceEvaluation> scoped,
         IQueryable<TargetName> names)
     {
-        // The join is executed inside SQL Server; only the aggregated top/lowest
-        // rows are materialized. Include navigations on the name source are
-        // ignored by EF Core because the query projects to a plain shape.
-        var joined = scoped.Join(
-            names,
-            e => e.TargetId,
-            n => n.PublicId,
-            (e, n) => new { e.Score, n.PublicId, n.NameVi, n.NameEn });
+        // Per-target aggregates are computed by the database (SQL GROUP BY) and
+        // only the aggregated rows are materialized; the name source is joined
+        // in memory afterwards (same pattern as GetHeritageSummariesAsync).
+        var aggregates = await scoped
+            .Where(x => x.TargetId != null)
+            .GroupBy(x => x.TargetId!)
+            .Select(g => new { Id = g.Key, Average = g.Average(x => x.Score), Count = g.Count() })
+            .ToListAsync();
 
-        var top = await joined
-            .GroupBy(x => new { x.PublicId, x.NameVi, x.NameEn })
-            .Select(g => new EvaluationTopItem(g.Key.PublicId, g.Key.NameVi, g.Key.NameEn, g.Average(x => x.Score), g.Count()))
+        var nameLookup = (await names.ToListAsync())
+            .ToDictionary(n => n.PublicId);
+
+        var ranked = aggregates
+            .Select(a =>
+            {
+                var name = nameLookup.TryGetValue(a.Id, out var n) ? n : null;
+                return new EvaluationTopItem(
+                    a.Id,
+                    name?.NameVi ?? a.Id,
+                    name?.NameEn ?? a.Id,
+                    Math.Round(a.Average, 2),
+                    a.Count);
+            })
+            .ToList();
+
+        var top = ranked
             .OrderByDescending(x => x.AverageScore)
             .ThenByDescending(x => x.EvaluationCount)
             .Take(10)
-            .ToListAsync();
+            .ToList();
 
-        var lowest = await joined
-            .GroupBy(x => new { x.PublicId, x.NameVi, x.NameEn })
-            .Select(g => new EvaluationTopItem(g.Key.PublicId, g.Key.NameVi, g.Key.NameEn, g.Average(x => x.Score), g.Count()))
+        var lowest = ranked
             .OrderBy(x => x.AverageScore)
             .ThenByDescending(x => x.EvaluationCount)
             .Take(10)
-            .ToListAsync();
+            .ToList();
 
         return (top, lowest);
     }

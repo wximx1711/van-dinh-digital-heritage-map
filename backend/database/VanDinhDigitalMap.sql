@@ -1,7 +1,7 @@
 ﻿/*==========================================================
     PROJECT : VAN DINH DIGITAL HERITAGE MAP
     DATABASE: VanDinhDigitalMap
-    GENERATED: 2026-08-18T06:32:14Z
+    GENERATED: 2026-08-19T02:28:15Z
     SOURCE  : Auto-generated database snapshot
     PURPOSE : Complete database recreation script
 
@@ -738,7 +738,7 @@ GO
 DBCC CHECKIDENT ([AboutPageHistories], RESEED, 3);
 GO
 
--- [ActivityLogs]: 647 rows
+-- [ActivityLogs]: 653 rows
 SET IDENTITY_INSERT [ActivityLogs] ON;
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (2, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-07-09T13:29:05.8477811', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (3, 1, N'CREATE', N'Users', 3, N'kiki', '2026-07-09T13:29:39.3506524', NULL);
@@ -1387,9 +1387,15 @@ INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Descri
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10608, 3, N'UPDATE', N'AboutPage', 1, NULL, '2026-08-18T05:03:48.4425707', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10609, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-08-18T05:31:15.5950589', NULL);
 INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10610, 3, N'APPROVE', N'ServiceEvaluations', 3, NULL, '2026-08-18T06:30:24.4667089', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10611, 3, N'LOGIN', N'Users', 3, N'User logged in.', '2026-08-19T01:51:46.2320575', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10612, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-19T01:58:46.7506801', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10613, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-19T01:58:51.8173198', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10614, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-19T01:59:02.3774818', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10615, 1, N'LOGIN', N'Users', 1, N'User logged in.', '2026-08-19T01:59:26.0543133', NULL);
+INSERT [ActivityLogs] ([LogId],[UserId],[Action],[EntityName],[EntityId],[Description],[CreatedAt],[IpAddress]) VALUES (10616, 3, N'UPDATE', N'SystemSettings', 1, NULL, '2026-08-19T02:16:33.5389542', NULL);
 SET IDENTITY_INSERT [ActivityLogs] OFF;
 GO
-DBCC CHECKIDENT ([ActivityLogs], RESEED, 10610);
+DBCC CHECKIDENT ([ActivityLogs], RESEED, 10616);
 GO
 
 -- [ContactMessages]: 1 rows
@@ -8444,19 +8450,20 @@ GO
 DBCC CHECKIDENT ([RevolutionaryMemorialImages], RESEED, 7);
 GO
 
--- [ServiceEvaluations]: 3 rows
+-- [ServiceEvaluations]: 4 rows
 SET IDENTITY_INSERT [ServiceEvaluations] ON;
 INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (1, N'heritage', N'h0d0c0cbc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:03.1271464', NULL, NULL, 1, N'mink', N'very_satisfied', N'approved', N'ok');
 INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (2, N'heritage', N'heff617cc', 5, N'ok', N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 OPR/133.0.0.0 (Edition std-2)', '2026-08-05T08:49:53.3774101', NULL, NULL, 1, N'đức', N'very_satisfied', N'approved', NULL);
 INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (3, N'heritage', N'heba4c83e', 5, NULL, N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36 OPR/134.0.0.0 (Edition std-2)', '2026-08-12T01:24:40.9193710', NULL, N'ok@gmail.com', 1, N'duc', N'very_satisfied', N'approved', N'ok');
+INSERT [ServiceEvaluations] ([Id],[TargetType],[TargetId],[Score],[Comment],[DeviceName],[CreatedAt],[AdminReply],[Email],[IsApproved],[ReviewerName],[SatisfactionLevel],[Status],[Title]) VALUES (4, N'heritage', N'heba4c83e', 5, NULL, N'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/151.0.0.0 Safari/537.36', '2026-08-18T08:08:13.9062161', NULL, NULL, 0, N'duc', N'very_satisfied', N'pending', N'goood');
 SET IDENTITY_INSERT [ServiceEvaluations] OFF;
 GO
-DBCC CHECKIDENT ([ServiceEvaluations], RESEED, 3);
+DBCC CHECKIDENT ([ServiceEvaluations], RESEED, 4);
 GO
 
 -- [SystemSettings]: 1 rows
 SET IDENTITY_INSERT [SystemSettings] ON;
-INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl],[HomeBackgroundImageUrl],[HomeBackgroundType],[HomeBackgroundVideoPosterUrl],[HomeBackgroundVideoUrl]) VALUES (1, N'Bản đồ Di sản số Vân Đình', N'', N'Bản đồ Di sản số Vân Đình', N'contact@vandinh.vn', N'0123456789', N'Xa Van Dinh, Thanh pho Ha Noi', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-08-18T05:31:15.5538151', N'', N'/uploads/images/f6b4dc5ef50c48609e7a26693e8e36de.jpg', N'', N'', N'');
+INSERT [SystemSettings] ([SettingId],[WebsiteName],[LogoUrl],[FooterText],[ContactEmail],[Phone],[Address],[FacebookUrl],[TiktokUrl],[UpdatedBy],[UpdatedAt],[YoutubeUrl],[HomeBackgroundImageUrl],[HomeBackgroundType],[HomeBackgroundVideoPosterUrl],[HomeBackgroundVideoUrl]) VALUES (1, N'Bản đồ Di sản số Vân Đình', N'', N'Bản đồ Di sản số Vân Đình', N'chuyendoisovandinh@gmail.com', N'0399689565', N'Xã Vân Đình, Thành phố Hà Nội.', N'https://www.facebook.com/xavandinh', N'https://www.tiktok.com/@danhthucvandinh_', 1, '2026-08-19T02:16:33.4996641', N'', N'/uploads/images/f6b4dc5ef50c48609e7a26693e8e36de.jpg', N'', N'', N'');
 SET IDENTITY_INSERT [SystemSettings] OFF;
 GO
 DBCC CHECKIDENT ([SystemSettings], RESEED, 1);

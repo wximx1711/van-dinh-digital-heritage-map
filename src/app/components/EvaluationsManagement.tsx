@@ -129,11 +129,16 @@ export function EvaluationsManagement({ initialHeritageFilter, onClearHeritageFi
 
   const fetchStats = useCallback(async () => {
     try {
-      const [admin, overall] = await Promise.all([fetchEvaluationAdminStats(), fetchEvaluationOverallStats()]);
+      const admin = await fetchEvaluationAdminStats();
       setAdminStats(admin);
+    } catch {
+      // moderation cards are optional; keep the list usable
+    }
+    try {
+      const overall = await fetchEvaluationOverallStats();
       setOverallStats(overall);
     } catch {
-      // statistics are optional; keep the list usable
+      // charts are optional; keep the list usable
     }
   }, []);
 
