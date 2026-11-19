@@ -71,7 +71,7 @@ export function fmtDist(meters: number): string {
 
 export { VAN_DINH_ORIGIN as UBND_XA_COORDS, VISIT_DURATION as VISIT_DURATION_MINUTES };
 
-export type TripType = 'half-day' | 'one-day' | 'full-day';
+export type TripType = 'half-day' | 'one-day' | 'two-days';
 
 export interface PlannerConfig {
   sites: HeritageSite[];
@@ -85,7 +85,7 @@ export interface PlannerConfig {
 const TRIP_TYPE_LIMITS: Record<TripType, number> = {
   'half-day': 240,
   'one-day': 480,
-  'full-day': 600,
+  'two-days': 480,
 };
 
 function timeToMinutes(timeStr: string): number {
@@ -261,6 +261,89 @@ export async function generateTripPlan(config: PlannerConfig): Promise<TripPlan>
     routeGeometry = routeResult.geometry;
   } catch {
     routeGeometry = orderedPoints.map(p => [p.lat, p.lng] as [number, number]);
+  }
+
+  // XỬ LÝ LỊCH TRÌNH 2 NGÀY
+  if (tripType === 'two-days') {
+    const midpoint = Math.ceil(orderedSites.length / 2);
+    const day1Sites = orderedSites.slice(0, midpoint);
+    const day2Sites = orderedSites.slice(midpoint);
+
+    const buildDayItinerary = (
+      dayNum: number,
+      daySites: typeof orderedSites,
+      color: string,
+      startOrder: number
+    ): DayItinerary => {
+      let currentMinutes = 8 * 60;
+      let dayTravelSec = 0;
+      let dayDistM = 0;
+      const dayDests: TripDestination[] = [];
+      const dayPoints = [origin, ...daySites.map(s => ({ lat: s.lat, lng: s.lon }))];
+
+      for (let i = 0; i < daySites.length; i++) {
+        const site = daySites[i];
+        const prevPoint = i === 0 ? origin : { lat: daySites[i - 1].lat, lng: daySites[i - 1].lon };
+        const travelDistM = haversineDistance(prevPoint.lat, prevPoint.lng, site.lat, site.lon) * 1000;
+        const speedKmh = transportMode === 'walking' ? 4.5 : transportMode === 'cycling' ? 15 : transportMode === 'car' ? 45 : 35;
+        const travelTimeMin = Math.max(3, Math.round((travelDistM / 1000 / speedKmh) * 60));
+        const visitMin = VISIT_DURATION[site.type] ?? 40;
+
+        currentMinutes += travelTimeMin;
+        dayTravelSec += travelTimeMin * 60;
+        dayDistM += travelDistM;
+
+        const arrivalTime = minutesToTime(currentMinutes);
+        currentMinutes += visitMin;
+        const departureTime = minutesToTime(currentMinutes);
+
+        dayDests.push({
+          siteId: site.id,
+          nameVi: site.nameVi,
+          nameEn: site.nameEn,
+          type: site.type,
+          classification: site.classification,
+          order: startOrder + i,
+          position: { lat: site.lat, lng: site.lon },
+          distanceFromPrev: travelDistM,
+          distanceFromStart: dayDistM,
+          estimatedArrival: arrivalTime,
+          visitDuration: visitMin,
+          departureTime,
+          travelTime: travelTimeMin,
+        });
+      }
+
+      const dayGeo = dayPoints.map(p => [p.lat, p.lng] as [number, number]);
+      return {
+        day: dayNum,
+        destinations: dayDests,
+        color,
+        totalDistance: dayDistM,
+        totalDuration: currentMinutes - 8 * 60,
+        routeGeometry: dayGeo,
+      };
+    };
+
+    const day1 = buildDayItinerary(1, day1Sites, DAY_COLORS[0], 1);
+    const day2 = buildDayItinerary(2, day2Sites, DAY_COLORS[1], day1Sites.length + 1);
+
+    const totalSites = day1.destinations.length + day2.destinations.length;
+    const totalDist = day1.totalDistance + day2.totalDistance;
+    const totalDur = day1.totalDuration + day2.totalDuration;
+
+    return {
+      days: [day1, day2],
+      totalSites,
+      totalDistance: totalDist,
+      totalDuration: totalDur,
+      startTime: '08:00',
+      endTime: minutesToTime(8 * 60 + Math.max(day1.totalDuration, day2.totalDuration)),
+      totalVisitTime: day1.destinations.reduce((s, d) => s + d.visitDuration, 0) + day2.destinations.reduce((s, d) => s + d.visitDuration, 0),
+      totalTravelTime: Math.round(totalDist / 1000 / 35 * 60),
+      transportMode,
+      origin,
+    };
   }
 
   onProgress?.('Building timeline...');

@@ -25,14 +25,27 @@ interface TripPlannerProps {
   onClearStartPoint?: () => void;
 }
 
-const DESTINATION_OPTIONS = [3, 4, 5, 6, 7, 8];
+const DESTINATION_OPTIONS = [3, 4, 5, 6, 7, 8, 10, 12, 15];
 const TRIP_TYPE_OPTIONS: { key: TripType; icon: string; labelVi: string; labelEn: string }[] = [
   { key: 'half-day', icon: '🌅', labelVi: 'Nửa ngày', labelEn: 'Half Day' },
-  { key: 'one-day', icon: '☀️', labelVi: 'Một ngày', labelEn: 'One Day' },
-  { key: 'full-day', icon: '🌙', labelVi: 'Cả ngày', labelEn: 'Full Day' },
+  { key: 'one-day', icon: '☀️', labelVi: 'Một ngày', labelEn: '1 Day' },
+  { key: 'two-days', icon: '🗓️', labelVi: 'Hai ngày', labelEn: '2 Days' },
 ];
+
+const MotorbikeIcon = ({ size = 16 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="5.5" cy="17.5" r="3.5" />
+    <circle cx="18.5" cy="17.5" r="3.5" />
+    <path d="M15 6h-4l-3 6h7l2-6z" />
+    <path d="M19 17.5l-3-7.5" />
+    <path d="M14 6l-2-3h-3" />
+    <path d="M5.5 17.5l4-5.5" />
+  </svg>
+);
+
 const MODE_OPTIONS: { key: TransportProfile; icon: React.ReactNode; labelVi: string; labelEn: string }[] = [
-  { key: 'driving', icon: <Car size={16} />, labelVi: 'Xe máy', labelEn: 'Motorbike' },
+  { key: 'car', icon: <Car size={16} />, labelVi: 'Ô tô', labelEn: 'Car' },
+  { key: 'driving', icon: <MotorbikeIcon size={16} />, labelVi: 'Xe máy', labelEn: 'Motorbike' },
   { key: 'cycling', icon: <Bike size={16} />, labelVi: 'Xe đạp', labelEn: 'Cycling' },
   { key: 'walking', icon: <PersonStanding size={16} />, labelVi: 'Đi bộ', labelEn: 'Walking' },
 ];
@@ -40,9 +53,11 @@ const MODE_OPTIONS: { key: TransportProfile; icon: React.ReactNode; labelVi: str
 export function TripPlanner({
   heritageSites,
   plan,
+  activeDay = 1,
   onGenerate,
   onReset,
   onFocusSite,
+  onDayChange,
   customStartPoint,
   onRequestStartPointSelection,
   onClearStartPoint,
@@ -578,6 +593,29 @@ export function TripPlanner({
                 </div>
               </div>
 
+              {plan.days.length > 1 && (
+                <div style={{ display: 'flex', gap: 6, marginBottom: 12 }}>
+                  {plan.days.map((day) => (
+                    <button
+                      key={day.day}
+                      onClick={() => onDayChange?.(day.day)}
+                      style={{
+                        flex: 1, padding: '7px 8px', borderRadius: 6,
+                        border: activeDay === day.day ? `2px solid ${day.color}` : '1px solid #cbd5e1',
+                        background: activeDay === day.day ? '#EBF5FB' : '#fff',
+                        color: activeDay === day.day ? '#0F3D5E' : '#64748b',
+                        fontWeight: activeDay === day.day ? 700 : 500,
+                        fontSize: 12, cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5,
+                      }}
+                    >
+                      <span style={{ width: 8, height: 8, borderRadius: '50%', background: day.color }} />
+                      {lang === 'vi' ? `Ngày ${day.day}` : `Day ${day.day}`} ({day.destinations.length})
+                    </button>
+                  ))}
+                </div>
+              )}
+
               <div className="trip-timeline" style={{ position: 'relative', paddingLeft: 32, marginBottom: 8 }}>
                 <div style={{
                   position: 'absolute', left: 14, top: 8, bottom: 8,
@@ -609,7 +647,7 @@ export function TripPlanner({
                   </div>
                 </div>
 
-                {plan.days[0]?.destinations.map((dest, idx) => (
+                {((plan.days.find(d => d.day === activeDay) || plan.days[0])?.destinations ?? []).map((dest, idx) => (
                   <div key={dest.siteId}>
                     {idx > 0 && (
                       <div style={{

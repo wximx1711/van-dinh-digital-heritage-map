@@ -1,8 +1,9 @@
 const OSRM_BASE = 'https://router.project-osrm.org';
 
-export type TransportProfile = 'driving' | 'walking' | 'cycling';
+export type TransportProfile = 'car' | 'driving' | 'walking' | 'cycling';
 
 const PROFILE_MAP: Record<TransportProfile, string> = {
+  car: 'driving',
   driving: 'driving',
   walking: 'foot',
   cycling: 'bike',

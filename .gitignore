@@ -15,3 +15,5 @@ backend/VanDinh.API/wwwroot/uploads/
 # Test output and runtime logs
 test-results/
 backend/VanDinh.API/*.log
+.dotnet/
+

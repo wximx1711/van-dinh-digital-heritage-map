@@ -26,10 +26,13 @@ interface IntangiblePageResult {
 
 export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
   const { lang, t } = useLanguage();
-  const [query, setQuery] = useState('');
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('all');
-  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState(() => sessionStorage.getItem('van_dinh_intangible_query') || '');
+  const [search, setSearch] = useState(() => (sessionStorage.getItem('van_dinh_intangible_query') || '').trim());
+  const [category, setCategory] = useState(() => sessionStorage.getItem('van_dinh_intangible_category') || 'all');
+  const [page, setPage] = useState(() => {
+    const p = Number(sessionStorage.getItem('van_dinh_intangible_page'));
+    return Number.isFinite(p) && p > 0 ? p : 1;
+  });
   const [data, setData] = useState<IntangiblePageResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -37,10 +40,18 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearch(query.trim());
-      setPage(1);
+      sessionStorage.setItem('van_dinh_intangible_query', query);
     }, 400);
     return () => clearTimeout(timer);
   }, [query]);
+
+  useEffect(() => {
+    sessionStorage.setItem('van_dinh_intangible_category', category);
+  }, [category]);
+
+  useEffect(() => {
+    sessionStorage.setItem('van_dinh_intangible_page', String(page));
+  }, [page]);
 
   const loadData = useCallback(async () => {
     setLoading(true);
@@ -67,6 +78,9 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
     setSearch('');
     setCategory('all');
     setPage(1);
+    sessionStorage.removeItem('van_dinh_intangible_query');
+    sessionStorage.removeItem('van_dinh_intangible_category');
+    sessionStorage.removeItem('van_dinh_intangible_page');
   };
 
   const hasActiveFilters = search !== '' || category !== 'all';
@@ -86,7 +100,12 @@ export function IntangiblePage({ onNavigate }: IntangiblePageProps) {
   const renderCards = () => (data?.data ?? []).map((item) => (
     <div
       key={item.id}
-      onClick={() => onNavigate('intangible-detail', item.id)}
+      onClick={() => {
+        sessionStorage.setItem('van_dinh_intangible_query', query);
+        sessionStorage.setItem('van_dinh_intangible_category', category);
+        sessionStorage.setItem('van_dinh_intangible_page', String(page));
+        onNavigate('intangible-detail', item.id);
+      }}
       className="card-accent-gold"
       style={{
         background: 'white', borderRadius: 12, overflow: 'hidden',

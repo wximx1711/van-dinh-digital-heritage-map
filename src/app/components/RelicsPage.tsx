@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useLanguage } from './LanguageContext';
 import { LazyImage } from './LazyImage';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels } from '../../presentation/hooks/useHeritageData';
@@ -12,6 +12,29 @@ import { Search, Filter, MapPin, Calendar, Eye, RotateCcw, Grid2x2, List, Play }
 interface RelicsPageProps {
   onNavigate: (page: string, id?: string) => void;
   searchQuery?: string;
+}
+
+function getSearchSnippet(site: any, rawQuery: string): string | null {
+  if (!rawQuery || rawQuery.trim().length < 2) return null;
+  const q = normalizeSearchText(rawQuery);
+  const nameNorm = normalizeSearchText(site.nameVi || '');
+  if (nameNorm.includes(q)) return null;
+
+  const texts: string[] = [site.descriptionVi, site.historyVi];
+  for (const text of texts) {
+    if (!text) continue;
+    const textNorm = normalizeSearchText(text);
+    const idx = textNorm.indexOf(q);
+    if (idx !== -1) {
+      const start = Math.max(0, idx - 20);
+      const end = Math.min(text.length, idx + rawQuery.length + 35);
+      let snippet = text.slice(start, end).trim();
+      if (start > 0) snippet = '...' + snippet;
+      if (end < text.length) snippet = snippet + '...';
+      return snippet;
+    }
+  }
+  return null;
 }
 
 function matchHeritageSite(site: { nameVi: string; nameEn: string; code: string; descriptionVi: string; descriptionEn: string; addressVi: string; addressEn: string; historyVi: string; historyEn: string; }, q: string): boolean {
@@ -54,19 +77,30 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
   const { data: intangibleHeritage } = useIntangibleHeritage();
   const classificationLabels = useClassificationLabels();
   const typeLabels = useTypeLabels();
-  const [search, setSearch] = useState(searchQuery);
-  const [filterCls, setFilterCls] = useState<Classification | 'all'>('all');
-  const [filterType, setFilterType] = useState<HeritageType | 'all'>('all');
+  const [search, setSearch] = useState(() => searchQuery || sessionStorage.getItem('van_dinh_relics_search') || '');
+  const [filterCls, setFilterCls] = useState<Classification | 'all'>(() => (sessionStorage.getItem('van_dinh_relics_cls') as any) || 'all');
+  const [filterType, setFilterType] = useState<HeritageType | 'all'>(() => (sessionStorage.getItem('van_dinh_relics_type') as any) || 'all');
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(() => {
+    const p = Number(sessionStorage.getItem('van_dinh_relics_page'));
+    return Number.isFinite(p) && p > 0 ? p : 1;
+  });
   const PER_PAGE = 8;
 
   useEffect(() => {
     if (searchQuery) {
       setSearch(searchQuery);
+      sessionStorage.setItem('van_dinh_relics_search', searchQuery);
       setPage(1);
     }
   }, [searchQuery]);
+
+  useEffect(() => {
+    sessionStorage.setItem('van_dinh_relics_search', search);
+    sessionStorage.setItem('van_dinh_relics_cls', filterCls);
+    sessionStorage.setItem('van_dinh_relics_type', filterType);
+    sessionStorage.setItem('van_dinh_relics_page', String(page));
+  }, [search, filterCls, filterType, page]);
 
   const normalizedQuery = normalizeSearchText(search);
 
@@ -78,17 +112,36 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
     return matchSearch && matchCls && matchType;
   });
 
+  const hasSearch = search.trim().length > 0;
+
+  const sortedHeritage = useMemo(() => {
+    if (!hasSearch) return filteredHeritage;
+    const q = normalizedQuery;
+    return [...filteredHeritage].sort((a, b) => {
+      const aName = normalizeSearchText(a.nameVi).includes(q) ? 1 : 0;
+      const bName = normalizeSearchText(b.nameVi).includes(q) ? 1 : 0;
+      return bName - aName;
+    });
+  }, [filteredHeritage, hasSearch, normalizedQuery]);
+
   const filteredIntangible = !search ? [] : intangibleHeritage.filter(i => {
     const q = normalizedQuery;
     return matchIntangible(i, q);
   });
 
-  const hasSearch = search.trim().length > 0;
-
   const totalPages = Math.ceil(filteredHeritage.length / PER_PAGE);
   const paginated = filteredHeritage.slice((page - 1) * PER_PAGE, page * PER_PAGE);
 
-  const resetFilters = () => { setSearch(''); setFilterCls('all'); setFilterType('all'); setPage(1); };
+  const resetFilters = () => {
+    setSearch('');
+    setFilterCls('all');
+    setFilterType('all');
+    setPage(1);
+    sessionStorage.removeItem('van_dinh_relics_search');
+    sessionStorage.removeItem('van_dinh_relics_cls');
+    sessionStorage.removeItem('van_dinh_relics_type');
+    sessionStorage.removeItem('van_dinh_relics_page');
+  };
 
   const totalResults = filteredHeritage.length + filteredIntangible.length;
 
@@ -116,7 +169,12 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
           <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
             <Search size={14} style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#5d7a8c' }} />
             <input
-              value={search} onChange={e => { setSearch(e.target.value); setPage(1); }}
+              value={search} onChange={e => {
+                const val = e.target.value;
+                setSearch(val);
+                sessionStorage.setItem('van_dinh_relics_search', val);
+                setPage(1);
+              }}
               className="field-focus"
               placeholder={t('hero.search.placeholder')}
               style={{ width: '100%', padding: '9px 9px 9px 32px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.12)', fontSize: 'clamp(12px, 3vw, 13px)', background: '#F0F4F8', outline: 'none', boxSizing: 'border-box' }}
@@ -186,8 +244,14 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
             {/* Grid view */}
             {(!hasSearch && viewMode === 'grid') || hasSearch ? (
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 20, marginBottom: 24 }}>
-                {(hasSearch ? filteredHeritage : paginated).map(site => (
-                  <div key={site.id} onClick={() => onNavigate('heritage-detail', site.id)}
+                {(hasSearch ? sortedHeritage : paginated).map(site => (
+                  <div key={site.id} onClick={() => {
+                    sessionStorage.setItem('van_dinh_relics_search', search);
+                    sessionStorage.setItem('van_dinh_relics_cls', filterCls);
+                    sessionStorage.setItem('van_dinh_relics_type', filterType);
+                    sessionStorage.setItem('van_dinh_relics_page', String(page));
+                    onNavigate('heritage-detail', site.id);
+                  }}
                     className="card-accent-gold"
                     style={{ background: 'white', borderRadius: 12, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 2px 10px rgba(15,61,94,0.07)', transition: 'transform 0.25s, box-shadow 0.25s' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-5px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 12px 32px rgba(15,61,94,0.15)'; }}
@@ -210,6 +274,20 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
                       <h3 style={{ color: '#0F3D5E', fontSize: 14, fontWeight: 700, margin: '0 0 6px', lineHeight: 1.3 }}>
                         {lang === 'vi' ? site.nameVi : site.nameEn}
                       </h3>
+                      {hasSearch && (() => {
+                        const snippet = getSearchSnippet(site, search);
+                        if (!snippet) return null;
+                        return (
+                          <div style={{
+                            margin: '4px 0 8px', padding: '4px 8px', borderRadius: 4,
+                            background: '#FFF9E6', border: '1px solid #FFE082',
+                            fontSize: 11, color: '#855800', lineHeight: 1.4,
+                          }}>
+                            <span style={{ fontWeight: 700 }}>{lang === 'vi' ? 'Khớp nội dung: ' : 'Matched: '}</span>
+                            <span>{snippet}</span>
+                          </div>
+                        );
+                      })()}
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
                         <span style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 11, color: '#5d7a8c' }}>
                           <MapPin size={10} /> {lang === 'vi' ? 'Vân Đình' : 'Van Dinh'}
@@ -231,7 +309,13 @@ export function RelicsPage({ onNavigate, searchQuery = '' }: RelicsPageProps) {
             {!hasSearch && viewMode === 'list' && (
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
                 {paginated.map(site => (
-                  <div key={site.id} onClick={() => onNavigate('heritage-detail', site.id)}
+                  <div key={site.id} onClick={() => {
+                    sessionStorage.setItem('van_dinh_relics_search', search);
+                    sessionStorage.setItem('van_dinh_relics_cls', filterCls);
+                    sessionStorage.setItem('van_dinh_relics_type', filterType);
+                    sessionStorage.setItem('van_dinh_relics_page', String(page));
+                    onNavigate('heritage-detail', site.id);
+                  }}
                     className="relics-list-item card-accent-gold"
                     style={{ background: 'white', borderRadius: 10, overflow: 'hidden', cursor: 'pointer', boxShadow: '0 2px 8px rgba(15,61,94,0.06)', display: 'flex', transition: 'box-shadow 0.2s' }}
                     onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.boxShadow = '0 6px 20px rgba(15,61,94,0.12)'; }}

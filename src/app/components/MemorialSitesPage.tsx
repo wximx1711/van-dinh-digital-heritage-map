@@ -19,20 +19,30 @@ const PAGE_SIZE = 12;
 
 export function MemorialSitesPage({ onNavigate }: MemorialSitesPageProps) {
   const { lang, t } = useLanguage();
-  const [query, setQuery] = useState('');
-  const [search, setSearch] = useState('');
-  const [category, setCategory] = useState('all');
-  const [classification, setClassification] = useState('all');
-  const [status, setStatus] = useState('all');
-  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState(() => sessionStorage.getItem('van_dinh_memorial_query') || '');
+  const [search, setSearch] = useState(() => (sessionStorage.getItem('van_dinh_memorial_query') || '').trim());
+  const [category, setCategory] = useState(() => sessionStorage.getItem('van_dinh_memorial_category') || 'all');
+  const [classification, setClassification] = useState(() => sessionStorage.getItem('van_dinh_memorial_cls') || 'all');
+  const [status, setStatus] = useState(() => sessionStorage.getItem('van_dinh_memorial_status') || 'all');
+  const [page, setPage] = useState(() => {
+    const p = Number(sessionStorage.getItem('van_dinh_memorial_page'));
+    return Number.isFinite(p) && p > 0 ? p : 1;
+  });
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearch(query.trim());
-      setPage(1);
+      sessionStorage.setItem('van_dinh_memorial_query', query);
     }, 400);
     return () => clearTimeout(timer);
   }, [query]);
+
+  useEffect(() => {
+    sessionStorage.setItem('van_dinh_memorial_category', category);
+    sessionStorage.setItem('van_dinh_memorial_cls', classification);
+    sessionStorage.setItem('van_dinh_memorial_status', status);
+    sessionStorage.setItem('van_dinh_memorial_page', String(page));
+  }, [category, classification, status, page]);
 
   const { data, loading, error, refetch } = useMemorialSites({
     q: search || undefined,
@@ -50,6 +60,11 @@ export function MemorialSitesPage({ onNavigate }: MemorialSitesPageProps) {
     setClassification('all');
     setStatus('all');
     setPage(1);
+    sessionStorage.removeItem('van_dinh_memorial_query');
+    sessionStorage.removeItem('van_dinh_memorial_category');
+    sessionStorage.removeItem('van_dinh_memorial_cls');
+    sessionStorage.removeItem('van_dinh_memorial_status');
+    sessionStorage.removeItem('van_dinh_memorial_page');
   };
 
   const hasActiveFilters = search !== '' || category !== 'all' || classification !== 'all' || status !== 'all';
@@ -57,7 +72,14 @@ export function MemorialSitesPage({ onNavigate }: MemorialSitesPageProps) {
   const renderCards = () => data.data.map((item) => (
     <div
       key={item.id}
-      onClick={() => onNavigate('memorial-site-detail', item.id)}
+      onClick={() => {
+        sessionStorage.setItem('van_dinh_memorial_query', query);
+        sessionStorage.setItem('van_dinh_memorial_category', category);
+        sessionStorage.setItem('van_dinh_memorial_cls', classification);
+        sessionStorage.setItem('van_dinh_memorial_status', status);
+        sessionStorage.setItem('van_dinh_memorial_page', String(page));
+        onNavigate('memorial-site-detail', item.id);
+      }}
       className="card-accent-gold"
       style={{
         background: 'white', borderRadius: 12, overflow: 'hidden',

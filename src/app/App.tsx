@@ -9,6 +9,7 @@ import { SystemSettingsProvider } from './components/SystemSettingsContext';
 import { NotFoundPage } from './components/NotFoundPage';
 import { Skeleton } from './components/Skeleton';
 import { apiGet, apiPost } from './services/api';
+import { trackPageView } from './services/statisticsService';
 import { getImageUrl } from './utils/url';
 import { displaySiteTitle, sanitizeLocation } from './utils/uiText';
 import type { UserInfo, AboutPageData } from '../core/types';
@@ -123,24 +124,38 @@ function AboutPage({ onNavigate }: { onNavigate: (page: string) => void }) {
 
 function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
   const { lang } = useLanguage();
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', subject: '', message: '' });
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
 
   const handleSend = async () => {
-    if (!form.name.trim() || !form.email.trim() || !form.message.trim()) {
-      setError(lang === 'vi' ? 'Vui lòng điền đầy đủ thông tin bắt buộc' : 'Please fill in all required fields');
+    if (!form.name.trim() || !form.phone.trim() || !form.message.trim()) {
+      setError(lang === 'vi' ? 'Vui lòng điền họ tên, số điện thoại và nội dung tin nhắn' : 'Please fill in name, phone number and message');
       return;
     }
-    if (!form.email.includes('@')) {
+    if (form.email.trim() && !form.email.includes('@')) {
       setError(lang === 'vi' ? 'Email không hợp lệ' : 'Invalid email address');
       return;
     }
     setSending(true);
     setError('');
+
+    const cleanPhone = form.phone.trim();
+    const fallbackEmail = `${cleanPhone.replace(/\D/g, '') || 'khachhang'}@vandinh.hanoi.gov.vn`;
+    const finalEmail = form.email.trim() || fallbackEmail;
+    const finalMessage = `[Số điện thoại: ${cleanPhone}]\n\n${form.message.trim()}`;
+    const finalSubject = form.subject.trim()
+      ? `[SĐT: ${cleanPhone}] ${form.subject.trim()}`
+      : `Liên hệ từ ${form.name.trim()} (SĐT: ${cleanPhone})`;
+
     try {
-      await apiPost('/contact', { name: form.name.trim(), email: form.email.trim(), subject: form.subject.trim() || undefined, message: form.message.trim() });
+      await apiPost('/contact', {
+        name: form.name.trim(),
+        email: finalEmail,
+        subject: finalSubject,
+        message: finalMessage,
+      });
       setSent(true);
     } catch {
       setError(lang === 'vi' ? 'Gửi thất bại, vui lòng thử lại sau' : 'Failed to send, please try again later');
@@ -171,7 +186,7 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
             <p style={{ color: '#5d7a8c' }}>
               {lang === 'vi' ? 'Chúng tôi sẽ phản hồi trong vòng 24–48 giờ làm việc.' : 'We will respond within 24–48 business hours.'}
             </p>
-            <button onClick={() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }} style={{ padding: '10px 28px', borderRadius: 8, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>
+            <button onClick={() => { setSent(false); setForm({ name: '', phone: '', email: '', subject: '', message: '' }); }} style={{ padding: '10px 28px', borderRadius: 8, background: '#0F3D5E', border: 'none', color: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', marginTop: 8 }}>
               {lang === 'vi' ? 'Gửi tin nhắn khác' : 'Send Another Message'}
             </button>
           </div>
@@ -183,15 +198,17 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
             <div style={{ background: 'linear-gradient(90deg, #D4A017, transparent)', height: 3, width: 60, marginBottom: 24 }} />
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
               {[
-                { label: lang === 'vi' ? 'Họ và tên *' : 'Full Name *', key: 'name', type: 'text', full: false },
-                { label: 'Email *', key: 'email', type: 'email', full: false },
-                { label: lang === 'vi' ? 'Chủ đề' : 'Subject', key: 'subject', type: 'text', full: true },
+                { label: lang === 'vi' ? 'Họ và tên *' : 'Full Name *', key: 'name', type: 'text', placeholder: lang === 'vi' ? 'Nhập họ và tên' : 'Enter your name', full: false },
+                { label: lang === 'vi' ? 'Số điện thoại *' : 'Phone Number *', key: 'phone', type: 'tel', placeholder: lang === 'vi' ? 'Nhập số điện thoại liên hệ' : 'Enter phone number', full: false },
+                { label: lang === 'vi' ? 'Email (Không cần thiết)' : 'Email (Optional)', key: 'email', type: 'email', placeholder: 'example@gmail.com', full: false },
+                { label: lang === 'vi' ? 'Chủ đề' : 'Subject', key: 'subject', type: 'text', placeholder: lang === 'vi' ? 'Chủ đề liên hệ...' : 'Subject...', full: false },
               ].map(f => (
                 <div key={f.key} style={{ gridColumn: f.full ? '1 / -1' : 'auto' }}>
                   <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: '#0F3D5E', marginBottom: 5 }}>{f.label}</label>
                   <input
                     type={f.type}
                     value={(form as any)[f.key]}
+                    placeholder={f.placeholder}
                     onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
                     style={{ width: '100%', padding: '10px 12px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.15)', fontSize: 13, background: '#F8FAFC', outline: 'none', boxSizing: 'border-box' }}
                   />
@@ -204,6 +221,7 @@ function ContactPage({ onNavigate }: { onNavigate: (page: string) => void }) {
                 <textarea
                   rows={5}
                   value={form.message}
+                  placeholder={lang === 'vi' ? 'Nhập nội dung tin nhắn hoặc ý kiến phản hồi...' : 'Write your message...'}
                   onChange={e => setForm(p => ({ ...p, message: e.target.value }))}
                   style={{ width: '100%', padding: '10px 12px', borderRadius: 7, border: '1.5px solid rgba(15,61,94,0.15)', fontSize: 13, background: '#F8FAFC', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
                 />
@@ -253,6 +271,11 @@ function AppInner() {
       setPage('evaluate');
     }
   }, []);
+
+  useEffect(() => {
+    // Tự động ghi nhận lượt truy cập vào CSDL SQL Server khi người dùng chuyển trang
+    trackPageView(page);
+  }, [page]);
 
   useEffect(() => {
     if (page === 'admin' && auth.isAuthenticated && !auth.isAdmin && !auth.isManager) {

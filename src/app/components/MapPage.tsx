@@ -15,8 +15,9 @@ import type { HeritageSite, HeritageType, Classification, MapMarker } from '../.
 import type { TripPlan } from '../services/tripPlannerService';
 import {
   X, QrCode, Navigation, RotateCcw, Search,
-  Filter, ChevronDown, ChevronUp, Crosshair, Satellite
+  Filter, ChevronDown, ChevronUp, Crosshair, Satellite, Printer
 } from 'lucide-react';
+import { ExportMapModal } from './ExportMapModal';
 
 interface MapPageProps {
   onNavigate: (page: string, id?: string) => void;
@@ -112,6 +113,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(true);
   const [showQr, setShowQr] = useState(false);
+  const [showExportModal, setShowExportModal] = useState(false);
 
   const [selectedMarkerId, setSelectedMarkerId] = useState<string | null>(null);
   const [mapType, setMapType] = useState<'roadmap' | 'satellite' | 'hybrid'>('roadmap');
@@ -594,6 +596,31 @@ export function MapPage({ onNavigate }: MapPageProps) {
               </span>
             </div>
 
+            <button
+              onClick={() => setShowExportModal(true)}
+              style={{
+                marginTop: 10,
+                width: '100%',
+                padding: '9px 12px',
+                borderRadius: 6,
+                border: 'none',
+                background: 'linear-gradient(135deg, #0F3D5E, #1A5276)',
+                color: 'white',
+                fontSize: 12,
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                boxShadow: '0 2px 6px rgba(15, 61, 94, 0.25)',
+              }}
+              title={lang === 'vi' ? 'Xuất file' : 'Export'}
+            >
+              <Printer size={15} color="#D4A017" />
+              {lang === 'vi' ? 'Xuất File' : 'Export'}
+            </button>
+
             <div style={{ marginTop: 16, padding: '12px', background: '#F0F4F8', borderRadius: 8 }}>
               <div style={{ fontSize: 11, fontWeight: 700, color: '#0F3D5E', marginBottom: 8 }}>
                 {lang === 'vi' ? 'Chú giải' : 'Legend'}
@@ -684,7 +711,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
         {visibleCount === 0 && (
           <div style={{
             position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-            zIndex: 20, pointerEvents: 'auto',
+            zIndex: 1005, pointerEvents: 'auto',
             background: 'rgba(255,255,255,0.95)',
             borderRadius: 12, padding: '20px 28px',
             textAlign: 'center',
@@ -728,7 +755,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
         />
 
         <div role="radiogroup" aria-label={lang === 'vi' ? 'Loại bản đồ' : 'Map type'} className="map-type-controls" style={{
-          position: 'absolute', top: 12, right: 12, zIndex: 10,
+          position: 'absolute', top: 12, right: 12, zIndex: 1005,
           display: 'flex', borderRadius: 8, overflow: 'hidden',
           boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
         }}>
@@ -756,8 +783,26 @@ export function MapPage({ onNavigate }: MapPageProps) {
           ))}
         </div>
 
+        <button
+          onClick={() => setShowExportModal(true)}
+          className="map-export-button"
+          style={{
+            position: 'absolute', top: 52, right: 12, zIndex: 1005,
+            padding: '6px 12px', borderRadius: 8,
+            background: 'white', color: '#0F3D5E',
+            border: '1.5px solid #0F3D5E',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.18)',
+            fontSize: 11, fontWeight: 700, cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: 6,
+          }}
+          title={lang === 'vi' ? 'Xuất file' : 'Export'}
+        >
+          <Printer size={13} color="#D4A017" />
+          <span>{lang === 'vi' ? 'Xuất File' : 'Export'}</span>
+        </button>
+
         <div className="map-location-controls" style={{
-          position: 'absolute', bottom: 16, right: 16, zIndex: 10,
+          position: 'absolute', bottom: 16, right: 16, zIndex: 1005,
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
         }}>
           <style>{`@keyframes locate-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }`}</style>
@@ -799,7 +844,7 @@ export function MapPage({ onNavigate }: MapPageProps) {
         </div>
 
         <div className="map-info-controls" style={{
-          position: 'absolute', bottom: 16, left: 16, zIndex: 10,
+          position: 'absolute', bottom: 16, left: 16, zIndex: 1005,
           display: 'flex', flexDirection: 'column', gap: 8,
           alignItems: 'flex-start', pointerEvents: 'none',
         }}>
@@ -842,6 +887,14 @@ export function MapPage({ onNavigate }: MapPageProps) {
       {showQr && selectedSite && (
         <QrModal site={selectedSite} onClose={() => setShowQr(false)} lang={lang} />
       )}
+
+      <ExportMapModal
+        isOpen={showExportModal}
+        onClose={() => setShowExportModal(false)}
+        heritageSites={heritageSites}
+        filteredSites={heritageSites.filter(s => filteredSiteIds.has(s.id))}
+        lang={lang}
+      />
       <style>{`
         @media (max-width: 767px) {
           .map-sidebar-overlay {

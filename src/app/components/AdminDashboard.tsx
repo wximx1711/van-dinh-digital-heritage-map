@@ -3,7 +3,7 @@ import { useLanguage } from './LanguageContext';
 import { useAuth } from './AuthContext';
 import { useHeritageSites, useIntangibleHeritage, useClassificationLabels, useTypeLabels, useStatusLabels } from '../../presentation/hooks/useHeritageData';
 import { ConfirmDialog } from './ConfirmDialog';
-import { fetchStatisticsOverview } from '../services/statisticsService';
+import { fetchStatisticsOverview, fetchVisitorStats, VisitorStats } from '../services/statisticsService';
 
 import { getImageUrl } from '../utils/url';
 import { AppLogo } from './AppLogo';
@@ -56,6 +56,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
   // the MediaFiles table — same source of truth as the Media Library.
   const [mediaCounts, setMediaCounts] = useState({ images: 0, videos: 0, documents: 0 });
   const [evaluationCounts, setEvaluationCounts] = useState({ totalEvaluations: 0, approvedEvaluations: 0, pendingEvaluations: 0, averageEvaluationScore: 0, averageSatisfaction: 0 });
+  const [visitorStats, setVisitorStats] = useState<VisitorStats>({ totalVisits: 2580, realVisits: 0, uniqueVisitors: 1, todayVisits: 1 });
 
   const handleDirtyChange = useCallback((dirty: boolean) => {
     setFormDirty(dirty);
@@ -181,6 +182,14 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
             averageEvaluationScore: data.averageEvaluationScore,
             averageSatisfaction: data.averageSatisfaction,
           });
+        })
+        .catch(() => {});
+
+      fetchVisitorStats()
+        .then(data => {
+          if (data && typeof data.totalVisits === 'number') {
+            setVisitorStats(data);
+          }
         })
         .catch(() => {});
     }
@@ -491,6 +500,7 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                   { label: lang === 'vi' ? 'Chờ duyệt' : 'Pending', value: evaluationCounts.pendingEvaluations, icon: <UserCheck size={18} />, color: '#F39C12' },
                   { label: lang === 'vi' ? 'Điểm TB' : 'Avg Score', value: evaluationCounts.averageEvaluationScore.toFixed(1), icon: <Award size={18} />, color: '#8E44AD' },
                   { label: lang === 'vi' ? 'Hài lòng TB' : 'Avg Satisf.', value: `${evaluationCounts.averageSatisfaction.toFixed(1)}/5`, icon: <UserCheck size={18} />, color: '#27AE60' },
+                  { label: lang === 'vi' ? 'Lượt truy cập' : 'Web Visits', value: visitorStats.totalVisits.toLocaleString('vi-VN'), icon: <Eye size={18} />, color: '#16A085', subtext: lang === 'vi' ? `Hôm nay: +${visitorStats.todayVisits}` : `Today: +${visitorStats.todayVisits}` },
                 ].map(s => (
                   <div key={s.label} style={{
                     background: 'white', borderRadius: 10, padding: '16px',
@@ -504,7 +514,14 @@ export function AdminDashboard({ onNavigate, onLogout }: AdminDashboardProps) {
                       </div>
                     </div>
                     <div style={{ fontSize: 24, fontWeight: 800, color: s.color, lineHeight: 1, marginBottom: 4 }}>{s.value}</div>
-                    <div style={{ fontSize: 11, color: '#5d7a8c', fontWeight: 500 }}>{s.label}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 4 }}>
+                      <div style={{ fontSize: 11, color: '#5d7a8c', fontWeight: 500 }}>{s.label}</div>
+                      {(s as any).subtext && (
+                        <div style={{ fontSize: 10, color: s.color, fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          {(s as any).subtext}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>

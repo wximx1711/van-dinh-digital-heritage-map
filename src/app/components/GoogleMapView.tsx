@@ -363,6 +363,7 @@ export function GoogleMapView({
           url={tileLayers[mapType]}
           attribution={tileAttribution[mapType]}
           maxZoom={19}
+          crossOrigin=""
         />
 
         <MapController
